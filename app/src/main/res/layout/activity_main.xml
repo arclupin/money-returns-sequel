@@ -1,0 +1,158 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+
+   >
+
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        android:id="@id/Table1"
+        android:paddingTop="30dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:background="@drawable/horse2">
+
+        <TableRow
+            >
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Payments"
+                android:id="@+id/button1"
+                android:layout_column="1"
+                android:height="100dp"
+                android:width="100dp"
+                android:layout_margin="5dp"
+                android:layout_gravity="fill"
+                android:onClick="btnClickPayments"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Transfers"
+                android:id="@+id/button2"
+                android:layout_column="1"
+                android:height="100dp"
+                android:width="100dp"
+                android:layout_margin="5dp"
+                android:layout_gravity="fill"
+                android:onClick="btnClickTransfers"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Accounts"
+                android:id="@+id/button3"
+                android:layout_column="1"
+                android:height="100dp"
+                android:width="100dp"
+                android:layout_margin="5dp"
+                android:layout_gravity="fill"
+                android:onClick="btnClickAccounts"/>
+
+        </TableRow>
+
+
+        <TableRow
+            android:paddingTop="50dp">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Analysis"
+                android:id="@+id/button4"
+                android:layout_column="1"
+                android:height="100dp"
+                android:width="100dp"
+                android:layout_margin="5dp"
+                android:layout_gravity="fill"
+                android:onClick="btnClickAnalysis"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Achievements"
+                android:id="@+id/button5"
+                android:layout_column="1"
+                android:height="100dp"
+                android:width="100dp"
+                android:layout_margin="5dp"
+                android:layout_gravity="fill"
+                android:onClick="btnClickAchievements"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Offers"
+                android:id="@+id/button6"
+                android:layout_column="1"
+                android:height="100dp"
+                android:width="100dp"
+                android:layout_margin="5dp"
+                android:layout_gravity="fill"
+                android:onClick="btnClickOffers"/>
+
+        </TableRow>
+
+        <TableRow
+            android:paddingTop="50dp">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Products"
+                android:id="@+id/button7"
+                android:layout_column="1"
+                android:height="100dp"
+                android:width="100dp"
+                android:layout_margin="5dp"
+                android:layout_gravity="fill"
+                android:onClick="btnClickProducts"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:id="@+id/button8"
+                android:layout_column="1"
+                android:height="100dp"
+                android:width="100dp"
+                android:layout_margin="5dp"
+                android:layout_gravity="fill"
+                android:onClick="btnClickSettings"
+                 />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                android:id="@+id/button9"
+                android:layout_column="1"
+                android:height="100dp"
+                android:width="100dp"
+                android:layout_margin="5dp"
+                android:layout_gravity="fill"
+                android:onClick="btnLogout"/>
+        </TableRow>
+
+
+
+
+
+    </TableLayout>
+
+    <!--<Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NavBar"
+        android:id="@+id/button10"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" /> -->
+</RelativeLayout>

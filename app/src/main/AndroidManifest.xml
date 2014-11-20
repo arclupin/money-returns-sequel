@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ncl.team5.lloydsmockup" >
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme"
+        >
+        <activity
+            android:name=".Login"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".Transfers"
+            android:label="@string/title_activity_transfers"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".Accounts"
+            android:label="@string/title_activity_accounts"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo">
+        </activity>
+        <activity
+            android:name=".Analysis"
+            android:label="@string/title_activity_analysis"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".Offers"
+            android:label="@string/title_activity_offers"
+
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".Achievements"
+            android:label="@string/title_activity_offers"
+
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".Products"
+            android:label="@string/title_activity_products"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".Settings"
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".Notifications"
+            android:label="@string/title_activity_notifications"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".Payments"
+            android:label="@string/title_activity_payments"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo">
+        </activity>
+        <activity
+            android:name=".Statement"
+            android:label="@string/title_activity_statement"
+            android:screenOrientation="portrait">
+        </activity>
+    </application>
+
+</manifest>

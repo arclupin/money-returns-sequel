@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">LloydsMockup</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main">Menu</string>
+    <string name="title_activity_balance">Balance</string>
+    <string name="title_activity_transfers">Transfers</string>
+    <string name="title_activity_accounts">Accounts</string>
+    <string name="title_activity_analysis">Analysis</string>
+    <string name="title_activity_achievements">Achievements</string>
+    <string name="title_activity_offers">Offers</string>
+    <string name="title_activity_products">Products</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_notifications">Notifications</string>
+    <string-array name="accountslist">
+        <item>Account1</item>
+        <item>Account2</item>
+        <item>Account3</item>
+    </string-array>
+
+    <string name="title_activity_payments">Payments</string>
+    <string name="title_activity_statement">Statement</string>
+
+    <string name="action_backHome">Back to menu</string>
+    <string name="action_Notifications">Notifications</string>
+    <string name="action_location">Location Service</string>
+</resources>
