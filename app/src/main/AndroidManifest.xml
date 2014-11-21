@@ -21,8 +21,12 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
+<<<<<<< HEAD
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.DeviceDefault.Light.DarkActionBar">
+=======
+            android:screenOrientation="portrait" >
+>>>>>>> f739791b17999bcba2a2675663097e037abf132d
         </activity>
         <activity
             android:name=".Transfers"

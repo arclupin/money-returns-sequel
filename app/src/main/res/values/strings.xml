@@ -19,7 +19,10 @@
         <item>Account2</item>
         <item>Account3</item>
     </string-array>
+<<<<<<< HEAD
     <string name="logout">Logout</string>
+=======
+>>>>>>> f739791b17999bcba2a2675663097e037abf132d
 
     <string name="title_activity_payments">Payments</string>
     <string name="title_activity_statement">Statement</string>
