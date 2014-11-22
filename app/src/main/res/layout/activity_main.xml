@@ -3,21 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-<<<<<<< HEAD
-    android:background="@drawable/horse2"
-    
-=======
+    android:background="@drawable/horse_background"
 
->>>>>>> f739791b17999bcba2a2675663097e037abf132d
+    
    >
 
 
     <TableLayout
-<<<<<<< HEAD
 
 
-=======
->>>>>>> f739791b17999bcba2a2675663097e037abf132d
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_centerVertical="true"
@@ -27,11 +21,12 @@
         android:paddingTop="30dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
-<<<<<<< HEAD
 
         android:stretchColumns="*"
        >
         <TextView android:id="@+id/lastLoginTextView"
+            android:textColor="@color/lloyds_color"
+
         android:text="Last login on 20/11/2014"
         android:gravity="right"
             android:paddingRight="10dp"
@@ -48,6 +43,7 @@
                 android:layout_width="fill_parent">
                 <ImageButton android:src="@drawable/acc1"
                     android:adjustViewBounds="true"
+                    android:paddingBottom="10dp"
                     android:maxWidth="80dp"
                     android:maxHeight="80dp"
                     android:scaleType="fitCenter"
@@ -119,7 +115,7 @@
                     android:scaleType="fitCenter"
                     android:layout_height="match_parent"
                     android:onClick="btnClickSettings"/>
-                <TextView android:text="Analysis"
+                <TextView android:text="@string/title_activity_analysis"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -175,7 +171,7 @@
             <GridLayout android:columnCount="1"
                 android:rowCount="2"
                 android:layout_width="fill_parent">
-                <ImageButton android:src="@drawable/setting1"
+                <ImageButton android:src="@drawable/product"
                     android:layout_width="match_parent"
                     android:background="@android:color/transparent"
                     android:adjustViewBounds="true"
@@ -213,11 +209,13 @@
             </GridLayout>
             <GridLayout android:columnCount="1"
                 android:rowCount="2"
-                android:layout_width="fill_parent">
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
                 <ImageButton android:src="@drawable/power"
                     android:layout_width="fill_parent"
                     android:background="@android:color/transparent"
                     android:adjustViewBounds="true"
+                    android:paddingTop="13dp"
                     android:maxWidth="80dp"
                     android:maxHeight="80dp"
                     android:scaleType="fitCenter"
@@ -230,149 +228,10 @@
                     android:textSize="15sp"/>
 
             </GridLayout>
-=======
-        android:background="@drawable/horse2">
-
-        <TableRow
-            >
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Payments"
-                android:id="@+id/button1"
-                android:layout_column="1"
-                android:height="100dp"
-                android:width="100dp"
-                android:layout_margin="5dp"
-                android:layout_gravity="fill"
-                android:onClick="btnClickPayments"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Transfers"
-                android:id="@+id/button2"
-                android:layout_column="1"
-                android:height="100dp"
-                android:width="100dp"
-                android:layout_margin="5dp"
-                android:layout_gravity="fill"
-                android:onClick="btnClickTransfers"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Accounts"
-                android:id="@+id/button3"
-                android:layout_column="1"
-                android:height="100dp"
-                android:width="100dp"
-                android:layout_margin="5dp"
-                android:layout_gravity="fill"
-                android:onClick="btnClickAccounts"/>
-
         </TableRow>
 
-
-        <TableRow
-            android:paddingTop="50dp">
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Analysis"
-                android:id="@+id/button4"
-                android:layout_column="1"
-                android:height="100dp"
-                android:width="100dp"
-                android:layout_margin="5dp"
-                android:layout_gravity="fill"
-                android:onClick="btnClickAnalysis"/>
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Achievements"
-                android:id="@+id/button5"
-                android:layout_column="1"
-                android:height="100dp"
-                android:width="100dp"
-                android:layout_margin="5dp"
-                android:layout_gravity="fill"
-                android:onClick="btnClickAchievements"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Offers"
-                android:id="@+id/button6"
-                android:layout_column="1"
-                android:height="100dp"
-                android:width="100dp"
-                android:layout_margin="5dp"
-                android:layout_gravity="fill"
-                android:onClick="btnClickOffers"/>
-
-        </TableRow>
-
-        <TableRow
-            android:paddingTop="50dp">
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Products"
-                android:id="@+id/button7"
-                android:layout_column="1"
-                android:height="100dp"
-                android:width="100dp"
-                android:layout_margin="5dp"
-                android:layout_gravity="fill"
-                android:onClick="btnClickProducts"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Settings"
-                android:id="@+id/button8"
-                android:layout_column="1"
-                android:height="100dp"
-                android:width="100dp"
-                android:layout_margin="5dp"
-                android:layout_gravity="fill"
-                android:onClick="btnClickSettings"
-                 />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Logout"
-                android:id="@+id/button9"
-                android:layout_column="1"
-                android:height="100dp"
-                android:width="100dp"
-                android:layout_margin="5dp"
-                android:layout_gravity="fill"
-                android:onClick="btnLogout"/>
->>>>>>> f739791b17999bcba2a2675663097e037abf132d
-        </TableRow>
-
-
-
-<<<<<<< HEAD
-    </TableLayout>
-
-=======
 
 
     </TableLayout>
 
-    <!--<Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="NavBar"
-        android:id="@+id/button10"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" /> -->
->>>>>>> f739791b17999bcba2a2675663097e037abf132d
 </RelativeLayout>

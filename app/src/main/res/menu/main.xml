@@ -1,6 +1,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.ncl.team5.lloydsmockup.MainActivity" >
+    tools:context="com.ncl.team5.lloydsmockup.MainActivity"
+
+    >
 
     <item android:title="@string/action_backHome"
         android:id="@+id/action_backHome"

@@ -7,7 +7,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.ncl.team5.lloydsmockup.Transfers"
-    android:background="#ff043e00">
+    android:background="#ffffffff">
 
 
     <TextView
@@ -19,7 +19,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:textSize="40dp"
-        android:textColor="#ffffffff" />
+        android:textColor="#ff000000" />
 
     <Spinner
         android:layout_width="fill_parent"
@@ -30,7 +30,8 @@
         android:layout_below="@+id/description"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="36dp" />
+        android:layout_marginTop="36dp"
+        android:background="#ff9e9e9e" />
 
     <Button
         android:layout_width="wrap_content"
@@ -52,7 +53,8 @@
         android:layout_marginTop="49dp"
         android:layout_below="@+id/spinner3"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:background="#ff9f9f9f" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -60,10 +62,10 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Amount:"
         android:id="@+id/textView2"
-        android:layout_marginTop="47dp"
+        android:layout_marginTop="40dp"
+        android:textColor="#ff000000"
         android:layout_below="@+id/spinner2"
-        android:layout_centerHorizontal="true"
-        android:textColor="#ffffffff" />
+        android:layout_centerHorizontal="true" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -75,6 +77,6 @@
         android:layout_alignEnd="@+id/description"
         android:layout_alignLeft="@+id/description"
         android:layout_alignStart="@+id/description"
-        android:background="#ffffffff" />
+        android:background="@drawable/border" />
 
 </RelativeLayout>
