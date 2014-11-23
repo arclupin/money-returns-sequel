@@ -1,10 +1,11 @@
 package com.ncl.team5.lloydsmockup;
 
-import android.app.Activity;
+import  android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
 
 
 public class Analysis extends Activity {

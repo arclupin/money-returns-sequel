@@ -9,17 +9,6 @@
     tools:context="com.ncl.team5.lloydsmockup.Accounts"
     android:background="#ffffffff">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Accounts"
-        android:id="@+id/description"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:textSize="40dp"
-        android:textColor="#ff000000" />
-
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,6 +16,7 @@
         android:layout_below="@+id/description"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="27dp"
-        android:background="#ffa4a4a4" />
+        android:background="#ffa4a4a4"
+        />
 
 </RelativeLayout>

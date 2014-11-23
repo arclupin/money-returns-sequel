@@ -11,69 +11,62 @@
 
     <ImageView
         android:layout_width="fill_parent"
-        android:layout_height="300dp"
+        android:layout_height="150dp"
         android:src="@drawable/lloyds"
-        android:id="@+id/image" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Username: "
-        android:id="@+id/description"
-        android:layout_below="@+id/image"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:visibility="visible"
-        android:textColor="#ff000000"
-        android:paddingLeft="20dp"/>
+        android:layout_marginLeft="-30dp"
+        android:id="@+id/image"
+        android:layout_alignParentTop="true" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:layout_below="@+id/image"
-        android:layout_alignRight="@+id/image"
-        android:layout_alignEnd="@+id/image"
-        android:layout_marginRight="31dp"
-        android:layout_toRightOf="@+id/description"
-        android:layout_toEndOf="@+id/description"
-        android:background="#ffb8b8b8" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Password: "
-        android:id="@+id/textView2"
-        android:layout_below="@+id/description"
-        android:layout_alignRight="@+id/description"
-        android:layout_alignEnd="@+id/description"
-        android:layout_marginTop="61dp"
-        android:visibility="visible"
-        android:textColor="#ff000000" />
+        android:id="@+id/username"
+        android:hint="Username"
+        android:layout_below="@id/image"
+        android:background="#f1f2f3"
+        android:imeOptions="actionNext"
+       />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/editText2"
-        android:layout_alignBottom="@+id/textView2"
-        android:layout_alignRight="@+id/editText"
-        android:layout_alignEnd="@+id/editText"
-        android:layout_toRightOf="@+id/description"
-        android:layout_toEndOf="@+id/description"
-        android:background="#ffb8b8b8" />
+        android:id="@+id/password"
+        android:hint="Password"
+        android:layout_below="@id/username"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:imeOptions="actionDone"
+
+
+
+        android:background="#f1f2f3" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="   Login   "
-        android:id="@+id/button"
+        android:text="Login"
+        android:id="@+id/login_button"
         android:onClick="lauchMain"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/password"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_centerHorizontal="true" />
+    <ViewFlipper android:id="@+id/sliding_advert"
+        android:layout_below="@id/login_button"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp">
+       <ImageView android:id="@+id/advert1"
+           android:src="@drawable/advert1"
+           android:layout_height="match_parent"
+           android:layout_width="match_parent"
 
+       />
+        <ImageView android:id="@+id/advert2"
+            android:src="@drawable/advert2"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+
+            />
+    </ViewFlipper>
 
 </RelativeLayout>
