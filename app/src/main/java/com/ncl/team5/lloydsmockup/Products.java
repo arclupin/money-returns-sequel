@@ -29,9 +29,10 @@ public class Products extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-       if (id == R.id.action_backHome) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+        if (id == R.id.action_backHome) {
+            this.finish();
+            //Intent intent = new Intent(this, MainActivity.class);
+            //startActivity(intent);
         }
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);

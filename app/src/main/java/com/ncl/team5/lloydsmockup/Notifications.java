@@ -32,8 +32,9 @@ public class Notifications extends Activity {
         int id = item.getItemId();
 
         if (id == R.id.action_backHome) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            this.finish();
+            //Intent intent = new Intent(this, MainActivity.class);
+            //startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

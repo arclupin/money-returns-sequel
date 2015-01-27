@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/username"
         android:hint="Username"
+        android:textColor="#000000"
         android:layout_below="@id/image"
         android:background="#f1f2f3"
         android:imeOptions="actionNext"
@@ -36,9 +37,7 @@
         android:layout_below="@id/username"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:imeOptions="actionDone"
-
-
-
+        android:textColor="#000000"
         android:background="#f1f2f3" />
 
     <Button
@@ -46,7 +45,7 @@
         android:layout_height="wrap_content"
         android:text="Login"
         android:id="@+id/login_button"
-        android:onClick="lauchMain"
+        android:onClick="launchMain"
         android:layout_below="@id/password"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_centerHorizontal="true" />

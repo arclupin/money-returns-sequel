@@ -3,6 +3,7 @@ package com.ncl.team5.lloydsmockup;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -71,8 +72,9 @@ public class Accounts extends Activity {
         int id = item.getItemId();
 
         if (id == R.id.action_backHome) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            this.finish();
+            //Intent intent = new Intent(this, MainActivity.class);
+            //startActivity(intent);
         }
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);

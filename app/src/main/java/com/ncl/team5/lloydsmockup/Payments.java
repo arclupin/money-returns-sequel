@@ -40,8 +40,9 @@ public class Payments extends Activity {
         int id = item.getItemId();
 
         if (id == R.id.action_backHome) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            this.finish();
+            //Intent intent = new Intent(this, MainActivity.class);
+            //startActivity(intent);
         }
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
