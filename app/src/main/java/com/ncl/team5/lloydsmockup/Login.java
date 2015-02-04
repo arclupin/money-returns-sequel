@@ -6,28 +6,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.util.Log;
 import android.view.View;
 import android.content.Intent;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ViewFlipper;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.Scanner;
 
 
 public class Login extends Activity {
@@ -37,8 +22,6 @@ public class Login extends Activity {
     private ViewFlipper slider;
     private int count = 0;
     private boolean netProbs = false;
-
-    InputStream is;
 
     /* sets max count to 3, this can be changed if needed */
     private final int MAX_COUNT = 3;
@@ -51,10 +34,6 @@ public class Login extends Activity {
         setContentView(R.layout.activity_login);
         ActionBar actionBar = getActionBar();
         actionBar.hide();
-
-        StrictMode.ThreadPolicy policy = new StrictMode.
-                ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
 
         //Set up the picture slide show of the adverts
         password = (EditText) findViewById(R.id.password);
@@ -135,6 +114,7 @@ public class Login extends Activity {
                 }
                 else
                 {
+                     /* Network problems detected... dont let user in but dont increment count either */
                     AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
                     errorBox.setMessage("Poor network conditions detected. Please check your connection and try again")
                             .setCancelable(false)
@@ -159,66 +139,53 @@ public class Login extends Activity {
          * authenticate the username and password combination. The server
          * should then return true or false as to whether the combination is
          * correct. This method should also send the phone data, as this is
-         * also used to authenticate. For now this method just returns true
+         * also used to authenticate.
          */
 
-        /* Code below uses the JSONObject class to connect to the internet, but
-         * it doesnt work... run poor network conditions detected every
-         * time... dont know what the problem is... also it is NOT secure bty any means
-         */
+        /* creates a http object (my own class) to run in the background */
+        HTTPConnect connection = new HTTPConnect();
 
 
-        HTTPConnect test = new HTTPConnect();
-
+        // Need this for the exceptions that are throw (there are many!)
         try {
-            String[] webLogin = test();
 
-            if(webLogin[0].equals(username) && webLogin[1].equals(password))
+            /* This is where the main action happens. This is where the connection is
+             * started, which will run in the background, and then wait for it to finish
+             * and gets its result. This is then evaluated (as it returns a boolean)
+             * and logs you in if true, doesnt if false. the execute method is used by
+             * the thread, it actually calls doInBackground int the HTTPConnect class,
+             * slightly confusing :P
+             */
+
+            /* Ok, this look a bit weird... i mean it returns an int right! should it not be boolean??
+             * Well, if it returns 0, it is true, 1 is false, and 2 is poor network connections
+             * As i needed 3 results... really should use an enum but i can do that some other day*/
+            int result = connection.execute(username, password).get();
+
+            if(result == 0)
             {
                 return true;
             }
+            else if(result == 1)
+            {
+                return false;
+            }
             else
             {
+                netProbs = true;
                 return false;
             }
 
 
-        }catch (Exception e)
+
+        }
+        catch (Exception e)
         {
+            //If network problems are detected, return false but dont increment the counter for failed attempts
             netProbs = true;
             return false;
         }
 
 
-    }
-
-    private static String readAll(Reader rd) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        int cp;
-        while ((cp = rd.read()) != -1) {
-            sb.append((char) cp);
-        }
-        return sb.toString();
-    }
-
-    public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
-        InputStream is = new URL(url).openStream();
-        try {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            String jsonText = readAll(rd);
-            JSONObject json = new JSONObject(jsonText);
-            return json;
-        } finally {
-            is.close();
-        }
-    }
-
-    public String[] test() throws IOException, JSONException {
-        JSONObject json = readJsonFromUrl("http://testforandroid.net84.net/default.php");
-
-        String [] temp = new String[2];
-        temp[0] = json.get("login").toString();
-        temp[1] = json.get("password").toString();
-        return temp;
     }
 }

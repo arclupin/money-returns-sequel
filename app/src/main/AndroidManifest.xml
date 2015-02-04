@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ncl.team5.lloydsmockup" >
 
-
+    <uses-permission android:name="android.permission.INTERNET"/>﻿
 
     <application
         android:allowBackup="true"
@@ -13,11 +13,9 @@
 
 
         >
-<<<<<<< HEAD
-=======
-       <!-- <uses-permission android:name="android.permission.INTERNET"/>﻿-->
 
->>>>>>> d8f27b2a64c11843d87efad29a5d0d0a8a295532
+
+
         <activity
             android:name=".Login"
             android:label="@string/app_name"
