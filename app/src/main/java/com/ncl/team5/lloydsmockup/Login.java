@@ -14,11 +14,19 @@ import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ViewFlipper;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Scanner;
 
 
@@ -44,7 +52,8 @@ public class Login extends Activity {
         ActionBar actionBar = getActionBar();
         actionBar.hide();
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder() .detectAll().penaltyLog().build();
+        StrictMode.ThreadPolicy policy = new StrictMode.
+                ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         //Set up the picture slide show of the adverts
@@ -111,7 +120,7 @@ public class Login extends Activity {
             {
 
                 /* Username and password not authenticated by server, add 1 to count */
-                if (!netProbs) {
+                if (netProbs == false) {
                     count++;
                     AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
                     errorBox.setMessage("Username and Password incorrect")
@@ -123,6 +132,20 @@ public class Login extends Activity {
                             });
                     AlertDialog alert = errorBox.create();
                     alert.show();
+                }
+                else
+                {
+                    AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+                    errorBox.setMessage("Poor network conditions detected. Please check your connection and try again")
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog alert = errorBox.create();
+                    alert.show();
+                    netProbs = false;
                 }
             }
         }
@@ -139,32 +162,63 @@ public class Login extends Activity {
          * also used to authenticate. For now this method just returns true
          */
 
-        /* Code below uses the HTTP class to connect to the internet, but
+        /* Code below uses the JSONObject class to connect to the internet, but
          * it doesnt work... run poor network conditions detected every
          * time... dont know what the problem is... also it is NOT secure bty any means
          */
 
 
-//        HTTPConnect test = new HTTPConnect();
-//
-//        try {
-//            return test.getLogin();
-//        }catch (Exception e)
-//        {
-//            netProbs = true;
-//            AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-//            errorBox.setMessage("Network Problems Detected")
-//                    .setCancelable(false)
-//                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//                            dialog.cancel();
-//                        }
-//                    });
-//            AlertDialog alert = errorBox.create();
-//            alert.show();
-//            return false;
-//        }
+        HTTPConnect test = new HTTPConnect();
 
-        return true;
+        try {
+            String[] webLogin = test();
+
+            if(webLogin[0].equals(username) && webLogin[1].equals(password))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+
+        }catch (Exception e)
+        {
+            netProbs = true;
+            return false;
+        }
+
+
+    }
+
+    private static String readAll(Reader rd) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        int cp;
+        while ((cp = rd.read()) != -1) {
+            sb.append((char) cp);
+        }
+        return sb.toString();
+    }
+
+    public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
+        InputStream is = new URL(url).openStream();
+        try {
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+            String jsonText = readAll(rd);
+            JSONObject json = new JSONObject(jsonText);
+            return json;
+        } finally {
+            is.close();
+        }
+    }
+
+    public String[] test() throws IOException, JSONException {
+        JSONObject json = readJsonFromUrl("http://testforandroid.net84.net/default.php");
+
+        String [] temp = new String[2];
+        temp[0] = json.get("login").toString();
+        temp[1] = json.get("password").toString();
+        return temp;
     }
 }
