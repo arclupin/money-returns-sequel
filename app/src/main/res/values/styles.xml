@@ -24,4 +24,7 @@
     <style name="editText_style" parent="android:Widget.Holo.EditText">
         <item name="android:padding">5dp</item>
     </style>
+
+
+
 </resources>
