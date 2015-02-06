@@ -65,6 +65,8 @@ public class Login extends Activity {
 
         if(authenticate(username, password))
         {
+            ((EditText) findViewById(R.id.username)).setText("");
+            ((EditText) findViewById(R.id.password)).setText("");
             //Starts an intent to launch the main menu
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);
