@@ -114,7 +114,7 @@
                     android:maxHeight="80dp"
                     android:scaleType="fitCenter"
                     android:layout_height="match_parent"
-                    android:onClick="btnClickSettings"/>
+                    android:onClick="btnClickAnalysis"/>
                 <TextView android:text="@string/title_activity_analysis"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
