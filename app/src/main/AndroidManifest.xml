@@ -2,20 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ncl.team5.lloydsmockup" >
 
-    <uses-permission android:name="android.permission.INTERNET"/>﻿
-
+    <uses-permission android:name="android.permission.INTERNET" />
+﻿
+    <uses-permission android:name="android.permission.INTERNET" />
+﻿
     <application
         android:allowBackup="true"
         android:icon="@drawable/horse_logo"
-        android:logo="@drawable/horse_logo"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-
-
-        >
-
-
-
+        android:logo="@drawable/horse_logo"
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".Login"
             android:label="@string/app_name"
@@ -30,8 +26,7 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait"
-            android:theme="@style/menuTheme"
-           >
+            android:theme="@style/menuTheme" >
         </activity>
         <activity
             android:name=".Transfers"
@@ -41,8 +36,7 @@
         <activity
             android:name=".Accounts"
             android:label="@string/title_activity_accounts"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Analysis"
@@ -52,13 +46,11 @@
         <activity
             android:name=".Offers"
             android:label="@string/title_activity_offers"
-
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Achievements"
             android:label="@string/title_activity_offers"
-
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -79,15 +71,21 @@
         <activity
             android:name=".Payments"
             android:label="@string/title_activity_payments"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Statement"
             android:label="@string/title_activity_statement"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".Prefer"
+            android:label="@string/title_activity_prefer" >
+        </activity>
+        <activity
+            android:name=".ChangeAccountName"
+            android:label="@string/title_activity_change_account_name" >
         </activity>
     </application>
-    <uses-permission android:name="android.permission.INTERNET"/>﻿
 
 </manifest>

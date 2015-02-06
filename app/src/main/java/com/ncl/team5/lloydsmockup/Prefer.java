@@ -1,20 +1,44 @@
 package com.ncl.team5.lloydsmockup;
 
-import android.app.Activity;
+
 import android.content.Intent;
 import android.os.Bundle;
+
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
 import android.view.Menu;
 import android.view.MenuItem;
+import java.util.List;
 
 
-public class Achievements extends Activity {
+
+public class Prefer extends PreferenceActivity {
 
     @Override
+    public void onBuildHeaders(List<Header> target) {
+        loadHeadersFromResource(R.xml.preference_headers, target);
+    }
+    @Override
+    public boolean isValidFragment(String fragmentName) {
+        if (Display.class.getName().equals(fragmentName)) {
+            return(true);
+        }
+        return(false);
+    }
+    public static class Display extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            addPreferencesFromResource(R.xml.pref_display);
+        }
+    }
+
+   /* @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_achievements);
-
-    }
+        setContentView(R.layout.activity_prefer);
+    } */
 
 
     @Override
@@ -30,20 +54,19 @@ public class Achievements extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         if (id == R.id.action_backHome) {
             this.finish();
             //Intent intent = new Intent(this, MainActivity.class);
             //startActivity(intent);
-        }
-        else if (id == R.id.action_notifications) {
+        } else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
             startActivity(intent);
 
+        } else if (id == R.id.action_location) {
+            return true;
         }
-       else if (id == R.id.action_location) {
-           return true;
-       }
-        return super.onOptionsItemSelected(item);
+
+            return super.onOptionsItemSelected(item);
+
     }
 }
