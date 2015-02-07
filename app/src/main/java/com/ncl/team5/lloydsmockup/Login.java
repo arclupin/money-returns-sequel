@@ -65,11 +65,12 @@ public class Login extends Activity {
 
         if(authenticate(username, password))
         {
-            ((EditText) findViewById(R.id.username)).setText("");
-            ((EditText) findViewById(R.id.password)).setText("");
+
             //Starts an intent to launch the main menu
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);
+
+
         }
         else
         {
@@ -190,4 +191,25 @@ public class Login extends Activity {
 
 
     }
+
+    // This removes the text in the text boxes when the focus comes back to this app..
+    // However, it isnt fully working as it skips a few frames when it does it (i.e. hangs a little)
+    // UPDATE: on restart instead of on resume seems to have fixed the problem with the
+    // hang.
+
+    /* This runs when the app has been restarted after it has stopped */
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        ((EditText) findViewById(R.id.username)).setText("");
+        ((EditText) findViewById(R.id.password)).setText("");
+    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        Intent intent = new Intent(getApplicationContext(), Login.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(intent);
+//    }
 }
