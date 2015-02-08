@@ -120,6 +120,7 @@ public class MainActivity extends Activity {
     protected void onResume() {
         if(((KillApp) this.getApplication()).getStatus())
         {
+            ((KillApp) this.getApplication()).setStatus(false);
             finish();
             Intent intent = new Intent(getApplicationContext(), Login.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
