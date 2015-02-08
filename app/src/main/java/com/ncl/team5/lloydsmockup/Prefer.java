@@ -16,11 +16,13 @@ public class Prefer extends PreferenceActivity {
 
     @Override
     public void onBuildHeaders(List<Header> target) {
+        ((KillApp) this.getApplication()).setStatus(false);
         loadHeadersFromResource(R.xml.preference_headers, target);
     }
     @Override
     public boolean isValidFragment(String fragmentName) {
         if (Display.class.getName().equals(fragmentName)) {
+            ((KillApp) this.getApplication()).setStatus(false);
             return(true);
         }
         return(false);
