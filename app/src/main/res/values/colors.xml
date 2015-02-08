@@ -2,4 +2,5 @@
 <resources>
     <color name="lloyds_color">#105842</color>
     <color name="menu_text_color">#25383C</color>
+    <color name="preferences_back">#ffffffff</color>
 </resources>

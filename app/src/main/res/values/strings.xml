@@ -17,18 +17,20 @@
     <string name="prefdesc">Display and Navigation</string>
     <string name="preftitle">Settings for use of Mockup</string>
     <string name="title_activity_prefer">Preferences</string>
-    <string name ="title_activity_change_account_name">Change Account Name</string>
+    <string name="title_activity_change_account_name">Change Account Name</string>
+
     <string-array name="accountslist">
         <item>Account1</item>
         <item>Account2</item>
         <item>Account3</item>
     </string-array>
-    <string name="logout">Logout</string>
 
+    <string name="logout">Logout</string>
     <string name="title_activity_payments">Payments</string>
     <string name="title_activity_statement">Statement</string>
-
     <string name="action_backHome">Back to menu</string>
     <string name="action_Notifications">Notifications</string>
     <string name="action_location">Location Service</string>
+    <string name="title_activity_change_password">ChangePassword</string>
+
 </resources>

@@ -6,7 +6,7 @@
 ﻿
 ﻿
     <application
-        android:name="KillApp"
+        android:name=".KillApp"
         android:allowBackup="true"
         android:icon="@drawable/horse_logo"
         android:label="@string/app_name"
@@ -85,6 +85,10 @@
         <activity
             android:name=".ChangeAccountName"
             android:label="@string/title_activity_change_account_name" >
+        </activity>
+        <activity
+            android:name=".ChangePassword"
+            android:label="@string/title_activity_change_password" >
         </activity>
     </application>
 

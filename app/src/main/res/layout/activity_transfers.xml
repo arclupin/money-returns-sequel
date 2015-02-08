@@ -78,6 +78,7 @@
         android:layout_alignLeft="@+id/description"
         android:layout_alignStart="@+id/description"
         android:background="@drawable/border"
+        android:textColor="#ff000000"
         android:inputType="text"
         android:imeOptions="actionDone"/>
 

@@ -2,6 +2,7 @@ package com.ncl.team5.lloydsmockup;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import android.preference.PreferenceActivity;
@@ -18,6 +19,8 @@ public class Prefer extends PreferenceActivity {
     public void onBuildHeaders(List<Header> target) {
         ((KillApp) this.getApplication()).setStatus(false);
         loadHeadersFromResource(R.xml.preference_headers, target);
+
+
     }
     @Override
     public boolean isValidFragment(String fragmentName) {
@@ -33,6 +36,7 @@ public class Prefer extends PreferenceActivity {
             super.onCreate(savedInstanceState);
 
             addPreferencesFromResource(R.xml.pref_display);
+
         }
     }
 
