@@ -1,19 +1,91 @@
 package com.ncl.team5.lloydsmockup;
 
-import  android.app.Activity;
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
+
+import org.achartengine.ChartFactory;
+import org.achartengine.GraphicalView;
+import org.achartengine.model.CategorySeries;
+import org.achartengine.renderer.DefaultRenderer;
+import org.achartengine.renderer.SimpleSeriesRenderer;
 
 
+/* This is the analysis activity used to display an easy to read
+ * pie chart to the user about their recent transactions. It uses the
+ * achartengine framework to allow us to draw the pie chart and fill it with data.
+ * Its pretty easy to use if you ignore all the viewer stuff...
+ */
 
 public class Analysis extends Activity {
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analysis);
+
+        //Just creates a layout so that the chart can be displayed on it.
+        //Uses the analysis activity xml file to display the graph on
+        RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.analysis);
+
+
+        //an array of doubles that is used to populate the pie chart
+        //sectors.
+        double[] values = { 1, 1, 1, 1, 1, 5 } ;
+
+        //Adds all of the names for each of the sectors in a string array
+        String[] sectors = new String[] {
+                "Shopping", "Bills", "Rent", "Food",
+                "University", "Other"
+        };
+
+        //colours for each of the sectors
+        int[] colors = { Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
+                Color.YELLOW };
+
+        //setup a default renderer...
+        DefaultRenderer render = new DefaultRenderer();
+
+        //Set up some properties for the renderer
+        render.setLabelsTextSize(30);
+        render.setPanEnabled(false);
+        render.setLabelsColor(getResources().getColor(android.R.color.black));
+        render.setShowLegend(false);
+        render.setScale(0.85f);
+
+        //Catergory series... needed for the chart factory
+        CategorySeries categories = new CategorySeries("Transactions");
+        for(int i=0 ; i < values.length; i++){
+            //adds the string with the values to the chart
+            categories.add(sectors[i], values[i]);
+        }
+
+
+        //Realy dont know why it needs this but crashes without it...
+        //must be a bug because i have set the renderer not to include
+        //a legend :/
+        for(int i = 0 ; i < values.length; i++){
+            //Sets up a renderer
+            SimpleSeriesRenderer seriesRenderer = new SimpleSeriesRenderer();
+            //sets the colours for the series
+            seriesRenderer.setColor(colors[i]);
+            //sets the display to true
+            seriesRenderer.setDisplayChartValues(true);
+            //Adds a series renderer
+            render.addSeriesRenderer(seriesRenderer);
+        }
+
+        //creates a new graph view (part of the library) and creates a new pie chart view
+        GraphicalView chartView = ChartFactory.getPieChartView(this, categories, render);
+        //add this to the layout
+        mainLayout.addView(chartView, 0);
+
     }
 
 
