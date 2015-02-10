@@ -44,7 +44,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".Offers"
+            android:name=".Locations"
             android:label="@string/title_activity_offers"
             android:screenOrientation="portrait" >
         </activity>

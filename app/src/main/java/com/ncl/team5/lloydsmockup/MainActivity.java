@@ -85,7 +85,7 @@ public class MainActivity extends Activity {
     }
 
     public void btnClickOffers(View view) {
-        Intent i = new Intent(this, Offers.class);
+        Intent i = new Intent(this, Locations.class);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
