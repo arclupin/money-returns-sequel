@@ -2,4 +2,5 @@
 <resources>
     <item name="Table1" type="id" />
     <item name="txtChange" type="id" />
+    <item name="analysis" type="id">analysis</item>
 </resources>
