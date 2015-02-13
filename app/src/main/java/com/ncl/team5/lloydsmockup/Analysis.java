@@ -32,7 +32,8 @@ public class Analysis extends Activity {
 
         //Just creates a layout so that the chart can be displayed on it.
         //Uses the analysis activity xml file to display the graph on
-        RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.analysis);
+        RelativeLayout mainLayout = new RelativeLayout(this);
+
 
 
         //an array of doubles that is used to populate the pie chart
@@ -59,7 +60,7 @@ public class Analysis extends Activity {
         render.setScale(0.85f);
         render.setZoomEnabled(false);
         render.setShowLabels(false);
-        render.setLegendTextSize(20);
+        render.setLegendTextSize(40);
 
         //Catergory series... needed for the chart factory
         CategorySeries categories = new CategorySeries("Transactions");

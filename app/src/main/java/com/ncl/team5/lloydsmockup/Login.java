@@ -178,6 +178,17 @@ public class Login extends Activity {
              * As i needed 3 results... really should use an enum but i can do that some other day*/
             String result = connection.execute("TYPE", "LOGIN" ,"USR", username, "PWD", password, "LOCK", "").get();
 
+            AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+            errorBox.setMessage(result)
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert = errorBox.create();
+            alert.show();
+
             if(result.equals("error"))
             {
                 netProbs = true;

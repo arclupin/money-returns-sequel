@@ -6,7 +6,13 @@ package HTTPConnect;
  * but also does this in the background by extending ASyncTask.
  */
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.util.Log;
+
+
+import com.ncl.team5.lloydsmockup.Login;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,8 +39,9 @@ import org.json.JSONObject;
 public class Connection extends AsyncTask <String, Void, String> {
 
     /* String to store the web address as a constant */
-    private final String URL = "http://homepages.cs.ncl.ac.uk/2014-15/csc2022_team5/main.php";
+    private final String URL = "http://homepages.cs.ncl.ac.uk/2014-15/csc2022_team5/PHP/main.php";
     private String result;
+    private String test;
 
     /* This is where the magic happens. This is what is run when the
      * background thread is started. It takes as parameters a list of strings of any length
@@ -58,6 +65,7 @@ public class Connection extends AsyncTask <String, Void, String> {
 
         try
         {
+
             return this.connect(nameValuePairs);
 
 //            if(result)
@@ -109,6 +117,8 @@ public class Connection extends AsyncTask <String, Void, String> {
             }
 
             String result = sb.toString();
+
+            Log.d("server", result);
 
             /* check the value of status */
             try {
