@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import org.achartengine.ChartFactory;
@@ -32,7 +33,7 @@ public class Analysis extends Activity {
 
         //Just creates a layout so that the chart can be displayed on it.
         //Uses the analysis activity xml file to display the graph on
-        RelativeLayout mainLayout = new RelativeLayout(this);
+        FrameLayout mainLayout = (FrameLayout) findViewById(R.id.chart_layout);
 
 
 
@@ -85,6 +86,8 @@ public class Analysis extends Activity {
 
         //creates a new graph view (part of the library) and creates a new pie chart view
         GraphicalView chartView = ChartFactory.getPieChartView(this, categories, render);
+
+        //chartView.getLayoutParams().height = 70;
         //add this to the layout
         mainLayout.addView(chartView, 0);
 

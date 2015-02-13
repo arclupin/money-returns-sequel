@@ -10,6 +10,7 @@ import android.view.View;
 import android.content.Intent;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import org.json.JSONObject;
@@ -22,11 +23,10 @@ public class Login extends Activity {
     //Variables needed for the image flipper
     private EditText password;
     private ViewFlipper slider;
-    private int count = 1;
     private boolean netProbs = false;
+    private boolean warning = false;
+    private boolean locked = false;
 
-    /* sets max count to 3, this can be changed if needed */
-    private final int MAX_COUNT = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +98,7 @@ public class Login extends Activity {
              * on the phone, but only unset via a bank. Currently it DOES NOT do this
              */
 
-            if (count == MAX_COUNT) {
+            if (locked) {
 
                 /* Failed more than the max count and are locked out */
 
@@ -112,13 +112,27 @@ public class Login extends Activity {
                         });
                 AlertDialog alert = errorBox.create();
                 alert.show();
+                locked = false;
+            }
+            else if (warning)
+            {
+                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+                errorBox.setMessage("Warning: one attempt remaining")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert = errorBox.create();
+                alert.show();
+                warning = false;
             }
             else
             {
 
                 /* Username and password not authenticated by server, add 1 to count */
                 if (netProbs == false) {
-                    count++;
                     AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
                     errorBox.setMessage("Username and Password incorrect")
                             .setCancelable(false)
@@ -167,18 +181,24 @@ public class Login extends Activity {
         // Need this for the exceptions that are throw (there are many!)
         try {
 
+
             /* This is where the main action happens. This is where the connection is
              * started, which will run in the background, and then wait for it to finish
              * and gets its result. This is then evaluated (as it returns a boolean)
              * and logs you in if true, doesnt if false. the execute method is used by
-             * the thread, it actually calls doInBackground int the HTTPConnect class,
+             * the thread, it actually calls doInBackground in the HTTPConnect class,
              * slightly confusing :P
+             *
+             * HTTPConnect has now been moved into a different package, it doesnt change the
+             * syntax but requires an import at the start of the file.
              */
 
             /* Ok, this look a bit weird... i mean it returns an int right! should it not be boolean??
              * Well, if it returns 0, it is true, 1 is false, and 2 is poor network connections
              * As i needed 3 results... really should use an enum but i can do that some other day*/
-            String result = connection.execute("TYPE", "LOGIN" ,"USR", username, "PWD", password, "LOCK", "false").get();
+            String result = connection.execute("TYPE", "LOGIN" ,"USR", username, "PWD", password).get();
+
+
 
             if(result.equals("error"))
             {
@@ -187,12 +207,22 @@ public class Login extends Activity {
             }
             else
             {
-                //JSONObject jo = new JSONObject(result);
-                result = result.split(",")[1].split(":")[1].substring(1, result.split(",")[0].split(":")[1].length() - 2);
+                JSONObject jo = new JSONObject(result);
 
-                if(result.equals("true"))
+
+                if(jo.getString("status").equals("true"))
                 {
                     return true;
+                }
+                if(jo.getString("status").equals("warning"))
+                {
+                    warning = true;
+                    return false;
+                }
+                if(jo.getString("status").equals("locked"))
+                {
+                    locked = true;
+                    return false;
                 }
                 else
                 {
@@ -225,12 +255,4 @@ public class Login extends Activity {
         ((EditText) findViewById(R.id.username)).setText("");
         ((EditText) findViewById(R.id.password)).setText("");
     }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        Intent intent = new Intent(getApplicationContext(), Login.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        startActivity(intent);
-//    }
 }
