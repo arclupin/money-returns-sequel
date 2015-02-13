@@ -176,18 +176,7 @@ public class Login extends Activity {
             /* Ok, this look a bit weird... i mean it returns an int right! should it not be boolean??
              * Well, if it returns 0, it is true, 1 is false, and 2 is poor network connections
              * As i needed 3 results... really should use an enum but i can do that some other day*/
-            String result = connection.execute("TYPE", "LOGIN" ,"USR", username, "PWD", password, "LOCK", "").get();
-
-            AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-            errorBox.setMessage(result)
-                    .setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
-            AlertDialog alert = errorBox.create();
-            alert.show();
+            String result = connection.execute("TYPE", "LOGIN" ,"USR", username, "PWD", password, "LOCK", "false").get();
 
             if(result.equals("error"))
             {

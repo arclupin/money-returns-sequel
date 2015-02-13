@@ -55,12 +55,12 @@ public class Connection extends AsyncTask <String, Void, String> {
         for(int i = 0; i < strings.length; i= i+2)
         {
             //Use this line Until danh has updated server to use the accroynms
-            nameValuePairs.add(new BasicNameValuePair("username", strings[1]));
-            nameValuePairs.add(new BasicNameValuePair("password", strings[3]));
-            break;
+//            nameValuePairs.add(new BasicNameValuePair("username", strings[1]));
+//            nameValuePairs.add(new BasicNameValuePair("password", strings[3]));
+//            break;
 
             //use this when danh sorts acronyms
-            //nameValuePairs.add(new BasicNameValuePair(strings[i], strings[i+1]));
+            nameValuePairs.add(new BasicNameValuePair(strings[i], strings[i+1]));
         }
 
         try
