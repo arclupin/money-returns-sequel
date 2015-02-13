@@ -12,7 +12,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ViewFlipper;
 
-
+import HTTPConnect.Connection;
 
 
 public class Login extends Activity {
@@ -148,7 +148,7 @@ public class Login extends Activity {
          */
 
         /* creates a http object (my own class) to run in the background */
-        HTTPConnect connection = new HTTPConnect();
+        Connection connection = new Connection();
 
 
         // Need this for the exceptions that are throw (there are many!)

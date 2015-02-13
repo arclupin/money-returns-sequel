@@ -1,4 +1,4 @@
-package com.ncl.team5.lloydsmockup;
+package HTTPConnect;
 
 
 /* This is the main class that the login uses to get the data from
@@ -30,7 +30,7 @@ import org.json.JSONObject;
  * ASyncTask uses to do its stuff. The String is the inputs, Void is progress
  * (if progress bar is needed) and Boolean is return type. However
  * They cannot be primitives so the wrappers are needed */
-public class HTTPConnect extends AsyncTask <String, Void, String> {
+public class Connection extends AsyncTask <String, Void, String> {
 
     /* String to store the web address as a constant */
     private final String URL = "http://homepages.cs.ncl.ac.uk/2014-15/csc2022_team5/login.php";
