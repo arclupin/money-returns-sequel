@@ -28,6 +28,7 @@ public class Accounts extends Activity {
     /* Used for the list view */
     private String[] items;
     private ArrayList<String> accountStrings;
+    private String username = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +39,11 @@ public class Accounts extends Activity {
         /* Get the list view */
         ListView accountsList=(ListView)findViewById(R.id.listView);
 
+        Intent i = getIntent();
+        username = i.getStringExtra("ACCOUNT_USERNAME");
 
         accountStrings = new ArrayList<String>();
-        getAccounts();
+        getAccounts(username);
         // Create The Adapter with passing ArrayList as 3rd parameter
         ArrayAdapter<String> arrayAdapter =
                 new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, accountStrings);
@@ -67,13 +70,22 @@ public class Accounts extends Activity {
 
 
 
-    void getAccounts()
+    void getAccounts(String username)
     {
         /* What this method would really do is get the data from the webserver
          * for a certain users accounts. This will then take that data and display it
          * with all of the different ammounts in each account. However, this is not currently
          * set up on the web server
          */
+
+        /*
+        HTTPConnect hc = new HTTPConnect();
+        JSONObject jo = hc.execute("SAA", username);
+
+         * this is where the JSON object will be split up... think im going to remove it from the
+         * HTTPConnect class and into these classes... or return a list of stings instead. not sure yet
+         */
+
         accountStrings.add("Account 1 : £100.00");
         accountStrings.add("Account 2 : £607.76");
         accountStrings.add("Account 3 : £5098.49");

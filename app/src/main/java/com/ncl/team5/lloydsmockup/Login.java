@@ -68,6 +68,8 @@ public class Login extends Activity {
 
             //Starts an intent to launch the main menu
             Intent i = new Intent(this, MainActivity.class);
+            String message = username;
+            i.putExtra("ACCOUNT_USERNAME", message);
             startActivity(i);
 
 
@@ -163,20 +165,25 @@ public class Login extends Activity {
             /* Ok, this look a bit weird... i mean it returns an int right! should it not be boolean??
              * Well, if it returns 0, it is true, 1 is false, and 2 is poor network connections
              * As i needed 3 results... really should use an enum but i can do that some other day*/
-            int result = connection.execute(username, password).get();
+            String result = connection.execute("USR", username, "PWD", password).get();
 
-            if(result == 0)
+            if(result.equals("error"))
             {
-                return true;
-            }
-            else if(result == 1)
-            {
+                netProbs = true;
                 return false;
             }
             else
             {
-                netProbs = true;
-                return false;
+                result = result.split(",")[0].split(":")[1].substring(1, result.split(",")[0].split(":")[1].length() - 2);
+
+                if(result.equals("true"))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
 
 

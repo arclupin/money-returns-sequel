@@ -7,16 +7,24 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 
 public class MainActivity extends Activity {
 
-    private boolean back = false;
+    private String username = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent i = getIntent();
+        username = i.getStringExtra("ACCOUNT_USERNAME");
+
+        TextView dateText = (TextView)findViewById(R.id.lastLoginTextView);
+
+        dateText.setText(username + " : " + dateText.getText());
     }
 
 
@@ -55,6 +63,8 @@ public class MainActivity extends Activity {
 
     public void btnClickPayments(View view) {
         Intent i = new Intent(this, Payments.class);
+        String message = username;
+        i.putExtra("ACCOUNT_USERNAME", message);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
 

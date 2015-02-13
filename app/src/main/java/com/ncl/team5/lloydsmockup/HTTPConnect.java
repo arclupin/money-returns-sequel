@@ -30,33 +30,48 @@ import org.json.JSONObject;
  * ASyncTask uses to do its stuff. The String is the inputs, Void is progress
  * (if progress bar is needed) and Boolean is return type. However
  * They cannot be primitives so the wrappers are needed */
-public class HTTPConnect extends AsyncTask <String, Void, Integer> {
+public class HTTPConnect extends AsyncTask <String, Void, String> {
 
     /* String to store the web address as a constant */
     private final String URL = "http://homepages.cs.ncl.ac.uk/2014-15/csc2022_team5/login.php";
-    private boolean result;
+    private String result;
 
     /* This is where the magic happens. This is what is run when the
      * background thread is started. It takes as parameters a list of strings of any length
      * and uses just the first 2 as username and password. This then calls the connect
      * method where more stuff happens :0 */
-    protected Integer doInBackground(String...strings) {
+    protected String doInBackground(String...strings) {
+
+        //Set up the name value pair stuff...
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+
+        for(int i = 0; i < strings.length; i= i+2)
+        {
+            //Use this line Until danh has updated server to use the accroynms
+            nameValuePairs.add(new BasicNameValuePair("username", strings[1]));
+            nameValuePairs.add(new BasicNameValuePair("password", strings[3]));
+            break;
+
+            //use this when danh sorts acronyms
+            //nameValuePairs.add(new BasicNameValuePair(strings[i], strings[i+1]));
+        }
 
         try
         {
-            result = this.connect(strings[0], strings[1]);
-            if(result)
-            {
-                return 0;
-            }
-            else
-            {
-                return 1;
-            }
+            return this.connect(nameValuePairs);
+
+//            if(result)
+//            {
+//                return 0;
+//            }
+//            else
+//            {
+//                return 1;
+//            }
         }
         catch(IOException e)
         {
-            return 2;
+            return "error";
         }
     }
 
@@ -64,16 +79,16 @@ public class HTTPConnect extends AsyncTask <String, Void, Integer> {
      * HTTP server, uses post to give it the username and password, gets the
      * input from the server, turns it into a JSON object, and then sees if it can log in */
 
-     public boolean connect(String username, String password) throws IOException {
+     public String connect(List<NameValuePair> nameValuePairs) throws IOException {
         // Create a new HttpClient and Post Header
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost(URL);
 
         try {
             /* Creates name value pair to be sent via post to the server */
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-            nameValuePairs.add(new BasicNameValuePair("username", username));
-            nameValuePairs.add(new BasicNameValuePair("password", password));
+//            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+//            nameValuePairs.add(new BasicNameValuePair("username", username));
+//            nameValuePairs.add(new BasicNameValuePair("password", password));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             /* Execute the post request and save the response */
@@ -99,17 +114,18 @@ public class HTTPConnect extends AsyncTask <String, Void, Integer> {
             try {
                 JSONObject jObject = new JSONObject(result);
 
-                String returnedValue = jObject.getString("status");
+
+                return jObject.toString();
 
                 /* if true then login, else dont log in */
-                if(returnedValue.equals("true"))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+//                if(returnedValue.equals("true"))
+//                {
+//                    return true;
+//                }
+//                else
+//                {
+//                    return false;
+//                }
 
             }catch(Exception e)
             {
