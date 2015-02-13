@@ -12,6 +12,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ViewFlipper;
 
+import org.json.JSONObject;
+
 import HTTPConnect.Connection;
 
 
@@ -185,7 +187,8 @@ public class Login extends Activity {
             }
             else
             {
-                result = result.split(",")[0].split(":")[1].substring(1, result.split(",")[0].split(":")[1].length() - 2);
+                //JSONObject jo = new JSONObject(result);
+                result = result.split(",")[1].split(":")[1].substring(1, result.split(",")[0].split(":")[1].length() - 2);
 
                 if(result.equals("true"))
                 {
