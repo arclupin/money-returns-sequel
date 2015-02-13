@@ -56,8 +56,10 @@ public class Analysis extends Activity {
         render.setLabelsTextSize(30);
         render.setPanEnabled(false);
         render.setLabelsColor(getResources().getColor(android.R.color.black));
-        render.setShowLegend(false);
         render.setScale(0.85f);
+        render.setZoomEnabled(false);
+        render.setShowLabels(false);
+        render.setLegendTextSize(20);
 
         //Catergory series... needed for the chart factory
         CategorySeries categories = new CategorySeries("Transactions");
@@ -67,9 +69,8 @@ public class Analysis extends Activity {
         }
 
 
-        //Realy dont know why it needs this but crashes without it...
-        //must be a bug because i have set the renderer not to include
-        //a legend :/
+
+        //setup a legend
         for(int i = 0 ; i < values.length; i++){
             //Sets up a renderer
             SimpleSeriesRenderer seriesRenderer = new SimpleSeriesRenderer();

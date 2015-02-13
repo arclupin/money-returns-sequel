@@ -33,7 +33,7 @@ import org.json.JSONObject;
 public class Connection extends AsyncTask <String, Void, String> {
 
     /* String to store the web address as a constant */
-    private final String URL = "http://homepages.cs.ncl.ac.uk/2014-15/csc2022_team5/login.php";
+    private final String URL = "http://homepages.cs.ncl.ac.uk/2014-15/csc2022_team5/main.php";
     private String result;
 
     /* This is where the magic happens. This is what is run when the
@@ -117,15 +117,7 @@ public class Connection extends AsyncTask <String, Void, String> {
 
                 return jObject.toString();
 
-                /* if true then login, else dont log in */
-//                if(returnedValue.equals("true"))
-//                {
-//                    return true;
-//                }
-//                else
-//                {
-//                    return false;
-//                }
+
 
             }catch(Exception e)
             {

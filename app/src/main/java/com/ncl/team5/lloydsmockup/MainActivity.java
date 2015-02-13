@@ -19,6 +19,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //gets the username that is passed from the login so the connection can stay open
         Intent i = getIntent();
         username = i.getStringExtra("ACCOUNT_USERNAME");
 

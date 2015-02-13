@@ -20,7 +20,7 @@ public class Login extends Activity {
     //Variables needed for the image flipper
     private EditText password;
     private ViewFlipper slider;
-    private int count = 0;
+    private int count = 1;
     private boolean netProbs = false;
 
     /* sets max count to 3, this can be changed if needed */
@@ -61,6 +61,17 @@ public class Login extends Activity {
         String username = ((EditText)findViewById(R.id.username)).getText().toString();
         String password = ((EditText)findViewById(R.id.password)).getText().toString();
 
+        //can use this to login to the app while the server is down...
+        //MUST COMMENT OUT ON RELEASE
+        if(username.equals("test"))
+        {
+            //Starts an intent to launch the main menu
+            Intent i = new Intent(this, MainActivity.class);
+            String message = username;
+            i.putExtra("ACCOUNT_USERNAME", message);
+            startActivity(i);
+            return;
+        }
 
 
         if(authenticate(username, password))
@@ -165,7 +176,7 @@ public class Login extends Activity {
             /* Ok, this look a bit weird... i mean it returns an int right! should it not be boolean??
              * Well, if it returns 0, it is true, 1 is false, and 2 is poor network connections
              * As i needed 3 results... really should use an enum but i can do that some other day*/
-            String result = connection.execute("USR", username, "PWD", password).get();
+            String result = connection.execute("TYPE", "LOGIN" ,"USR", username, "PWD", password, "LOCK", "").get();
 
             if(result.equals("error"))
             {

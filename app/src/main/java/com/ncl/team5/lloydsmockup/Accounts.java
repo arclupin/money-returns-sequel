@@ -80,7 +80,7 @@ public class Accounts extends Activity {
 
         /*
         HTTPConnect hc = new HTTPConnect();
-        JSONObject jo = hc.execute("SAA", username);
+        String result = hc.execute("SAA", username);
 
          * this is where the JSON object will be split up... think im going to remove it from the
          * HTTPConnect class and into these classes... or return a list of stings instead. not sure yet
