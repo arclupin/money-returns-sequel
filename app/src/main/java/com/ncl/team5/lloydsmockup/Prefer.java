@@ -24,13 +24,13 @@ public class Prefer extends PreferenceActivity {
     }
     @Override
     public boolean isValidFragment(String fragmentName) {
-        if (Display.class.getName().equals(fragmentName)) {
+        if (DisplayOptions.class.getName().equals(fragmentName)) {
             ((KillApp) this.getApplication()).setStatus(false);
             return(true);
         }
         return(false);
     }
-    public static class Display extends PreferenceFragment {
+    public static class DisplayOptions extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -69,8 +69,6 @@ public class Prefer extends PreferenceActivity {
             Intent intent = new Intent(this, Notifications.class);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
-        } else if (id == R.id.action_location) {
-            return true;
         }
 
             return super.onOptionsItemSelected(item);

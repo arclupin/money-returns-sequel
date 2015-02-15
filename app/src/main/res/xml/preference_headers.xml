@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
     <header
-        android:fragment="com.ncl.team5.lloydsmockup.Prefer$Display"
+        android:fragment="com.ncl.team5.lloydsmockup.Prefer$DisplayOptions"
         android:summary="@string/prefdesc"
         android:title="@string/preftitle">
         <extra

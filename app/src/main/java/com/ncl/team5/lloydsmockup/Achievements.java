@@ -42,9 +42,9 @@ public class Achievements extends Activity {
             startActivity(intent);
 
         }
-       else if (id == R.id.action_location) {
+       /*else if (id == R.id.action_location) {
            return true;
-       }
+       }*/
         return super.onOptionsItemSelected(item);
     }
 

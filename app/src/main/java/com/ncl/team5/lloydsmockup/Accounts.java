@@ -118,9 +118,9 @@ public class Accounts extends Activity {
             ((KillApp) this.getApplication()).setStatus(false);
 
         }
-        else if (id == R.id.action_location) {
+        /*else if (id == R.id.action_location) {
             return true;
-        }
+        }*/
         return super.onOptionsItemSelected(item);
     }
 

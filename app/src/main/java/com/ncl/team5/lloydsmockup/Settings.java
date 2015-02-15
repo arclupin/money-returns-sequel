@@ -54,6 +54,12 @@ public class Settings extends Activity {
                     intent.putExtra("com.example.ListViewTest.MESSAGE", message);
                     startActivity(intent);
                     ((KillApp) Settings.this.getApplication()).setStatus(false);
+                }else if(position==3){
+                        Intent intent = new Intent(Settings.this, LegalMaps.class);
+                        String message = optionsList.get(position);
+                        intent.putExtra("com.example.ListViewTest.MESSAGE", message);
+                        startActivity(intent);
+                        ((KillApp) Settings.this.getApplication()).setStatus(false);
                 }
             }
         });
@@ -64,6 +70,7 @@ public class Settings extends Activity {
            optionsList.add("Preferences");
            optionsList.add("Change Account Name");
            optionsList.add("Change Password");
+           optionsList.add("Legal Notices");
        }
 
 
@@ -94,9 +101,7 @@ public class Settings extends Activity {
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
         }
-        else if (id == R.id.action_location) {
-            return true;
-        }
+
         return super.onOptionsItemSelected(item);
     }
 

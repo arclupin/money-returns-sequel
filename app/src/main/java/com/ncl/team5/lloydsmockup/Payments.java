@@ -50,9 +50,7 @@ public class Payments extends Activity {
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
         }
-        else if (id == R.id.action_location) {
-            return true;
-        }
+
         return super.onOptionsItemSelected(item);
     }
 
