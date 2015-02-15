@@ -11,6 +11,7 @@
          Google Maps Android API v2, but are recommended. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true"/>
@@ -109,7 +110,7 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDHry-CZ-QI6a1d7RP-c2Ug-wpP1-gK1a8"/>
+            android:value="AIzaSyCXw7DLZzavlCT4j6vdHKLAt7UpXQXfQ6M"/>
     </application>
 
 </manifest>
