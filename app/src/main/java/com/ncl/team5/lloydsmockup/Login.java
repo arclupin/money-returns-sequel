@@ -26,6 +26,7 @@ public class Login extends Activity {
     private boolean netProbs = false;
     private boolean warning = false;
     private boolean locked = false;
+    public Connection connect;
 
 
     @Override
