@@ -11,6 +11,7 @@ package com.ncl.team5.lloydsmockup;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,7 +24,9 @@ import HTTPConnect.Connection;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +52,7 @@ public class Accounts extends Activity {
         username = i.getStringExtra("ACCOUNT_USERNAME");
 
         accountStrings = new ArrayList<String>();
-        getAccounts(username);
+        getAccounts("jmiller");
         // Create The Adapter with passing ArrayList as 3rd parameter
         ArrayAdapter<String> arrayAdapter =
                 new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, accountStrings);
@@ -87,42 +90,37 @@ public class Accounts extends Activity {
          */
 
 
-//        Connection hc = new Connection();
-//
-//        try {
-//            String result = hc.execute("SAA", username).get();
-//
-//            JSONObject jo = new JSONObject(result);
-//
-//            if(jo.getString("expired").equals("true"))
-//            {
-//                //logout
-//            }
-//            else
-//            {
-//                JSONObject accountList = jo.getJSONObject("accounts");
-//
-//
-//                //Do something here to change the format of the JSON into a sort of map thing...
-//                //have to talk to danh about how the JSON is returned
-//
-//            }
-//
-//        }
-//        catch (Exception e)
-//        {
-//
-//        }
+        Connection hc = new Connection();
+
+        try {
+            String result = hc.execute("TYPE","SAA","USR", username ).get();
+
+
+            JSONObject jo = new JSONObject(URLDecoder.decode("{\"employees\":[{\"name\":\"Ben\"}, {\"name\":\"Dale\"}]}", "UTF-8"));
+
+            JSONArray jsonArray = jo.getJSONArray("employees");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject insideObject = jsonArray.getJSONObject(i);
+                accountStrings.add("name : " + insideObject.getString("name"));
+            }
+
+
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
         /*
          * this is where the JSON object will be split up... think im going to remove it from the
          * HTTPConnect class and into these classes... or return a list of stings instead. not sure yet
          */
 
-        accountStrings.add("Account 1 : £100.00");
-        accountStrings.add("Account 2 : £607.76");
-        accountStrings.add("Account 3 : £5098.49");
-        accountStrings.add("Account 4 : £0.01");
+//        accountStrings.add("Account 1 : £100.00");
+//        accountStrings.add("Account 2 : £607.76");
+//        accountStrings.add("Account 3 : £5098.49");
+//        accountStrings.add("Account 4 : £0.01");
     }
 
     @Override

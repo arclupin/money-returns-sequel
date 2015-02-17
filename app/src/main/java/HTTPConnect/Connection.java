@@ -18,6 +18,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +36,13 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
+
 /* The bit at the end.. the String, Void, Boolean bit, thats what
  * ASyncTask uses to do its stuff. The String is the inputs, Void is progress
  * (if progress bar is needed) and Boolean is return type. However
@@ -42,22 +53,24 @@ public class Connection extends AsyncTask <String, Void, String> {
     private final String URL = "http://homepages.cs.ncl.ac.uk/2014-15/csc2022_team5/PHP/main.php";
     private String result;
     private String test;
+    //private String key = "4E050FDDFB44E903225EC6C20C37752DB57B542E07D808248E5ABC720D8571E599A29295EB62230785369F5D9AA1E7D761656DA1918054E9E4B22970EBC59DE3";
 
     /* This is where the magic happens. This is what is run when the
      * background thread is started. It takes as parameters a list of strings of any length
      * and uses just the first 2 as username and password. This then calls the connect
      * method where more stuff happens :0 */
-    protected String doInBackground(String...strings) {
+
+//    }
+
+     protected String doInBackground(String...strings) {
+
 
         //Set up the name value pair stuff...
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 
         for(int i = 0; i < strings.length; i= i+2)
         {
-            //Use this line Until danh has updated server to use the accroynms
-//            nameValuePairs.add(new BasicNameValuePair("username", strings[1]));
-//            nameValuePairs.add(new BasicNameValuePair("password", strings[3]));
-//            break;
+
 
             //use this when danh sorts acronyms
             nameValuePairs.add(new BasicNameValuePair(strings[i], strings[i+1]));
