@@ -193,9 +193,8 @@ public class Login extends Activity {
              * syntax but requires an import at the start of the file.
              */
 
-            /* Ok, this look a bit weird... i mean it returns an int right! should it not be boolean??
-             * Well, if it returns 0, it is true, 1 is false, and 2 is poor network connections
-             * As i needed 3 results... really should use an enum but i can do that some other day*/
+            /* Ok, this look a bit weird... i mean it returns string right! should it not be boolean??
+             * Well, if it returns 4 different messages from the server, not just true or false */
             String result = connection.execute("TYPE", "LOGIN" ,"USR", username, "PWD", password).get();
 
 

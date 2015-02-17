@@ -13,7 +13,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+
+import HTTPConnect.Connection;
 
 
 public class Statement extends Activity {
@@ -30,18 +34,27 @@ public class Statement extends Activity {
          * name of the account
          */
         Intent i = getIntent();
-        String result = i.getStringExtra("com.example.ListViewTest.MESSAGE");
+        String name = i.getStringExtra("ACCOUNT_NAME");
+        String balance = i.getStringExtra("BALANCE");
 
         /* Sets the account name from the result text */
         TextView accountName = (TextView) findViewById(R.id.txtChange);
-        accountName.setText(result);
+        accountName.setTextSize(30);
+
+        if(name.length()+balance.length() > 20)
+        {
+            accountName.setTextSize(25);
+        }
+
+        accountName.setText(name + ":" + balance);
 
 
         ListView transactions =(ListView)findViewById(R.id.listView);
 
 
         statementList = new ArrayList<String>();
-        getStatement();
+        //needs actual data from the other parts of the app adding to it
+        getStatement("jmiller", "");
         // Create The Adapter with passing ArrayList as 3rd parameter
         final ArrayAdapter<String> arrayAdapter =
                 new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, statementList);
@@ -72,11 +85,39 @@ public class Statement extends Activity {
 
     }
 
-    void getStatement()
+    void getStatement(String username, String accNum)
     {
         /* This method would work the same as the other get method in accounts,
          * but look for the transactions in the past 30 days for this account.
          */
+
+//        Connection hc = new Connection();
+//
+//        try {
+//            String result = hc.execute("USR", username, "TRANS", accNum).get();
+//
+//            JSONObject jo = new JSONObject(result);
+//
+//            if(jo.getString("expired").equals("true"))
+//            {
+//                //logout
+//            }
+//            else
+//            {
+//                JSONObject accountList = jo.getJSONObject("accounts");
+//
+//
+//                //Do something here to change the format of the JSON into a sort of map thing...
+//                //have to talk to danh about how the JSON is returned
+//
+//            }
+//
+//        }
+//        catch (Exception e)
+//        {
+//
+//        }
+
         statementList.add("StarBucks : -£3.67");
         statementList.add("Rent : -£350.00");
         statementList.add("Pay : +£60.00");
@@ -113,6 +154,12 @@ public class Statement extends Activity {
 
     private String getTransDetails()
     {
+        /* This method would go to the server again with the transaction ID for that account and
+         * return details about that particular transaction, and also give the user the option to
+         * add this transaction to a particular group in the analysis section... not sure if this
+         * is to be stored on the app or the server yet, but i think the app is probably a better
+         * option.
+         */
         return "Date: 01/01/2015\n" + "Time: 15:00:00\n" + "Location: Newcastle\n" + "Amount: £20.00";
     }
 

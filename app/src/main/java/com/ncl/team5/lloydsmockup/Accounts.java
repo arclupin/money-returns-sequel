@@ -19,8 +19,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import HTTPConnect.Connection;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Accounts extends Activity {
@@ -59,8 +65,10 @@ public class Accounts extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
                 Intent intent = new Intent(Accounts.this, Statement.class);
-                String message = accountStrings.get(position);
-                intent.putExtra("com.example.ListViewTest.MESSAGE", message);
+                String message = accountStrings.get(position).split(":")[0];
+                String balance = accountStrings.get(position).split(":")[1];
+                intent.putExtra("ACCOUNT_NAME", message);
+                intent.putExtra("BALANCE", balance);
                 startActivity(intent);
 
                 ((KillApp) Accounts.this.getApplication()).setStatus(false);
@@ -78,10 +86,35 @@ public class Accounts extends Activity {
          * set up on the web server
          */
 
-        /*
-        HTTPConnect hc = new HTTPConnect();
-        String result = hc.execute("SAA", username);
 
+//        Connection hc = new Connection();
+//
+//        try {
+//            String result = hc.execute("SAA", username).get();
+//
+//            JSONObject jo = new JSONObject(result);
+//
+//            if(jo.getString("expired").equals("true"))
+//            {
+//                //logout
+//            }
+//            else
+//            {
+//                JSONObject accountList = jo.getJSONObject("accounts");
+//
+//
+//                //Do something here to change the format of the JSON into a sort of map thing...
+//                //have to talk to danh about how the JSON is returned
+//
+//            }
+//
+//        }
+//        catch (Exception e)
+//        {
+//
+//        }
+
+        /*
          * this is where the JSON object will be split up... think im going to remove it from the
          * HTTPConnect class and into these classes... or return a list of stings instead. not sure yet
          */
