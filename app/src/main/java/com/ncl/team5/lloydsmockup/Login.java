@@ -71,8 +71,7 @@ public class Login extends Activity {
         {
             //Starts an intent to launch the main menu
             Intent i = new Intent(this, MainActivity.class);
-            String message = username;
-            i.putExtra("ACCOUNT_USERNAME", message);
+            i.putExtra("ACCOUNT_USERNAME", username);
             startActivity(i);
             return;
         }
@@ -83,8 +82,7 @@ public class Login extends Activity {
 
             //Starts an intent to launch the main menu
             Intent i = new Intent(this, MainActivity.class);
-            String message = username;
-            i.putExtra("ACCOUNT_USERNAME", message);
+            i.putExtra("ACCOUNT_USERNAME", username);
             startActivity(i);
 
 
@@ -200,7 +198,10 @@ public class Login extends Activity {
             String result = connection.execute("TYPE", "LOGIN" ,"USR", username, "PWD", password).get();
 
 
-
+            if(result.equals("false"))
+            {
+                return false;
+            }
 
             if(result.equals("error"))
             {

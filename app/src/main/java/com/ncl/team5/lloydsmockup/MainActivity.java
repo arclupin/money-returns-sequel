@@ -3,6 +3,7 @@ package com.ncl.team5.lloydsmockup;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,7 +13,8 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
-    private String username = "";
+
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +66,8 @@ public class MainActivity extends Activity {
 
     public void btnClickPayments(View view) {
         Intent i = new Intent(this, Payments.class);
-        String message = username;
-        i.putExtra("ACCOUNT_USERNAME", message);
+        Log.d("USERNAME", username);
+        i.putExtra("ACCOUNT_USERNAME", username);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
 
@@ -79,6 +81,8 @@ public class MainActivity extends Activity {
 
     public void btnClickAccounts(View view) {
         Intent i = new Intent(this, Accounts.class);
+        //Log.d("USERNAME", username);
+        i.putExtra("ACCOUNT_USERNAME", username);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }

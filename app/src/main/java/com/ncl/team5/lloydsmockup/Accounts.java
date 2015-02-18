@@ -20,6 +20,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import HTTPConnect.Connection;
 
 import org.json.JSONArray;
@@ -37,7 +39,7 @@ public class Accounts extends Activity {
     /* Used for the list view */
     private String[] items;
     private ArrayList<String> accountStrings;
-    private String username = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,9 @@ public class Accounts extends Activity {
         ListView accountsList=(ListView)findViewById(R.id.listView);
 
         Intent i = getIntent();
-        username = i.getStringExtra("ACCOUNT_USERNAME");
+        String username = i.getStringExtra("ACCOUNT_USERNAME");
+
+        //Log.d("Username", username);
 
         accountStrings = new ArrayList<String>();
         getAccounts(username);
@@ -96,12 +100,12 @@ public class Accounts extends Activity {
             String result = hc.execute("TYPE","SAA","USR", username ).get();
 
 
-            JSONObject jo = new JSONObject(URLDecoder.decode("{\"employees\":[{\"name\":\"Ben\"}, {\"name\":\"Dale\"}]}", "UTF-8"));
+            JSONObject jo = new JSONObject(result);
 
-            JSONArray jsonArray = jo.getJSONArray("employees");
+            JSONArray jsonArray = jo.getJSONArray("accounts");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject insideObject = jsonArray.getJSONObject(i);
-                accountStrings.add("name : " + insideObject.getString("name"));
+                accountStrings.add(insideObject.getString("account_number") + " : £" + insideObject.getString("avail_balance"));
             }
 
 

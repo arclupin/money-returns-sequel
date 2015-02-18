@@ -6,13 +6,11 @@ import android.app.Activity;
  * but also does this in the background by extending ASyncTask.
  */
 
-<<<<<<< HEAD
 
-=======
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
->>>>>>> dd8b28830929eae9c95e9fd2811f167f2865eba4
+
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -214,6 +212,13 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
             /* Execute the post request and save the response */
             HttpResponse response = httpclient.execute(httppost, context);
+
+            if(cookies.getCookies().size() == 0)
+            {
+                return "false";
+            }
+
+            Log.d("cookies", cookies.toString());
 
             BasicClientCookie cookie = (BasicClientCookie) cookies.getCookies().get(0);
             Log.d("login cookies",cookies.getCookies().get(0).toString());
