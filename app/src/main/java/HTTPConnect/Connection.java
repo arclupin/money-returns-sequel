@@ -6,11 +6,6 @@ import android.app.Activity;
  * but also does this in the background by extending ASyncTask.
  */
 
-
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-
 import android.os.AsyncTask;
 import android.util.Log;
 

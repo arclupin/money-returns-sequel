@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,20 +12,37 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import HTTPConnect.Connection;
 
 
 public class Payments extends Activity {
 
+    private String username;
+    private List<String> accountStrings = new ArrayList<String>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent i = getIntent();
+        username = i.getStringExtra("ACCOUNT_USERNAME");
+
+        getAccounts();
+
         setContentView(R.layout.activity_payments);
         Spinner s = (Spinner) findViewById(R.id.spinner3);
-        ArrayAdapter<CharSequence> a = ArrayAdapter.createFromResource(this, R.array.accountslist, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> a = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, accountStrings);
         a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         s.setAdapter(a);
     }
+
+
 
 
     @Override
@@ -59,17 +77,34 @@ public class Payments extends Activity {
 
     public void btnMakePay(View view) {
 
-//        //Connection connect = new Connection();
-//        String result;
-//
-//        try
-//        {
-//            result = connect.execute("TYPE", "PAY", "USR", "jmiller", "PAYTO", "0983758", "PAYFROM", "39572052").get();
-//        }
-//        catch (Exception e)
-//        {
-//
-//        }
+        Connection connect = new Connection(this);
+        String result;
+
+        try
+        {
+            result = connect.execute("TYPE", "PAY", "USR", username, "PAYTO", "56984521", "PAYFROM", "48596365", "AMOUNT", "1000.00").get();
+
+
+            JSONObject jo = new JSONObject(result);
+
+            if(jo.getString("expired").equals("true"))
+            {
+                //login agian
+            }
+            else if (jo.getString("status").equals("true"))
+            {
+                //show payment made screen
+            }
+            else
+            {
+                //give more info on the error here, no money taken from account
+            }
+
+        }
+        catch (Exception e)
+        {
+
+        }
 
         Toast.makeText(getBaseContext(), "Payment Made",
                 Toast.LENGTH_SHORT).show();
@@ -111,5 +146,32 @@ public class Payments extends Activity {
         ((KillApp) this.getApplication()).setStatus(false);
         finish();
 
+    }
+
+
+    public void getAccounts()
+    {
+        Connection hc = new Connection(this);// trying to pass the activity to the coonection (not sure if this is legal though)
+
+        try {
+            String result = hc.execute("TYPE","SAA","USR", username ).get();
+
+
+            JSONObject jo = new JSONObject(result);
+
+            JSONArray jsonArray = jo.getJSONArray("accounts");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject insideObject = jsonArray.getJSONObject(i);
+                accountStrings.add(insideObject.getString("account_number"));
+            }
+
+
+
+        }
+        catch (Exception e)
+        {
+            //give the user a message about being unable to connect. maybe log them out
+            e.printStackTrace();
+        }
     }
 }

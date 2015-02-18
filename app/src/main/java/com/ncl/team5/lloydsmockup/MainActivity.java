@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
 
     public void btnClickPayments(View view) {
         Intent i = new Intent(this, Payments.class);
-        Log.d("USERNAME", username);
+        //Log.d("USERNAME", username);
         i.putExtra("ACCOUNT_USERNAME", username);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
