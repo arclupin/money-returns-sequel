@@ -6,14 +6,11 @@ package HTTPConnect;
  * but also does this in the background by extending ASyncTask.
  */
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+
 import android.os.AsyncTask;
 import android.util.Log;
 
 
-
-import com.ncl.team5.lloydsmockup.Login;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,7 +38,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONObject;
-import org.apache.http.*;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -61,7 +57,7 @@ public class Connection extends AsyncTask <String, Void, String> {
     private String result;
     private String test;
     HttpClient httpclient = new DefaultHttpClient();
-    CookieStore cookies = new BasicCookieStore();
+    CookieStore cookies;
     HttpContext context = new BasicHttpContext();
 
     //private String key = "4E050FDDFB44E903225EC6C20C37752DB57B542E07D808248E5ABC720D8571E599A29295EB62230785369F5D9AA1E7D761656DA1918054E9E4B22970EBC59DE3";
@@ -92,8 +88,11 @@ public class Connection extends AsyncTask <String, Void, String> {
 
             if(strings[1].equals("LOGIN"))
             {
+
                 return this.loginConnect(nameValuePairs);
             }
+
+
 
             return this.connect(nameValuePairs);
 

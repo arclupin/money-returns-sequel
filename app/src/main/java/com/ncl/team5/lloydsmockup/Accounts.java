@@ -52,7 +52,7 @@ public class Accounts extends Activity {
         username = i.getStringExtra("ACCOUNT_USERNAME");
 
         accountStrings = new ArrayList<String>();
-        getAccounts("jmiller");
+        getAccounts(username);
         // Create The Adapter with passing ArrayList as 3rd parameter
         ArrayAdapter<String> arrayAdapter =
                 new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, accountStrings);

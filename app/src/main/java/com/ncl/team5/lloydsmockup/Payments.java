@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import HTTPConnect.Connection;
+
 
 public class Payments extends Activity {
 
@@ -56,6 +58,19 @@ public class Payments extends Activity {
 
 
     public void btnMakePay(View view) {
+
+        Connection connect = new Connection();
+        String result;
+
+        try
+        {
+            result = connect.execute("TYPE", "PAY", "USR", "jmiller", "PAYTO", "0983758", "PAYFROM", "39572052").get();
+        }
+        catch (Exception e)
+        {
+
+        }
+
         Toast.makeText(getBaseContext(), "Payment Made",
                 Toast.LENGTH_SHORT).show();
     }
