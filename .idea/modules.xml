@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/CSC2022-Release.iml" filepath="$PROJECT_DIR$/CSC2022-Release.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/lloydsapp.iml" filepath="$PROJECT_DIR$/lloydsapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/money-returns-sequel.iml" filepath="$PROJECT_DIR$/money-returns-sequel.iml" />
     </modules>
   </component>
 </project>
