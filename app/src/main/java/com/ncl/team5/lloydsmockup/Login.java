@@ -1,6 +1,6 @@
 package com.ncl.team5.lloydsmockup;
 
-import android.app.ActionBar;
+import  android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -16,6 +16,7 @@ import android.widget.ViewFlipper;
 import org.json.JSONObject;
 
 import HTTPConnect.Connection;
+import HTTPConnect.CookieStorage;
 
 
 public class Login extends Activity {
@@ -176,7 +177,7 @@ public class Login extends Activity {
          */
 
         /* creates a http object (my own class) to run in the background */
-        Connection connection = new Connection();
+        Connection connection = new Connection(this);
 
 
         // Need this for the exceptions that are throw (there are many!)
@@ -197,6 +198,7 @@ public class Login extends Activity {
             /* Ok, this look a bit weird... i mean it returns string right! should it not be boolean??
              * Well, if it returns 4 different messages from the server, not just true or false */
             String result = connection.execute("TYPE", "LOGIN" ,"USR", username, "PWD", password).get();
+
 
 
 

@@ -90,7 +90,7 @@ public class Accounts extends Activity {
          */
 
 
-        Connection hc = new Connection();
+        Connection hc = new Connection(this);// trying to pass the activity to the coonection (not sure if this is legal though)
 
         try {
             String result = hc.execute("TYPE","SAA","USR", username ).get();

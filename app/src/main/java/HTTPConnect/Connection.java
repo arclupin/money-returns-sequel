@@ -1,12 +1,18 @@
 package HTTPConnect;
-
+import android.app.Activity;
 
 /* This is the main class that the login uses to get the data from
  * the server. It uses the http connection stuff provided by android/java
  * but also does this in the background by extending ASyncTask.
  */
 
+<<<<<<< HEAD
 
+=======
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+>>>>>>> dd8b28830929eae9c95e9fd2811f167f2865eba4
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -34,6 +40,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
@@ -50,7 +57,7 @@ import javax.crypto.spec.SecretKeySpec;
  * ASyncTask uses to do its stuff. The String is the inputs, Void is progress
  * (if progress bar is needed) and Boolean is return type. However
  * They cannot be primitives so the wrappers are needed */
-public class Connection extends AsyncTask <String, Void, String> {
+public class Connection extends AsyncTask <String, Void, String>  {
 
     /* String to store the web address as a constant */
     private final String URL = "http://homepages.cs.ncl.ac.uk/2014-15/csc2022_team5/PHP/main.php";
@@ -59,6 +66,12 @@ public class Connection extends AsyncTask <String, Void, String> {
     HttpClient httpclient = new DefaultHttpClient();
     CookieStore cookies;
     HttpContext context = new BasicHttpContext();
+    Activity a;
+
+    public Connection(Activity a) {
+
+        this.a = a;
+    }
 
     //private String key = "4E050FDDFB44E903225EC6C20C37752DB57B542E07D808248E5ABC720D8571E599A29295EB62230785369F5D9AA1E7D761656DA1918054E9E4B22970EBC59DE3";
 
@@ -109,8 +122,24 @@ public class Connection extends AsyncTask <String, Void, String> {
 
      public String connect(List<NameValuePair> nameValuePairs) throws IOException {
 
-         //context.setAttribute(ClientContext.COOKIE_STORE,cookies);
-        HttpPost httppost = new HttpPost(URL);
+         httpclient = new DefaultHttpClient();
+         cookies = new BasicCookieStore();
+
+         // initialise the cookieStorage (read cookies from file)
+         CookieStorage cookieStorage = new CookieStorage(this.a.getSharedPreferences("cookies", Activity.MODE_PRIVATE));
+         BasicClientCookie stored_cookie = cookieStorage.pullFromFile("PHPSESSID");
+
+         // cookies to be sent to the server MUST have the domain and path, otherwise the server will just ignore it.
+         // the params could just be stored in the file as well, could be done later.
+         stored_cookie.setDomain("homepages.cs.ncl.ac.uk");
+         stored_cookie.setPath("/");
+
+         cookies.addCookie(stored_cookie );// add this cookie (session id) to the post request
+         Log.d("before connect cookies",cookies.getCookies().get(0).toString());
+
+         context = new BasicHttpContext();
+         context.setAttribute(ClientContext.COOKIE_STORE,cookies);
+         HttpPost httppost = new HttpPost(URL);
 
         try {
             /* Creates name value pair to be sent via post to the server */
@@ -122,7 +151,7 @@ public class Connection extends AsyncTask <String, Void, String> {
             /* Execute the post request and save the response */
             HttpResponse response = httpclient.execute(httppost, context);
 
-            Log.d("cookies",cookies.toString());
+            Log.d("after connect cookies",cookies.toString());
 
             HttpEntity entity = response.getEntity();
 
@@ -186,7 +215,14 @@ public class Connection extends AsyncTask <String, Void, String> {
             /* Execute the post request and save the response */
             HttpResponse response = httpclient.execute(httppost, context);
 
-            Log.d("cookies",cookies.toString());
+            BasicClientCookie cookie = (BasicClientCookie) cookies.getCookies().get(0);
+            Log.d("login cookies",cookies.getCookies().get(0).toString());
+            CookieStorage cookieStorage = new CookieStorage(this.a.getSharedPreferences("cookies", Activity.MODE_PRIVATE));
+            cookieStorage.writeToFile(cookies.getCookies().get(0).getName(), cookies.getCookies().get(0).getValue()); // write this cookie to file
+//            BasicClientCookie storedCookie = (BasicClientCookie)cookieStorage.pullFromFile(cookie.getName());
+  //          storedCookie.setDomain(cookie.getDomain());
+    //        storedCookie.getPath(cookie.getPath());
+
 
             HttpEntity entity = response.getEntity();
 
@@ -216,6 +252,7 @@ public class Connection extends AsyncTask <String, Void, String> {
 
 
 
+
             }catch(Exception e)
             {
                 throw new IOException("Error parsing JSON");
@@ -226,7 +263,6 @@ public class Connection extends AsyncTask <String, Void, String> {
 
         } catch (IOException e) {
             throw new IOException("Connection could not be established");
-
         }
 
 
