@@ -39,6 +39,7 @@ public class Accounts extends Activity {
     /* Used for the list view */
     private String[] items;
     private ArrayList<String> accountStrings;
+    private String username;
 
 
     @Override
@@ -51,7 +52,7 @@ public class Accounts extends Activity {
         ListView accountsList=(ListView)findViewById(R.id.listView);
 
         Intent i = getIntent();
-        String username = i.getStringExtra("ACCOUNT_USERNAME");
+        username = i.getStringExtra("ACCOUNT_USERNAME");
 
         //Log.d("Username", username);
 
@@ -74,7 +75,8 @@ public class Accounts extends Activity {
                 Intent intent = new Intent(Accounts.this, Statement.class);
                 String message = accountStrings.get(position).split(":")[0];
                 String balance = accountStrings.get(position).split(":")[1];
-                intent.putExtra("ACCOUNT_NAME", message);
+                intent.putExtra("USERNAME", username);
+                intent.putExtra("ACCOUNT_NUM", message);
                 intent.putExtra("BALANCE", balance);
                 startActivity(intent);
 

@@ -14,16 +14,21 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import HTTPConnect.Connection;
 
 
 public class Statement extends Activity {
 
-    ArrayList<String> statementList;
+    private List<String> statementList;
+    private List<String> transInfo;
+    private String username;
+    private String accountNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,27 +40,30 @@ public class Statement extends Activity {
          * name of the account
          */
         Intent i = getIntent();
-        String name = i.getStringExtra("ACCOUNT_NAME");
+        username = i.getStringExtra("USERNAME");
+        accountNum = i.getStringExtra("ACCOUNT_NUM");
         String balance = i.getStringExtra("BALANCE");
 
         /* Sets the account name from the result text */
         TextView accountName = (TextView) findViewById(R.id.txtChange);
         accountName.setTextSize(30);
 
-        if(name.length()+balance.length() > 20)
+        if(username.length()+balance.length() > 20)
         {
             accountName.setTextSize(25);
         }
 
-        accountName.setText(name + ":" + balance);
+        accountName.setText(username + ":" + balance);
 
 
         ListView transactions =(ListView)findViewById(R.id.listView);
 
 
         statementList = new ArrayList<String>();
+        transInfo = new ArrayList<String>();
+
         //needs actual data from the other parts of the app adding to it
-        getStatement("jmiller", "");
+        getStatement();
         // Create The Adapter with passing ArrayList as 3rd parameter
         final ArrayAdapter<String> arrayAdapter =
                 new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, statementList);
@@ -71,7 +79,17 @@ public class Statement extends Activity {
                                     long id) {
                 //Just sets up a basic alert box for now...
                 AlertDialog.Builder errorBox = new AlertDialog.Builder(Statement.this);
-                String details = getTransDetails();
+                String details = transInfo.get(position);
+                String transId = details.split(" ~ ")[0];
+                String amount = details.split(" ~ ")[1];
+                String time = details.split(" ~ ")[2];
+                String date = time.split(" ")[0];
+                time = time.split(" ")[1];
+                String to = details.split(" ~ ")[3];
+
+                details = "ID : " + transId + "\nAmount : " + amount + "\nDate : " + date + "\nTime : " + time + "\nTo account : " + to;
+
+
                 errorBox.setMessage(details)
                         .setCancelable(true)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -86,7 +104,7 @@ public class Statement extends Activity {
 
     }
 
-    void getStatement(String username, String accNum)
+    void getStatement()
     {
         /* This method would work the same as the other get method in accounts,
          * but look for the transactions in the past 30 days for this account.
@@ -95,21 +113,42 @@ public class Statement extends Activity {
         Connection hc = new Connection(this);
 
         try {
-            String result = hc.execute("TYPE", "TRANSLIST", "USR", "jmiller", "ACC_NUMBER", "48596365").get();
+            String result = hc.execute("TYPE", "TRANSLIST", "USR", username, "ACC_NUMBER", accountNum).get();
 
             JSONObject jo = new JSONObject(result);
 
             if(jo.getString("expired").equals("true"))
             {
                 //logout
+                //This uses the same code as the main menu does to start the login, only this time it is run when the user
+                //has timed out
+                new CustomMessageBox(this, "You have been timed out, please login again");
+
+                ((KillApp) this.getApplication()).setStatus(false);
+                finish();
+                Intent intent = new Intent(getApplicationContext(), Login.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                //login again
             }
             else
             {
 
-
-
-
-
+                String amountString;
+                JSONArray jsonArray = jo.getJSONArray("transactions");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject insideObject = jsonArray.getJSONObject(i);
+                    if(insideObject.getString("Amount").matches("[0-9]+"))
+                    {
+                         amountString = insideObject.getString("Amount") + ".00";
+                    }
+                    else
+                    {
+                        amountString = insideObject.getString("Amount");
+                    }
+                    statementList.add(insideObject.getString("Transaction_ID") + " : £" + amountString);
+                    transInfo.add(insideObject.getString("Transaction_ID") + " ~ £" + amountString + " ~ " + insideObject.getString("Time") + " ~ " + insideObject.getString("Payee"));
+                }
                 //Do something here to change the format of the JSON into a sort of map thing...
                 //have to talk to danh about how the JSON is returned
 
@@ -121,9 +160,7 @@ public class Statement extends Activity {
 
         }
 
-        statementList.add("StarBucks : -£3.67");
-        statementList.add("Rent : -£350.00");
-        statementList.add("Pay : +£60.00");
+
     }
 
     @Override
@@ -155,16 +192,7 @@ public class Statement extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private String getTransDetails()
-    {
-        /* This method would go to the server again with the transaction ID for that account and
-         * return details about that particular transaction, and also give the user the option to
-         * add this transaction to a particular group in the analysis section... not sure if this
-         * is to be stored on the app or the server yet, but i think the app is probably a better
-         * option.
-         */
-        return "Date: 01/01/2015\n" + "Time: 15:00:00\n" + "Location: Newcastle\n" + "Amount: £20.00";
-    }
+
 
     /* This is how the application knows if it has been stopped by an intent or by an
      * external source (i.e. home button, phone call etc). Each time an intent is called, it
