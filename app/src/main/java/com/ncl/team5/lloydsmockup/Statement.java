@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -91,32 +92,34 @@ public class Statement extends Activity {
          * but look for the transactions in the past 30 days for this account.
          */
 
-//        Connection hc = new Connection();
-//
-//        try {
-//            String result = hc.execute("USR", username, "TRANS", accNum).get();
-//
-//            JSONObject jo = new JSONObject(result);
-//
-//            if(jo.getString("expired").equals("true"))
-//            {
-//                //logout
-//            }
-//            else
-//            {
-//                JSONObject accountList = jo.getJSONObject("accounts");
-//
-//
-//                //Do something here to change the format of the JSON into a sort of map thing...
-//                //have to talk to danh about how the JSON is returned
-//
-//            }
-//
-//        }
-//        catch (Exception e)
-//        {
-//
-//        }
+        Connection hc = new Connection(this);
+
+        try {
+            String result = hc.execute("TYPE", "TRANSLIST", "USR", "jmiller", "ACC_NUMBER", "48596365").get();
+
+            JSONObject jo = new JSONObject(result);
+
+            if(jo.getString("expired").equals("true"))
+            {
+                //logout
+            }
+            else
+            {
+
+
+
+
+
+                //Do something here to change the format of the JSON into a sort of map thing...
+                //have to talk to danh about how the JSON is returned
+
+            }
+
+        }
+        catch (Exception e)
+        {
+
+        }
 
         statementList.add("StarBucks : -£3.67");
         statementList.add("Rent : -£350.00");

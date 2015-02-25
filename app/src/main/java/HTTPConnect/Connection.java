@@ -9,16 +9,20 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
-
-
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,13 +42,11 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONObject;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+
 
 /* The bit at the end.. the String, Void, Boolean bit, thats what
  * ASyncTask uses to do its stuff. The String is the inputs, Void is progress
@@ -54,8 +56,6 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
     /* String to store the web address as a constant */
     private final String URL = "http://homepages.cs.ncl.ac.uk/2014-15/csc2022_team5/PHP/main.php";
-    private String result;
-    private String test;
     HttpClient httpclient = new DefaultHttpClient();
     CookieStore cookies;
     HttpContext context = new BasicHttpContext();
@@ -66,7 +66,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
         this.a = a;
     }
 
-    //private String key = "4E050FDDFB44E903225EC6C20C37752DB57B542E07D808248E5ABC720D8571E599A29295EB62230785369F5D9AA1E7D761656DA1918054E9E4B22970EBC59DE3";
+
 
     /* This is where the magic happens. This is what is run when the
      * background thread is started. It takes as parameters a list of strings of any length
@@ -114,6 +114,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
      * input from the server, turns it into a JSON object, and then sees if it can log in */
 
      public String connect(List<NameValuePair> nameValuePairs) throws IOException {
+
 
          httpclient = new DefaultHttpClient();
          cookies = new BasicCookieStore();
@@ -198,6 +199,8 @@ public class Connection extends AsyncTask <String, Void, String>  {
         context.setAttribute(ClientContext.COOKIE_STORE,cookies);
         HttpPost httppost = new HttpPost(URL);
 
+
+
         try {
             /* Creates name value pair to be sent via post to the server */
 //            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -266,6 +269,48 @@ public class Connection extends AsyncTask <String, Void, String>  {
         }
 
 
+    }
+
+
+    public void SSLConnect()
+    {
+        try {
+            // Load CAs from an InputStream
+            // (could be from a resource or ByteArrayInputStream or ...)
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            // From https://www.washington.edu/itconnect/security/ca/load-der.crt
+            InputStream caInput = new BufferedInputStream(new FileInputStream("load-der.crt"));
+            Certificate ca;
+            try
+
+            {
+                ca = cf.generateCertificate(caInput);
+                System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
+            } finally
+
+            {
+                caInput.close();
+            }
+
+            // Create a KeyStore containing our trusted CAs
+            String keyStoreType = KeyStore.getDefaultType();
+            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+            keyStore.load(null, null);
+            keyStore.setCertificateEntry("ca", ca);
+
+            // Create a TrustManager that trusts the CAs in our KeyStore
+            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+            tmf.init(keyStore);
+
+            // Create an SSLContext that uses our TrustManager
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null, tmf.getTrustManagers(), null);
+
+        }catch(Exception e)
+        {
+
+        }
     }
 
 

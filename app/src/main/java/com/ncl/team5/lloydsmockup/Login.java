@@ -27,7 +27,6 @@ public class Login extends Activity {
     private boolean netProbs = false;
     private boolean warning = false;
     private boolean locked = false;
-    public Connection connect;
 
 
     @Override
@@ -133,30 +132,34 @@ public class Login extends Activity {
 
                 /* Username and password not authenticated by server, add 1 to count */
                 if (netProbs == false) {
-                    AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-                    errorBox.setMessage("Username and Password incorrect")
-                            .setCancelable(false)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-                    AlertDialog alert = errorBox.create();
-                    alert.show();
+//                    AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+//                    errorBox.setMessage("Username and Password incorrect")
+//                            .setCancelable(false)
+//                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int id) {
+//                                    dialog.cancel();
+//                                }
+//                            });
+//                    AlertDialog alert = errorBox.create();
+//                    alert.show();
+
+                    new CustomMessageBox(this, "Username and password incorrect");
                 }
                 else
                 {
                      /* Network problems detected... dont let user in but dont increment count either */
-                    AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-                    errorBox.setMessage("Poor network conditions detected. Please check your connection and try again")
-                            .setCancelable(false)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-                    AlertDialog alert = errorBox.create();
-                    alert.show();
+//                    AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+//                    errorBox.setMessage("Poor network conditions detected. Please check your connection and try again")
+//                            .setCancelable(false)
+//                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int id) {
+//                                    dialog.cancel();
+//                                }
+//                            });
+//                    AlertDialog alert = errorBox.create();
+//                    alert.show();
+
+                    new CustomMessageBox(this, "Poor network conditions detected. Please check your connection and try again");
                     netProbs = false;
                 }
             }

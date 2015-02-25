@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,12 +30,16 @@ public class Transfers extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //gets the username from the intent
+        Intent i = getIntent();
+        username = i.getStringExtra("ACCOUNT_USERNAME");
+
         getAccounts();
 
         setContentView(R.layout.activity_transfers);
-        Spinner s = (Spinner) findViewById(R.id.spinner3);
-        Spinner s2 = (Spinner) findViewById(R.id.spinner2);
-        ArrayAdapter<CharSequence> a = new ArrayAdapter(this, android.R.layout.simple_spinner_item, accountStrings);
+        Spinner s = (Spinner) findViewById(R.id.spinnerFrom);
+        Spinner s2 = (Spinner) findViewById(R.id.spinnerTo);
+        ArrayAdapter<String> a = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, accountStrings);
         a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         s.setAdapter(a);
         s2.setAdapter(a);
@@ -71,12 +75,72 @@ public class Transfers extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /* This is a bit of a hack so we end up writing less code. The transfers just
+     * Uses the payment interface to the server but is only allowed to make
+     * payments between the users own accounts. The sort code for the to account
+     * will need to be done as well, will probably need to be sent with the account info
+     */
     public void btnMakeTrans(View view) {
 
-//        String fromAccount = findViewById(R.id.spinner2).get
-//
-//        Toast.makeText(getBaseContext(), "Transfer Made",
-//                Toast.LENGTH_SHORT).show();
+        String fromAccount = ((Spinner)findViewById(R.id.spinnerFrom)).getSelectedItem().toString();
+        String toAccount = ((Spinner)findViewById(R.id.spinnerTo)).getSelectedItem().toString();
+        String amount = ((TextView)findViewById(R.id.amountText)).getText().toString();
+
+        if(fromAccount.equals(toAccount))
+        {
+            //error
+            //cannot transfer money between same account
+            new CustomMessageBox(this, "Cannot transfer money between the same account");
+            return;
+        }
+        if(!amount.matches("[£]?[0-9]+([.][0-9][0-9])?"))
+        {
+            //error
+            new CustomMessageBox(this, "Incorrect amount specified");
+            return;
+        }
+
+        //start up the connection
+        Connection connect = new Connection(this);
+        String result;
+
+        try
+        {
+            //now works with the ui and passed that values of the text boxes
+            result = connect.execute("TYPE", "PAY", "USR", username, "PAYTO", toAccount, "PAYFROM", fromAccount, "AMOUNT", amount).get();
+
+
+            JSONObject jo = new JSONObject(result);
+
+            if(jo.getString("expired").equals("true"))
+            {
+
+                //This uses the same code as the main menu does to start the login, only this time it is run when the user
+                //has timed out
+                new CustomMessageBox(this, "You have been timed out, please login again");
+
+                ((KillApp) this.getApplication()).setStatus(false);
+                finish();
+                Intent intent = new Intent(getApplicationContext(), Login.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                //login again
+            }
+            else if (jo.getString("status").equals("true"))
+            {
+                //show transfer made screen
+                new CustomMessageBox(this, "Your transaction has been made successfully");
+            }
+            else
+            {
+                //give more info on the error here, no money taken from account
+            }
+
+        }
+        catch (Exception e)
+        {
+
+        }
     }
 
     /* This is how the application knows if it has been stopped by an intent or by an
@@ -137,6 +201,7 @@ public class Transfers extends Activity {
 
             if(accountStrings.size() < 2)
             {
+                final Transfers t = this;
 
                 AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
                 errorBox.setMessage("You must have more than one account to make transfers")
@@ -144,12 +209,15 @@ public class Transfers extends Activity {
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
-
+                                ((KillApp) t.getApplication()).setStatus(false);
+                                t.finish();
                             }
                         });
                 AlertDialog alert = errorBox.create();
                 alert.show();
-                this.finish();
+
+
+
 
             }
 

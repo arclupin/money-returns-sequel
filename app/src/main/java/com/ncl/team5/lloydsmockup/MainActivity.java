@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import HTTPConnect.Connection;
+
 
 public class MainActivity extends Activity {
 
@@ -66,7 +68,6 @@ public class MainActivity extends Activity {
 
     public void btnClickPayments(View view) {
         Intent i = new Intent(this, Payments.class);
-        //Log.d("USERNAME", username);
         i.putExtra("ACCOUNT_USERNAME", username);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
@@ -75,6 +76,7 @@ public class MainActivity extends Activity {
 
     public void btnClickTransfers(View view) {
         Intent i = new Intent(this, Transfers.class);
+        i.putExtra("ACCOUNT_USERNAME", username);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -89,36 +91,51 @@ public class MainActivity extends Activity {
 
     public void btnClickAnalysis(View view) {
         Intent i = new Intent(this, Analysis.class);
+        i.putExtra("ACCOUNT_USERNAME", username);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
 
     public void btnClickAchievements(View view) {
         Intent i = new Intent(this , Achievements.class);
+        i.putExtra("ACCOUNT_USERNAME", username);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
 
     public void btnClickOffers(View view) {
         Intent i = new Intent(this, Locations.class);
+        i.putExtra("ACCOUNT_USERNAME", username);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
 
     public void btnClickProducts(View view) {
         Intent i = new Intent(this, Products.class);
+        i.putExtra("ACCOUNT_USERNAME", username);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
 
     public void btnClickSettings(View view) {
         Intent i = new Intent(this, Settings.class);
+        i.putExtra("ACCOUNT_USERNAME", username);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
 
     public void btnLogout(View view) {
-        this.finish();
+        Connection connect = new Connection(this);
+        try
+        {
+            connect.execute("TYPE","LOGOUT", "USR", "jmiller");
+        }
+        finally
+        {
+            ((KillApp) this.getApplication()).setStatus(false);
+            this.finish();
+
+        }
     }
 
     /* This is how the application knows if it has been stopped by an intent or by an
@@ -135,11 +152,23 @@ public class MainActivity extends Activity {
     protected void onResume() {
         if(((KillApp) this.getApplication()).getStatus())
         {
-            ((KillApp) this.getApplication()).setStatus(false);
-            finish();
-            Intent intent = new Intent(getApplicationContext(), Login.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            //APP IS KILLED :O
+
+            Connection connect = new Connection(this);
+            try
+            {
+                connect.execute("TYPE","LOGOUT", "USR", "jmiller");
+            }
+            finally
+            {
+                ((KillApp) this.getApplication()).setStatus(false);
+                finish();
+                Intent intent = new Intent(getApplicationContext(), Login.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+
+            }
+
 
         }
         else
