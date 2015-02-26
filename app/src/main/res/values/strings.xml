@@ -33,5 +33,6 @@
     <string name="action_location">Location Service</string>
     <string name="title_activity_change_password">ChangePassword</string>
     <string name="title_activity_legal_maps">LegalMaps</string>
+    <string name="title_activity_group_chooser">GroupChooser</string>
 
 </resources>

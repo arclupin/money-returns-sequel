@@ -9,6 +9,8 @@ package com.ncl.team5.lloydsmockup;
  */
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,9 +39,10 @@ import java.util.Map;
 public class Accounts extends Activity {
 
     /* Used for the list view */
-    private String[] items;
     private ArrayList<String> accountStrings;
     private String username;
+    private Accounts acc = this;
+    private boolean dialogClosed = false;
 
 
     @Override
@@ -57,7 +60,7 @@ public class Accounts extends Activity {
         //Log.d("Username", username);
 
         accountStrings = new ArrayList<String>();
-        getAccounts(username);
+        getAccounts();
         // Create The Adapter with passing ArrayList as 3rd parameter
         ArrayAdapter<String> arrayAdapter =
                 new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, accountStrings);
@@ -87,7 +90,7 @@ public class Accounts extends Activity {
 
 
 
-    void getAccounts(String username)
+    void getAccounts()
     {
         /* What this method would really do is get the data from the webserver
          * for a certain users accounts. This will then take that data and display it
@@ -96,37 +99,51 @@ public class Accounts extends Activity {
          */
 
 
-        Connection hc = new Connection(this);// trying to pass the activity to the coonection (not sure if this is legal though)
+        final Connection hc = new Connection(this);// trying to pass the activity to the coonection (not sure if this is legal though)
 
         try {
             String result = hc.execute("TYPE","SAA","USR", username ).get();
 
-
             JSONObject jo = new JSONObject(result);
 
-            JSONArray jsonArray = jo.getJSONArray("accounts");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject insideObject = jsonArray.getJSONObject(i);
-                accountStrings.add(insideObject.getString("account_number") + " : £" + insideObject.getString("avail_balance"));
+
+            if(jo.getString("expired").equals("true"))
+            {
+
+                //This uses the same code as the main menu does to start the login, only this time it is run when the user
+                //has timed out
+                AlertDialog.Builder msg = new AlertDialog.Builder(this);
+                msg.setMessage("Your session has been timed out, please login again")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                autoLogout();
+                                //dialogClosed = true;
+
+                            }
+                        });
+                AlertDialog alert = msg.create();
+                alert.show();
+
             }
+            else {
 
 
+
+
+                JSONArray jsonArray = jo.getJSONArray("accounts");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject insideObject = jsonArray.getJSONObject(i);
+                    accountStrings.add(insideObject.getString("account_number") + " : £" + insideObject.getString("avail_balance"));
+                }
+            }
 
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
-
-        /*
-         * this is where the JSON object will be split up... think im going to remove it from the
-         * HTTPConnect class and into these classes... or return a list of stings instead. not sure yet
-         */
-
-//        accountStrings.add("Account 1 : £100.00");
-//        accountStrings.add("Account 2 : £607.76");
-//        accountStrings.add("Account 3 : £5098.49");
-//        accountStrings.add("Account 4 : £0.01");
     }
 
     @Override
@@ -199,5 +216,27 @@ public class Accounts extends Activity {
         ((KillApp) this.getApplication()).setStatus(false);
         finish();
 
+    }
+
+
+    private void autoLogout()
+    {
+        Connection hc = new Connection(this);
+        try
+        {
+            hc.execute("TYPE","LOGOUT", "USR", username);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+        ((KillApp) this.getApplication()).setStatus(false);
+        finish();
+        Intent intent = new Intent(getApplicationContext(), Login.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        //login again
     }
 }

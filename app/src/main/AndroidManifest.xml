@@ -116,6 +116,10 @@
             android:name=".LegalMaps"
             android:label="@string/title_activity_legal_maps" >
         </activity>
+        <activity
+            android:name=".GroupChooser"
+            android:label="@string/title_activity_group_chooser" >
+        </activity>
     </application>
 
 </manifest>

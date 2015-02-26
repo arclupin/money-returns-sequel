@@ -202,6 +202,9 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
 
         try {
+
+            Log.d("test", "test");
+
             /* Creates name value pair to be sent via post to the server */
 //            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 //            nameValuePairs.add(new BasicNameValuePair("username", username));
@@ -213,6 +216,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
             if(cookies.getCookies().size() == 0)
             {
+                Log.d("cookies", "no cookies found");
                 return "false";
             }
 
@@ -258,61 +262,20 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
             }catch(Exception e)
             {
+                Log.d("error", "JSON PARSE ERROR");
                 throw new IOException("Error parsing JSON");
             }
 
         } catch (ClientProtocolException e) {
+            Log.d("error", "connection could not be established");
             throw new IOException("Connection could not be established");
 
         } catch (IOException e) {
+            Log.d("error", "connection could not be established");
             throw new IOException("Connection could not be established");
         }
 
 
     }
-
-
-    public void SSLConnect()
-    {
-        try {
-            // Load CAs from an InputStream
-            // (could be from a resource or ByteArrayInputStream or ...)
-            CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            // From https://www.washington.edu/itconnect/security/ca/load-der.crt
-            InputStream caInput = new BufferedInputStream(new FileInputStream("load-der.crt"));
-            Certificate ca;
-            try
-
-            {
-                ca = cf.generateCertificate(caInput);
-                System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
-            } finally
-
-            {
-                caInput.close();
-            }
-
-            // Create a KeyStore containing our trusted CAs
-            String keyStoreType = KeyStore.getDefaultType();
-            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-            keyStore.load(null, null);
-            keyStore.setCertificateEntry("ca", ca);
-
-            // Create a TrustManager that trusts the CAs in our KeyStore
-            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
-            tmf.init(keyStore);
-
-            // Create an SSLContext that uses our TrustManager
-            SSLContext context = SSLContext.getInstance("TLS");
-            context.init(null, tmf.getTrustManagers(), null);
-
-        }catch(Exception e)
-        {
-
-        }
-    }
-
-
 
 }

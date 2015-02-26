@@ -6,21 +6,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 
-public class ChangeAccountName extends Activity {
+public class GroupChooser extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_account_name);
-        Spinner s = (Spinner)findViewById(R.id.spinnerChangeName);
-        ArrayAdapter<CharSequence> a = ArrayAdapter.createFromResource(this, R.array.accountslist, android.R.layout.simple_spinner_item);
-        a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        s.setAdapter(a);
+        setContentView(R.layout.activity_group_chooser);
     }
 
 
@@ -48,18 +41,20 @@ public class ChangeAccountName extends Activity {
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
         }
-        /*else if (id == R.id.action_location) {
-            return true;
-        }*/
+
+
         return super.onOptionsItemSelected(item);
-
-
     }
 
-    public void btnMakeChange(View view) {
-        Toast.makeText(getBaseContext(), "Name Changed",
-                Toast.LENGTH_SHORT).show();
+
+
+    public void btnClickAddGroup(View view)
+    {
+        //add a new group here... probably save in a file somewhere
+        ((KillApp) this.getApplication()).setStatus(false);
+        this.finish();
     }
+
 
     /* This is how the application knows if it has been stopped by an intent or by an
      * external source (i.e. home button, phone call etc). Each time an intent is called, it
@@ -98,4 +93,5 @@ public class ChangeAccountName extends Activity {
         finish();
 
     }
+
 }

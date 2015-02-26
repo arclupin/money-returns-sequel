@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import HTTPConnect.Connection;
+
 
 public class Achievements extends Activity {
 
@@ -85,4 +87,5 @@ public class Achievements extends Activity {
         finish();
 
     }
+
 }

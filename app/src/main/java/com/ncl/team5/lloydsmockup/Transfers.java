@@ -117,14 +117,17 @@ public class Transfers extends Activity {
 
                 //This uses the same code as the main menu does to start the login, only this time it is run when the user
                 //has timed out
-                new CustomMessageBox(this, "You have been timed out, please login again");
-
-                ((KillApp) this.getApplication()).setStatus(false);
-                finish();
-                Intent intent = new Intent(getApplicationContext(), Login.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                //login again
+                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+                errorBox.setMessage("You have been timed out, please login again")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                autoLogout();
+                            }
+                        });
+                AlertDialog alert = errorBox.create();
+                alert.show();
             }
             else if (jo.getString("status").equals("true"))
             {
@@ -227,5 +230,26 @@ public class Transfers extends Activity {
         {
             e.printStackTrace();
         }
+    }
+
+    private void autoLogout()
+    {
+        Connection hc = new Connection(this);
+        try
+        {
+            hc.execute("TYPE","LOGOUT", "USR", username);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+        ((KillApp) this.getApplication()).setStatus(false);
+        finish();
+        Intent intent = new Intent(getApplicationContext(), Login.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        //login again
     }
 }

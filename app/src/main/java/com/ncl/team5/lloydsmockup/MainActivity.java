@@ -128,7 +128,7 @@ public class MainActivity extends Activity {
         Connection connect = new Connection(this);
         try
         {
-            connect.execute("TYPE","LOGOUT", "USR", "jmiller");
+            connect.execute("TYPE","LOGOUT", "USR", username);
         }
         finally
         {
@@ -157,7 +157,7 @@ public class MainActivity extends Activity {
             Connection connect = new Connection(this);
             try
             {
-                connect.execute("TYPE","LOGOUT", "USR", "jmiller");
+                connect.execute("TYPE","LOGOUT", "USR", username);
             }
             finally
             {

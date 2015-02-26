@@ -29,6 +29,7 @@ public class Statement extends Activity {
     private List<String> transInfo;
     private String username;
     private String accountNum;
+    Statement s = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,7 @@ public class Statement extends Activity {
         username = i.getStringExtra("USERNAME");
         accountNum = i.getStringExtra("ACCOUNT_NUM");
         String balance = i.getStringExtra("BALANCE");
+
 
         /* Sets the account name from the result text */
         TextView accountName = (TextView) findViewById(R.id.txtChange);
@@ -80,7 +82,7 @@ public class Statement extends Activity {
                 //Just sets up a basic alert box for now...
                 AlertDialog.Builder errorBox = new AlertDialog.Builder(Statement.this);
                 String details = transInfo.get(position);
-                String transId = details.split(" ~ ")[0];
+                final String transId = details.split(" ~ ")[0];
                 String amount = details.split(" ~ ")[1];
                 String time = details.split(" ~ ")[2];
                 String date = time.split(" ")[0];
@@ -94,7 +96,15 @@ public class Statement extends Activity {
                         .setCancelable(true)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
+                                dialog.dismiss();
+                            }
+                        })
+                .setNegativeButton("Add to Group", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                ((KillApp) s.getApplication()).setStatus(false);
+                                Intent i = new Intent(s, GroupChooser.class);
+                                i.putExtra("TRANS_ID", transId);
+                                startActivity(i);
                             }
                         });
                 AlertDialog alert = errorBox.create();
@@ -122,20 +132,30 @@ public class Statement extends Activity {
                 //logout
                 //This uses the same code as the main menu does to start the login, only this time it is run when the user
                 //has timed out
-                new CustomMessageBox(this, "You have been timed out, please login again");
-
-                ((KillApp) this.getApplication()).setStatus(false);
-                finish();
-                Intent intent = new Intent(getApplicationContext(), Login.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                //login again
+                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+                errorBox.setMessage("You have been timed out, please login again")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                autoLogout();
+                            }
+                        });
+                AlertDialog alert = errorBox.create();
+                alert.show();
             }
             else
             {
 
                 String amountString;
                 JSONArray jsonArray = jo.getJSONArray("transactions");
+
+                if(jsonArray.length() == 0)
+                {
+                    new CustomMessageBox(this, "Unfortunately you have no transaction information");
+                    return;
+                }
+
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject insideObject = jsonArray.getJSONObject(i);
                     if(insideObject.getString("Amount").matches("[0-9]+"))
@@ -149,6 +169,9 @@ public class Statement extends Activity {
                     statementList.add(insideObject.getString("Transaction_ID") + " : £" + amountString);
                     transInfo.add(insideObject.getString("Transaction_ID") + " ~ £" + amountString + " ~ " + insideObject.getString("Time") + " ~ " + insideObject.getString("Payee"));
                 }
+
+
+
                 //Do something here to change the format of the JSON into a sort of map thing...
                 //have to talk to danh about how the JSON is returned
 
@@ -230,5 +253,26 @@ public class Statement extends Activity {
         ((KillApp) this.getApplication()).setStatus(false);
         finish();
 
+    }
+
+    private void autoLogout()
+    {
+        Connection hc = new Connection(this);
+        try
+        {
+            hc.execute("TYPE","LOGOUT", "USR", username);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+        ((KillApp) this.getApplication()).setStatus(false);
+        finish();
+        Intent intent = new Intent(getApplicationContext(), Login.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        //login again
     }
 }
