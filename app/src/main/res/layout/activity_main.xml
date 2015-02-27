@@ -105,7 +105,7 @@
             <GridLayout android:columnCount="1"
                 android:rowCount="2"
                 android:layout_width="fill_parent">
-                <ImageButton android:src="@drawable/analysis"
+                <ImageButton android:src="@drawable/piechartimage"
 
                     android:layout_width="match_parent"
                     android:background="@android:color/transparent"
@@ -125,7 +125,7 @@
             <GridLayout android:columnCount="1"
             android:rowCount="2"
             android:layout_width="fill_parent">
-            <ImageButton android:src="@drawable/housesharingicon"
+            <ImageButton android:src="@drawable/housesharingrecent"
                 android:paddingLeft="13dp"
                 android:paddingRight="0dp"
                 android:layout_width="match_parent"
