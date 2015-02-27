@@ -194,8 +194,8 @@ public class Connection extends AsyncTask <String, Void, String>  {
     public String loginConnect(List<NameValuePair> nameValuePairs) throws IOException {
         // Create a new HttpClient and Post Header
         httpclient = new DefaultHttpClient();
-         cookies = new BasicCookieStore();
-         context = new BasicHttpContext();
+        cookies = new BasicCookieStore();
+        context = new BasicHttpContext();
         context.setAttribute(ClientContext.COOKIE_STORE,cookies);
         HttpPost httppost = new HttpPost(URL);
 
