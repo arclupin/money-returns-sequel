@@ -2,5 +2,6 @@
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle" >
     <solid android:color="#ffffff" />
-    <stroke android:width="1dip" android:color="@color/lloyds_color"/>
+    <stroke android:width="1dip"
+        android:color="#ff000000"/>
 </shape>

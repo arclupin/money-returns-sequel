@@ -13,13 +13,15 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Transfers"
-        android:id="@+id/description"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:textSize="40dp"
-        android:textColor="#ff000000" />
+        android:textColor="#ff000000"
+        android:text="From:"
+        android:textSize="14pt"
+        android:id="@+id/textView9"
+        android:layout_alignTop="@+id/spinnerFrom"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="-10dp"
+        android:paddingRight="20dp" />
 
     <Spinner
         android:layout_width="fill_parent"
@@ -27,22 +29,26 @@
         android:id="@+id/spinnerFrom"
         android:spinnerMode="dropdown"
         android:textAlignment="center"
-        android:layout_below="@+id/description"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="36dp"
-        android:background="#ff9e9e9e" />
+        android:clickable="true"
+        android:background="@drawable/spinnerimg"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="false"
+        android:layout_marginTop="55dp"
+        android:layout_toEndOf="@+id/textView9"
+        android:layout_toRightOf="@+id/textView9" />
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Make Transfer"
-        android:id="@+id/button"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:onClick="btnMakeTrans"
-        android:textColor="#ffffffff" />
+        android:text="To:"
+        android:textSize="14pt"
+        android:textColor="#ff000000"
+        android:id="@+id/textView10"
+        android:layout_alignTop="@+id/spinnerTo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="-5dp"
+        android:paddingRight="20dp" />
 
     <Spinner
         android:layout_width="fill_parent"
@@ -50,36 +56,51 @@
         android:id="@+id/spinnerTo"
         android:spinnerMode="dropdown"
         android:textAlignment="center"
-        android:layout_marginTop="49dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/spinnerimg"
         android:layout_below="@+id/spinnerFrom"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:background="#ff9f9f9f" />
+        android:layout_toEndOf="@+id/textView10"
+        android:layout_alignLeft="@+id/spinnerFrom"
+        android:layout_alignStart="@+id/spinnerFrom" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Amount:"
+        android:textSize="14pt"
         android:id="@+id/textView2"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="52dp"
         android:textColor="#ff000000"
         android:layout_below="@+id/spinnerTo"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:paddingRight="25dp" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
         android:id="@+id/amountText"
-        android:layout_below="@+id/textView2"
-        android:layout_marginTop="29dp"
-        android:layout_alignRight="@+id/description"
-        android:layout_alignEnd="@+id/description"
-        android:layout_alignLeft="@+id/description"
-        android:layout_alignStart="@+id/description"
-        android:background="@drawable/border"
         android:textColor="#ff000000"
-        android:inputType="text"
-        android:imeOptions="actionDone"/>
+        android:layout_alignBottom="@+id/textView2"
+        android:background="@drawable/border"
+        android:layout_alignRight="@+id/spinnerTo"
+        android:layout_alignEnd="@+id/spinnerTo"
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_toEndOf="@+id/amountText" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Make Transfer"
+        android:id="@+id/button1"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="41dp"
+        android:onClick="btnMakeTrans"
+        android:paddingLeft="70dp"
+        android:paddingRight="70dp" />
 
 </RelativeLayout>
