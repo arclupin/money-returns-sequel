@@ -15,81 +15,80 @@
         android:layout_height="wrap_content"
         android:textColor="#ff000000"
         android:text="From:"
-        android:textSize="14pt"
+        android:textSize="12pt"
         android:id="@+id/textView9"
-        android:layout_alignTop="@+id/spinnerFrom"
+        android:paddingRight="20dp"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="-10dp"
-        android:paddingRight="20dp" />
+        android:layout_marginTop="20dp" />
 
     <Spinner
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/spinnerFrom"
         android:spinnerMode="dropdown"
         android:textAlignment="center"
         android:clickable="true"
-        android:background="@drawable/spinnerimg"
+        android:background="@drawable/spinnerimg2"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="false"
         android:layout_marginTop="55dp"
         android:layout_toEndOf="@+id/textView9"
-        android:layout_toRightOf="@+id/textView9" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="To:"
-        android:textSize="14pt"
+        android:textSize="12pt"
         android:textColor="#ff000000"
         android:id="@+id/textView10"
-        android:layout_alignTop="@+id/spinnerTo"
+        android:paddingRight="20dp"
+        android:layout_below="@+id/spinnerFrom"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="-5dp"
-        android:paddingRight="20dp" />
+        android:layout_marginTop="20dp" />
 
     <Spinner
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/spinnerTo"
         android:spinnerMode="dropdown"
         android:textAlignment="center"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/spinnerimg"
-        android:layout_below="@+id/spinnerFrom"
-        android:layout_toEndOf="@+id/textView10"
-        android:layout_alignLeft="@+id/spinnerFrom"
-        android:layout_alignStart="@+id/spinnerFrom" />
+        android:background="@drawable/spinnerimg2"
+        android:layout_below="@+id/textView10"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Amount:"
-        android:textSize="14pt"
+        android:text="Amount £:"
+        android:textSize="12pt"
         android:id="@+id/textView2"
-        android:layout_marginTop="52dp"
         android:textColor="#ff000000"
+        android:paddingRight="25dp"
         android:layout_below="@+id/spinnerTo"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:paddingRight="25dp" />
+        android:layout_marginTop="20dp" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
         android:ems="10"
         android:id="@+id/amountText"
         android:textColor="#ff000000"
-        android:layout_alignBottom="@+id/textView2"
         android:background="@drawable/border"
-        android:layout_alignRight="@+id/spinnerTo"
-        android:layout_alignEnd="@+id/spinnerTo"
-        android:layout_toRightOf="@+id/textView2"
-        android:layout_toEndOf="@+id/amountText" />
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:layout_width="wrap_content"

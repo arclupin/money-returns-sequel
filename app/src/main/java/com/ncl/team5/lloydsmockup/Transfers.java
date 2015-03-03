@@ -39,7 +39,7 @@ public class Transfers extends Activity {
         setContentView(R.layout.activity_transfers);
         Spinner s = (Spinner) findViewById(R.id.spinnerFrom);
         Spinner s2 = (Spinner) findViewById(R.id.spinnerTo);
-        ArrayAdapter<String> a = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, accountStrings);
+        ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, accountStrings);
         a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         s.setAdapter(a);
         s2.setAdapter(a);
