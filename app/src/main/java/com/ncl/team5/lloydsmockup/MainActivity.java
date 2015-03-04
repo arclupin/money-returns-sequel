@@ -185,8 +185,15 @@ public class MainActivity extends Activity {
     //its status can be set to false, so it doesnt launch the login on on resume
     @Override
     public void onBackPressed() {
-        ((KillApp) this.getApplication()).setStatus(false);
-        finish();
-
+        Connection connect = new Connection(this);
+        try
+        {
+            connect.execute("TYPE","LOGOUT", "USR", username);
+        }
+        finally
+        {
+            ((KillApp) this.getApplication()).setStatus(false);
+            this.finish();
+        }
     }
 }

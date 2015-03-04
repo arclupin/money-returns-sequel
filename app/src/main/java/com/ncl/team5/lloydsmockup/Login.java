@@ -261,4 +261,6 @@ public class Login extends Activity {
         ((EditText) findViewById(R.id.username)).setText("");
         ((EditText) findViewById(R.id.password)).setText("");
     }
+
+
 }

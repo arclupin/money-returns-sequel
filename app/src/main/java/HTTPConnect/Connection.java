@@ -56,10 +56,10 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
     /* String to store the web address as a constant */
     private final String URL = "http://homepages.cs.ncl.ac.uk/2014-15/csc2022_team5/PHP/main.php";
-    HttpClient httpclient = new DefaultHttpClient();
-    CookieStore cookies;
-    HttpContext context = new BasicHttpContext();
-    Activity a;
+    private HttpClient httpclient = new DefaultHttpClient();
+    private CookieStore cookies;
+    private HttpContext context = new BasicHttpContext();
+    private Activity a;
 
     public Connection(Activity a) {
 

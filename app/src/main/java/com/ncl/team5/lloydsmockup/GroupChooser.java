@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 
 public class GroupChooser extends Activity {
@@ -14,6 +16,10 @@ public class GroupChooser extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_chooser);
+
+        /* I will need to populate the current groups here... probably by sending data to the server in some way
+         * but need to wait for the tables ot be set up
+         */
     }
 
 
@@ -50,8 +56,31 @@ public class GroupChooser extends Activity {
 
     public void btnClickAddGroup(View view)
     {
+        //will need to make a selection about whether to choose group from text box or spinner... probably last
+        //one they used and dynamically remove the data in the other box...
+
+        Spinner groupSpin = (Spinner) findViewById(R.id.groupNameSpinner);
+        TextView nameBox = (TextView) findViewById(R.id.nameText);
+        TextView groupText = (TextView) findViewById(R.id.newGroupText);
+
+        if(groupSpin.getSelectedItem().toString() == null)
+        {
+            if(groupText.getText() == null)
+            {
+                new CustomMessageBox(this, "Please select a group or enter a new one");
+            }
+            else
+            {
+                //use text box
+            }
+        }
+        else
+        {
+            //use spinner
+        }
+
         //add a new group here... probably save in a file somewhere
-        ((KillApp) this.getApplication()).setStatus(false);
+                ((KillApp) this.getApplication()).setStatus(false);
         this.finish();
     }
 

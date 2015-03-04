@@ -22,6 +22,7 @@ public class Prefer extends PreferenceActivity {
 
 
     }
+
     @Override
     public boolean isValidFragment(String fragmentName) {
         if (DisplayOptions.class.getName().equals(fragmentName)) {

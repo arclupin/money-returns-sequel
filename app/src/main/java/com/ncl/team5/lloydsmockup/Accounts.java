@@ -41,8 +41,7 @@ public class Accounts extends Activity {
     /* Used for the list view */
     private ArrayList<String> accountStrings;
     private String username;
-    private Accounts acc = this;
-    private boolean dialogClosed = false;
+
 
 
     @Override
@@ -128,9 +127,6 @@ public class Accounts extends Activity {
 
             }
             else {
-
-
-
 
                 JSONArray jsonArray = jo.getJSONArray("accounts");
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -218,7 +214,11 @@ public class Accounts extends Activity {
 
     }
 
-
+    /* This is the code needed to log the user out if their session has timed out...
+     * because android is totally asyncronous it wont let me just put it after the
+     * popup box code, and it wont let me put it inside the box close stuff... no idea
+     * why... but its here anyway
+     */
     private void autoLogout()
     {
         Connection hc = new Connection(this);
