@@ -145,24 +145,26 @@ public class Login extends Activity {
          */
 
 
-        HTTPConnect test = new HTTPConnect();
+//        HTTPConnect test = new HTTPConnect();
+//
+//        try {
+//            return test.getLogin();
+//        }catch (Exception e)
+//        {
+//            netProbs = true;
+//            AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+//            errorBox.setMessage("Network Problems Detected")
+//                    .setCancelable(false)
+//                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int id) {
+//                            dialog.cancel();
+//                        }
+//                    });
+//            AlertDialog alert = errorBox.create();
+//            alert.show();
+//            return false;
+//        }
 
-        try {
-            return test.getLogin();
-        }catch (Exception e)
-        {
-            netProbs = true;
-            AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-            errorBox.setMessage("Network Problems Detected")
-                    .setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
-            AlertDialog alert = errorBox.create();
-            alert.show();
-            return false;
-        }
+        return true;
     }
 }
