@@ -6,11 +6,76 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="#ffffffff"
     tools:context="com.ncl.team5.lloydsmockup.Settings">
 
-    <TextView
-        android:text="THIS IS THE SETTINGS PAGE"
+    <!--<TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:id="@+id/changeFontSize"
+        android:text="Set Font Size"
+        android:textSize="18dp"
+        android:textColor="#ff000000"
+        />
 
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerFont"
+        android:background="#ff9f9f9f"
+        android:layout_below="@+id/changeFontSize"
+        android:padding="10dp"
+        android:layout_marginBottom="8dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="false" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:textColor="#ff000000"
+        android:text="Set Colours"
+        android:id="@+id/changeColours"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/spinnerFont" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerColour"
+        android:background="#ff9f9f9f"
+        android:padding="10dp"
+        android:layout_marginBottom="8dp"
+        android:layout_below="@+id/changeColours"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Time Inactivity"
+        android:textSize="18dp"
+        android:textColor="#ff000000"
+        android:id="@+id/logTime"
+        android:layout_below="@+id/spinnerColour"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerTime"
+        android:padding="10dp"
+        android:background="#ff9f9f9f"
+        android:layout_below="@+id/logTime"
+        android:layout_centerHorizontal="true" />-->
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listOptions"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#ffa4a4a4"/>
 </RelativeLayout>

@@ -4,10 +4,10 @@
     >
 
 
-    <item android:title="@string/action_Notifications"
+   <!-- <item android:title="@string/action_Notifications"
         android:id="@+id/action_location"
         android:icon="@drawable/ic_action_location_searching"
-        android:showAsAction="ifRoom"/>
+        android:showAsAction="ifRoom"/>-->
     <item android:title="@string/action_location"
         android:id="@+id/action_notifications"
         android:icon="@drawable/ic_action_email"

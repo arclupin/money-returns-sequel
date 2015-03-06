@@ -2,17 +2,33 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ncl.team5.lloydsmockup" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <!--
+         The following two permissions are not required to use
+         Google Maps Android API v2, but are recommended.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <!-- This is the permission needed to save files tot he android FS -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+﻿
+﻿
     <application
+        android:name=".KillApp"
         android:allowBackup="true"
         android:icon="@drawable/horse_logo"
-        android:logo="@drawable/horse_logo"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-
-
-        >
-        <uses-permission android:name="android.permission.INTERNET"/>﻿
-
+        android:logo="@drawable/horse_logo"
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".Login"
             android:label="@string/app_name"
@@ -27,8 +43,7 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait"
-            android:theme="@style/menuTheme"
-           >
+            android:theme="@style/menuTheme" >
         </activity>
         <activity
             android:name=".Transfers"
@@ -38,8 +53,7 @@
         <activity
             android:name=".Accounts"
             android:label="@string/title_activity_accounts"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Analysis"
@@ -47,15 +61,13 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".Offers"
+            android:name=".Locations"
             android:label="@string/title_activity_offers"
-
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Achievements"
             android:label="@string/title_activity_offers"
-
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -76,13 +88,52 @@
         <activity
             android:name=".Payments"
             android:label="@string/title_activity_payments"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Statement"
             android:label="@string/title_activity_statement"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".Prefer"
+            android:label="@string/title_activity_prefer" >
+        </activity>
+        <activity
+            android:name=".ChangeAccountName"
+            android:label="@string/title_activity_change_account_name" >
+        </activity>
+        <activity
+            android:name=".ChangePassword"
+            android:label="@string/title_activity_change_password" >
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyCXw7DLZzavlCT4j6vdHKLAt7UpXQXfQ6M" />
+
+        <activity
+            android:name=".LegalMaps"
+            android:label="@string/title_activity_legal_maps" >
+        </activity>
+        <activity
+            android:name=".GroupChooser"
+            android:label="@string/title_activity_group_chooser" >
+        </activity>
+        <activity
+            android:name=".TabNew"
+            android:label="@string/title_activity_tab_new" >
+        </activity>
+        <activity
+            android:name=".TabExists"
+            android:label="@string/title_activity_tab_exists" >
+        </activity>
+        <activity
+            android:name=".PaymentsTabs"
+            android:label="@string/title_activity_payments_tabs" >
         </activity>
     </application>
 

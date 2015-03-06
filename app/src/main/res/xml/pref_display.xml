@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:title="Change Font Size"
+        android:summary="Set the font size of the application"
+        android:key="fontSizeList"
+        android:defaultValue="1"
+        android:entries="@array/listArray"
+        android:entryValues="@array/listValues"
+
+        />
+    <ListPreference
+        android:title="Change Colours"
+        android:summary="Change the colours of the application"
+        android:key="colourList"
+        android:defaultValue="1"
+        android:entries="@array/colourListArray"
+        android:entryValues="@array/colourListValues"
+        />
+    <ListPreference
+        android:title="Time Inactivity"
+        android:summary="Set the time"
+        android:key="timeList"
+        android:defaultValue="1"
+        android:entries="@array/timeListArray"
+        android:entryValues="@array/timeListValues"
+        />
+</PreferenceScreen>

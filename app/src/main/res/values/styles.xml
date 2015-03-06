@@ -7,7 +7,6 @@
         <item name="android:buttonStyle">@style/button_style</item>
         <item name="android:editTextStyle">@style/editText_style</item>
 
-
     </style>
 
     <style name="action_bar" parent="android:Widget.Holo.ActionBar">
@@ -24,4 +23,7 @@
     <style name="editText_style" parent="android:Widget.Holo.EditText">
         <item name="android:padding">5dp</item>
     </style>
+
+
+
 </resources>

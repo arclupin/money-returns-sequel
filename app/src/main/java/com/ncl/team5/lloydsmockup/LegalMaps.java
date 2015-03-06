@@ -1,19 +1,24 @@
 package com.ncl.team5.lloydsmockup;
-import android.app.ActionBar;
-import  android.app.Activity;
-import android.content.Intent;
+
+import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 
-public class Offers extends Activity {
+public class LegalMaps extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_offers);
-
+        setContentView(R.layout.activity_legal_maps);
+        TextView legalNotice = (TextView)findViewById(R.id.textViewLegal);
+        legalNotice.setTextColor(Color.BLACK);
+        legalNotice.setText(GooglePlayServicesUtil.getOpenSourceSoftwareLicenseInfo(this));
     }
 
 
@@ -31,19 +36,11 @@ public class Offers extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_backHome) {
-            this.finish();
-            //Intent intent = new Intent(this, MainActivity.class);
-            //startActivity(intent);
-        }
-        else if (id == R.id.action_notifications) {
-            Intent intent = new Intent(this, Notifications.class);
-            startActivity(intent);
-
-        }
-        else if (id == R.id.action_location) {
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 }
