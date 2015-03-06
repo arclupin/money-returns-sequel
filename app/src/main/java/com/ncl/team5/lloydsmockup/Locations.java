@@ -37,7 +37,7 @@ public class Locations extends FragmentActivity {
         /*uiSet.setZoomControlsEnabled(true);*/
         //To disable the toolbar when I click on a marker
         uiSet.setMapToolbarEnabled(disabled);
-        //get Your Current Location
+        //gets my Current Location
         getLocCurrent();
 
     }

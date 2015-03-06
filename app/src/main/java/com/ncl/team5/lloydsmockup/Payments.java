@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TabHost;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -30,22 +31,36 @@ public class Payments extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+/*
         Intent i = getIntent();
         username = i.getStringExtra("ACCOUNT_USERNAME");
 
-        getAccounts();
+        getAccounts();*/
 
         setContentView(R.layout.activity_payments);
-        Spinner s = (Spinner) findViewById(R.id.spinnerFrom);
-        ArrayAdapter<String> a = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, accountStrings);
+        TabHost tabs=(TabHost)findViewById(R.id.tabhost);
+
+        tabs.setup();
+
+        TabHost.TabSpec spec=tabs.newTabSpec("tag1");
+
+        spec.setContent(R.id.tab1);
+        spec.setIndicator("New Recipient");
+        tabs.addTab(spec);
+
+        spec=tabs.newTabSpec("tag2");
+        spec.setContent(R.id.tab2);
+        spec.setIndicator("Existing Recipient");
+        tabs.addTab(spec);
+        /*Spinner s = (Spinner) findViewById(R.id.spinnerFrom);
+        ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, accountStrings);
         a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        s.setAdapter(a);
+        s.setAdapter(a);*/
     }
 
 
 
-
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -76,7 +91,7 @@ public class Payments extends Activity {
     }
 
 
-    /* My Functions are under here */
+    *//* My Functions are under here *//*
 
 
     public void btnMakePay(View view) {
@@ -190,16 +205,16 @@ public class Payments extends Activity {
     }
 
 
-    /* This is how the application knows if it has been stopped by an intent or by an
+    *//* This is how the application knows if it has been stopped by an intent or by an
      * external source (i.e. home button, phone call etc). Each time an intent is called, it
      * sets an application global variable denoted as KillApp to false. This means that when a new
      * activity is opened, it does not want to restart the application. However if no intent is
      * fired (i.e. phonecall, home button pressed) KillApp will have the value true so it will
      * restart back to the login activity.
-     */
+     *//*
 
-    /* This is where the test is done to see whether the KillApp variable is true, and if it is, to call
-     * the login class. It also clears the activity stack so the back button cannot be used to go back */
+    *//* This is where the test is done to see whether the KillApp variable is true, and if it is, to call
+     * the login class. It also clears the activity stack so the back button cannot be used to go back *//*
     @Override
     protected void onResume() {
         if(((KillApp) this.getApplication()).getStatus())
@@ -249,5 +264,5 @@ public class Payments extends Activity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         //login again
-    }
+    }*/
 }

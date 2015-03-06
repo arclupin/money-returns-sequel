@@ -123,6 +123,18 @@
             android:name=".GroupChooser"
             android:label="@string/title_activity_group_chooser" >
         </activity>
+        <activity
+            android:name=".TabNew"
+            android:label="@string/title_activity_tab_new" >
+        </activity>
+        <activity
+            android:name=".TabExists"
+            android:label="@string/title_activity_tab_exists" >
+        </activity>
+        <activity
+            android:name=".PaymentsTabs"
+            android:label="@string/title_activity_payments_tabs" >
+        </activity>
     </application>
 
 </manifest>
