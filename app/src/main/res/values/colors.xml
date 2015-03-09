@@ -4,4 +4,7 @@
     <color name="menu_text_color">#25383C</color>
     <color name="preferences_back">#ffffffff</color>
     <color name="white">#FFFFFF</color>
+    <color name="infield_color">#f1f2f3</color>
+    <color name="tab_text_color_2">#1E2710</color>
+ 
 </resources>

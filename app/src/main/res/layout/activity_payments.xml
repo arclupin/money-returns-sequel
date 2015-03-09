@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
@@ -10,239 +11,51 @@
 
     <TabHost xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/tabhost"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <!--<LinearLayout-->
+            <!--android:orientation="vertical"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
             <TabWidget android:id="@android:id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#ffe8e8e8"
-
-
                 />
             <FrameLayout android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
+                android:layout_width="0px"
                 android:layout_height="match_parent">
-
-            <RelativeLayout android:id="@+id/tab1"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
-                    <Spinner
-                        android:layout_width="fill_parent"
-                        android:layout_height="43dp"
-                        android:id="@+id/spinnerFrom"
-                        android:spinnerMode="dropdown"
-                        android:textAlignment="center"
-                        android:background="@drawable/spinnerimg2"
-                        android:layout_below="@+id/textView11"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="5dp" />
-
-                    <EditText
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/amountPay"
-                        android:textColor="#ff000000"
-                        android:background="@drawable/border"
-                        android:layout_alignRight="@+id/sortCodeTxt"
-                        android:layout_alignEnd="@+id/sortCodeTxt"
-                        android:layout_below="@+id/textView5"
-                        android:layout_alignLeft="@+id/sortCodeTxt"
-                        android:layout_alignStart="@+id/sortCodeTxt"
-                        android:layout_marginTop="5dp"
-                        android:textSize="12pt" />
-
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Make Payment"
-                        android:id="@+id/button"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:clickable="true"
-                        android:onClick="btnMakePay" />
-
-                    <EditText
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:ems="10"
-                        android:textColor="#ff000000"
-                        android:id="@+id/amountText"
-                        android:background="@drawable/border"
-                        android:layout_below="@+id/textView3"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="5dp"
-                        android:textSize="12pt" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Amount:"
-                        android:id="@+id/textView5"
-                        android:textColor="#ff000000"
-                        android:layout_below="@+id/sortCodeTxt"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="10dp"
-                        android:textSize="12pt" />
-
-                    <TextView
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="From:"
-                        android:textColor="#ff000000"
-                        android:id="@+id/textView11"
-                        android:textSize="12pt"
-                        android:layout_marginTop="10dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Sort Code:"
-                        android:id="@+id/textView4"
-                        android:textColor="#ff000000"
-                        android:layout_below="@+id/amountText"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="10dp" />
-
-                    <EditText
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/sortCodeTxt"
-                        android:textColor="#ff000000"
-                        android:layout_below="@+id/textView4"
-                        android:layout_alignLeft="@+id/amountText"
-                        android:layout_alignStart="@+id/amountText"
-                        android:layout_alignRight="@+id/amountText"
-                        android:layout_alignEnd="@+id/amountText"
-                        android:background="@drawable/border"
-                        android:textSize="12pt"
-                        android:layout_marginTop="5dp" />
-
-                    <TextView
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Account Number:"
-                        android:textColor="#ff000000"
-
-                        android:id="@+id/textView3"
-                        android:textSize="12pt"
-                        android:layout_below="@+id/spinnerFrom"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="10dp" />
-                </RelativeLayout>
-
-                <RelativeLayout android:id="@+id/tab2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-
-                    >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#ff000000"
-                        android:text="From:"
-                        android:textSize="12pt"
-                        android:id="@+id/textView9"
-                        android:paddingRight="20dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="20dp" />
-
-                    <Spinner
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/spinnerFromPayments"
-                        android:spinnerMode="dropdown"
-                        android:textAlignment="center"
-                        android:clickable="true"
-                        android:background="@drawable/spinnerimg2"
-                        android:layout_below="@+id/textView9"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="5dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="To:"
-                        android:textSize="12pt"
-                        android:textColor="#ff000000"
-                        android:id="@+id/textViewPay"
-                        android:paddingRight="20dp"
-                        android:layout_below="@+id/spinnerFromPayments"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="10dp" />
-
-                    <Spinner
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/spinnerTo"
-                        android:spinnerMode="dropdown"
-                        android:textAlignment="center"
-                        android:background="@drawable/spinnerimg2"
-                        android:layout_below="@+id/textViewPay"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="5dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Amount £:"
-                        android:textSize="12pt"
-                        android:id="@+id/textView2"
-                        android:textColor="#ff000000"
-                        android:paddingRight="25dp"
-                        android:layout_below="@+id/spinnerTo"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="10dp" />
-
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:ems="10"
-                        android:id="@+id/amountTextPay"
-                        android:textColor="#ff000000"
-                        android:background="@drawable/border"
-                        android:layout_below="@+id/textView2"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"
-                        android:hint="50.00"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:textSize="12pt"
-                        android:layout_marginTop="5dp" />
-
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Make Payment"
-                        android:id="@+id/button1"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:clickable="true"
-                        android:onClick="btnMakePay" />
-
-                </RelativeLayout>
-            </FrameLayout>
-        </LinearLayout>
+            <!--We use these 2 dummy layouts below in order to get the tab views (no data literally).
+            The ViewPager below is responsible for holding pages-->
+                <RelativeLayout
+                android:id="@+id/tab1"
+                android:layout_width="0px"
+                android:layout_height="0px"
+                    ></RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/tab2"
+                    android:layout_width="0px"
+                    android:layout_height="0px"></RelativeLayout>
+                </FrameLayout>
+        <!--</LinearLayout>-->
     </TabHost>
-</RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/payment_pager"
+        android:padding="0px"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+
+        />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Make Payment"
+        android:layout_marginTop="-50dp"
+        android:id="@+id/button1"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:clickable="true"
+        android:onClick="btnMakePay"
+        style="@style/make_payment" />
+</LinearLayout>
