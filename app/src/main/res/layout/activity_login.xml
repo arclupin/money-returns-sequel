@@ -58,14 +58,14 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:layout_marginTop="10dp">
-       <ImageView android:id="@+id/advert1"
-           android:src="@drawable/advert1"
+       <ImageView android:id="@+id/gradaccad"
+           android:src="@drawable/gradaccad"
            android:layout_height="match_parent"
            android:layout_width="match_parent"
 
        />
-        <ImageView android:id="@+id/advert2"
-            android:src="@drawable/advert2"
+        <ImageView android:id="@+id/studaccad"
+            android:src="@drawable/studaccad"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
 
