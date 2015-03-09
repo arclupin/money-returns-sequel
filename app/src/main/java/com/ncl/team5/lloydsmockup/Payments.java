@@ -4,12 +4,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -20,13 +25,18 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import FragPager.Payment_FragmentPagerAdapter;
 import HTTPConnect.Connection;
+import android.util.Log;
+import android.widget.Toast;
 
 
-public class Payments extends Activity {
+public class Payments extends FragmentActivity {
 
     private String username;
     private List<String> accountStrings = new ArrayList<String>();
+    Payment_FragmentPagerAdapter fragmentPagerAdapter;
+    ViewPager pager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,36 +48,77 @@ public class Payments extends Activity {
         getAccounts();*/
 
         setContentView(R.layout.activity_payments);
-        TabHost tabs=(TabHost)findViewById(R.id.tabhost);
 
+        // sat up layout (tab view + swipe view for pages)
+        // My idea is that we achieve tab view using TabHost (As the solution with ActionBar is deprecated)
+        // and we achieve swipe view using ViewPager so basically the FrameLayout of TabHost is just a placeholder for the tab view.
+
+        // set up tabs view
+        TabHost tabs=(TabHost)findViewById(R.id.tabhost);
         tabs.setup();
 
-        TabHost.TabSpec spec=tabs.newTabSpec("tag1");
-
+        TabHost.TabSpec spec=tabs.newTabSpec("tag1"); // add tag 1
         spec.setContent(R.id.tab1);
-        spec.setIndicator("New Recipient");
-        tabs.addTab(spec);
-
-        spec=tabs.newTabSpec("tag2");
-        spec.setContent(R.id.tab2);
         spec.setIndicator("Existing Recipient");
         tabs.addTab(spec);
+
+        TabHost.TabSpec spec2=tabs.newTabSpec("tag2");// add tag 2 (we could keep spec objects separate for easy later reference
+        spec2.setContent(R.id.tab2);
+        spec2.setIndicator("New Recipient");
+        tabs.addTab(spec2);
+
+        // set up tab's UI
+        for (int i = 0; i < 2; i++) {
+            LinearLayout childView = (LinearLayout) tabs.getTabWidget().getChildTabViewAt(i); // get the tab view
+            childView.setBackgroundResource(R.drawable.tab_color); // set up the tab's bg
+            for (int m = 0; m < childView.getChildCount(); m++) {
+                Log.d("child " + m, childView.getChildAt(m).toString()); // some debugging logs for the tab view
+            }
+            TextView temp = (TextView) childView.getChildAt(1);
+            temp.setTextColor(Color.parseColor("#1E2710")); // set up the tab text's color
+        }
+
+        // set up the view pager for displaying pages (swipe view)
+        pager = (ViewPager) findViewById(R.id.payment_pager);
+        fragmentPagerAdapter = new Payment_FragmentPagerAdapter(getSupportFragmentManager());
+        pager.setAdapter(fragmentPagerAdapter); // set up the data for views
+
+        // temp_ vars for registering events
+        final TabHost temp_tabs = tabs;
+        final ViewPager temp_pager = pager;
+
+        //registering tab and page switch events (tab switch <-> view switch)
+        // 1. on tab switch -> view switch
+        // (needed because we don't use the default frame layout of TabHost as we want to achieve the swipe view hassle-free using the ViewPager)
+        tabs.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+                pager.setCurrentItem(temp_tabs.getCurrentTab(), true); // change view
+            }
+        });
+
+        // 2. on view switch -> tab switch (trigger tab switch on page switch)
+        pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+               temp_tabs.setCurrentTab(position); // change tab
+            }
+        });
+    }
+
         /*Spinner s = (Spinner) findViewById(R.id.spinnerFrom);
         ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, accountStrings);
         a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         s.setAdapter(a);*/
-    }
 
 
-
-/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
-    }
-
+    } }
+/*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -265,4 +316,4 @@ public class Payments extends Activity {
         startActivity(intent);
         //login again
     }*/
-}
+

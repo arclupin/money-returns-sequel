@@ -1,0 +1,107 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="0px"
+    android:background="#ffffffff">
+
+<LinearLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id = "@+id/Payment_Old_Layout_Group1"
+    android:layout_marginTop="@dimen/activity_top_margin_field"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Pay From"
+        android:id="@+id/Payment_Old_Payfrom"
+        android:textColor="#ff000000"
+        style="@style/Sub_Text"/>
+        <!--android:layout_marginLeft="@dimen/activity_horizontal_text_margin"-->
+        <!--android:layout_marginRight="@dimen/activity_horizontal_margin"/>-->
+    <Spinner
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/field_height"
+        android:id="@+id/Payment_Old_spinner1"
+        android:spinnerMode="dropdown"
+        android:textAlignment="center"
+        android:layout_marginTop="@dimen/activity_sub_field_vertical_margin"
+        android:background="@color/infield_color"
+        android:contentDescription="Choose Account"
+        />
+        <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+        <!--android:layout_marginRight="@dimen/activity_horizontal_margin"-->
+
+
+</LinearLayout>
+
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="vertical"
+android:layout_below="@+id/Payment_Old_Layout_Group1"
+android:id = "@+id/Payment_Old_Layout_Group2"
+android:layout_marginTop="@dimen/activity_fields_lines_space"
+    >
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:text="Pay To"
+    android:id="@+id/Payment_Old_Payto"
+    android:textColor="#ff000000"
+    style="@style/Sub_Text"/>
+    <!--android:layout_marginLeft="@dimen/activity_horizontal_text_margin"-->
+    <!--android:layout_marginRight="@dimen/activity_horizontal_margin"/>-->
+<Spinner
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/field_height"
+    android:id="@+id/Payment_Old_spinner2"
+    android:spinnerMode="dropdown"
+    android:textAlignment="center"
+    android:layout_marginTop="@dimen/activity_sub_field_vertical_margin"
+
+    android:background="@color/infield_color" />
+    <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+    <!--android:layout_marginRight="@dimen/activity_horizontal_margin"/>-->
+
+
+</LinearLayout>
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="vertical"
+android:layout_below="@+id/Payment_Old_Layout_Group2"
+android:id = "@+id/Payment_Old_Layout_Group3"
+android:layout_marginTop="@dimen/activity_fields_lines_space"
+    >
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:text="Amount"
+    android:id="@+id/Payment_Old_Amount"
+    android:textColor="#ff000000"
+    style="@style/Sub_Text"/>
+    <!--android:layout_marginLeft="@dimen/activity_horizontal_text_margin"-->
+    <!--android:layout_marginRight="@dimen/activity_horizontal_margin"-->
+
+
+<EditText
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/field_height"
+    android:id="@+id/Payment_Old_TextField_Amount"
+    android:layout_marginTop="@dimen/activity_sub_field_vertical_margin"
+    android:background="@color/infield_color"
+    android:textColor="#ff000000"
+    android:inputType="text"
+    android:imeOptions="actionDone"/>
+    <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+    <!--android:layout_marginRight="@dimen/activity_horizontal_margin"/>-->
+</LinearLayout>
+    </RelativeLayout>

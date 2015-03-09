@@ -6,14 +6,17 @@
         <item name="android:actionBarStyle">@style/action_bar</item>
         <item name="android:buttonStyle">@style/button_style</item>
         <item name="android:editTextStyle">@style/editText_style</item>
+        <item name="android:actionBarTabStyle">@style/tab_style</item>
+
 
     </style>
 
     <style name="action_bar" parent="android:Widget.Holo.ActionBar">
         <item name="android:background">@color/lloyds_color</item>
+
     </style>
     <style name="menuTheme" parent="AppTheme">
-        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColor">@color/lloyds_color</item>
     </style>
     <style name="button_style" parent="android:Widget.Holo.Button">
         <item name="android:background">@color/lloyds_color</item>
@@ -21,8 +24,64 @@
         <item name="android:paddingRight">5dp</item>
     </style>
     <style name="editText_style" parent="android:Widget.Holo.EditText">
-        <item name="android:padding">5dp</item>
+    <item name="android:padding">5dp</item>
+</style>
+
+    <!--<style name="tab_style" parent="android:Widget.Holo.ActionBar.TabText">-->
+        <!--<item name="android:background">@drawable/tab_color</item>-->
+    <!--</style>-->
+
+    <style name="tab_style" parent="android:Widget.Holo.ActionBar.TabView">
+        <item name="android:background">@drawable/tab_color</item>
+
     </style>
+
+    <style name="make_payment" parent = "button_style">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Medium</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:background">@drawable/button_color</item> <!-- should be the same with the tab having the focus -->
+
+    </style>
+
+    <style name="Sub_Text" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textColor">?android:attr/textColorHighlight</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:ellipsize">marquee</item>
+
+    </style>
+
+    <!--<style name="Tab_Text_2" parent="android:Widget.Holo.ActionBar.TabText">-->
+        <!--<item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>-->
+        <!--<item name="android:textColor">@color/tab_text_color_2</item>-->
+        <!--<item name="android:textStyle">bold</item>-->
+        <!--<item name="android:textSize">20sp</item>-->
+        <!--<item name="android:textAllCaps">true</item>-->
+        <!--<item name="android:ellipsize">marquee</item>-->
+
+    <!--</style>-->
+
+
+
+
+
+
+
+    <!--<style name = "tab_text" parent="android:Widget.ActionBar.TabText">-->
+        <!--<item name="android:textColor">@android:color/black</item>-->
+        <!--<item name="android:textSize">4sp</item>-->
+        <!--<item name="android:textStyle">italic</item>-->
+        <!--<item name="android:textAllCaps">true</item>-->
+        <!--<item name="android:ellipsize">marquee</item>-->
+        <!--<item name="android:maxLines">1</item>-->
+    <!--</style>-->
+
 
 
 
