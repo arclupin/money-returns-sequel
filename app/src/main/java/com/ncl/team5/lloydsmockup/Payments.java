@@ -54,7 +54,8 @@ public class Payments extends FragmentActivity {
         // My idea is that we achieve tab view using TabHost (As the solution with ActionBar is deprecated)
         // and we achieve swipe view using ViewPager so basically the FrameLayout of TabHost is just a placeholder for the tab view.
 
-        tabs.setup();
+
+//        tabs.setup();
         /*setTabColour(tabs);*/
 
 
@@ -62,11 +63,10 @@ public class Payments extends FragmentActivity {
         TabHost tabs=(TabHost)findViewById(R.id.tabhost);
         tabs.setup();
 
-<<<<<<< Updated upstream
         TabHost.TabSpec spec=tabs.newTabSpec("tag1"); // add tag 1
-=======
 
->>>>>>> Stashed changes
+
+
         spec.setContent(R.id.tab1);
         spec.setIndicator("Existing Recipient");
         tabs.addTab(spec);
@@ -102,7 +102,7 @@ public class Payments extends FragmentActivity {
         tabs.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
-                pager.setCurrentItem(temp_tabs.getCurrentTab(), true); // change view
+                temp_pager.setCurrentItem(temp_tabs.getCurrentTab(), true); // change view
             }
         });
 
@@ -119,9 +119,8 @@ public class Payments extends FragmentActivity {
         ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, accountStrings);
         a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         s.setAdapter(a);*/
-<<<<<<< Updated upstream
-=======
-    }
+
+
 
   /*  public void setTabColour(TabHost tab) {
         TabHost tabsH=(TabHost)findViewById(R.id.tabhost);
@@ -133,7 +132,7 @@ public class Payments extends FragmentActivity {
         }
     }*/
 
->>>>>>> Stashed changes
+
 
 
     @Override
