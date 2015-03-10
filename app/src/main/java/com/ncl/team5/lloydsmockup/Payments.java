@@ -143,27 +143,27 @@ public class Payments extends FragmentActivity {
 
 
 
-        Spinner s = (Spinner) findViewById(R.id.spinnerFrom);
-        s2 = (Spinner) findViewById(R.id.spinnerFromPayments);
-        ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, accountStrings);
-        a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        s.setAdapter(a);
-        s2.setAdapter(a);
-
-        //event handler for the spinner on the second tab
-        s2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                getRecentTrans(s2.getItemAtPosition(position).toString());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                //NOTHING IN HERE
-                //Just needed it for the event handler :/
-
-            }
-        });
+//        Spinner s = (Spinner) findViewById(R.id.spinnerFrom);
+//        s2 = (Spinner) findViewById(R.id.spinnerFromPayments);
+//        ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, accountStrings);
+//        a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        s.setAdapter(a);
+//        s2.setAdapter(a);
+//
+//        //event handler for the spinner on the second tab
+//        s2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+//                getRecentTrans(s2.getItemAtPosition(position).toString());
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//                //NOTHING IN HERE
+//                //Just needed it for the event handler :/
+//
+//            }
+//        });
     }
 
 
@@ -173,7 +173,7 @@ public class Payments extends FragmentActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
-    } 
+    }
 /*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -204,27 +204,27 @@ public class Payments extends FragmentActivity {
     public void btnMakePay(View view) {
 
         int tabNo = tabs.getCurrentTab();
-        String toAccountNum;
-        String sortCode;
-        String amount;
-        String fromAccountNum;
+        String toAccountNum = "";
+        String sortCode = "";
+        String amount = "";
+        String fromAccountNum = "";
 
-        if(tabNo == 0)
-        {
-            //gets the values of all of the UI components
-            toAccountNum = ((TextView)findViewById(R.id.amountText)).getText().toString();
-            sortCode = ((TextView)findViewById(R.id.sortCodeTxt)).getText().toString();
-            amount = ((TextView)findViewById(R.id.amountPay)).getText().toString();
-            fromAccountNum = ((Spinner)findViewById(R.id.spinnerFrom)).getSelectedItem().toString();
-        }
-        else
-        {
-            toAccountNum = ((Spinner)findViewById(R.id.spinnerTo)).getSelectedItem().toString();
-            //will probably need to get the last 3 transactions or something to populate the spinner as well
-            sortCode = "202020";
-            amount = ((TextView)findViewById(R.id.amountTextPay)).getText().toString();
-            fromAccountNum = ((Spinner)findViewById(R.id.spinnerFromPayments)).getSelectedItem().toString();
-        }
+//        if(tabNo == 0)
+//        {
+//            //gets the values of all of the UI components
+//            toAccountNum = ((TextView)findViewById(R.id.amountText)).getText().toString();
+//            sortCode = ((TextView)findViewById(R.id.sortCodeTxt)).getText().toString();
+//            amount = ((TextView)findViewById(R.id.amountPay)).getText().toString();
+//            fromAccountNum = ((Spinner)findViewById(R.id.spinnerFrom)).getSelectedItem().toString();
+//        }
+//        else
+//        {
+//            toAccountNum = ((Spinner)findViewById(R.id.spinnerTo)).getSelectedItem().toString();
+//            //will probably need to get the last 3 transactions or something to populate the spinner as well
+//            sortCode = "202020";
+//            amount = ((TextView)findViewById(R.id.amountTextPay)).getText().toString();
+//            fromAccountNum = ((Spinner)findViewById(R.id.spinnerFromPayments)).getSelectedItem().toString();
+//        }
 
 
 
