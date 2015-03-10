@@ -156,7 +156,7 @@ public class Payments extends FragmentActivity {
 //            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 //                getRecentTrans(s2.getItemAtPosition(position).toString());
 //            }
-//
+//push branch
 //            @Override
 //            public void onNothingSelected(AdapterView<?> adapterView) {
 //                //NOTHING IN HERE
