@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -22,7 +23,9 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import FragPager.Payment_FragmentPagerAdapter;
@@ -37,17 +40,22 @@ public class Payments extends FragmentActivity {
     private List<String> accountStrings = new ArrayList<String>();
     Payment_FragmentPagerAdapter fragmentPagerAdapter;
     ViewPager pager;
+    private TabHost tabs;
+    private List<String> recentAcc = new ArrayList<String>();
+    private Spinner s2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-/*
-        Intent i = getIntent();
-        username = i.getStringExtra("ACCOUNT_USERNAME");
 
-        getAccounts();*/
+        Intent intent = getIntent();
+        username = intent.getStringExtra("ACCOUNT_USERNAME");
+
+        getAccounts();
 
         setContentView(R.layout.activity_payments);
+
+        tabs=(TabHost)findViewById(R.id.tabhost);
 
 
         // sat up layout (tab view + swipe view for pages)
@@ -108,12 +116,12 @@ public class Payments extends FragmentActivity {
 
         // 2. on view switch -> tab switch (trigger tab switch on page switch)
         pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-               temp_tabs.setCurrentTab(position); // change tab
-            }
-        });
-    }
+                                          @Override
+                                          public void onPageSelected(int position) {
+                                              temp_tabs.setCurrentTab(position); // change tab
+                                          }
+                                      });
+
 
         /*Spinner s = (Spinner) findViewById(R.id.spinnerFrom);
         ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, accountStrings);
@@ -135,12 +143,37 @@ public class Payments extends FragmentActivity {
 
 
 
+        Spinner s = (Spinner) findViewById(R.id.spinnerFrom);
+        s2 = (Spinner) findViewById(R.id.spinnerFromPayments);
+        ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, accountStrings);
+        a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        s.setAdapter(a);
+        s2.setAdapter(a);
+
+        //event handler for the spinner on the second tab
+        s2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                getRecentTrans(s2.getItemAtPosition(position).toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                //NOTHING IN HERE
+                //Just needed it for the event handler :/
+
+            }
+        });
+    }
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
-    } }
+    } 
 /*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -165,17 +198,37 @@ public class Payments extends FragmentActivity {
     }
 
 
-    *//* My Functions are under here *//*
+    /* My Functions are under here */
 
 
     public void btnMakePay(View view) {
-        //gets the values of all of the UI components
-        String toAccountNum = ((TextView)findViewById(R.id.amountText)).getText().toString();
-        String sortcode = ((TextView)findViewById(R.id.sortCodeTxt)).getText().toString();
-        String amount = ((TextView)findViewById(R.id.amountPay)).getText().toString();
-        String fromAccountNum = ((Spinner)findViewById(R.id.spinnerFrom)).getSelectedItem().toString();
 
-        Log.d("PaymentStuff", toAccountNum + ":" + sortcode + ":" + amount + ":" + fromAccountNum);
+        int tabNo = tabs.getCurrentTab();
+        String toAccountNum;
+        String sortCode;
+        String amount;
+        String fromAccountNum;
+
+        if(tabNo == 0)
+        {
+            //gets the values of all of the UI components
+            toAccountNum = ((TextView)findViewById(R.id.amountText)).getText().toString();
+            sortCode = ((TextView)findViewById(R.id.sortCodeTxt)).getText().toString();
+            amount = ((TextView)findViewById(R.id.amountPay)).getText().toString();
+            fromAccountNum = ((Spinner)findViewById(R.id.spinnerFrom)).getSelectedItem().toString();
+        }
+        else
+        {
+            toAccountNum = ((Spinner)findViewById(R.id.spinnerTo)).getSelectedItem().toString();
+            //will probably need to get the last 3 transactions or something to populate the spinner as well
+            sortCode = "202020";
+            amount = ((TextView)findViewById(R.id.amountTextPay)).getText().toString();
+            fromAccountNum = ((Spinner)findViewById(R.id.spinnerFromPayments)).getSelectedItem().toString();
+        }
+
+
+
+        Log.d("PaymentStuff", toAccountNum + ":" + sortCode + ":" + amount + ":" + fromAccountNum);
 
         //checks all of the inputs to make sure they are all correct
         if(!(toAccountNum.length() == 8))
@@ -184,7 +237,7 @@ public class Payments extends FragmentActivity {
             new CustomMessageBox(this, "Account number is not in the correct format");
             return;
         }
-        if(!sortcode.matches("[0-9][0-9][-]?[0-9][0-9][-]?[0-9][0-9]"))
+        if(!sortCode.matches("[0-9][0-9][-]?[0-9][0-9][-]?[0-9][0-9]"))
         {
             //error
             new CustomMessageBox(this, "Sort code is not in the correct format");
@@ -276,19 +329,123 @@ public class Payments extends FragmentActivity {
             //to the main menu i think...
             e.printStackTrace();
         }
+
+    }
+
+    private void getRecentTrans(String accountNum)
+    {
+        /* This method would work the same as the other get method in accounts,
+         * but look for the transactions in the past 30 days for this account.
+         */
+
+        Connection hc = new Connection(this);
+
+        try {
+            String result = hc.execute("TYPE", "TRANSLIST", "USR", username, "ACC_NUMBER", accountNum).get();
+
+            JSONObject jo = new JSONObject(result);
+
+            if(jo.getString("expired").equals("true"))
+            {
+                //logout
+                //This uses the same code as the main menu does to start the login, only this time it is run when the user
+                //has timed out
+                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+                errorBox.setMessage("You have been timed out, please login again")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                autoLogout();
+                            }
+                        });
+                AlertDialog alert = errorBox.create();
+                alert.show();
+            }
+            else
+            {
+
+                String amountString;
+                JSONArray jsonArray = jo.getJSONArray("transactions");
+
+                if(jsonArray.length() == 0)
+                {
+
+                    return;
+                }
+
+                for (int i = 0; i < jsonArray.length(); i++)
+                {
+
+                    JSONObject insideObject = jsonArray.getJSONObject(i);
+                    String date = insideObject.getString("Time");
+
+                    Date formatted = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
+
+                    if(recentAcc.size() < 3)
+                    {
+                        if(insideObject.getString("Amount").matches("[0-9]+"))
+                        {
+                            amountString = insideObject.getString("Amount") + ".00";
+                        }
+                        else
+                        {
+                            amountString = insideObject.getString("Amount");
+                        }
+
+                        recentAcc.add(insideObject.getString("Payee") + " ~ £" + amountString + " ~ " + date);
+                    }
+                    else
+                    {
+                        for(int j = 0; j < 3; j++)
+                        {
+                            String tempDate = recentAcc.get(i).toString().split(" ~ ")[2].toString();
+                            Date temp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(tempDate);
+
+                            if(tempDate.compareTo(date) < 0)
+                            {
+                                if(insideObject.getString("Amount").matches("[0-9]+"))
+                                {
+                                    amountString = insideObject.getString("Amount") + ".00";
+                                }
+                                else
+                                {
+                                    amountString = insideObject.getString("Amount");
+                                }
+                                recentAcc.add(insideObject.getString("Payee") + " ~ £" + amountString + " ~ " + date);
+                            }
+                        }
+                    }
+
+
+
+                }
+
+
+
+                //Do something here to change the format of the JSON into a sort of map thing...
+                //have to talk to danh about how the JSON is returned
+
+            }
+
+        }
+        catch (Exception e)
+        {
+
+        }
     }
 
 
-    *//* This is how the application knows if it has been stopped by an intent or by an
+    /* This is how the application knows if it has been stopped by an intent or by an
      * external source (i.e. home button, phone call etc). Each time an intent is called, it
      * sets an application global variable denoted as KillApp to false. This means that when a new
      * activity is opened, it does not want to restart the application. However if no intent is
      * fired (i.e. phonecall, home button pressed) KillApp will have the value true so it will
      * restart back to the login activity.
-     *//*
+     */
 
-    *//* This is where the test is done to see whether the KillApp variable is true, and if it is, to call
-     * the login class. It also clears the activity stack so the back button cannot be used to go back *//*
+    /* This is where the test is done to see whether the KillApp variable is true, and if it is, to call
+     * the login class. It also clears the activity stack so the back button cannot be used to go back */
     @Override
     protected void onResume() {
         if(((KillApp) this.getApplication()).getStatus())
@@ -338,5 +495,7 @@ public class Payments extends FragmentActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         //login again
-    }*/
+
+    }
+}
 
