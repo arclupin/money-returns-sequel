@@ -48,8 +48,8 @@ public class Payments extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent i = getIntent();
-        username = i.getStringExtra("ACCOUNT_USERNAME");
+        Intent intent = getIntent();
+        username = intent.getStringExtra("ACCOUNT_USERNAME");
 
         getAccounts();
 
@@ -116,12 +116,12 @@ public class Payments extends FragmentActivity {
 
         // 2. on view switch -> tab switch (trigger tab switch on page switch)
         pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-               temp_tabs.setCurrentTab(position); // change tab
-            }
-        });
-    }
+                                          @Override
+                                          public void onPageSelected(int position) {
+                                              temp_tabs.setCurrentTab(position); // change tab
+                                          }
+                                      });
+
 
         /*Spinner s = (Spinner) findViewById(R.id.spinnerFrom);
         ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, accountStrings);
@@ -173,7 +173,7 @@ public class Payments extends FragmentActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
-    } }
+    } 
 /*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
