@@ -87,6 +87,8 @@ public class Payments extends FragmentActivity {
         final TabHost temp_tabs = tabs;
         final ViewPager temp_pager = pager;
 
+
+
         //registering tab and page switch events (tab switch <-> view switch)
         // 1. on tab switch -> view switch
         // (needed because we don't use the default frame layout of TabHost as we want to achieve the swipe view hassle-free using the ViewPager)
@@ -117,7 +119,7 @@ public class Payments extends FragmentActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
-    } }
+    }
 /*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -227,7 +229,7 @@ public class Payments extends FragmentActivity {
             e.printStackTrace();
         }
     }
-
+*/
     public void getAccounts()
     {
         Connection hc = new Connection(this);// trying to pass the activity to the coonection (not sure if this is legal though)
@@ -254,9 +256,11 @@ public class Payments extends FragmentActivity {
             e.printStackTrace();
         }
     }
+}
 
 
-    *//* This is how the application knows if it has been stopped by an intent or by an
+
+  /* This is how the application knows if it has been stopped by an intent or by an
      * external source (i.e. home button, phone call etc). Each time an intent is called, it
      * sets an application global variable denoted as KillApp to false. This means that when a new
      * activity is opened, it does not want to restart the application. However if no intent is

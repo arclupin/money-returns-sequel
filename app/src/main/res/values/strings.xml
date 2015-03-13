@@ -10,7 +10,7 @@
     <string name="title_activity_accounts">Accounts</string>
     <string name="title_activity_analysis">Analysis</string>
     <string name="title_activity_achievements">House Sharing</string>
-    /*Don't change the names of offers and achievements*/                <string name="title_activity_offers">Branches</string>
+    /*Don't change the names of offers and achievements*/                    <string name="title_activity_offers">Branches</string>
     <string name="title_activity_products">Products</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_notifications">Notifications</string>
@@ -37,5 +37,11 @@
     <string name="title_activity_tab_new">TabNew</string>
     <string name="title_activity_tab_exists">TabExists</string>
     <string name="title_activity_payments_tabs">PaymentsTabs</string>
+    <string name="title_activity_houseshare__welcome">Welcome</string>
 
+    <string name="title_activity_houseshare__welcome_1">Welcome To \nHouse Share Service</string>
+    <string name="title_activity_houseshare__welcome_2">Create your bills</string>
+    <string name="title_activity_houseshare__welcome_3">Manage your bills</string>
+    <string name="title_activity_houseshare__welcome_4">Pay your bills</string>
+    <string name="title_activity_houseshare__welcome_start">Start</string>
 </resources>

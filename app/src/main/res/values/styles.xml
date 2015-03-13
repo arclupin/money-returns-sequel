@@ -57,6 +57,33 @@
 
     </style>
 
+    <style name="Welcome_HS_Text" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textColor">@color/lloyds_color</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:ellipsize">marquee</item>
+        <!--<item name="android:layout_centerInParent">true</item>-->
+        <!--<item name="android:layout_centerHorizontal">true</item>-->
+        <!--<item name="android:layout_centerVertical">true</item>-->
+<item name="android:padding">20dp</item>
+        <item name="android:gravity">center</item>
+
+    </style>
+
+    <style name="Welcome_HS_Text_Start" parent="Sub_Text">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textColor">@color/lloyds_color</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:ellipsize">marquee</item>
+        <!--<item name="android:layout_centerInParent">true</item>-->
+        <!--<item name="android:layout_centerHorizontal">true</item>-->
+        <!--<item name="android:layout_centerVertical">true</item>-->
+        <item name="android:gravity">center</item>
+
+    </style>
+
+
     <!--<style name="Tab_Text_2" parent="android:Widget.Holo.ActionBar.TabText">-->
         <!--<item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>-->
         <!--<item name="android:textColor">@color/tab_text_color_2</item>-->

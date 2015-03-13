@@ -135,7 +135,7 @@
                 android:maxHeight="80dp"
                 android:scaleType="fitCenter"
                 android:layout_height="match_parent"
-                android:onClick="btnClickAchievements"/>
+                android:onClick="btnClickHouseShare"/>
             <TextView android:text="@string/title_activity_achievements"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

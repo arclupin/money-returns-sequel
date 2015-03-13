@@ -30,6 +30,7 @@ public class MainActivity extends Activity {
         TextView dateText = (TextView)findViewById(R.id.lastLoginTextView);
 
         dateText.setText(username + " : " + dateText.getText());
+
     }
 
 
@@ -96,8 +97,8 @@ public class MainActivity extends Activity {
         ((KillApp) this.getApplication()).setStatus(false);
     }
 
-    public void btnClickAchievements(View view) {
-        Intent i = new Intent(this , Achievements.class);
+    public void btnClickHouseShare(View view) {
+        Intent i = new Intent(this , Houseshare_Welcome.class); // testing
         i.putExtra("ACCOUNT_USERNAME", username);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);

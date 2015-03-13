@@ -6,5 +6,6 @@
     <color name="white">#FFFFFF</color>
     <color name="infield_color">#f1f2f3</color>
     <color name="tab_text_color_2">#1E2710</color>
+    <color name="swipe_circle">#ecf0f1</color>
  
 </resources>

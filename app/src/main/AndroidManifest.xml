@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <!-- This is the permission needed to save files tot he android FS -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -66,8 +66,8 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".Achievements"
-            android:label="@string/title_activity_offers"
+            android:name=".Houseshare_Welcome"
+            android:label="@string/title_activity_houseshare__welcome"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -123,18 +123,18 @@
             android:name=".GroupChooser"
             android:label="@string/title_activity_group_chooser" >
         </activity>
-        <activity
-            android:name=".TabNew"
-            android:label="@string/title_activity_tab_new" >
-        </activity>
-        <activity
-            android:name=".TabExists"
-            android:label="@string/title_activity_tab_exists" >
-        </activity>
-        <activity
-            android:name=".PaymentsTabs"
-            android:label="@string/title_activity_payments_tabs" >
-        </activity>
+        <!--<activity-->
+            <!--android:name=".TabNew"-->
+            <!--android:label="@string/title_activity_tab_new" >-->
+        <!--</activity>-->
+        <!--<activity-->
+            <!--android:name=".TabExists"-->
+            <!--android:label="@string/title_activity_tab_exists" >-->
+        <!--</activity>-->
+        <!--<activity-->
+            <!--android:name=".PaymentsTabs"-->
+            <!--android:label="@string/title_activity_payments_tabs" >-->
+        <!--</activity>-->
     </application>
 
 </manifest>

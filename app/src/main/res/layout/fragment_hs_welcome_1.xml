@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/Welcome_HS_1_Container">
+    <TextView android:text="@string/title_activity_houseshare__welcome_1" android:layout_width="match_parent"
+        style="@style/Welcome_HS_Text"
+        android:layout_height="wrap_content"
+        android:singleLine="false"
+        android:id="@+id/Welcome_HS_1_TextView" />
+</LinearLayout>
