@@ -165,11 +165,13 @@ public class Payments extends FragmentActivity {
 
         if (tabNo == 0) {
             //gets the values of all of the UI components
+            //OLD TAB
             toAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner2)).getSelectedItem().toString();
-            sortCode = ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).getText().toString();
+            sortCode = "202020";
             amount = ((TextView) findViewById(R.id.Payment_Old_TextField_Amount)).getText().toString();
             fromAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner1)).getSelectedItem().toString();
         } else {
+            //NEW TAB
             toAccountNum = ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).getText().toString();
             //will probably need to get the last 3 transactions or something to populate the spinner as well
             sortCode = ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).getText().toString();
@@ -244,6 +246,7 @@ public class Payments extends FragmentActivity {
 
     //populates a list with the users accounts and then displays them in the spinner
     public void getAccounts() {
+
         accountStrings.clear();
 
         Connection hc = new Connection(this);
