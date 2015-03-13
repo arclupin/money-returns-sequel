@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -116,6 +117,30 @@ public class Payments extends FragmentActivity {
         });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_backHome) {
+            ((KillApp) this.getApplication()).setStatus(false);
+            this.finish();
+            //Intent intent = new Intent(this, MainActivity.class);
+            //startActivity(intent);
+        }
+        else if (id == R.id.action_notifications) {
+            Intent intent = new Intent(this, Notifications.class);
+            startActivity(intent);
+            ((KillApp) this.getApplication()).setStatus(false);
+
+        }
+       /*else if (id == R.id.action_location) {
+           return true;
+       }*/
+        return super.onOptionsItemSelected(item);
+    }
 
 
     /**/
@@ -148,7 +173,6 @@ public class Payments extends FragmentActivity {
             toAccountNum = ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).getText().toString();
             //will probably need to get the last 3 transactions or something to populate the spinner as well
             sortCode = ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).getText().toString();
-            ;
             amount = ((TextView) findViewById(R.id.Payment_New_TextField_Amount)).getText().toString();
             fromAccountNum = ((Spinner) findViewById(R.id.Payment_New_spinner1)).getSelectedItem().toString();
         }
@@ -220,6 +244,8 @@ public class Payments extends FragmentActivity {
 
     //populates a list with the users accounts and then displays them in the spinner
     public void getAccounts() {
+        accountStrings.clear();
+
         Connection hc = new Connection(this);
         try {
             String result = hc.execute("TYPE", "SAA", "USR", username).get();
