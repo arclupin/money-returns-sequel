@@ -10,8 +10,6 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TabHost;
@@ -23,16 +21,14 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import FragPager.FragmentOldAccount;
+
 import FragPager.Payment_FragmentPagerAdapter;
 import HTTPConnect.Connection;
 
 
-public class Payments extends FragmentActivity{
+public class Payments extends FragmentActivity {
 
     /* Private methods needed for rest of class */
     private static String username;
@@ -41,13 +37,6 @@ public class Payments extends FragmentActivity{
     private ViewPager pager;
     private TabHost tabs;
     public static List<String> recentAcc = new ArrayList<String>();
-    private Spinner s2;
-
-    private String username;
-    private List<String> accountStrings = new ArrayList<String>();
-    private TabHost tabs;
-    private List<String> recentAcc = new ArrayList<String>();
-    private Spinner s2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,7 +56,7 @@ public class Payments extends FragmentActivity{
 
 //        tabs.setup();
         /*setTabColour(tabs);*/
-        tabs=(TabHost)findViewById(R.id.tabhost);
+        tabs = (TabHost) findViewById(R.id.tabhost);
 
 
         TabHost tabs = (TabHost) findViewById(R.id.tabhost);
@@ -79,28 +68,7 @@ public class Payments extends FragmentActivity{
         spec.setContent(R.id.tab1);
         spec.setIndicator("Existing Recipient");
         tabs.addTab(spec);
-        Spinner s = (Spinner) findViewById(R.id.spinnerFrom);
-        s2 = (Spinner) findViewById(R.id.spinnerFromPayments);
-        ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, accountStrings);
-        a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        s.setAdapter(a);
-        s2.setAdapter(a);
 
-        //event handler for the spinner on the second tab
-        s2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                getRecentTrans(s2.getItemAtPosition(position).toString());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                //NOTHING IN HERE
-                //Just needed it for the event handler :/
-
-            }
-        });
-    }
 
         TabHost.TabSpec spec2 = tabs.newTabSpec("tag2");// add tag 2 (we could keep spec objects separate for easy later reference
         spec2.setContent(R.id.tab2);
@@ -120,7 +88,10 @@ public class Payments extends FragmentActivity{
 
         // set up the view pager for displaying pages (swipe view)
         pager = (ViewPager) findViewById(R.id.payment_pager);
+
         fragmentPagerAdapter = new Payment_FragmentPagerAdapter(getSupportFragmentManager());
+
+
         pager.setAdapter(fragmentPagerAdapter); // set up the data for views
 
         // temp_ vars for registering events
@@ -136,7 +107,6 @@ public class Payments extends FragmentActivity{
                 temp_pager.setCurrentItem(temp_tabs.getCurrentTab(), true); // change view
             }
         });
-
         // 2. on view switch -> tab switch (trigger tab switch on page switch)
         pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -144,73 +114,17 @@ public class Payments extends FragmentActivity{
                 temp_tabs.setCurrentTab(position); // change tab
             }
         });
-
-
-
-  /*  public void setTabColour(TabHost tab) {
-        TabHost tabsH=(TabHost)findViewById(R.id.tabhost);
-        int total = tab.getTabWidget().getChildCount();
-        for(int i=0;i<total;i++) {
-                tabsH.getTabWidget().setStripEnabled(true);
-                tabsH.getTabWidget().setBackgroundResource(R.drawable.tab_select);
-
-        }
-    }*/
-
-
-
-
-        //event handler for the spinner on the second tab
-//        s2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-//                getRecentTrans(s2.getItemAtPosition(position).toString());
-//
-//                //s2.setAdapter(a2);
-//            }
-//push branch
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//                //NOTHING IN HERE
-//                //Just needed it for the event handler :/
-//
-//            }
-//        });
     }
 
 
 
-
-/**/
+    /**/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-/*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.action_backHome) {
-            ((KillApp) this.getApplication()).setStatus(false);
-            this.finish();
-            //Intent intent = new Intent(this, MainActivity.class);
-            //startActivity(intent);
-        }
-        else if (id == R.id.action_notifications) {
-            Intent intent = new Intent(this, Notifications.class);
-            startActivity(intent);
-            ((KillApp) this.getApplication()).setStatus(false);
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
 
     /* My Functions are under here */
 
@@ -224,21 +138,19 @@ public class Payments extends FragmentActivity{
         String amount;
         String fromAccountNum;
 
-        if(tabNo == 0)
-        {
+        if (tabNo == 0) {
             //gets the values of all of the UI components
-            toAccountNum = ((TextView)findViewById(R.id.amountText)).getText().toString();
-            sortCode = ((TextView)findViewById(R.id.sortCodeTxt)).getText().toString();
-            amount = ((TextView)findViewById(R.id.amountPay)).getText().toString();
-            fromAccountNum = ((Spinner)findViewById(R.id.spinnerFrom)).getSelectedItem().toString();
-        }
-        else
-        {
-            toAccountNum = ((Spinner)findViewById(R.id.spinnerTo)).getSelectedItem().toString();
+            toAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner2)).getSelectedItem().toString();
+            sortCode = ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).getText().toString();
+            amount = ((TextView) findViewById(R.id.Payment_Old_TextField_Amount)).getText().toString();
+            fromAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner1)).getSelectedItem().toString();
+        } else {
+            toAccountNum = ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).getText().toString();
             //will probably need to get the last 3 transactions or something to populate the spinner as well
-            sortCode = "202020";
-            amount = ((TextView)findViewById(R.id.amountTextPay)).getText().toString();
-            fromAccountNum = ((Spinner)findViewById(R.id.spinnerFromPayments)).getSelectedItem().toString();
+            sortCode = ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).getText().toString();
+            ;
+            amount = ((TextView) findViewById(R.id.Payment_New_TextField_Amount)).getText().toString();
+            fromAccountNum = ((Spinner) findViewById(R.id.Payment_New_spinner1)).getSelectedItem().toString();
         }
 
 
@@ -250,8 +162,7 @@ public class Payments extends FragmentActivity{
             new CustomMessageBox(this, "Account number is not in the correct format");
             return;
         }
-        if(!sortCode.matches("[0-9][0-9][-]?[0-9][0-9][-]?[0-9][0-9]"))
-        {
+        if (!sortCode.matches("[0-9][0-9][-]?[0-9][0-9][-]?[0-9][0-9]")) {
             //error
             new CustomMessageBox(this, "Sort code is not in the correct format");
             return;
@@ -331,18 +242,6 @@ public class Payments extends FragmentActivity{
 
     }
 
-    private void getRecentTrans(String accountNum)
-    {
-        /* This method would work the same as the other get method in accounts,
-         * but look for the transactions in the past 30 days for this account.
-         */
-
-        Connection hc = new Connection(this);
-
-        try {
-            String result = hc.execute("TYPE", "TRANSLIST", "USR", username, "ACC_NUMBER", accountNum).get();
-
-            JSONObject jo = new JSONObject(result);
 
     //gets the recent trancastions for the account, which is used to get the most recent
     //payees
@@ -375,22 +274,18 @@ public class Payments extends FragmentActivity{
                         });
                 AlertDialog alert = errorBox.create();
                 alert.show();
-            }
-            else
-            {
+            } else {
 
                 String amountString;
                 JSONArray jsonArray = jo.getJSONArray("transactions");
 
-                if(jsonArray.length() == 0)
-                {
+                if (jsonArray.length() == 0) {
 
                     return;
                 }
 
-                    //add the last three payees to the spinner, currently not working
-                for (int i = 0; i < jsonArray.length(); i++)
-                {
+                //add the last three payees to the spinner, currently not working
+                for (int i = 0; i < jsonArray.length(); i++) {
 
                     JSONObject insideObject = jsonArray.getJSONObject(i);
                     String date = insideObject.getString("Time");
@@ -398,30 +293,20 @@ public class Payments extends FragmentActivity{
                     Date formatted = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
 
                     if (recentAcc.size() < 3) {
-                        if (insideObject.getString("Amount").matches("[0-9]+")) {
-                            amountString = insideObject.getString("Amount") + ".00";
-                        } else {
-                            amountString = insideObject.getString("Amount");
-                        }
-
-                        for(int j = 0; j < 3; j++)
-                        {
-                            if(recentAcc.size() == 0)
-                            {
-                                if(insideObject.getString("Payer").equals(accountNum)) {
+                        
+                        for (int j = 0; j < 3; j++) {
+                            if (recentAcc.size() == 0) {
+                                if (insideObject.getString("Payer").equals(accountNum)) {
                                     recentAcc.add(insideObject.getString("Payee"));
                                 }
                             }
 
-                            if(!recentAcc.get(i).toString().split(" ~ ")[0].toString().equals(insideObject.getString("Payee")))
-                            {
-                                if(insideObject.getString("Payer").equals(accountNum)) {
+                            if (!recentAcc.get(i).toString().split(" ~ ")[0].toString().equals(insideObject.getString("Payee"))) {
+                                if (insideObject.getString("Payer").equals(accountNum)) {
                                     recentAcc.add(insideObject.getString("Payee"));
                                 }
                             }
                         }
-
-
 
 
                     } else {
@@ -430,13 +315,9 @@ public class Payments extends FragmentActivity{
                             Date temp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(tempDate);
 
                             if (temp.compareTo(formatted) < 0) {
-                                if (insideObject.getString("Amount").matches("[0-9]+")) {
-                                    amountString = insideObject.getString("Amount") + ".00";
-                                } else {
-                                    amountString = insideObject.getString("Amount");
-                                }
 
-                                if(insideObject.getString("Payer").equals(accountNum)) {
+
+                                if (insideObject.getString("Payer").equals(accountNum)) {
                                     recentAcc.add(insideObject.getString("Payee"));
                                 }
 
@@ -445,9 +326,7 @@ public class Payments extends FragmentActivity{
                     }
 
 
-
                 }
-
 
 
                 //Do something here to change the format of the JSON into a sort of map thing...
@@ -516,4 +395,3 @@ public class Payments extends FragmentActivity{
         //login again
     }
 }
-
