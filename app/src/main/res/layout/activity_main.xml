@@ -126,7 +126,7 @@
             android:rowCount="2"
             android:layout_width="fill_parent">
             <ImageButton android:src="@drawable/housesharingicon2"
-                android:paddingLeft="13dp"
+                android:paddingLeft="0dp"
                 android:paddingRight="0dp"
                 android:layout_width="match_parent"
                 android:background="@android:color/transparent"

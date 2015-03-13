@@ -97,7 +97,7 @@ public class MainActivity extends Activity {
     }
 
     public void btnClickAchievements(View view) {
-        Intent i = new Intent(this , Achievements.class);
+        Intent i = new Intent(this , RegisterHouse.class);
         i.putExtra("ACCOUNT_USERNAME", username);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
