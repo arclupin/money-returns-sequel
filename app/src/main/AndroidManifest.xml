@@ -66,8 +66,8 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".Achievements"
-            android:label="@string/title_activity_offers"
+            android:name=".Houseshare_Welcome"
+            android:label="@string/title_activity_houseshare_welcome"
             android:screenOrientation="portrait" >
         </activity>
         <activity

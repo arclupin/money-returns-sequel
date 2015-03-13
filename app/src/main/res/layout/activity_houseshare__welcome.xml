@@ -51,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/HS_Welcome_Start"
-        android:text="@string/title_activity_houseshare__welcome_start"
+        android:text="@string/title_activity_houseshare_welcome_start"
         style="@style/Welcome_HS_Text_Start"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
