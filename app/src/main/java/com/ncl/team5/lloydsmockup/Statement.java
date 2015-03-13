@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -29,7 +30,8 @@ public class Statement extends Activity {
     private List<String> transInfo;
     private String username;
     private String accountNum;
-    Statement s = this;
+    private Statement s = this;
+    private ListView transactions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,7 @@ public class Statement extends Activity {
         accountName.setText(username + ":" + balance);
 
 
-        ListView transactions =(ListView)findViewById(R.id.listView);
+        transactions =(ListView)findViewById(R.id.listView);
 
 
         statementList = new ArrayList<String>();
@@ -166,14 +168,27 @@ public class Statement extends Activity {
                     {
                         amountString = insideObject.getString("Amount");
                     }
-                    statementList.add(insideObject.getString("Transaction_ID") + " : £" + amountString);
-                    transInfo.add(insideObject.getString("Transaction_ID") + " ~ £" + amountString + " ~ " + insideObject.getString("Time") + " ~ " + insideObject.getString("Payee"));
+
+                    if(insideObject.getString("Payer").equals(accountNum))
+                    {
+                        //green color
+                        //transactions.getChildAt(i).setBackgroundColor(Color.GREEN);
+                        statementList.add(insideObject.getString("Transaction_ID") + " : + £" + amountString );
+                        transInfo.add(insideObject.getString("Transaction_ID") + " ~ £" + amountString + " ~ " + insideObject.getString("Time") + " ~ " + insideObject.getString("Payee") );
+
+                    }
+                    else
+                    {
+                        //red color
+                        //transactions.getChildAt(i).setBackgroundColor(Color.RED);
+                        statementList.add(insideObject.getString("Transaction_ID") + " : - £" + amountString);
+                        transInfo.add(insideObject.getString("Transaction_ID") + " ~ £" + amountString + " ~ " + insideObject.getString("Time") + " ~ " + insideObject.getString("Payee") );
+                    }
+
+
+
                 }
 
-
-
-                //Do something here to change the format of the JSON into a sort of map thing...
-                //have to talk to danh about how the JSON is returned
 
             }
 

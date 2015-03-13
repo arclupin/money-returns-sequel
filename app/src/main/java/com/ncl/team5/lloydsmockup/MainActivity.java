@@ -3,7 +3,6 @@ package com.ncl.team5.lloydsmockup;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,6 +34,7 @@ public class MainActivity extends Activity {
         if(date.equals("Not Available"))
         {
             //do some fancy first logon stuff :)
+            dateText.setText("");
         }
         else
         {
