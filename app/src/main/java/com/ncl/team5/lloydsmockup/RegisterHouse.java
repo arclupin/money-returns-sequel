@@ -2,24 +2,19 @@ package com.ncl.team5.lloydsmockup;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Toast;
 
-import com.google.android.gms.common.GooglePlayServicesUtil;
 
-
-public class LegalMaps extends Activity {
+public class RegisterHouse extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_legal_maps);
-        TextView legalNotice = (TextView) findViewById(R.id.textViewLegal);
-        legalNotice.setTextColor(Color.BLACK);
-        legalNotice.setText(GooglePlayServicesUtil.getOpenSourceSoftwareLicenseInfo(this));
+        setContentView(R.layout.activity_register_house);
     }
 
 
@@ -51,5 +46,10 @@ public class LegalMaps extends Activity {
            return true;
        }*/
         return super.onOptionsItemSelected(item);
+    }
+
+    public void btnRegister(View view) {
+        Toast.makeText(getBaseContext(), "Registered",
+                Toast.LENGTH_SHORT).show();
     }
 }

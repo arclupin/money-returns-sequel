@@ -16,13 +16,15 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        style="@style/Sub_Text"
+        android:layout_marginBottom="5dp" />
 
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/spinnerChangeName"
-        android:background="#ffa4a4a4"
+        android:background="@drawable/spinnerimg2"
         android:textColor="#ff000000"
         android:layout_below="@+id/changeNameAcc"
         android:layout_alignParentLeft="true"
@@ -38,8 +40,8 @@
         android:layout_below="@+id/spinnerChangeName"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:textSize="15sp"
-        />
+        style="@style/Sub_Text"
+        android:layout_marginBottom="5dp" />
 
     <EditText
         android:layout_width="match_parent"
@@ -52,7 +54,10 @@
         android:layout_below="@+id/textViewType"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:textSize="15sp"/>
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textSize="10pt"
+        android:hint="New Name"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -60,10 +65,13 @@
         android:text="Save"
         android:id="@+id/buttonChangeName"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
+        android:paddingLeft="80dp"
+        android:paddingRight="80dp"
         android:onClick="btnMakeChange"
-        />
+        android:layout_alignRight="@+id/editText4"
+        android:layout_alignEnd="@+id/editText4"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        style="@style/make_payment" />
 
 </RelativeLayout>
