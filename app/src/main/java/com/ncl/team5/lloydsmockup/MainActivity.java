@@ -17,6 +17,7 @@ public class MainActivity extends Activity {
 
 
     private String username;
+    private String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +27,19 @@ public class MainActivity extends Activity {
         //gets the username that is passed from the login so the connection can stay open
         Intent i = getIntent();
         username = i.getStringExtra("ACCOUNT_USERNAME");
+        date = i.getStringExtra("DATE");
 
         TextView dateText = (TextView)findViewById(R.id.lastLoginTextView);
 
-        dateText.setText(username + " : " + dateText.getText());
+        //need to change this to the actual login time response stuff
+        if(date.equals("Not Available"))
+        {
+            //do some fancy first logon stuff :)
+        }
+        else
+        {
+            dateText.setText(username + " : Last Login on " + date);
+        }
 
     }
 
@@ -97,8 +107,8 @@ public class MainActivity extends Activity {
         ((KillApp) this.getApplication()).setStatus(false);
     }
 
-    public void btnClickHouseShare(View view) {
-        Intent i = new Intent(this , Houseshare_Welcome.class); // testing
+    public void btnClickAchievements(View view) {
+        Intent i = new Intent(this , RegisterHouse.class);
         i.putExtra("ACCOUNT_USERNAME", username);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);

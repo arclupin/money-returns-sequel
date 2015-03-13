@@ -1,6 +1,5 @@
 package com.ncl.team5.lloydsmockup;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,9 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -22,56 +19,59 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
 
 import FragPager.Payment_FragmentPagerAdapter;
 import HTTPConnect.Connection;
-import android.util.Log;
-import android.widget.Toast;
 
 
 public class Payments extends FragmentActivity {
 
-    private String username;
-    private List<String> accountStrings = new ArrayList<String>();
-    Payment_FragmentPagerAdapter fragmentPagerAdapter;
-    ViewPager pager;
+    /* Private methods needed for rest of class */
+    private static String username;
+    public static List<String> accountStrings = new ArrayList<String>();
+    private Payment_FragmentPagerAdapter fragmentPagerAdapter;
+    private ViewPager pager;
+    private TabHost tabs;
+    public static List<String> recentAcc = new ArrayList<String>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-/*
-        Intent i = getIntent();
-        username = i.getStringExtra("ACCOUNT_USERNAME");
 
-        getAccounts();*/
+        //get the username via the intent
+        Intent intent = getIntent();
+        username = intent.getStringExtra("ACCOUNT_USERNAME");
 
+        getAccounts();
         setContentView(R.layout.activity_payments);
-
-
-        // sat up layout (tab view + swipe view for pages)
+        // set up layout (tab view + swipe view for pages)
         // My idea is that we achieve tab view using TabHost (As the solution with ActionBar is deprecated)
         // and we achieve swipe view using ViewPager so basically the FrameLayout of TabHost is just a placeholder for the tab view.
-
+//
 
 //        tabs.setup();
         /*setTabColour(tabs);*/
+        tabs = (TabHost) findViewById(R.id.tabhost);
 
 
-        // set up tabs view
-        TabHost tabs=(TabHost)findViewById(R.id.tabhost);
+        TabHost tabs = (TabHost) findViewById(R.id.tabhost);
         tabs.setup();
 
-        TabHost.TabSpec spec=tabs.newTabSpec("tag1"); // add tag 1
-
+        TabHost.TabSpec spec = tabs.newTabSpec("tag1"); // add tag 1
 
 
         spec.setContent(R.id.tab1);
         spec.setIndicator("Existing Recipient");
         tabs.addTab(spec);
 
-        TabHost.TabSpec spec2=tabs.newTabSpec("tag2");// add tag 2 (we could keep spec objects separate for easy later reference
+
+        TabHost.TabSpec spec2 = tabs.newTabSpec("tag2");// add tag 2 (we could keep spec objects separate for easy later reference
         spec2.setContent(R.id.tab2);
         spec2.setIndicator("New Recipient");
         tabs.addTab(spec2);
@@ -89,14 +89,15 @@ public class Payments extends FragmentActivity {
 
         // set up the view pager for displaying pages (swipe view)
         pager = (ViewPager) findViewById(R.id.payment_pager);
+
         fragmentPagerAdapter = new Payment_FragmentPagerAdapter(getSupportFragmentManager());
+
+
         pager.setAdapter(fragmentPagerAdapter); // set up the data for views
 
         // temp_ vars for registering events
         final TabHost temp_tabs = tabs;
         final ViewPager temp_pager = pager;
-
-
 
         //registering tab and page switch events (tab switch <-> view switch)
         // 1. on tab switch -> view switch
@@ -107,43 +108,15 @@ public class Payments extends FragmentActivity {
                 temp_pager.setCurrentItem(temp_tabs.getCurrentTab(), true); // change view
             }
         });
-
         // 2. on view switch -> tab switch (trigger tab switch on page switch)
         pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-               temp_tabs.setCurrentTab(position); // change tab
+                temp_tabs.setCurrentTab(position); // change tab
             }
         });
     }
 
-        /*Spinner s = (Spinner) findViewById(R.id.spinnerFrom);
-        ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, accountStrings);
-        a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        s.setAdapter(a);*/
-
-
-
-  /*  public void setTabColour(TabHost tab) {
-        TabHost tabsH=(TabHost)findViewById(R.id.tabhost);
-        int total = tab.getTabWidget().getChildCount();
-        for(int i=0;i<total;i++) {
-                tabsH.getTabWidget().setStripEnabled(true);
-                tabsH.getTabWidget().setBackgroundResource(R.drawable.tab_select);
-
-        }
-    }*/
-
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-/*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -161,61 +134,85 @@ public class Payments extends FragmentActivity {
             Intent intent = new Intent(this, Notifications.class);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
-        }
 
+        }
+       /*else if (id == R.id.action_location) {
+           return true;
+       }*/
         return super.onOptionsItemSelected(item);
     }
 
 
-    *//* My Functions are under here *//*
+    /**/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    /* My Functions are under here */
 
 
+    //this is ran when the user presses make a payment
     public void btnMakePay(View view) {
-        //gets the values of all of the UI components
-        String toAccountNum = ((TextView)findViewById(R.id.amountText)).getText().toString();
-        String sortcode = ((TextView)findViewById(R.id.sortCodeTxt)).getText().toString();
-        String amount = ((TextView)findViewById(R.id.amountPay)).getText().toString();
-        String fromAccountNum = ((Spinner)findViewById(R.id.spinnerFrom)).getSelectedItem().toString();
 
-        Log.d("PaymentStuff", toAccountNum + ":" + sortcode + ":" + amount + ":" + fromAccountNum);
+        int tabNo = tabs.getCurrentTab();
+        String toAccountNum;
+        String sortCode;
+        String amount;
+        String fromAccountNum;
+
+        if (tabNo == 0) {
+            //gets the values of all of the UI components
+            //OLD TAB
+            toAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner2)).getSelectedItem().toString();
+            sortCode = "202020";
+            amount = ((TextView) findViewById(R.id.Payment_Old_TextField_Amount)).getText().toString();
+            fromAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner1)).getSelectedItem().toString();
+        } else {
+            //NEW TAB
+            toAccountNum = ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).getText().toString();
+            //will probably need to get the last 3 transactions or something to populate the spinner as well
+            sortCode = ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).getText().toString();
+            amount = ((TextView) findViewById(R.id.Payment_New_TextField_Amount)).getText().toString();
+            fromAccountNum = ((Spinner) findViewById(R.id.Payment_New_spinner1)).getSelectedItem().toString();
+        }
+
+
+        Log.d("PaymentStuff", toAccountNum + ":" + sortCode + ":" + amount + ":" + fromAccountNum);
 
         //checks all of the inputs to make sure they are all correct
-        if(!(toAccountNum.length() == 8))
-        {
+        if (!(toAccountNum.length() == 8)) {
             //error
             new CustomMessageBox(this, "Account number is not in the correct format");
             return;
         }
-        if(!sortcode.matches("[0-9][0-9][-]?[0-9][0-9][-]?[0-9][0-9]"))
-        {
+        if (!sortCode.matches("[0-9][0-9][-]?[0-9][0-9][-]?[0-9][0-9]")) {
             //error
             new CustomMessageBox(this, "Sort code is not in the correct format");
             return;
         }
 
-        if(!amount.matches("[£]?[0-9]+([.][0-9][0-9])?"))
-        {
+        if (!amount.matches("[£]?[0-9]+([.][0-9][0-9])?")) {
             //error
             new CustomMessageBox(this, "Incorrect amount specified");
             return;
         }
 
 
-
         //start up the connection
         Connection connect = new Connection(this);
         String result;
 
-        try
-        {
+        try {
             //now works with the ui and passed that values of the text boxes
             result = connect.execute("TYPE", "PAY", "USR", username, "PAYTO", toAccountNum, "PAYFROM", fromAccountNum, "AMOUNT", amount).get();
 
 
             JSONObject jo = new JSONObject(result);
 
-            if(jo.getString("expired").equals("true"))
-            {
+            if (jo.getString("expired").equals("true")) {
 
                 //This uses the same code as the main menu does to start the login, only this time it is run when the user
                 //has timed out
@@ -233,32 +230,28 @@ public class Payments extends FragmentActivity {
 
 
                 //login again
-            }
-            else if (jo.getString("status").equals("true"))
-            {
+            } else if (jo.getString("status").equals("true")) {
                 //show payment made screen
                 //Uses the CustomMessageBox class that I made to make the
                 //code easier to read
                 new CustomMessageBox(this, "Your payment has been made successfully");
-            }
-            else
-            {
+            } else {
                 //give more info on the error here, no money taken from account
             }
 
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-*/
-    public void getAccounts()
-    {
-        Connection hc = new Connection(this);// trying to pass the activity to the coonection (not sure if this is legal though)
 
+    //populates a list with the users accounts and then displays them in the spinner
+    public void getAccounts() {
+
+        accountStrings.clear();
+
+        Connection hc = new Connection(this);
         try {
-            String result = hc.execute("TYPE","SAA","USR", username ).get();
+            String result = hc.execute("TYPE", "SAA", "USR", username).get();
 
 
             JSONObject jo = new JSONObject(result);
@@ -270,40 +263,131 @@ public class Payments extends FragmentActivity {
             }
 
 
-
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             //give the user a message about being unable to connect. Take them back
             //to the main menu i think...
             e.printStackTrace();
         }
+
     }
-}
 
 
+    //gets the recent trancastions for the account, which is used to get the most recent
+    //payees
+    public void getRecentTrans(String accountNum) {
+        /* This method would work the same as the other get method in accounts,
+         * but look for the transactions in the past 30 days for this account.
+         */
 
-  /* This is how the application knows if it has been stopped by an intent or by an
+        recentAcc.clear();
+
+        Connection hc = new Connection(this);
+
+        try {
+            String result = hc.execute("TYPE", "TRANSLIST", "USR", username, "ACC_NUMBER", accountNum).get();
+
+            JSONObject jo = new JSONObject(result);
+
+            if (jo.getString("expired").equals("true")) {
+                //logout
+                //This uses the same code as the main menu does to start the login, only this time it is run when the user
+                //has timed out
+                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+                errorBox.setMessage("You have been timed out, please login again")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                autoLogout();
+                            }
+                        });
+                AlertDialog alert = errorBox.create();
+                alert.show();
+            } else {
+
+                String amountString;
+                JSONArray jsonArray = jo.getJSONArray("transactions");
+
+                if (jsonArray.length() == 0) {
+
+                    return;
+                }
+
+                //add the last three payees to the spinner, currently not working
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    JSONObject insideObject = jsonArray.getJSONObject(i);
+                    String date = insideObject.getString("Time");
+
+                    Date formatted = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
+
+                    if (recentAcc.size() < 3) {
+                        
+                        for (int j = 0; j < 3; j++) {
+                            if (recentAcc.size() == 0) {
+                                if (insideObject.getString("Payer").equals(accountNum)) {
+                                    recentAcc.add(insideObject.getString("Payee"));
+                                }
+                            }
+
+                            if (!recentAcc.get(i).toString().split(" ~ ")[0].toString().equals(insideObject.getString("Payee"))) {
+                                if (insideObject.getString("Payer").equals(accountNum)) {
+                                    recentAcc.add(insideObject.getString("Payee"));
+                                }
+                            }
+                        }
+
+
+                    } else {
+                        for (int j = 0; j < 3; j++) {
+                            String tempDate = recentAcc.get(i).toString().split(" ~ ")[2].toString();
+                            Date temp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(tempDate);
+
+                            if (temp.compareTo(formatted) < 0) {
+
+
+                                if (insideObject.getString("Payer").equals(accountNum)) {
+                                    recentAcc.add(insideObject.getString("Payee"));
+                                }
+
+                            }
+                        }
+                    }
+
+
+                }
+
+
+                //Do something here to change the format of the JSON into a sort of map thing...
+                //have to talk to danh about how the JSON is returned
+
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /* This is how the application knows if it has been stopped by an intent or by an
      * external source (i.e. home button, phone call etc). Each time an intent is called, it
      * sets an application global variable denoted as KillApp to false. This means that when a new
      * activity is opened, it does not want to restart the application. However if no intent is
      * fired (i.e. phonecall, home button pressed) KillApp will have the value true so it will
      * restart back to the login activity.
-     *//*
+     */
 
-    *//* This is where the test is done to see whether the KillApp variable is true, and if it is, to call
-     * the login class. It also clears the activity stack so the back button cannot be used to go back *//*
+    /* This is where the test is done to see whether the KillApp variable is true, and if it is, to call
+     * the login class. It also clears the activity stack so the back button cannot be used to go back */
     @Override
-    protected void onResume() {
-        if(((KillApp) this.getApplication()).getStatus())
-        {
+    public void onResume() {
+        if (((KillApp) this.getApplication()).getStatus()) {
             //only finish is needed for all other apps apart from the main screen
             //as the login screen only needs to be called once, and by calling finish
             //it creates a domino affect to all of the other activities
             finish();
-        }
-        else
-        {
+        } else {
             //each time the app resumes and it wasnt killed, the variable needs to be reset
             ((KillApp) this.getApplication()).setStatus(true);
         }
@@ -323,24 +407,20 @@ public class Payments extends FragmentActivity {
     }
 
 
-    private void autoLogout()
-    {
+    private void autoLogout() {
         Connection hc = new Connection(this);
-        try
-        {
-            hc.execute("TYPE","LOGOUT", "USR", username);
-        }
-        catch(Exception e)
-        {
+        try {
+            hc.execute("TYPE", "LOGOUT", "USR", username);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
 
         ((KillApp) this.getApplication()).setStatus(false);
         finish();
-        Intent intent = new Intent(getApplicationContext(), Login.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        Intent intent1 = new Intent(getApplicationContext(), Login.class);
+        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent1);
         //login again
-    }*/
-
+    }
+}
