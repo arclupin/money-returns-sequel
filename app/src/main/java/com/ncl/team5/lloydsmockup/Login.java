@@ -54,7 +54,7 @@ public class Login extends Activity {
         slider.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_right));
         slider.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_out_left));
         slider.setAutoStart(true);
-        slider.setFlipInterval(2800);
+        slider.setFlipInterval(5000);
         slider.startFlipping();
     }
 
