@@ -43,6 +43,11 @@ public class Payments extends FragmentActivity{
     public static List<String> recentAcc = new ArrayList<String>();
     private Spinner s2;
 
+    private String username;
+    private List<String> accountStrings = new ArrayList<String>();
+    private TabHost tabs;
+    private List<String> recentAcc = new ArrayList<String>();
+    private Spinner s2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,9 +60,6 @@ public class Payments extends FragmentActivity{
 
         getAccounts();
         setContentView(R.layout.activity_payments);
-        tabs = (TabHost) findViewById(R.id.tabhost);
-
-
         // set up layout (tab view + swipe view for pages)
         // My idea is that we achieve tab view using TabHost (As the solution with ActionBar is deprecated)
         // and we achieve swipe view using ViewPager so basically the FrameLayout of TabHost is just a placeholder for the tab view.
@@ -65,9 +67,9 @@ public class Payments extends FragmentActivity{
 
 //        tabs.setup();
         /*setTabColour(tabs);*/
+        tabs=(TabHost)findViewById(R.id.tabhost);
 
 
-        // set up tabs view
         TabHost tabs = (TabHost) findViewById(R.id.tabhost);
         tabs.setup();
 
@@ -77,6 +79,28 @@ public class Payments extends FragmentActivity{
         spec.setContent(R.id.tab1);
         spec.setIndicator("Existing Recipient");
         tabs.addTab(spec);
+        Spinner s = (Spinner) findViewById(R.id.spinnerFrom);
+        s2 = (Spinner) findViewById(R.id.spinnerFromPayments);
+        ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, accountStrings);
+        a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        s.setAdapter(a);
+        s2.setAdapter(a);
+
+        //event handler for the spinner on the second tab
+        s2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                getRecentTrans(s2.getItemAtPosition(position).toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                //NOTHING IN HERE
+                //Just needed it for the event handler :/
+
+            }
+        });
+    }
 
         TabHost.TabSpec spec2 = tabs.newTabSpec("tag2");// add tag 2 (we could keep spec objects separate for easy later reference
         spec2.setContent(R.id.tab2);
@@ -155,6 +179,9 @@ public class Payments extends FragmentActivity{
     }
 
 
+
+
+/**/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -192,28 +219,29 @@ public class Payments extends FragmentActivity{
     public void btnMakePay(View view) {
 
         int tabNo = tabs.getCurrentTab();
-        String toAccountNum = "";
-        String sortCode = "";
-        String amount = "";
-        String fromAccountNum = "";
+        String toAccountNum;
+        String sortCode;
+        String amount;
+        String fromAccountNum;
 
-        if (tabNo == 0) {
+        if(tabNo == 0)
+        {
             //gets the values of all of the UI components
-            toAccountNum = ((TextView) findViewById(R.id.Payment_New_Payto_Acc_TextField)).getText().toString();
-            sortCode = ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextField)).getText().toString();
-            amount = ((TextView) findViewById(R.id.Payment_New_TextField_Amount)).getText().toString();
-            fromAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner1)).getSelectedItem().toString();
-        } else {
-            toAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner2)).getSelectedItem().toString();
+            toAccountNum = ((TextView)findViewById(R.id.amountText)).getText().toString();
+            sortCode = ((TextView)findViewById(R.id.sortCodeTxt)).getText().toString();
+            amount = ((TextView)findViewById(R.id.amountPay)).getText().toString();
+            fromAccountNum = ((Spinner)findViewById(R.id.spinnerFrom)).getSelectedItem().toString();
+        }
+        else
+        {
+            toAccountNum = ((Spinner)findViewById(R.id.spinnerTo)).getSelectedItem().toString();
             //will probably need to get the last 3 transactions or something to populate the spinner as well
-            //sortcode needs a value to pass the regex... will need to get this from account number stuff
             sortCode = "202020";
-            amount = ((TextView) findViewById(R.id.Payment_Old_TextField_Amount)).getText().toString();
-            fromAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner1)).getSelectedItem().toString();
+            amount = ((TextView)findViewById(R.id.amountTextPay)).getText().toString();
+            fromAccountNum = ((Spinner)findViewById(R.id.spinnerFromPayments)).getSelectedItem().toString();
         }
 
 
-        //print to logcat to see if the format of the strings is correct
         Log.d("PaymentStuff", toAccountNum + ":" + sortCode + ":" + amount + ":" + fromAccountNum);
 
         //checks all of the inputs to make sure they are all correct
@@ -222,7 +250,8 @@ public class Payments extends FragmentActivity{
             new CustomMessageBox(this, "Account number is not in the correct format");
             return;
         }
-        if (!sortCode.matches("[0-9][0-9][-]?[0-9][0-9][-]?[0-9][0-9]")) {
+        if(!sortCode.matches("[0-9][0-9][-]?[0-9][0-9][-]?[0-9][0-9]"))
+        {
             //error
             new CustomMessageBox(this, "Sort code is not in the correct format");
             return;
@@ -302,6 +331,18 @@ public class Payments extends FragmentActivity{
 
     }
 
+    private void getRecentTrans(String accountNum)
+    {
+        /* This method would work the same as the other get method in accounts,
+         * but look for the transactions in the past 30 days for this account.
+         */
+
+        Connection hc = new Connection(this);
+
+        try {
+            String result = hc.execute("TYPE", "TRANSLIST", "USR", username, "ACC_NUMBER", accountNum).get();
+
+            JSONObject jo = new JSONObject(result);
 
     //gets the recent trancastions for the account, which is used to get the most recent
     //payees
@@ -334,19 +375,23 @@ public class Payments extends FragmentActivity{
                         });
                 AlertDialog alert = errorBox.create();
                 alert.show();
-            } else {
+            }
+            else
+            {
 
                 String amountString;
                 JSONArray jsonArray = jo.getJSONArray("transactions");
 
-                if (jsonArray.length() == 0) {
+                if(jsonArray.length() == 0)
+                {
 
                     return;
                 }
 
-                for (int i = 0; i < jsonArray.length(); i++) {
-
                     //add the last three payees to the spinner, currently not working
+                for (int i = 0; i < jsonArray.length(); i++)
+                {
+
                     JSONObject insideObject = jsonArray.getJSONObject(i);
                     String date = insideObject.getString("Time");
 
@@ -400,7 +445,9 @@ public class Payments extends FragmentActivity{
                     }
 
 
+
                 }
+
 
 
                 //Do something here to change the format of the JSON into a sort of map thing...
@@ -413,8 +460,6 @@ public class Payments extends FragmentActivity{
             e.printStackTrace();
         }
     }
-
-
 
 
     /* This is how the application knows if it has been stopped by an intent or by an
