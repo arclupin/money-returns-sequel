@@ -52,7 +52,7 @@ public class Payments extends FragmentActivity {
         // set up layout (tab view + swipe view for pages)
         // My idea is that we achieve tab view using TabHost (As the solution with ActionBar is deprecated)
         // and we achieve swipe view using ViewPager so basically the FrameLayout of TabHost is just a placeholder for the tab view.
-
+//
 
 //        tabs.setup();
         /*setTabColour(tabs);*/
