@@ -27,6 +27,7 @@ public class Login extends Activity {
     private boolean netProbs = false;
     private boolean warning = false;
     private boolean locked = false;
+    private String date = "";
 
 
     @Override
@@ -82,6 +83,7 @@ public class Login extends Activity {
             //Starts an intent to launch the main menu
             Intent i = new Intent(this, MainActivity.class);
             i.putExtra("ACCOUNT_USERNAME", username);
+            i.putExtra("DATE",date);
             startActivity(i);
 
 
@@ -218,6 +220,7 @@ public class Login extends Activity {
 
                 if(jo.getString("status").equals("true"))
                 {
+                    date = jo.getString("last_login");
                     return true;
                 }
                 if(jo.getString("status").equals("warning"))
