@@ -26,6 +26,8 @@ public class Transfers extends Activity {
 
     private String username;
     private List<String> accountStrings = new ArrayList<String>();
+    private List<String> fromSC = new ArrayList<String>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +87,10 @@ public class Transfers extends Activity {
         String fromAccount = ((Spinner)findViewById(R.id.spinnerFrom)).getSelectedItem().toString();
         String toAccount = ((Spinner)findViewById(R.id.spinnerTo)).getSelectedItem().toString();
         String amount = ((TextView)findViewById(R.id.amountText)).getText().toString();
+        int pos = ((Spinner) findViewById(R.id.spinnerFrom)).getSelectedItemPosition();
+        String fromSort = fromSC.get(pos);
+        pos = ((Spinner) findViewById(R.id.spinnerTo)).getSelectedItemPosition();
+        String sortCode = fromSC.get(pos);
 
         if(fromAccount.equals(toAccount))
         {
@@ -107,7 +113,7 @@ public class Transfers extends Activity {
         try
         {
             //now works with the ui and passed that values of the text boxes
-            result = connect.execute("TYPE", "PAY", "USR", username, "PAYTO", toAccount, "PAYFROM", fromAccount, "AMOUNT", amount).get();
+            result = connect.execute("TYPE", "PAY", "USR", username, "PAYTO", toAccount, "PAYFROM", fromAccount, "AMOUNT", amount, "PAYFROM_SC", fromSort, "PAYTO_SC", sortCode).get();
 
 
             JSONObject jo = new JSONObject(result);
@@ -199,6 +205,7 @@ public class Transfers extends Activity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject insideObject = jsonArray.getJSONObject(i);
                 accountStrings.add(insideObject.getString("account_number"));
+                fromSC.add(insideObject.getString("sort_code"));
             }
 
 

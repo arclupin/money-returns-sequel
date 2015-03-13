@@ -38,6 +38,7 @@ public class Payments extends FragmentActivity {
     private ViewPager pager;
     private TabHost tabs;
     public static List<String> recentAcc = new ArrayList<String>();
+    private List<String> fromSC = new ArrayList<String>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -162,14 +163,17 @@ public class Payments extends FragmentActivity {
         String sortCode;
         String amount;
         String fromAccountNum;
+        String fromSort;
 
         if (tabNo == 0) {
             //gets the values of all of the UI components
             //OLD TAB
             toAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner2)).getSelectedItem().toString();
-            sortCode = "202020";
+            sortCode = "485926";
             amount = ((TextView) findViewById(R.id.Payment_Old_TextField_Amount)).getText().toString();
             fromAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner1)).getSelectedItem().toString();
+            int pos = ((Spinner) findViewById(R.id.Payment_Old_spinner1)).getSelectedItemPosition();
+            fromSort = fromSC.get(pos);
         } else {
             //NEW TAB
             toAccountNum = ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).getText().toString();
@@ -177,6 +181,8 @@ public class Payments extends FragmentActivity {
             sortCode = ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).getText().toString();
             amount = ((TextView) findViewById(R.id.Payment_New_TextField_Amount)).getText().toString();
             fromAccountNum = ((Spinner) findViewById(R.id.Payment_New_spinner1)).getSelectedItem().toString();
+            int pos = ((Spinner) findViewById(R.id.Payment_Old_spinner1)).getSelectedItemPosition();
+            fromSort = fromSC.get(pos);
         }
 
 
@@ -207,7 +213,7 @@ public class Payments extends FragmentActivity {
 
         try {
             //now works with the ui and passed that values of the text boxes
-            result = connect.execute("TYPE", "PAY", "USR", username, "PAYTO", toAccountNum, "PAYFROM", fromAccountNum, "AMOUNT", amount).get();
+            result = connect.execute("TYPE", "PAY", "USR", username, "PAYTO", toAccountNum, "PAYFROM", fromAccountNum, "PAYFROM_SC", fromSort, "PAYTO_SC", sortCode,  "AMOUNT", amount).get();
 
 
             JSONObject jo = new JSONObject(result);
@@ -260,6 +266,7 @@ public class Payments extends FragmentActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject insideObject = jsonArray.getJSONObject(i);
                 accountStrings.add(insideObject.getString("account_number"));
+                fromSC.add(insideObject.getString("sort_code"));
             }
 
 
