@@ -150,16 +150,6 @@ public class Login extends Activity {
                 else
                 {
                      /* Network problems detected... dont let user in but dont increment count either */
-//                    AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-//                    errorBox.setMessage("Poor network conditions detected. Please check your connection and try again")
-//                            .setCancelable(false)
-//                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                                public void onClick(DialogInterface dialog, int id) {
-//                                    dialog.cancel();
-//                                }
-//                            });
-//                    AlertDialog alert = errorBox.create();
-//                    alert.show();
 
                     new CustomMessageBox(this, "Poor network conditions detected. Please check your connection and try again");
                     netProbs = false;

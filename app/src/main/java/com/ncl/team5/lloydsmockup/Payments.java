@@ -33,11 +33,11 @@ public class Payments extends FragmentActivity {
 
     /* Private methods needed for rest of class */
     private static String username;
-    public static List<String> accountStrings = new ArrayList<String>();
+    private List<String> accountStrings = new ArrayList<String>();
     private Payment_FragmentPagerAdapter fragmentPagerAdapter;
     private ViewPager pager;
     private TabHost tabs;
-    public static List<String> recentAcc = new ArrayList<String>();
+    private List<String> recentAcc = new ArrayList<String>();
     private List<String> fromSC = new ArrayList<String>();
 
     @Override
@@ -276,6 +276,16 @@ public class Payments extends FragmentActivity {
             e.printStackTrace();
         }
 
+    }
+
+    public List<String> getAccountString()
+    {
+        return accountStrings;
+    }
+
+    public List<String> getRecentAccString()
+    {
+        return recentAcc;
     }
 
 

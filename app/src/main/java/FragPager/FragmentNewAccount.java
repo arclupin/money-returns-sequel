@@ -12,6 +12,8 @@ import android.widget.Spinner;
 import com.ncl.team5.lloydsmockup.Payments;
 import com.ncl.team5.lloydsmockup.R;
 
+import java.util.List;
+
 /**
  * Created by Thanh on 07-Mar-15.
  */
@@ -27,7 +29,11 @@ public class FragmentNewAccount extends Fragment {
         Spinner newS = (Spinner) view.findViewById(R.id.Payment_New_spinner1);
 
 
-        ArrayAdapter<String> a = new ArrayAdapter<String>(this.getActivity(), R.layout.spinner_text_colour, Payments.accountStrings);
+        Payments pay = new Payments();
+
+        List<String> accStr = pay.getAccountString();
+
+        ArrayAdapter<String> a = new ArrayAdapter<String>(this.getActivity(), R.layout.spinner_text_colour, accStr);
         a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         newS.setAdapter(a);

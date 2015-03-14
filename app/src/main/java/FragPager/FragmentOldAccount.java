@@ -21,9 +21,10 @@ import java.util.List;
 //Old Account Fragment
 public class FragmentOldAccount extends Fragment {
 
-    public Spinner s2;
-    public Spinner s;
-    Payments pay;
+    private Spinner s2;
+    private Spinner s;
+    private Payments pay;
+    private List<String> recentAcc;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle saveInstance) {
@@ -32,11 +33,14 @@ public class FragmentOldAccount extends Fragment {
 
         pay = (Payments) getActivity();
 
+        List<String> accountString =  pay.getAccountString();
+        recentAcc = pay.getRecentAccString();
+
         s = (Spinner) view.findViewById(R.id.Payment_Old_spinner1);
         s2 = (Spinner) view.findViewById(R.id.Payment_Old_spinner2);
 
-        final ArrayAdapter<String> a = new ArrayAdapter<String>(getActivity(), R.layout.spinner_text_colour, Payments.accountStrings);
-        final ArrayAdapter<String> a2 = new ArrayAdapter<String>(getActivity(), R.layout.spinner_text_colour, Payments.accountStrings);
+        final ArrayAdapter<String> a = new ArrayAdapter<String>(getActivity(), R.layout.spinner_text_colour, accountString);
+        final ArrayAdapter<String> a2 = new ArrayAdapter<String>(getActivity(), R.layout.spinner_text_colour, accountString);
 
         a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         a2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -54,7 +58,7 @@ public class FragmentOldAccount extends Fragment {
                 if(item instanceof String)
                 {
                     pay.getRecentTrans(s.getItemAtPosition(position).toString());
-                    ArrayAdapter<String> a3 = new ArrayAdapter<String>(getActivity(), R.layout.spinner_text_colour, pay.recentAcc);
+                    ArrayAdapter<String> a3 = new ArrayAdapter<String>(getActivity(), R.layout.spinner_text_colour, recentAcc);
                     s2.setAdapter(a3);
                 }
 
