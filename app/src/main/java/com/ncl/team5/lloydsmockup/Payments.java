@@ -169,11 +169,11 @@ public class Payments extends FragmentActivity {
         if (tabNo == 0) {
             /* gets the values of all of the UI components */
             toAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner2)).getSelectedItem().toString();
-            // TODO needs changing to use the correct sort code
-            sortCode = "485926";
+            int pos = ((Spinner) findViewById(R.id.Payment_Old_spinner2)).getSelectedItemPosition();
+            sortCode = fromSC.get(pos);
             amount = ((TextView) findViewById(R.id.Payment_Old_TextField_Amount)).getText().toString();
             fromAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner1)).getSelectedItem().toString();
-            int pos = ((Spinner) findViewById(R.id.Payment_Old_spinner1)).getSelectedItemPosition();
+            pos = ((Spinner) findViewById(R.id.Payment_Old_spinner1)).getSelectedItemPosition();
             fromSort = fromSC.get(pos);
         }
         /* Tab is 1 when user presses button in new payee tab */
@@ -191,16 +191,14 @@ public class Payments extends FragmentActivity {
         Log.d("PaymentStuff", toAccountNum + ":" + sortCode + ":" + amount + ":" + fromAccountNum);
 
         /* checks all of the inputs to make sure they are all correct */
-        /* Account number must be length 8 */
-        //TODO add in a check for all numbers
-        if (!(toAccountNum.length() == 8)) {
+        /* Account number must be length 8 and all numbers*/
+        if (!(toAccountNum.length() == 8) && toAccountNum.matches("[0-9]+]")) {
             //error
             new CustomMessageBox(this, "Account number is not in the correct format");
             return;
         }
         /* Checks sort code, allows both dashes and no dashes */
-        //TODO add in a length check
-        if (!sortCode.matches("[0-9][0-9][-]?[0-9][0-9][-]?[0-9][0-9]")) {
+        if (!sortCode.matches("[0-9][0-9][-]?[0-9][0-9][-]?[0-9][0-9]") && sortCode.length() <= 8) {
             //error
             new CustomMessageBox(this, "Sort code is not in the correct format");
             return;
@@ -244,6 +242,12 @@ public class Payments extends FragmentActivity {
             /* Payment was successful, show message box */
             //TODO set all text boxes back to null/default
             else if (jo.getString("status").equals("true")) {
+                /* Clear all text boxes */
+                ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).setText("");
+                ((TextView) findViewById(R.id.Payment_New_Payto_Acc_TextField)).setText("");
+                ((TextView) findViewById(R.id.Payment_New_TextField_Amount)).setText("");
+                ((TextView) findViewById(R.id.Payment_Old_TextField_Amount)).setText("");
+
                 /* show payment made message */
                 new CustomMessageBox(this, "Your payment has been made successfully");
             }
@@ -251,7 +255,8 @@ public class Payments extends FragmentActivity {
             //TODO implement error messages
             else
             {
-                //give more info on the error here, no money taken from account
+                /* give more info on the error here, no money taken from account */
+                /* Use the status results to display certain error messages */
             }
 
         }
@@ -434,7 +439,6 @@ public class Payments extends FragmentActivity {
 
         /* Has to call the super method */
         super.onResume();
-
     }
 
 

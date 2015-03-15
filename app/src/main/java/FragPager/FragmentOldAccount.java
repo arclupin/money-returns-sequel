@@ -32,7 +32,6 @@ public class FragmentOldAccount extends Fragment {
         View view = inflater.inflate(R.layout.fragment_old_account, parent, false);
 
         pay = (Payments) getActivity();
-
         List<String> accountString =  pay.getAccountString();
         recentAcc = pay.getRecentAccString();
 

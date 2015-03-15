@@ -23,22 +23,19 @@ public class FragmentNewAccount extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle saveInstance) {
+
         // TODO with saveInstance? Perhaps save some input on losing focus
         View view = inflater.inflate(R.layout.fragment_new_account, parent, false);
 
         Spinner newS = (Spinner) view.findViewById(R.id.Payment_New_spinner1);
-
-
-        Payments pay = new Payments();
-
+        Payments pay = (Payments) getActivity();
         List<String> accStr = pay.getAccountString();
 
         ArrayAdapter<String> a = new ArrayAdapter<String>(this.getActivity(), R.layout.spinner_text_colour, accStr);
         a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         newS.setAdapter(a);
 
-        return view; //
+        return view;
 
     }
 
@@ -46,7 +43,5 @@ public class FragmentNewAccount extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
-
     }
 }
