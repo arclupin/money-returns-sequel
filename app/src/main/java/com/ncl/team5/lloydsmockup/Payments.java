@@ -5,7 +5,6 @@ package com.ncl.team5.lloydsmockup;
  * to add a new payee or to select an old one from their last 3 payees.
  */
 
-//TODO: add lots of exception cases to all catch clauses
 //TODO: add in some missing error messages
 //TODO: need to edit and test getRecentTrans method, needs more database data
 
@@ -27,12 +26,14 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import FragPager.Payment_FragmentPagerAdapter;
 import HTTPConnect.Connection;
@@ -240,7 +241,6 @@ public class Payments extends FragmentActivity {
                 alert.show();
             }
             /* Payment was successful, show message box */
-            //TODO set all text boxes back to null/default
             else if (jo.getString("status").equals("true")) {
                 /* Clear all text boxes */
                 ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).setText("");
@@ -261,8 +261,27 @@ public class Payments extends FragmentActivity {
 
         }
         /* Catch the exceptions */
-        //TODO provide more meaningful errors, add more catch statements to distinguish errors
+        catch (JSONException jse)
+        {
+            /* Error in the JSON response */
+            new CustomMessageBox(this, "There was an error in the server response");
+            jse.printStackTrace();
+        }
+        catch (InterruptedException interex)
+        {
+            /* Caused when the connection is interrupted */
+            new CustomMessageBox(this, "Connection has been interrupted");
+            interex.printStackTrace();
+        }
+        catch (ExecutionException ee)
+        {
+            /* No idea when this is caused but it throws it... */
+            new CustomMessageBox(this, "Execution Error");
+            ee.printStackTrace();
+        }
         catch (Exception e) {
+            /* Failsafe if something goes utterly wrong */
+            new CustomMessageBox(this, "An unknown error occurred");
             e.printStackTrace();
         }
     }
@@ -296,10 +315,27 @@ public class Payments extends FragmentActivity {
             }
         }
         /* Catch any errors */
-        //TODO provide more meaingful errors to user, add more catch blocks
+        catch (JSONException jse)
+        {
+            /* Exception for when the JSON cannot be parsed correctly */
+            new CustomMessageBox(this, "There was an error in the server response");
+            jse.printStackTrace();
+        }
+        catch (InterruptedException interex)
+        {
+            /* Caused when the connection is interrupted */
+            new CustomMessageBox(this, "Connection has been interrupted");
+            interex.printStackTrace();
+        }
+        catch (ExecutionException ee)
+        {
+            /* No idea when this is caused but it throws it... */
+            new CustomMessageBox(this, "Execution Error");
+            ee.printStackTrace();
+        }
         catch (Exception e) {
-            //give the user a message about being unable to connect. Take them back
-            //to the main menu i think...
+            /* Failsafe if something goes utterly wrong */
+            new CustomMessageBox(this, "An unknown error occurred");
             e.printStackTrace();
         }
     }
@@ -408,8 +444,27 @@ public class Payments extends FragmentActivity {
             }
         }
         /* Catch the exceptions */
-        //TODO add more catch cases and better exception handling
+        catch (JSONException jse)
+        {
+            /* Exception for when the JSON cannot be parsed correctly */
+            new CustomMessageBox(this, "There was an error in the server response");
+            jse.printStackTrace();
+        }
+        catch (InterruptedException interex)
+        {
+            /* Caused when the connection is interrupted */
+            new CustomMessageBox(this, "Connection has been interrupted");
+            interex.printStackTrace();
+        }
+        catch (ExecutionException ee)
+        {
+            /* No idea when this is caused but it throws it... */
+            new CustomMessageBox(this, "Execution Error");
+            ee.printStackTrace();
+        }
         catch (Exception e) {
+            /* Failsafe if something goes utterly wrong */
+            new CustomMessageBox(this, "An unknown error occurred");
             e.printStackTrace();
         }
     }
@@ -461,6 +516,7 @@ public class Payments extends FragmentActivity {
             hc.execute("TYPE", "LOGOUT", "USR", username);
         }
         catch (Exception e) {
+            /* Doesnt really need a detailed error as user is logged out anyway, just print stack trace */
             e.printStackTrace();
         }
 
