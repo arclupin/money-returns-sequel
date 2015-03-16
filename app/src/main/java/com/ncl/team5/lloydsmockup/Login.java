@@ -72,6 +72,7 @@ public class Login extends Activity {
             //Starts an intent to launch the main menu
             Intent i = new Intent(this, MainActivity.class);
             i.putExtra("ACCOUNT_USERNAME", username);
+            i.putExtra("DATE","N/A"); // prevent the app from crashing due to null pointer
             startActivity(i);
             return;
         }
