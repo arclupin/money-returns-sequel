@@ -59,5 +59,15 @@
         <!--android:layout_toRightOf="@+id/HS_Welcome_swipe_indicators"-->
         <!--android:layout_toEndOf="@+id/HS_Welcome_swipe_indicators" />-->
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/HS_Welcome_Skip"
+        android:text="@string/title_activity_houseshare_welcome_skip"
+        style="@style/Welcome_HS_Text_Start"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:visibility="visible"/>
+
 
 </RelativeLayout>

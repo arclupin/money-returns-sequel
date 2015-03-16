@@ -2,6 +2,7 @@ package com.ncl.team5.lloydsmockup;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -38,17 +39,31 @@ public class Houseshare_Welcome extends FragmentActivity {
         ActionBar actionBar = getActionBar();
         if (actionBar != null) actionBar.hide();
 
-
-
         pager = (ViewPager) findViewById(R.id.HS_Welcome_Slider);
         pager_adapter = new HS_Welcome_FragmentPagerAdapter(getSupportFragmentManager());
+        TextView skip_text_view = (TextView) findViewById(R.id.HS_Welcome_Skip);
 
         // get the ids of all swipe indicators (circle things at the bottom)
         LinearLayout swipe_indicators_container = (LinearLayout) findViewById(R.id.HS_Welcome_swipe_indicators);
         for (int i = 0; i < pager_adapter.getCount(); i++) {
             this.swipe_indicators.add(swipe_indicators_container.getChildAt(i).getId());
         }
-        final Houseshare_Welcome temp_this = this;
+
+        // some simple animation for the SKIP button
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.hs_welcome_start_fade);
+        animation.setInterpolator(new AccelerateInterpolator());
+        animation.setStartTime(System.currentTimeMillis());
+        skip_text_view.startAnimation(animation);
+        skip_text_view.setClickable(true);
+        skip_text_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pager.setCurrentItem(HS_Welcome_FragmentPagerAdapter.FRAGMENT_VIEWS - 1);
+            }
+        });
+
+
+        final Houseshare_Welcome temp_this = this; // temp var for the activity
         // I dont know the method to override in order to get the position before the switch (something like onBeforeChange or something)}
         // so I use a variable to hold this position value.
         pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {

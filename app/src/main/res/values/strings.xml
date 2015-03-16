@@ -45,5 +45,6 @@
     <string name= "title_activity_houseshare__welcome_3">Manage Bills</string>
     <string name= "title_activity_houseshare__welcome_4">Pay Bills</string>
     <string name="title_activity_houseshare_welcome_start">Start</string>
+    <string name="title_activity_houseshare_welcome_skip">Skip</string>
 
 </resources>
