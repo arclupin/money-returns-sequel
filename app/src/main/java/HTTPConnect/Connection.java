@@ -6,8 +6,12 @@ import android.app.Activity;
  * but also does this in the background by extending ASyncTask.
  */
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.ncl.team5.lloydsmockup.KillApp;
+import com.ncl.team5.lloydsmockup.Login;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -276,6 +280,25 @@ public class Connection extends AsyncTask <String, Void, String>  {
         }
 
 
+    }
+    public void autoLogout(String username) {
+
+        /* Start a new connection */
+        try {
+            /* try to execute a logout on the server */
+            this.execute("TYPE", "LOGOUT", "USR", username);
+        }
+        catch (Exception e) {
+            /* Doesnt really need a detailed error as user is logged out anyway, just print stack trace */
+            e.printStackTrace();
+        }
+
+        /* Has to kill the app whether it has managed to send a logout or not */
+        ((KillApp) this.a.getApplication()).setStatus(false);
+        this.a.finish();
+        Intent intent1 = new Intent(this.a.getApplicationContext(), Login.class);
+        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        this.a.startActivity(intent1);
     }
 
 }
