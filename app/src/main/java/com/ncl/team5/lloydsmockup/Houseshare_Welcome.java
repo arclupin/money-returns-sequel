@@ -2,6 +2,7 @@ package com.ncl.team5.lloydsmockup;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import FragPager.HS_Welcome_FragmentPagerAdapter;
+import HTTPConnect.Connection;
 
 
 public class Houseshare_Welcome extends FragmentActivity {
@@ -28,13 +30,16 @@ public class Houseshare_Welcome extends FragmentActivity {
     HS_Welcome_FragmentPagerAdapter pager_adapter;
     List<Integer> swipe_indicators = new ArrayList<Integer>();
     int currentItem = 0;
-
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_houseshare__welcome);
+
+        Intent intent = getIntent();
+        username = intent.getExtras().getString("ACCOUNT_USERNAME");
         // hide the action bar at welcome page
         ActionBar actionBar = getActionBar();
         if (actionBar != null) actionBar.hide();
@@ -110,5 +115,15 @@ public class Houseshare_Welcome extends FragmentActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void register(View v) {
+        Connection connection = new Connection(this);
+
+
+        Intent i = new Intent(this, Houseshare_Search.class);
+        i.putExtra("ACCOUNT_USERNAME", username);
+        startActivity(i);
+        ((KillApp) this.getApplication()).setStatus(false);
     }
 }

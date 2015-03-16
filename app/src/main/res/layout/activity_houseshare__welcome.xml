@@ -55,7 +55,9 @@
         style="@style/Welcome_HS_Text_Start"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:visibility="invisible"/>
+        android:visibility="invisible"
+        android:clickable="true"
+        android:onClick="register"/>
         <!--android:layout_toRightOf="@+id/HS_Welcome_swipe_indicators"-->
         <!--android:layout_toEndOf="@+id/HS_Welcome_swipe_indicators" />-->
 
@@ -67,7 +69,8 @@
         style="@style/Welcome_HS_Text_Start"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        />
 
 
 </RelativeLayout>

@@ -1,17 +1,18 @@
 package com.ncl.team5.lloydsmockup;
 
+import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class Houseshare_Search extends ActionBarActivity {
+public class Houseshare_Search extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_houseshare__search);
+        setContentView(R.layout.activity_houseshare_search);
     }
 
 

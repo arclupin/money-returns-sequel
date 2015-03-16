@@ -8,10 +8,35 @@
     android:background="@android:color/background_light"
     android:id="@+id/HS_Welcome_Container">
 
-    <TextView android:text="@string/title_activity_houseshare__welcome_1" android:layout_width="match_parent"
+    <TextView android:text="@string/title_activity_houseshare_search_textIntro" android:layout_width="match_parent"
         style="@style/Welcome_HS_Text"
         android:layout_height="wrap_content"
         android:singleLine="false"
-        android:id="@+id/Welcome_HS_1_TextView" />
+        android:id="@+id/Welcome_HS_1_TextView"
+        android:layout_above="@+id/HS_Search_Input_Container"/>
+
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/HS_Search_Input_Container"
+    android:layout_centerVertical="true"
+    android:layout_centerHorizontal="true"
+    android:orientation="horizontal">
+
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/HS_Search_TextInput"
+        android:hint="Your House Name"
+        />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton"
+        android:background="@android:color/background_light"
+        android:src="@drawable/ic_action_search"/>
+</LinearLayout>
 
 </RelativeLayout>

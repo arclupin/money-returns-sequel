@@ -71,6 +71,11 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name=".Houseshare_Search"
+            android:label="@string/title_activity_houseshare_search"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name=".Products"
             android:label="@string/title_activity_products"
             android:screenOrientation="portrait" >

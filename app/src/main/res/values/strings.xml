@@ -47,4 +47,6 @@
     <string name="title_activity_houseshare_welcome_start">Start</string>
     <string name="title_activity_houseshare_welcome_skip">Skip</string>
 
+    <string name="title_activity_houseshare_search">Join</string>
+    <string name="title_activity_houseshare_search_textIntro">Let\'s join a house</string>
 </resources>
