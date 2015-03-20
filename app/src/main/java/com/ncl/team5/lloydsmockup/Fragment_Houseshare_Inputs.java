@@ -1,29 +1,24 @@
 package com.ncl.team5.lloydsmockup;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 
-public class Houseshare_Search extends Activity {
-    private String username;
+public class Fragment_Houseshare_Inputs extends ActionBarActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_houseshare_search);
-        Intent intent = getIntent();
-        username = intent.getExtras().getString("ACCOUNT_USERNAME");
+        setContentView(R.layout.activity_fragment__houseshare__inputs);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_houseshare__search, menu);
+        getMenuInflater().inflate(R.menu.menu_fragment__houseshare__inputs, menu);
         return true;
     }
 
@@ -40,12 +35,5 @@ public class Houseshare_Search extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void createHouse(View v) {
-        Intent i = new Intent(this, Houseshare_Create_House.class);
-        i.putExtra("ACCOUNT_USERNAME", username);
-        startActivity(i);
-        ((KillApp) this.getApplication()).setStatus(false);
     }
 }

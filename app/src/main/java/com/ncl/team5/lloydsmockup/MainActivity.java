@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 
 import HTTPConnect.Connection;
 import HTTPConnect.Request_Params;
+import HTTPConnect.Responses_Format;
 
 
 public class MainActivity extends Activity {
@@ -129,8 +130,7 @@ public class MainActivity extends Activity {
             String result;
 
             try {
-            /* Command required to make a payment, takes username, to account, from account, both sort codes and amount
-             * Returns: JSON String */
+             /* Returns: JSON String */
                 result = connect.execute(Request_Params.PARAM_TYPE, Request_Params.VAL_HS_INIT, Request_Params.PARAM_USR, this.username).get();
             /* Turns String into JSON object, can throw JSON Exception */
                 JSONObject jo = new JSONObject(result);
@@ -154,25 +154,34 @@ public class MainActivity extends Activity {
                     alert.show();
                 }
                 // TODO unfinished, the server will send a more detailed message i.e. 'registered and joined house' or 'registered and not joined house'
-                else if (jo.getString("status").equals("true")) { // true means registered
+                else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_NOT_JOINED)) { // if not registered -> redirect to the welcome page
+                    Intent i = new Intent(this, Houseshare_Welcome.class);
+                    i.putExtra("ACCOUNT_USERNAME", username);
+                    startActivity(i);
+                    ((KillApp) this.getApplication()).setStatus(false);
+                }
+                else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE)) { // else if not joined a house -> redirect to the search page
                     Intent i = new Intent(this, Houseshare_Search.class);
                     i.putExtra("ACCOUNT_USERNAME", username);
                     startActivity(i);
                     ((KillApp) this.getApplication()).setStatus(false);
                 }
                 // TODO unfinished, the server will send a more detailed message i.e.
-                else if (jo.getString("status").equals("false")) { // false means not registered
-                    Intent i = new Intent(this, Houseshare_Welcome.class);
-                    i.putExtra("ACCOUNT_USERNAME", username);
-                    startActivity(i);
-                    ((KillApp) this.getApplication()).setStatus(false);
+
+
+               else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE)) { // else if joined a house -> redirect to main home page
+//                    Intent i = new Intent(this, Houseshare_Welcome.class);
+//                    i.putExtra("ACCOUNT_USERNAME", username);
+//                    startActivity(i);
+//                    ((KillApp) this.getApplication()).setStatus(false);
+                    Toast.makeText(this, "Registered, Joined house, To redirect to main page", Toast.LENGTH_SHORT).show();
+                }
+
+                else {
+                    Toast.makeText(this, "Some unknown error on the houseshare service on the server", Toast.LENGTH_SHORT).show();
                 }
             /* There was an error indide the status return field, display appropriate error message */
                 //TODO implement error messages
-                else {
-                /* give more info on the error here, no money taken from account */
-                /* Use the status results to display certain error messages */
-                }
 
             }
         /* Catch the exceptions */ catch (JSONException jse) {

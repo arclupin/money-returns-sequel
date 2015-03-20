@@ -49,4 +49,13 @@
 
     <string name="title_activity_houseshare_search">Join</string>
     <string name="title_activity_houseshare_search_textIntro">Let\'s join a house</string>
+    <string name="houseshare_search_create">Or alternatively, create a house</string>
+    <string name="title_activity_houseshare__create__house">Creating a house</string>
+    <string name="title_activity_houseshare__create__house_name">Name of house</string>
+    <string name="title_activity_houseshare__create__house_hsno">House Number</string>
+    <string name="title_activity_houseshare__create__house_street">Street</string>
+    <string name="title_activity_houseshare__create__house_city">City</string>
+    <string name="title_activity_houseshare__create__house_postcode">Postcode</string>
+    <string name="title_activity_houseshare__create__house_description">Description</string>
+    <string name="title_activity_fragment__houseshare__inputs">Fragment_Houseshare_Inputs</string>
 </resources>
