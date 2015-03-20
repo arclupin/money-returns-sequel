@@ -1,4 +1,5 @@
 package com.ncl.team5.lloydsmockup;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -37,29 +38,29 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.util.Log;
 
 //References: http://code.tutsplus.com/tutorials/android-sdk-working-with-google-maps-displaying-places-of-interest--mobile-16145
 //https://developers.google.com/places/documentation/search
-public class Locations extends Activity implements LocationListener  {
-    GoogleMap gMap;
+public class Locations extends Activity implements LocationListener {
+    private GoogleMap gMap;
     private LocationManager lManager;
     private Marker userMarkerLoc;
-    UiSettings uiSet;
-    boolean disabled =false;
+    private UiSettings uiSet;
+    boolean disabled = false;
     //here will be stored all the places near by
     private Marker[] bankMarkers;
     //maximum number of places returned by google
     private final int MAX = 20;
-   private MarkerOptions[] places;
-
+    private MarkerOptions[] places;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_locations);
-        if(gMap==null) {
+        if (gMap == null) {
 
             gMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
             if (gMap != null) {
@@ -79,8 +80,8 @@ public class Locations extends Activity implements LocationListener  {
 
     }
 
-    private void updateLocation(){
-        lManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+    private void updateLocation() {
+        lManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria c = new Criteria();
         c.setAccuracy(Criteria.ACCURACY_FINE);
         String provider = lManager.getBestProvider(c, true);
@@ -89,7 +90,7 @@ public class Locations extends Activity implements LocationListener  {
         double lng = lastLoc.getLongitude();
         LatLng lastLatLng = new LatLng(lat, lng);
         //removes old marker every time the users change their location
-        if(userMarkerLoc!=null){
+        if (userMarkerLoc != null) {
             userMarkerLoc.remove();
         }
 
@@ -97,8 +98,8 @@ public class Locations extends Activity implements LocationListener  {
         userMarkerLoc = gMap.addMarker(new MarkerOptions()
                 .position(lastLatLng)
                 .title("You are here"));
-                //.snippet("Your last recorded location"));
-        gMap.animateCamera(CameraUpdateFactory.newLatLng(lastLatLng),30000,null);
+        //.snippet("Your last recorded location"));
+        gMap.animateCamera(CameraUpdateFactory.newLatLng(lastLatLng), 30000, null);
 
 
         String types = "atm|bank";
@@ -110,15 +111,15 @@ public class Locations extends Activity implements LocationListener  {
             e1.printStackTrace();
         }
         String placesSearchStr = "https://maps.googleapis.com/maps/api/place/nearbysearch/" +
-                "json?location="+lat+","+lng+
+                "json?location=" + lat + "," + lng +
                 "&radius=1000&sensor=true" +
                 "&types=" + types +
-                "&name="+ name +
+                "&name=" + name +
                 "&key=AIzaSyCAXBj3NALN6N1axPkGdHbK7m9_ENYdO9I";
 
         //execute the query
         new GetPlaces().execute(placesSearchStr);
-        lManager.requestLocationUpdates(provider,10000,100,this);
+        lManager.requestLocationUpdates(provider, 10000, 100, this);
 
     }
 
@@ -128,19 +129,23 @@ public class Locations extends Activity implements LocationListener  {
         Log.v("Location Activity", "location changed");
         updateLocation();
     }
+
     @Override
-    public void onProviderDisabled(String provider){
+    public void onProviderDisabled(String provider) {
         Log.v("Location Activity", "provider disabled");
     }
+
     @Override
     public void onProviderEnabled(String provider) {
         Log.v("Location Activity", "provider enabled");
     }
+
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         Log.v("Location Activity", "status changed");
     }
-//Inner class to parse and execute the query. All the fun happens here(not really)
+
+    //Inner class to parse and execute the query. All the fun happens here(not really)
     private class GetPlaces extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... placesURL) {
@@ -182,9 +187,9 @@ public class Locations extends Activity implements LocationListener  {
         //process data retrieved from doInBackground
         protected void onPostExecute(String result) {
             //remove existing markers
-            if(bankMarkers !=null){
-                for(int pm=0; pm< bankMarkers.length; pm++){
-                    if(bankMarkers[pm]!=null)
+            if (bankMarkers != null) {
+                for (int pm = 0; pm < bankMarkers.length; pm++) {
+                    if (bankMarkers[pm] != null)
                         bankMarkers[pm].remove();
                 }
             }
@@ -196,7 +201,7 @@ public class Locations extends Activity implements LocationListener  {
                 //create the marker options for each place returned
                 places = new MarkerOptions[placesArray.length()];
                 //loop through the places get the details of each place
-                for (int p=0; p<placesArray.length(); p++) {
+                for (int p = 0; p < placesArray.length(); p++) {
                     //if any values are missing we won't show the marker
                     boolean missingValue = false;
                     LatLng placeLL = null;
@@ -229,47 +234,46 @@ public class Locations extends Activity implements LocationListener  {
                                 .snippet(vicinity);
                     }
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            if(places!=null && bankMarkers !=null){
-                for(int p=0; p<places.length && p< bankMarkers.length; p++){
-                    if(places[p]!=null)
-                        bankMarkers[p]=gMap.addMarker(places[p]);
+            if (places != null && bankMarkers != null) {
+                for (int p = 0; p < places.length && p < bankMarkers.length; p++) {
+                    if (places[p] != null)
+                        bankMarkers[p] = gMap.addMarker(places[p]);
                 }
             }
 
         }
     }
 
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-            // Inflate the menu; this adds items to the action bar if it is present.
-            getMenuInflater().inflate(R.menu.main, menu);
-            return true;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_backHome) {
+            ((KillApp) this.getApplication()).setStatus(false);
+            this.finish();
+            //Intent intent = new Intent(this, MainActivity.class);
+            //startActivity(intent);
+        } else if (id == R.id.action_notifications) {
+            Intent intent = new Intent(this, Notifications.class);
+            startActivity(intent);
+            ((KillApp) this.getApplication()).setStatus(false);
         }
 
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            // Handle action bar item clicks here. The action bar will
-            // automatically handle clicks on the Home/Up button, so long
-            // as you specify a parent activity in AndroidManifest.xml.
-            int id = item.getItemId();
-
-            if (id == R.id.action_backHome) {
-                ((KillApp) this.getApplication()).setStatus(false);
-                this.finish();
-                //Intent intent = new Intent(this, MainActivity.class);
-                //startActivity(intent);
-            } else if (id == R.id.action_notifications) {
-                Intent intent = new Intent(this, Notifications.class);
-                startActivity(intent);
-                ((KillApp) this.getApplication()).setStatus(false);
-            }
-
-            return super.onOptionsItemSelected(item);
-        }
+        return super.onOptionsItemSelected(item);
+    }
 
     /* This is how the application knows if it has been stopped by an intent or by an
      * external source (i.e. home button, phone call etc). Each time an intent is called, it
@@ -279,34 +283,33 @@ public class Locations extends Activity implements LocationListener  {
      * restart back to the login activity.
      */
 
-        /* This is where the test is done to see whether the KillApp variable is true, and if it is, to call
-         * the login class. It also clears the activity stack so the back button cannot be used to go back */
-        @Override
-        protected void onResume() {
-            if (((KillApp) this.getApplication()).getStatus()) {
-                //only finish is needed for all other apps apart from the main screen
-                //as the login screen only needs to be called once, and by calling finish
-                //it creates a domino affect to all of the other activities
-                finish();
-            } else {
-                //each time the app resumes and it wasnt killed, the variable needs to be reset
-                ((KillApp) this.getApplication()).setStatus(true);
-            }
-
-            super.onResume();
-
-
-        }
-
-        //overriding the on back pressed method (for the built in back button) so
-        //its status can be set to false, so it doesnt launch the login on on resume
-        @Override
-        public void onBackPressed() {
-            ((KillApp) this.getApplication()).setStatus(false);
+    /* This is where the test is done to see whether the KillApp variable is true, and if it is, to call
+     * the login class. It also clears the activity stack so the back button cannot be used to go back */
+    @Override
+    protected void onResume() {
+        if (((KillApp) this.getApplication()).getStatus()) {
+            //only finish is needed for all other apps apart from the main screen
+            //as the login screen only needs to be called once, and by calling finish
+            //it creates a domino affect to all of the other activities
             finish();
-
+        } else {
+            //each time the app resumes and it wasnt killed, the variable needs to be reset
+            ((KillApp) this.getApplication()).setStatus(true);
         }
 
+        super.onResume();
+
+
+    }
+
+    //overriding the on back pressed method (for the built in back button) so
+    //its status can be set to false, so it doesnt launch the login on on resume
+    @Override
+    public void onBackPressed() {
+        ((KillApp) this.getApplication()).setStatus(false);
+        finish();
+
+    }
 
 
 }

@@ -5,13 +5,13 @@ package com.ncl.team5.lloydsmockup;
  * to add a new payee or to select an old one from their last 3 payees.
  */
 
-//TODO: add in some missing error messages
 //TODO: need to edit and test getRecentTrans method, needs more database data
 
 /* Lots of imports */
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -29,8 +29,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -158,6 +160,11 @@ public class Payments extends FragmentActivity {
     /* this is ran when the user presses the payment button, nothing returned, message box show be shown */
     public void btnMakePay(View view) {
 
+        SharedPreferences sp = getSharedPreferences("transinsession", 0);
+        SharedPreferences.Editor edit = sp.edit();
+        edit.putBoolean("IN_SESSION", true);
+        edit.commit();
+
         /* Set up some variables */
         int tabNo = tabs.getCurrentTab();
         String toAccountNum;
@@ -180,8 +187,8 @@ public class Payments extends FragmentActivity {
         /* Tab is 1 when user presses button in new payee tab */
         else {
             /* gets the values of all of the UI components */
-            toAccountNum = ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).getText().toString();
-            sortCode = ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).getText().toString();
+            toAccountNum = ((TextView) findViewById(R.id.Payment_New_Payto_Acc_TextField)).getText().toString();
+            sortCode = ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextField)).getText().toString();
             amount = ((TextView) findViewById(R.id.Payment_New_TextField_Amount)).getText().toString();
             fromAccountNum = ((Spinner) findViewById(R.id.Payment_New_spinner1)).getSelectedItem().toString();
             int pos = ((Spinner) findViewById(R.id.Payment_Old_spinner1)).getSelectedItemPosition();
@@ -205,7 +212,6 @@ public class Payments extends FragmentActivity {
             return;
         }
         /* Checks the amount */
-        //TODO add a check that amount is less than amount in account
         if (!amount.matches("[£]?[0-9]+([.][0-9][0-9])?")) {
             //error
             new CustomMessageBox(this, "Incorrect amount specified");
@@ -243,7 +249,7 @@ public class Payments extends FragmentActivity {
             /* Payment was successful, show message box */
             else if (jo.getString("status").equals("true")) {
                 /* Clear all text boxes */
-                ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextView)).setText("");
+                ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextField)).setText("");
                 ((TextView) findViewById(R.id.Payment_New_Payto_Acc_TextField)).setText("");
                 ((TextView) findViewById(R.id.Payment_New_TextField_Amount)).setText("");
                 ((TextView) findViewById(R.id.Payment_Old_TextField_Amount)).setText("");
@@ -252,11 +258,20 @@ public class Payments extends FragmentActivity {
                 new CustomMessageBox(this, "Your payment has been made successfully");
             }
             /* There was an error indide the status return field, display appropriate error message */
-            //TODO implement error messages
             else
             {
                 /* give more info on the error here, no money taken from account */
-                /* Use the status results to display certain error messages */
+                /* Use the cause results to display certain error messages */
+                if(jo.getString("cause").equals("insufficient"))
+                {
+                    /* insufficient funds in account */
+                    new CustomMessageBox(this, "There are not enough funds in your account for this transaction");
+                }
+                else
+                {
+                    /* Unknown error :( */
+                    new CustomMessageBox(this, "An unknown error occurred, the transaction was not completed ");
+                }
             }
 
         }
@@ -302,16 +317,33 @@ public class Payments extends FragmentActivity {
             /* Convert string to JSON object, can throw JSON Exception */
             JSONObject jo = new JSONObject(result);
 
+            if(jo.getString("expired").equals("true"))
+            {
+                /* Display error message and log user out as they have expired */
+                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+                errorBox.setMessage("You have been timed out, please login again")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                autoLogout();
+                            }
+                        });
+                AlertDialog alert = errorBox.create();
+                alert.show();
+            }
+            else {
             /* JSONArray needed as accounts are returned as an array */
-            JSONArray jsonArray = jo.getJSONArray("accounts");
+                JSONArray jsonArray = jo.getJSONArray("accounts");
 
             /* Loop through the array */
-            for (int i = 0; i < jsonArray.length(); i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                 /* Creates an object for each element in array, then strips the needed values from it */
-                JSONObject insideObject = jsonArray.getJSONObject(i);
+                    JSONObject insideObject = jsonArray.getJSONObject(i);
 
-                accountStrings.add(insideObject.getString("account_number"));
-                fromSC.add(insideObject.getString("sort_code"));
+                    accountStrings.add(insideObject.getString("account_number"));
+                    fromSC.add(insideObject.getString("sort_code"));
+                }
             }
         }
         /* Catch any errors */
@@ -389,8 +421,9 @@ public class Payments extends FragmentActivity {
                 JSONArray jsonArray = jo.getJSONArray("transactions");
 
                 /* There are no transactions if the array length is zero */
-                //TODO, add an error message possibly
                 if (jsonArray.length() == 0) {
+                    /* Swaps it onto the second tab if there are no transactions */
+                    tabs.setCurrentTab(1);
                     return;
                 }
 
@@ -418,7 +451,7 @@ public class Payments extends FragmentActivity {
                         }
                         /* if the size > 0 but the account is already in the list, then dont add */
                         //TODO, edit this method, think it needs some sort of loop outside of the if...
-                        else if (!recentAcc.get(i).toString().equals(insideObject.getString("Payee"))) {
+                        else if (i < recentAcc.size() && !recentAcc.get(i).toString().equals(insideObject.getString("Payee"))) {
                             if (insideObject.getString("Payer").equals(accountNum)) {
                                 recentAcc.add(insideObject.getString("Payee"));
                             }
