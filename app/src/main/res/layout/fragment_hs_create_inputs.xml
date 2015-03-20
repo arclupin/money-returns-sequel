@@ -1,6 +1,110 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/houseshare_create_input_container">
 
-</LinearLayout>
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/houseshare_create_item_name"
+            android:textCursorDrawable="@null"
+            android:hint="@string/title_activity_houseshare__create__house_name"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@null"
+
+            ></EditText>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#c0c0c0"/>
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/houseshare_create_item_hsno"
+            android:textCursorDrawable="@null"
+            android:background="@null"
+            android:hint="@string/title_activity_houseshare__create__house_hsno"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+
+            ></EditText>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#c0c0c0"/>
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/houseshare_create_street"
+            android:textCursorDrawable="@null"
+            android:background="@null"
+            android:hint="@string/title_activity_houseshare__create__house_street"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            ></EditText>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#c0c0c0"/>
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/houseshare_create_city"
+            android:textCursorDrawable="@null"
+            android:background="@null"
+            android:hint="@string/title_activity_houseshare__create__house_city"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            ></EditText>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#c0c0c0"/>
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/houseshare_create_postcode"
+            android:textCursorDrawable="@null"
+            android:background="@null"
+            android:hint="@string/title_activity_houseshare__create__house_postcode"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            ></EditText>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#c0c0c0"/>
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/houseshare_create_item_description"
+            android:textCursorDrawable="@null"
+            android:background="@null"
+            android:hint="@string/title_activity_houseshare__create__house_description"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            ></EditText>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/houseshare_create_button"
+            android:text="Create"
+            style="@style/Button_Light"
+            android:layout_alignParentBottom="true"
+            android:visibility="visible"
+            android:clickable="true"
+            android:onClick="Houseshare_create_house"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@android:color/darker_gray"
+            />
+    </LinearLayout></ScrollView>

@@ -135,11 +135,13 @@
         <activity
             android:name=".Houseshare_Create_House"
             android:label="@string/title_activity_houseshare__create__house"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="stateHidden"
+             >
         </activity>
         <activity
             android:name=".Fragment_Houseshare_Inputs"
-            android:label="@string/title_activity_fragment__houseshare__inputs" >
+            android:label="@string/title_activity_fragment__houseshare__inputs"
+            >
         </activity>
     </application>
 

@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,10 +49,12 @@ public class Houseshare_Create_House extends Activity {
         setContentView(R.layout.activity_houseshare_create_house);
 
         TextView a = (TextView)  findViewById(R.id.houseshare_create_button);
-        if (isInformationSufficient())
-            a.setTextColor(Color.parseColor("#105842"));
-        else  a.setTextColor(Color.LTGRAY);
 
+        if (isInformationSufficient())
+            a.setTextColor(Color.DKGRAY);
+        else  a.setTextColor(Color.LTGRAY);
+        ScrollView scrollContainer = (ScrollView) findViewById(R.id.hs_inputs_scroll);
+        scrollContainer.setSmoothScrollingEnabled(true);
 
         Intent intent = getIntent();
         username = intent.getExtras().getString("ACCOUNT_USERNAME");
@@ -69,7 +72,7 @@ public class Houseshare_Create_House extends Activity {
             public void afterTextChanged(Editable s) {
                 TextView a = (TextView)  findViewById(R.id.houseshare_create_button);
                 if (isInformationSufficient())
-                    a.setTextColor(Color.parseColor("#105842"));
+                    a.setTextColor(Color.DKGRAY);
                else  a.setTextColor(Color.LTGRAY);
 
         }};
@@ -92,10 +95,10 @@ public class Houseshare_Create_House extends Activity {
     public boolean isInformationSufficient() {
         LinearLayout container = (LinearLayout) findViewById(R.id.houseshare_create_input_container);
         boolean r = true;
-        for (int i = 0; i < container.getChildCount(); i+=2 )
+        for (int i = 0; i < container.getChildCount() - 2; i+=2 )
         {
             EditText child = (EditText) container.getChildAt(i);
-            if (child.getText().toString().trim().isEmpty() && i != (container.getChildCount() - 1)) {
+            if (child.getText().toString().trim().isEmpty() && i != (container.getChildCount() - 3)) {
                 r = false;
                 return r;
             }
@@ -105,10 +108,9 @@ public class Houseshare_Create_House extends Activity {
 
     public void setTextWatchers() {
         LinearLayout container = (LinearLayout) findViewById(R.id.houseshare_create_input_container);
-        for (int i = 0; i < container.getChildCount(); i+=2 )
+        for (int i = 0; i < container.getChildCount() - 2; i+=2 )
         {
             EditText child = (EditText) container.getChildAt(i);
-            child.setTextColor(Color.parseColor("#323842"));
             child.addTextChangedListener(watcher);
         }
     }
@@ -130,6 +132,9 @@ public class Houseshare_Create_House extends Activity {
 
 
     public void Houseshare_create_house(View v) {
-
+        TextView a = (TextView)  findViewById(R.id.houseshare_create_button);
+        if (!isInformationSufficient() && a.getCurrentTextColor() == Color.LTGRAY)
+            Toast.makeText(this, "Please supply enough information.", Toast.LENGTH_SHORT).show();
+        else  Toast.makeText(this, "Creating", Toast.LENGTH_SHORT).show();
     }
 }
