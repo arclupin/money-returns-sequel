@@ -57,7 +57,7 @@
         android:layout_alignParentRight="true"
         android:visibility="invisible"
         android:clickable="true"
-        android:onClick="register"/>
+        android:onClick="start_bttn"/>
         <!--android:layout_toRightOf="@+id/HS_Welcome_swipe_indicators"-->
         <!--android:layout_toEndOf="@+id/HS_Welcome_swipe_indicators" />-->
 

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +35,10 @@ public class Houseshare_Welcome extends FragmentActivity {
     List<Integer> swipe_indicators = new ArrayList<Integer>();
     int currentItem = 0;
     private String username;
+
+    // STATIC var keeps track of the registration status
+    // this prevents the app from sending the registration request again after already making a registration.
+    private static boolean registered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,14 +125,22 @@ public class Houseshare_Welcome extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void register(View v) {
-        Connection connection = new Connection(this);
-        if (this.username.equals("test")) {
+    public void start_bttn(View v) {
+        Log.d("registration welcome", Boolean.toString(registered));
+
+        // check the registration status
+        if (registered || this.username.equals("test")) {
             Intent i = new Intent(this, Houseshare_Search.class);
             i.putExtra("ACCOUNT_USERNAME", username);
             startActivity(i);
             ((KillApp) this.getApplication()).setStatus(false);
-        } else {
+        }
+    else register();
+
+    }
+
+    public void register() {
+        Connection connection = new Connection(this);
             Connection connect = new Connection(this);
             String result;
 
@@ -156,8 +169,9 @@ public class Houseshare_Welcome extends FragmentActivity {
                     AlertDialog alert = errorBox.create();
                     alert.show();
                 }
-            /* Payment was successful, show message box */
+
                 else if (jo.getString("status").equals("true")) {
+                    registered = true;
                     Intent i = new Intent(this, Houseshare_Search.class);
                     i.putExtra("ACCOUNT_USERNAME", username);
                     startActivity(i);
@@ -192,4 +206,4 @@ public class Houseshare_Welcome extends FragmentActivity {
 
         }
     }
-}
+

@@ -228,6 +228,7 @@ public class MainActivity extends Activity {
                 else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE)) { // else if not joined a house -> redirect to the search page
                     Intent i = new Intent(this, Houseshare_Search.class);
                     i.putExtra("ACCOUNT_USERNAME", username);
+                    jo.getString("status");
                     startActivity(i);
                     ((KillApp) this.getApplication()).setStatus(false);
                 }

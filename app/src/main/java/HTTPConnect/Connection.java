@@ -217,7 +217,6 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
             /* Execute the post request and save the response */
             HttpResponse response = httpclient.execute(httppost, context);
-
             if(cookies.getCookies().size() == 0)
             {
                 Log.d("cookies", "no cookies found");
