@@ -3,4 +3,5 @@
     <item name="Table1" type="id" />
     <item name="txtChange" type="id" />
     <item name="analysis" type="id">analysis</item>
+    <item name="main_menu" type="id">main_menu</item>
 </resources>

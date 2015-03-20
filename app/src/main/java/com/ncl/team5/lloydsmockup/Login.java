@@ -4,6 +4,7 @@ import  android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +15,10 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import HTTPConnect.Connection;
 import HTTPConnect.CookieStorage;
@@ -77,17 +82,13 @@ public class Login extends Activity {
             return;
         }
 
-
         if(authenticate(username, password))
         {
-
             //Starts an intent to launch the main menu
             Intent i = new Intent(this, MainActivity.class);
             i.putExtra("ACCOUNT_USERNAME", username);
             i.putExtra("DATE",date);
             startActivity(i);
-
-
         }
         else
         {
