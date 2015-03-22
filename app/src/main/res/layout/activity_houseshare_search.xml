@@ -1,53 +1,63 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
-    android:layout_height="fill_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.ncl.team5.lloydsmockup.Houseshare_Welcome"
-    android:background="@android:color/background_light"
-    android:id="@+id/HS_Welcome_Container">
-
-    <TextView android:text="@string/title_activity_houseshare_search_textIntro" android:layout_width="match_parent"
-        style="@style/Welcome_HS_Text"
-        android:layout_height="wrap_content"
-        android:singleLine="false"
-        android:id="@+id/Welcome_HS_1_TextView"
-        android:layout_above="@+id/HS_Search_Input_Container"/>
-
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/HS_Search_Input_Container"
-    android:layout_centerVertical="true"
-    android:layout_centerHorizontal="true"
-    android:orientation="horizontal">
+       <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/tableLayout" android:layout_width="match_parent"
+          android:layout_height="match_parent" android:padding="5dp"
+          android:stretchColumns="*" android:background="@android:color/white">
 
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/HS_Search_TextInput"
-        android:hint="Your House Name"
-        />
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageButton"
-        android:background="@android:color/background_light"
-        android:src="@drawable/ic_action_search"/>
-</LinearLayout>
+          <!-- tableRow1 -->
+          <TableRow android:id="@+id/tableRow1"
+             android:layout_height="wrap_content"
+             android:layout_width="match_parent"
+              >
+             <EditText android:layout_height="match_parent"
+                 android:layout_width="fill_parent"
+                android:hint="Search a house" android:inputType="text"
+                android:id="@+id/HS_Search_TextInput"
+                 android:imeOptions="actionDone"
+                 android:background="@drawable/hs_edittext_border"
+                 android:layout_marginLeft="10dp"
+                 android:paddingTop="10dp"
+                 />
+             <ImageButton android:src="@drawable/ic_action_search_light_bg"
+                 android:onClick="button_hs_search"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                 android:background="@drawable/button_light_color"/>
+          </TableRow>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/HS_Search_CreateHouse"
-        android:layout_below="@+id/HS_Search_Input_Container"
-        android:layout_centerHorizontal="true"
-        android:text="@string/houseshare_search_create"
-        android:padding="10dp"
-        android:clickable="true"
-        android:onClick="createHouse"/>
 
-</RelativeLayout>
+
+          <!-- tableRow2 -->
+          <TableRow android:id="@+id/tableRow2"
+             android:background="@color/white"
+             android:layout_height="wrap_content"
+             android:layout_width="match_parent" android:layout_weight="1">
+
+             <ScrollView android:id="@+id/house_search_scroll_container"
+                android:layout_width="match_parent"
+                android:layout_span="2" android:padding="5dp"
+                 >
+                <TableLayout android:id="@+id/table_result"
+                  android:layout_width="match_parent"
+                   android:layout_height="match_parent" android:padding="5dp"
+                   android:stretchColumns="*" />
+             </ScrollView>
+          </TableRow>
+           <!-- tableRow3 -->
+                 <TableRow android:id="@+id/tableRow3"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent">
+
+                    <TextView android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="@string/houseshare_search_create"
+                       android:id="@+id/HS_Search_CreateHouse"
+                       android:layout_span="2" android:layout_marginTop="5dp"
+                       android:layout_gravity="center_horizontal"
+                       android:clickable="true"
+                        android:onClick="createHouse"/>
+                 </TableRow>
+              </TableLayout>
+

@@ -1,23 +1,26 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo">
+    <style name="AppTheme" parent="android:Theme.Holo.Light">
         <!-- Customize your theme here. -->
         <item name="android:actionBarStyle">@style/action_bar</item>
         <item name="android:buttonStyle">@style/button_style</item>
         <item name="android:editTextStyle">@style/editText_style</item>
         <item name="android:actionBarTabStyle">@style/tab_style</item>
+        <item name="android:textColor">@color/text_color</item>
 
 
     </style>
 
     <style name="action_bar" parent="android:Widget.Holo.ActionBar">
-        <item name="android:background">@color/lloyds_color</item>
-
-
+        <item name="android:background">@android:color/white</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
     </style>
+
+
+
     <style name="menuTheme" parent="AppTheme">
-        <item name="android:textColor">@color/lloyds_color</item>
+        <!--<item name="android:textColor">@color/lloyds_color</item>-->
     </style>
     <style name="button_style" parent="android:Widget.Holo.Button">
         <item name="android:background">@color/lloyds_color</item>
@@ -55,7 +58,23 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:ellipsize">marquee</item>
+    </style>
 
+    <style name="HS_Search_Name" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
+    <style name="HS_Search_Description" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:ellipsize">marquee</item>
     </style>
     
 
@@ -118,6 +137,20 @@
         <!--<item name="android:ellipsize">marquee</item>-->
 
     <!--</style>-->
+
+    <style name="MyDialog" parent="android:Theme.Holo.Dialog">
+        <!--<item name="android:windowNoTitle">true</item>-->
+        <!--<item name="android:windowContentOverlay">@null</item>-->
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTitleStyle">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
 
 
 

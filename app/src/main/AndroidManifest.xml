@@ -42,8 +42,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:screenOrientation="portrait"
-            android:theme="@style/menuTheme" >
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Transfers"
@@ -135,13 +134,15 @@
         <activity
             android:name=".Houseshare_Create_House"
             android:label="@string/title_activity_houseshare__create__house"
-            android:windowSoftInputMode="stateHidden"
-             >
+            android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
             android:name=".Fragment_Houseshare_Inputs"
-            android:label="@string/title_activity_fragment__houseshare__inputs"
-            >
+            android:label="@string/title_activity_fragment__houseshare__inputs" >
+        </activity>
+        <activity
+            android:name=".Houseshare_HomeView"
+            android:label="@string/title_activity_houseshare__home_view" >
         </activity>
     </application>
 

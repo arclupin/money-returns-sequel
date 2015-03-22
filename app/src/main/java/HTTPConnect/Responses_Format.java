@@ -10,6 +10,8 @@ public class Responses_Format {
 
     public static final String RESPONSE_EXPIRED = "expired";
     public static final String RESPONSE_STATUS = "status";
+    public static final String RESPONSE_HS_CONTENT = "content";
+
 
     public static final String RESPONSE_HOUSESHARE_NOT_JOINED = "0";
     public static final String RESPONSE_HOUSESHARE_JOINED_SERVICE= "1";

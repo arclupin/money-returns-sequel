@@ -58,4 +58,5 @@
     <string name="title_activity_houseshare__create__house_postcode">Postcode</string>
     <string name="title_activity_houseshare__create__house_description">Description</string>
     <string name="title_activity_fragment__houseshare__inputs">Fragment_Houseshare_Inputs</string>
+    <string name="title_activity_houseshare__home_view">Houseshare_HomeView</string>
 </resources>

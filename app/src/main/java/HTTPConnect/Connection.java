@@ -6,12 +6,19 @@ import android.app.Activity;
  * but also does this in the background by extending ASyncTask.
  */
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 
+import com.ncl.team5.lloydsmockup.CustomMessageBox;
+import com.ncl.team5.lloydsmockup.Houseshare_Search;
 import com.ncl.team5.lloydsmockup.KillApp;
 import com.ncl.team5.lloydsmockup.Login;
+import com.ncl.team5.lloydsmockup.R;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -29,6 +36,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -45,6 +53,7 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 
@@ -65,8 +74,11 @@ public class Connection extends AsyncTask <String, Void, String>  {
     private HttpContext context = new BasicHttpContext();
     private Activity a;
 
-    public Connection(Activity a) {
+    private MODE mode = MODE.NORMAL_TASK;
+    public static enum MODE {NORMAL_TASK, SMALL_TASK};
+    private ProgressDialog d;
 
+    public Connection(Activity a) {
         this.a = a;
     }
 
@@ -78,6 +90,34 @@ public class Connection extends AsyncTask <String, Void, String>  {
      * method where more stuff happens :0 */
 
 //    }
+
+    @Override
+    protected void onPreExecute() {
+        if (mode == MODE.SMALL_TASK) {
+            d = new ProgressDialog(a);
+            d.setMessage("Processing small task");
+            d.show();
+        }
+    }
+
+    @Override
+    protected  void onPostExecute(String result) {
+       // DELAY the progress dialod for 2 sec (sometimes the phone processes too fast we r unable to see the progress dialog in order to design it properly)
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                if (d != null && d.isShowing()) {
+                    d.dismiss();
+                }
+            }
+        }, 2000);
+
+    }
+
+    public void setMode(MODE mode) {
+        this.mode = mode;
+    }
 
      protected String doInBackground(String...strings) {
 
@@ -300,4 +340,52 @@ public class Connection extends AsyncTask <String, Void, String>  {
         this.a.startActivity(intent1);
     }
 
-}
+    public JSONObject connect_js(final String username, String... strings) {
+        String result;
+        JSONObject jo = null;
+        try {
+            /* Command required to make a payment, takes username, to account, from account, both sort codes and amount
+             * Returns: JSON String */
+            result = this.execute(strings).get();
+            /* Turns String into JSON object, can throw JSON Exception */
+            jo = new JSONObject(result);
+
+            /* Check if the user has timed out */
+            if (jo.getString("expired").equals("true")) {
+
+                /* Display message box and auto logout user */
+                AlertDialog.Builder errorBox = new AlertDialog.Builder(a);
+                errorBox.setMessage("Your session has been timed out, please login again")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                autoLogout(username);
+                            }
+                        });
+                AlertDialog alert = errorBox.create();
+                alert.show();
+                return null;
+            } else return jo;
+        }
+        /* Catch the exceptions */
+        catch (JSONException jse) {
+            /* Error in the JSON response */
+            new CustomMessageBox(a, "There was an error in the server response");
+            jse.printStackTrace();
+        } catch (InterruptedException interex) {
+            /* Caused when the connection is interrupted */
+            new CustomMessageBox(a, "Connection has been interrupted");
+            interex.printStackTrace();
+        } catch (ExecutionException ee) {
+            /* No idea when this is caused but it throws it... */
+            new CustomMessageBox(a, "Execution Error");
+            ee.printStackTrace();
+        } catch (Exception e) {
+            /* Failsafe if something goes utterly wrong */
+            new CustomMessageBox(a, "An unknown error occurred");
+            e.printStackTrace();
+        }
+
+        return jo;
+    } }

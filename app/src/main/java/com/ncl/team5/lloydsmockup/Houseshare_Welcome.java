@@ -140,7 +140,6 @@ public class Houseshare_Welcome extends FragmentActivity {
     }
 
     public void register() {
-        Connection connection = new Connection(this);
             Connection connect = new Connection(this);
             String result;
 

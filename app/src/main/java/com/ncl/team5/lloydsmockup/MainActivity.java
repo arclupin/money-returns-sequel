@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -184,7 +185,6 @@ public class MainActivity extends Activity {
 
     //TODO unfinished function
     public void btnClickHouseShare(View view) {
-        Connection connection = new Connection(this);
         if (this.username.equals("test")) {
             Intent i = new Intent(this, Houseshare_Welcome.class);
             i.putExtra("ACCOUNT_USERNAME", username);
@@ -192,6 +192,7 @@ public class MainActivity extends Activity {
             ((KillApp) this.getApplication()).setStatus(false);
         } else {
             Connection connect = new Connection(this);
+            connect.setMode(Connection.MODE.SMALL_TASK);
             String result;
 
             try {
@@ -220,27 +221,33 @@ public class MainActivity extends Activity {
                 }
                 // TODO unfinished, the server will send a more detailed message i.e. 'registered and joined house' or 'registered and not joined house'
                 else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_NOT_JOINED)) { // if not registered -> redirect to the welcome page
-                    Intent i = new Intent(this, Houseshare_Welcome.class);
-                    i.putExtra("ACCOUNT_USERNAME", username);
-                    startActivity(i);
-                    ((KillApp) this.getApplication()).setStatus(false);
+                    //need to see how the progress dialog works so also need to delay the start of the homeview activity.
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            hs_intents(Houseshare_Welcome.class);
+                        }}, 2150); //150ms offset so that the dialog would not lag (if this was the same as in the Connection (2000s)
+                       // then we might end up having 2 tasks to be posted at nearly the same time => the dialog might get interrupted resulting in a graphic lag when it disappears
+                       // (my guess) - could use some other function to put this task right after the dialog task (which I dont know).
                 }
                 else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE)) { // else if not joined a house -> redirect to the search page
-                    Intent i = new Intent(this, Houseshare_Search.class);
-                    i.putExtra("ACCOUNT_USERNAME", username);
-                    jo.getString("status");
-                    startActivity(i);
-                    ((KillApp) this.getApplication()).setStatus(false);
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            hs_intents(Houseshare_Search.class);
+                        }}, 2150);
                 }
                 // TODO unfinished, the server will send a more detailed message i.e.
 
 
                else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE)) { // else if joined a house -> redirect to main home page
-//                    Intent i = new Intent(this, Houseshare_Welcome.class);
-//                    i.putExtra("ACCOUNT_USERNAME", username);
-//                    startActivity(i);
-//                    ((KillApp) this.getApplication()).setStatus(false);
                     Toast.makeText(this, "Registered, Joined house, To redirect to main page", Toast.LENGTH_SHORT).show();
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            hs_intents(Houseshare_HomeView.class);
+                        }}, 2150);
                 }
 
                 else {
@@ -270,6 +277,13 @@ public class MainActivity extends Activity {
 
 
         }
+    }
+
+    private void hs_intents(Class c) {
+        Intent i = new Intent(this, c);
+        i.putExtra("ACCOUNT_USERNAME", username);
+        startActivity(i);
+        ((KillApp) this.getApplication()).setStatus(false);
     }
 
     public void btnClickOffers(View view) {
