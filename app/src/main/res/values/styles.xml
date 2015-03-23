@@ -76,6 +76,14 @@
         <item name="android:textStyle">italic</item>
         <item name="android:ellipsize">marquee</item>
     </style>
+
+    <style name="HS_Search_Empty" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
     
 
 

@@ -23,6 +23,7 @@
         android:paddingLeft="10dp"
         android:textColor="@color/text_color"
         />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +36,16 @@
         android:layout_width="fill_parent"
         android:layout_height="2dp"
         android:background="#c0c0c0"/>
-
+    <TextView android:text="Request Sent"
+        android:id="@+id/HS_Search_Result_request_sent"
+        style="@style/HS_Search_Description"
+        android:layout_width="wrap_content"
+        android:layout_gravity="right"
+        android:layout_height="wrap_content"
+        android:paddingRight="10dp"
+        android:layout_marginTop="-30dp"
+        android:visibility="invisible"/>
 
 </LinearLayout>
+
 </TableRow>

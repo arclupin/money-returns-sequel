@@ -19,8 +19,6 @@ public class Prefer extends PreferenceActivity {
     public void onBuildHeaders(List<Header> target) {
         ((KillApp) this.getApplication()).setStatus(false);
         loadHeadersFromResource(R.xml.preference_headers, target);
-
-
     }
 
     @Override

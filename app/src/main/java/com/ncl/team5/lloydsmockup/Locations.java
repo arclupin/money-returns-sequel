@@ -54,12 +54,19 @@ public class Locations extends Activity implements LocationListener {
     //maximum number of places returned by google
     private final int MAX = 20;
     private MarkerOptions[] places;
-
+    private String username;
+    private String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_locations);
+
+        Intent i = getIntent();
+        username = i.getStringExtra("ACCOUNT_USERNAME");
+        date = i.getStringExtra("DATE");
+
+
         if (gMap == null) {
 
             gMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();

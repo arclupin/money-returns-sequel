@@ -61,6 +61,8 @@
     <string name="title_activity_houseshare__home_view">Houseshare_HomeView</string>
 
     <string name="houseshare_search_join_msg">Would you like to join</string>
+    <string name="houseshare_search_empty_ini">Your search result will be displayed here.</string>
+    <string name="houseshare_search_empty_result">No result :-(</string>
     <string name="houseshare_search_join">Join</string>
     <string name="houseshare_search_cancel">Cancel</string>
 

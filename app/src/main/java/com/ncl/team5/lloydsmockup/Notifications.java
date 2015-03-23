@@ -50,7 +50,7 @@ public class Notifications extends Activity {
 
         Intent intent = getIntent();
         username = intent.getStringExtra("ACCOUNT_USERNAME");
-        logDate = intent.getStringExtra("LAST_LOGIN");
+        logDate = intent.getStringExtra("DATE");
 
 
         SharedPreferences settings = getSharedPreferences(username, 0);

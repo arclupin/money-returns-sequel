@@ -50,6 +50,7 @@ public class Payments extends FragmentActivity {
     private TabHost tabs;
     private List<String> recentAcc = new ArrayList<String>();
     private List<String> fromSC = new ArrayList<String>();
+    private String date;
 
     /* Runs when the activity is started */
     @Override
@@ -59,9 +60,10 @@ public class Payments extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payments);
 
-        /* Get the username via the intent */
+        /* Get the username and date via the intent */
         Intent intent = getIntent();
         username = intent.getStringExtra("ACCOUNT_USERNAME");
+        date = intent.getStringExtra("DATE");
 
         /* Gets all of the users accounts from the server, and populates accountStrings with them */
         getAccounts();
@@ -139,6 +141,8 @@ public class Payments extends FragmentActivity {
         /* Launch notifications activity, dont kill app */
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
+            intent.putExtra("ACCOUNT_USERNAME", username);
+            intent.putExtra("DATE", date);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
         }
@@ -151,7 +155,24 @@ public class Payments extends FragmentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         /* Inflate the menu; this adds items to the action bar if it is present. */
+        /* Show notification icon in menu bar */
         getMenuInflater().inflate(R.menu.main, menu);
+
+        /* Get the correct item in the menu */
+        MenuItem item = menu.getItem(1);
+        GetNotification notif = new GetNotification();
+
+        /* See if there are notifications and display the correct image accordingly */
+        if(notif.getNotifications(this, username)) {
+            Log.d("Notif Change", "IN HERE");
+            item.setIcon(R.drawable.ic_action_notify);
+        }
+        else
+        {
+            Log.d("Notif Change", "IN There");
+            item.setIcon(R.drawable.ic_action_email);
+        }
+
         return true;
     }
 

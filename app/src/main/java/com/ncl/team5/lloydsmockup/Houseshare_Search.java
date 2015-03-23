@@ -55,6 +55,7 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
     private final float DISTANCE_INPUT_SCROLL = 15;
     private final long ANIMATION_DURATION = 500;
 
+
     @Override
    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +71,7 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
         result_layout = (TableLayout) findViewById(R.id.table_result);
         result_scroll_container = (ScrollView) findViewById(R.id.house_search_scroll_container);
         input_edittext = (EditText) findViewById(R.id.HS_Search_TextInput);
+        setEmpty(true);
 
         input_edittext.addTextChangedListener(new TextWatcher() {
             @Override
@@ -80,13 +82,16 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 input = input_edittext.getText().toString();
-                search(Connection.MODE.NORMAL_TASK);
 
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 input = input_edittext.getText().toString();
+
+                if (!StringUtils.isFieldEmpty(input))
+                    search(Connection.MODE.NORMAL_TASK);
+                else setEmpty(true);
             }
         });
     }
@@ -141,6 +146,7 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
 
     // display a search result
     public void makeHouseResultRow(List<String> house_result) {
+
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final TableRow newRow = (TableRow) inflater.inflate(R.layout.hs_search_result_row, null);
         LinearLayout l = (LinearLayout) newRow.findViewById(R.id.house_result_container);
@@ -229,15 +235,16 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
                             makeHouseResultRow(result_objects.get(i)); // add view to this position
                         }
                     }
-
+                    clearTail(result_objects.size()); // clear the tail of the result table
                 }
                 else {
-
+                    setEmpty(false);
                     if (task == Connection.MODE.SMALL_TASK)
                     Toast.makeText(this, "Sorry. Your key word does not match any of our records.", Toast.LENGTH_SHORT).show();
 
                 }
-                clearTail(result_objects.size()); // clear the tail of the result table
+
+
             }
             else {
                 if (task == Connection.MODE.SMALL_TASK)
@@ -267,6 +274,7 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
             //some animation for better user experience hopefully
 //            Utils.Animation.fade_out(result_layout.getChildAt(child), this, Utils.Animation.SHORT, Utils.Animation.POST_EFFECT.PERMANENTLY);
             result_layout.removeViewAt(child);
+
         }
 
     }
@@ -278,6 +286,26 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
             cleanSearchAtChild(i);
         Log.d("Clear tail from", Integer.toString(from));
     }
+
+    // initially empty (true) or empty result (false)
+    public void setEmpty(boolean empty_type) {
+
+        LayoutInflater l = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        TableRow r = (TableRow) l.inflate(R.layout.hs_search_result_empty, null);
+        LinearLayout ll = (LinearLayout) r.getChildAt(0);
+        TextView tv = (TextView) ll.getChildAt(0);
+
+        tv.setText(empty_type ? getString(R.string.houseshare_search_empty_ini) : getString(R.string.houseshare_search_empty_result));
+
+        result_layout.removeAllViews();
+        result_layout.addView(r);
+    }
+
+//    public void removeEmpty() {
+//       if (result_layout.getChildCount() == 1 && findViewById(R.id.empty_row_msg) != null)
+//           result_layout.removeAllViews();
+//    }
 
     @Override
     public void onJoinButtonClick(String house_name, HS_Join_Dialog_Fragment f) {

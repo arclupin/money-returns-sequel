@@ -112,17 +112,17 @@ public class MainActivity extends Activity {
         getMenuInflater().inflate(R.menu.menu_main, activityMenu);
 
         MenuItem item = activityMenu.getItem(0);
+        GetNotification notif = new GetNotification();
 
-
-//        if(getNotif()) {
-//            Log.d("Notif Change", "IN HERE");
-//            item.setIcon(R.drawable.ic_action_notify);
-//        }
-//        else
-//        {
-//            Log.d("Notif Change", "IN There");
-//            item.setIcon(R.drawable.ic_action_email);
-//        }
+        if(notif.getNotifications(this, username)) {
+            Log.d("Notif Change", "IN HERE");
+            item.setIcon(R.drawable.ic_action_notify);
+        }
+        else
+        {
+            Log.d("Notif Change", "IN There");
+            item.setIcon(R.drawable.ic_action_email);
+        }
 
         return true;
 
@@ -144,7 +144,7 @@ public class MainActivity extends Activity {
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
             intent.putExtra("ACCOUNT_USERNAME", username);
-            intent.putExtra("LAST_LOGIN", date);
+            intent.putExtra("DATE", date);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
         }
@@ -155,6 +155,7 @@ public class MainActivity extends Activity {
     public void btnClickPayments(View view) {
         Intent i = new Intent(this, Payments.class);
         i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
 
@@ -163,13 +164,13 @@ public class MainActivity extends Activity {
     public void btnClickTransfers(View view) {
         Intent i = new Intent(this, Transfers.class);
         i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
 
     public void btnClickAccounts(View view) {
         Intent i = new Intent(this, Accounts.class);
-        //Log.d("USERNAME", username);
         i.putExtra("ACCOUNT_USERNAME", username);
         i.putExtra("DATE", date);
         startActivity(i);
@@ -179,6 +180,7 @@ public class MainActivity extends Activity {
     public void btnClickAnalysis(View view) {
         Intent i = new Intent(this, Analysis.class);
         i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -282,6 +284,7 @@ public class MainActivity extends Activity {
     private void hs_intents(Class c) {
         Intent i = new Intent(this, c);
         i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -289,6 +292,7 @@ public class MainActivity extends Activity {
     public void btnClickOffers(View view) {
         Intent i = new Intent(this, Locations.class);
         i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -296,6 +300,7 @@ public class MainActivity extends Activity {
     public void btnClickProducts(View view) {
         Intent i = new Intent(this, Products.class);
         i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -303,6 +308,7 @@ public class MainActivity extends Activity {
     public void btnClickSettings(View view) {
         Intent i = new Intent(this, Settings.class);
         i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -433,148 +439,5 @@ public class MainActivity extends Activity {
             ((KillApp) this.getApplication()).setStatus(false);
             this.finish();
         }
-    }
-
-    /* Get all of the account numbers for the account, so notifications can be taken for all of them */
-    private void getAllAccounts()
-    {
-        Connection hc = new Connection(this);
-
-        try {
-            String result = hc.execute("TYPE","SAA","USR", username ).get();
-
-            JSONObject jo = new JSONObject(result);
-
-
-            if(jo.getString("expired").equals("true"))
-            {
-
-                //This uses the same code as the main menu does to start the login, only this time it is run when the user
-                //has timed out
-                AlertDialog.Builder msg = new AlertDialog.Builder(this);
-                msg.setMessage("Your session has been timed out, please login again")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                                //autoLogout();
-                                //dialogClosed = true;
-
-                            }
-                        });
-                AlertDialog alert = msg.create();
-                alert.show();
-
-
-            }
-            else {
-
-                JSONArray jsonArray = jo.getJSONArray("accounts");
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject insideObject = jsonArray.getJSONObject(i);
-                    accountNums.add(insideObject.getString("account_number"));
-                }
-            }
-
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-
-    /* Compare the times of transactions with the last login time, any time after last login
-     * is flagged as new notification */
-    public boolean getNotif() {
-
-        getAllAccounts();
-
-        for (int k = 0; k < accountNums.size(); k++) {
-
-            String accountNum = accountNums.get(k);
-
-            SharedPreferences settings = getSharedPreferences("transinsession", 0);
-            boolean transInSession = settings.getBoolean("IN_SESSION", false);
-
-
-
-            /* Start the connection */
-            Connection hc = new Connection(this);
-
-            try {
-                /* This is the command needed for the transactions, takes username and account number, returns JSON String */
-                String result = hc.execute("TYPE", "TRANSLIST", "USR", username, "ACC_NUMBER", accountNum).get();
-
-                /* Tries to convert to JSON Object, can throw JSON Exception */
-                JSONObject jo = new JSONObject(result);
-
-                /* Check if account has expired (very unlikely as this is called after get accounts) */
-                if (jo.getString("expired").equals("true")) {
-                    /* Display error message and log user out as they have expired */
-                    AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-                    errorBox.setMessage("You have been timed out, please login again")
-                            .setCancelable(false)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                    //autoLogout();
-                                }
-                            });
-                    AlertDialog alert = errorBox.create();
-                    alert.show();
-                } else {
-                    /* Array needed as transaction returned inside JSON array */
-                    JSONArray jsonArray = jo.getJSONArray("transactions");
-
-                    /* There are no transactions if the array length is zero */
-                    if (jsonArray.length() == 0) {
-                        /* there are no transactions, so no notifications */
-                       
-                        return false;
-                    }
-
-                    /* add the last three payees to the spinner */
-                    for (int i = 0; i < jsonArray.length(); i++) {
-
-                        /* Gets an object of each element in the array */
-                        JSONObject insideObject = jsonArray.getJSONObject(i);
-
-                        /* Gets the date field and parse it into a date variable, can throw an exception but never should... */
-                        String date = insideObject.getString("Time");
-                        Date timeFromResponse = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
-                        Date logoutTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(this.logoutTime);
-
-
-                        if(timeFromResponse.compareTo(logoutTime) > 0 && !transInSession)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-            }
-            /* Catch the exceptions */
-            catch (JSONException jse) {
-            /* Exception for when the JSON cannot be parsed correctly */
-                new CustomMessageBox(this, "There was an error in the server response");
-                jse.printStackTrace();
-            } catch (InterruptedException interex) {
-            /* Caused when the connection is interrupted */
-                new CustomMessageBox(this, "Connection has been interrupted");
-                interex.printStackTrace();
-            } catch (ExecutionException ee) {
-            /* No idea when this is caused but it throws it... */
-                new CustomMessageBox(this, "Execution Error");
-                ee.printStackTrace();
-            } catch (Exception e) {
-            /* Failsafe if something goes utterly wrong */
-                new CustomMessageBox(this, "An unknown error occurred");
-                e.printStackTrace();
-            }
-        }
-
-        return false;
     }
 }
