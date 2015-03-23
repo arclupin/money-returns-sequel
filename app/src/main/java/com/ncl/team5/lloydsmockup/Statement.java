@@ -32,6 +32,7 @@ public class Statement extends Activity {
     private String accountNum;
     private Statement s = this;
     private ListView transactions;
+    private String dateLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class Statement extends Activity {
         Intent i = getIntent();
         username = i.getStringExtra("USERNAME");
         accountNum = i.getStringExtra("ACCOUNT_NUM");
+        dateLogout = i.getStringExtra("DATE");
         String balance = i.getStringExtra("BALANCE");
 
 
@@ -106,6 +108,8 @@ public class Statement extends Activity {
                                 ((KillApp) s.getApplication()).setStatus(false);
                                 Intent i = new Intent(s, GroupChooser.class);
                                 i.putExtra("TRANS_ID", transId);
+                                i.putExtra("ACCOUNT_USERNAME", username);
+                                i.putExtra("DATE", dateLogout);
                                 startActivity(i);
                             }
                         });
@@ -204,7 +208,24 @@ public class Statement extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+
+        /* Show notification icon in menu bar */
         getMenuInflater().inflate(R.menu.main, menu);
+
+        MenuItem item = menu.getItem(1);
+        GetNotification notif = new GetNotification();
+
+
+        if(notif.getNotifications(this, username)) {
+            Log.d("Notif Change", "IN HERE");
+            item.setIcon(R.drawable.ic_action_notify);
+        }
+        else
+        {
+            Log.d("Notif Change", "IN There");
+            item.setIcon(R.drawable.ic_action_email);
+        }
+
         return true;
     }
 
@@ -222,6 +243,8 @@ public class Statement extends Activity {
         }
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
+            intent.putExtra("ACCOUNT_USERNAME", username);
+            intent.putExtra("DATE", dateLogout);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
         }

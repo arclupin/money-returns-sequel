@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,11 +21,19 @@ import java.util.ArrayList;
 
 public class Settings extends Activity {
 
-   ArrayList<String> optionsList;
+    private ArrayList<String> optionsList;
+    private String username;
+    private String date;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        Intent i = getIntent();
+        username = i.getStringExtra("ACCOUNT_USERNAME");
+        date = i.getStringExtra("DATE");
+
         ListView optionList=(ListView)findViewById(R.id.listOptions);
         optionsList=  new ArrayList<String>();
         getOptions();
@@ -79,8 +88,23 @@ public class Settings extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        /* Show notification icon in menu bar */
         getMenuInflater().inflate(R.menu.main, menu);
+
+        MenuItem item = menu.getItem(1);
+        GetNotification notif = new GetNotification();
+
+
+        if(notif.getNotifications(this, username)) {
+            Log.d("Notif Change", "IN HERE");
+            item.setIcon(R.drawable.ic_action_notify);
+        }
+        else
+        {
+            Log.d("Notif Change", "IN There");
+            item.setIcon(R.drawable.ic_action_email);
+        }
+
         return true;
     }
 
@@ -98,6 +122,8 @@ public class Settings extends Activity {
         }
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
+            intent.putExtra("ACCOUNT_USERNAME", username);
+            intent.putExtra("DATE", date);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
         }
