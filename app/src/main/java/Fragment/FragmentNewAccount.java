@@ -1,4 +1,4 @@
-package FragPager;
+package Fragment;
 
 /* This is the fragment that is used on the payments screen
  * that is used for the new payee tab */

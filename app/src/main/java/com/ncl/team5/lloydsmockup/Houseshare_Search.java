@@ -1,10 +1,10 @@
 package com.ncl.team5.lloydsmockup;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -30,6 +30,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import Fragment.HS_Join_Dialog_Fragment;
 import HTTPConnect.Connection;
 import HTTPConnect.Request_Params;
 import HTTPConnect.Responses_Format;
@@ -40,7 +41,7 @@ import Utils.StringUtils;
  * The search request will only be sent when the user press the search button
  */
 
-public class Houseshare_Search extends Activity {
+public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialog_Fragment.JoinDialogListener {
     private String username;
     private boolean isRoomMade = false;
 
@@ -278,6 +279,41 @@ public class Houseshare_Search extends Activity {
         Log.d("Clear tail from", Integer.toString(from));
     }
 
+    @Override
+    public void onJoinButtonClick(String house_name, HS_Join_Dialog_Fragment f) {
+        //TODO send request to the server
+        Connection c = new Connection(this);
+        JSONObject j = c.connect_js(username,
+                Request_Params.PARAM_TYPE, Request_Params.VAL_HS_JOIN_GROUP,
+                Request_Params.HS_JOIN_GROUP_GRPNAME, house_name,
+                Request_Params.PARAM_USR, username);
+        try {
+            if (j.getString(Responses_Format.RESPONSE_STATUS).equals("true"))
+                new CustomMessageBox(this, "Your request has been sent to the house admin. \nWe will let you know as soon as he/she makes a response.");
+            else
+                new CustomMessageBox(this, "We are sorry that we could not process your request at the moment. \n If you are experiencing this error constantly, please contact our team.");
+        }
+        catch (JSONException e)
+        {
+            Log.e("JSON error at join", e.getMessage() + "End", e);
+        }
+       }
+
+    @Override
+    public void onCancelButtonClick(HS_Join_Dialog_Fragment f) {
+        f.dismiss();
+    }
+
+    public void showJoinDialog(View v) {
+
+       LinearLayout l = (LinearLayout) v;
+        TextView tv = (TextView) l.getChildAt(0);
+        String house_name = tv.getText().toString();
+
+        HS_Join_Dialog_Fragment dialog = HS_Join_Dialog_Fragment.initialise(house_name);
+        dialog.show(getFragmentManager(), "JoinDialog");
+    }
+
 //    // reposition the search result scroll view to be under the search input after its animation
 //    private void initialiseSearchResultScrollView() {
 ////        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -287,4 +323,6 @@ public class Houseshare_Search extends Activity {
 //        result_scroll_container.setSmoothScrollingEnabled(true);
 //
 //    }
+
+
 }

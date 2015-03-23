@@ -1,10 +1,8 @@
-package FragPager;
+package Fragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-
-import com.ncl.team5.lloydsmockup.R;
 
 /**
  * Created by Thanh on 07-Mar-15.

@@ -78,6 +78,8 @@ public class Connection extends AsyncTask <String, Void, String>  {
     public static enum MODE {NORMAL_TASK, SMALL_TASK};
     private ProgressDialog d;
 
+    private String text_dialog;
+
     public Connection(Activity a) {
         this.a = a;
     }
@@ -95,7 +97,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
     protected void onPreExecute() {
         if (mode == MODE.SMALL_TASK) {
             d = new ProgressDialog(a);
-            d.setMessage("Processing small task");
+            d.setMessage( text_dialog != null ? text_dialog : "Processing small task");
             d.show();
         }
     }
@@ -117,6 +119,11 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
     public void setMode(MODE mode) {
         this.mode = mode;
+    }
+
+    public void setDialogMessage(String m)  {
+        if (this.mode == MODE.SMALL_TASK)
+            this.text_dialog = m;
     }
 
      protected String doInBackground(String...strings) {

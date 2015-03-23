@@ -4,7 +4,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/house_result_container">
+    android:id="@+id/house_result_container"
+    android:clickable="true"
+    android:background="@drawable/button_light_color"
+    android:onClick="showJoinDialog">
     <TextView
         android:paddingTop="10dp"
         android:layout_width="match_parent"

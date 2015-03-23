@@ -114,15 +114,15 @@ public class MainActivity extends Activity {
         MenuItem item = activityMenu.getItem(0);
 
 
-        if(getNotif()) {
-            Log.d("Notif Change", "IN HERE");
-            item.setIcon(R.drawable.ic_action_notify);
-        }
-        else
-        {
-            Log.d("Notif Change", "IN There");
-            item.setIcon(R.drawable.ic_action_email);
-        }
+//        if(getNotif()) {
+//            Log.d("Notif Change", "IN HERE");
+//            item.setIcon(R.drawable.ic_action_notify);
+//        }
+//        else
+//        {
+//            Log.d("Notif Change", "IN There");
+//            item.setIcon(R.drawable.ic_action_email);
+//        }
 
         return true;
 
@@ -464,6 +464,7 @@ public class MainActivity extends Activity {
                         });
                 AlertDialog alert = msg.create();
                 alert.show();
+
 
             }
             else {

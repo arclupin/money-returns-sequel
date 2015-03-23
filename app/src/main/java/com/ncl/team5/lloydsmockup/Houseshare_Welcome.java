@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import FragPager.HS_Welcome_FragmentPagerAdapter;
+import Fragment.HS_Welcome_FragmentPagerAdapter;
 import HTTPConnect.Connection;
 import HTTPConnect.Request_Params;
 

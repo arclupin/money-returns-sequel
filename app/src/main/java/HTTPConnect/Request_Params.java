@@ -15,6 +15,9 @@ public class Request_Params {
     public static final String VAL_HS_SEARCH_HOUSE = "HS_SRCH_HOUSE";// request type name
     public static final String HS_SEARCH_HOUSE_KEY = "HS_SRCH_HOUSE_KEY"; // key for search house (house name or part of it)
 
+    public static final String VAL_HS_JOIN_GROUP = "HS_JOIN_GRP";
+    public static final String HS_JOIN_GROUP_GRPNAME = "HS_JOIN_GRP_NAME";
+
     public static final String VAL_HS_CREATE_HOUSE = "HS_CH";
     public static final String HS_CREATE_HOUSE_NAME = "HS_CH_NAME";
     public static final String HS_CREATE_HOUSE_HSNO = "HS_CH_HSNO";

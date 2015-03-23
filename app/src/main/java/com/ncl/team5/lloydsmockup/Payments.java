@@ -29,15 +29,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import FragPager.Payment_FragmentPagerAdapter;
+import Fragment.Payment_FragmentPagerAdapter;
 import HTTPConnect.Connection;
 
 
