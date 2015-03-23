@@ -63,7 +63,7 @@ public class Houseshare_Welcome extends FragmentActivity {
         }
 
         // some simple animation for the SKIP button
-        Animation animation = AnimationUtils.loadAnimation(this, R.anim.hs_welcome_start_fade);
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
         animation.setInterpolator(new AccelerateInterpolator());
         animation.setStartTime(System.currentTimeMillis());
         skip_text_view.startAnimation(animation);
@@ -89,7 +89,7 @@ public class Houseshare_Welcome extends FragmentActivity {
                 if (position < pager_adapter.getCount() - 1)
                     findViewById(R.id.HS_Welcome_Start).setVisibility(View.GONE);
                 else {findViewById(R.id.HS_Welcome_Start).setVisibility(View.VISIBLE);
-                    Animation animation = AnimationUtils.loadAnimation(temp_this, R.anim.hs_welcome_start_fade);
+                    Animation animation = AnimationUtils.loadAnimation(temp_this, R.anim.anim_fade_in);
                     animation.setInterpolator(new AccelerateInterpolator());
                     animation.setStartTime(System.currentTimeMillis());
                     findViewById(R.id.HS_Welcome_Start).startAnimation(animation);

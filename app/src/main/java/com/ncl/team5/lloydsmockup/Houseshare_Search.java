@@ -4,25 +4,19 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -37,11 +31,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import HTTPConnect.Connection;
-import HTTPConnect.House_Search_Result;
 import HTTPConnect.Request_Params;
 import HTTPConnect.Responses_Format;
 import Utils.StringUtils;
 
+/**
+ * For performace optimisation, the search wont be performed automatically as the text changes.
+ * The search request will only be sent when the user press the search button
+ */
 
 public class Houseshare_Search extends Activity {
     private String username;
@@ -81,6 +78,8 @@ public class Houseshare_Search extends Activity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                input = input_edittext.getText().toString();
+                search(Connection.MODE.NORMAL_TASK);
 
             }
 
@@ -134,44 +133,7 @@ public class Houseshare_Search extends Activity {
 //        result2.add("Unit 1, Soul Society");
 //        result2.add("We are soul reapers!");
 
-        if (!StringUtils.isFieldEmpty(input)) {
-//            makeHouseResultRow(result);
-//            makeHouseResultRow(result2);
-           Connection c = new Connection(this);
-           c.setMode(Connection.MODE.SMALL_TASK);
-           JSONObject j =  c.connect_js(username, Request_Params.PARAM_TYPE,
-                   Request_Params.VAL_HS_SEARCH_HOUSE,
-                   Request_Params.PARAM_USR, username,
-                   Request_Params.HS_SEARCH_HOUSE_KEY,
-                   input);
-
-            if (j != null) {
-                List<House_Search_Result> result_objects =new ArrayList<House_Search_Result>();
-                try {
-                    JSONArray result_arr_out = j.getJSONArray(Responses_Format.RESPONSE_HS_CONTENT);
-                    //                Log.d("Search json arr", result_arr.toString());
-                    for (int i = 0; i < result_arr_out.length(); i ++) {
-                        JSONArray result_arr_in = result_arr_out.getJSONArray(i);
-                        result_objects.add( new House_Search_Result(result_arr_in.getString(0), result_arr_in.getString(1), result_arr_in.getString(2)));
-                    }
-               }
-               catch (JSONException e) {
-                   new CustomMessageBox(this, "There was an error in the server response");
-                   Log.e("JSON parsing exception", e.getMessage() + "End of JSON parsing exception msg");
-               }
-
-               if (result_objects.size() > 0)
-               for (int i = 0; i < result_objects.size(); i++) {
-                   makeHouseResultRow(result_objects.get(i).getInfo());
-               }
-               else  Toast.makeText(this, "Sorry. Your key word does not match any of our records.", Toast.LENGTH_SHORT).show();
-           }
-            else {
-                Toast.makeText(this, "Sorry. Could not process your request now.", Toast.LENGTH_SHORT).show();
-            }
-        }
-        else
-            Toast.makeText(this, "Please supply the name of the house", Toast.LENGTH_SHORT).show();
+        search(Connection.MODE.SMALL_TASK);
 
     }
 
@@ -181,12 +143,21 @@ public class Houseshare_Search extends Activity {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final TableRow newRow = (TableRow) inflater.inflate(R.layout.hs_search_result_row, null);
         LinearLayout l = (LinearLayout) newRow.findViewById(R.id.house_result_container);
-       for (int i = 0; i < house_result.size(); i++) {
-           TextView text_view = (TextView) l.getChildAt(i);
-           text_view.setText(house_result.get(i));
-       }
 
-        Animation animation = AnimationUtils.loadAnimation(this, R.anim.hs_welcome_start_fade);
+        TextView text_view = (TextView) l.getChildAt(0);
+        text_view.setText(house_result.get(0));
+
+        text_view = (TextView) l.getChildAt(2);
+        text_view.setText(!StringUtils.isFieldEmpty((house_result.get(house_result.size() - 1))) ? house_result.get(house_result.size() - 1) : "No description available" );
+
+        text_view = (TextView) l.getChildAt(1);
+        String address = "";
+        for (int i = 1; i < house_result.size() - 1; i++) {
+            address += house_result.get(i) + " ";
+        }
+        text_view.setText(address);
+
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
         animation.setInterpolator(new AccelerateInterpolator());
         animation.setStartTime(System.currentTimeMillis());
         animation.setAnimationListener(new Animation.AnimationListener() {
@@ -211,6 +182,100 @@ public class Houseshare_Search extends Activity {
         newRow.startAnimation(animation);
 
 
+    }
+
+    public void search(Connection.MODE task) {
+
+
+        if (!StringUtils.isFieldEmpty(input)) {
+//            makeHouseResultRow(result);
+//            makeHouseResultRow(result2);
+            Connection c = new Connection(this);
+            c.setMode(task);
+            JSONObject j =  c.connect_js(username, Request_Params.PARAM_TYPE,
+                    Request_Params.VAL_HS_SEARCH_HOUSE,
+                    Request_Params.PARAM_USR, username,
+                    Request_Params.HS_SEARCH_HOUSE_KEY,
+                    input);
+
+            if (j != null) {
+                List<ArrayList<String>> result_objects =new ArrayList<ArrayList<String>>();
+                try {
+                    JSONArray result_arr_out = j.getJSONArray(Responses_Format.RESPONSE_HS_CONTENT);
+                    //                Log.d("Search json arr", result_arr.toString());
+                    for (int i = 0; i < result_arr_out.length(); i ++) {
+
+                        JSONArray result_arr_in = result_arr_out.getJSONArray(i);
+                        ArrayList<String> l = new ArrayList<String>();
+
+                        for (int t = 0; t < result_arr_in.length(); t++) {
+                            l.add(result_arr_in.getString(t));
+                        }
+                        result_objects.add(l);
+                    }
+                }
+                catch (JSONException e) {
+                    new CustomMessageBox(this, "There was an error in the server response");
+                    Log.e("JSON parsing exception", e.getMessage() + "End of JSON parsing exception msg", e);
+
+                }
+                if (result_objects.size() > 0) {
+                    for (int i = 0; i < result_objects.size(); i++) {
+                        if (!getHouseNameAtChild(i).equals(result_objects.get(i).get(0)))
+                        // if result row is not the same then clear it and add the new row otherwise keep it.
+                        {
+                            cleanSearchAtChild(i); // clean the child at this position
+                            makeHouseResultRow(result_objects.get(i)); // add view to this position
+                        }
+                    }
+
+                }
+                else {
+
+                    if (task == Connection.MODE.SMALL_TASK)
+                    Toast.makeText(this, "Sorry. Your key word does not match any of our records.", Toast.LENGTH_SHORT).show();
+
+                }
+                clearTail(result_objects.size()); // clear the tail of the result table
+            }
+            else {
+                if (task == Connection.MODE.SMALL_TASK)
+                Toast.makeText(this, "Sorry. Could not process your request now.", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else
+        if (task == Connection.MODE.SMALL_TASK)
+            Toast.makeText(this, "Please supply the name of the house", Toast.LENGTH_SHORT).show();
+    }
+
+    // get house name of a result row
+    private String getHouseNameAtChild(int i) {
+        if (result_layout.getChildCount() >= (i+1)) {
+            TableRow r = (TableRow) result_layout.getChildAt(i);
+            LinearLayout l = (LinearLayout) r.getChildAt(0);
+            TextView tv = (TextView) l.getChildAt(0);
+            return tv.getText().toString();
+        }
+        return "";
+    }
+
+    // clean the child view
+    public void cleanSearchAtChild(int child) {
+        if (result_layout.getChildCount() > 0 && result_layout.getChildCount() > child) {
+
+            //some animation for better user experience hopefully
+//            Utils.Animation.fade_out(result_layout.getChildAt(child), this, Utils.Animation.SHORT, Utils.Animation.POST_EFFECT.PERMANENTLY);
+            result_layout.removeViewAt(child);
+        }
+
+    }
+
+    // clean the tail
+    public void clearTail(int from) {
+        // need to delete from tail otherwise it wont work as the childCount get decremented after each child removal
+        for (int i =  result_layout.getChildCount() - 1; i >= from ; i--)
+            cleanSearchAtChild(i);
+        Log.d("Clear tail from", Integer.toString(from));
     }
 
 //    // reposition the search result scroll view to be under the search input after its animation
