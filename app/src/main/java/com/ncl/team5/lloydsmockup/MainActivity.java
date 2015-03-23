@@ -530,8 +530,7 @@ public class MainActivity extends Activity {
                     /* There are no transactions if the array length is zero */
                     if (jsonArray.length() == 0) {
                         /* there are no transactions, so no notifications */
-                        new CustomMessageBox(this, "There have been no transactions for your account");
-                        this.finish();
+                       
                         return false;
                     }
 
