@@ -1,6 +1,8 @@
 package com.ncl.team5.lloydsmockup;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.location.Criteria;
@@ -39,14 +41,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import android.util.Log;
 
+import HTTPConnect.Connection;
+
 //References: http://code.tutsplus.com/tutorials/android-sdk-working-with-google-maps-displaying-places-of-interest--mobile-16145
 //https://developers.google.com/places/documentation/search
 public class Locations extends Activity implements LocationListener  {
+    private String username;
     GoogleMap gMap;
     private LocationManager lManager;
     private Marker userMarkerLoc;
     UiSettings uiSet;
     boolean disabled =false;
+    boolean enabled=false;
     //here will be stored all the places near by
     private Marker[] bankMarkers;
     //maximum number of places returned by google
@@ -58,75 +64,67 @@ public class Locations extends Activity implements LocationListener  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_locations);
-        if(gMap==null) {
-
-            gMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-            if (gMap != null) {
-                //sets the type of the map
-                gMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-                //creates the array to store the banks and atms
-                bankMarkers = new Marker[MAX];
-                // Enables MyLocation
-                gMap.setMyLocationEnabled(true);
-                uiSet = gMap.getUiSettings();
-                //To disable the toolbar when I click on a marker
-                uiSet.setMapToolbarEnabled(disabled);
-                updateLocation();
-            }
-
-        }
-
-    }
-
-    private void updateLocation(){
         lManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        Criteria c = new Criteria();
-        c.setAccuracy(Criteria.ACCURACY_FINE);
-        String provider = lManager.getBestProvider(c, true);
-        Location lastLoc = lManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        double lat = lastLoc.getLatitude();
-        double lng = lastLoc.getLongitude();
-        LatLng lastLatLng = new LatLng(lat, lng);
-        //removes old marker every time the users change their location
-        if(userMarkerLoc!=null){
-            userMarkerLoc.remove();
+        enabled =lManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if(enabled==false){
+            AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+            errorBox.setMessage("You must turn on the location services on your phone to use this feature")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                            autoLogout();
+                        }
+                    });
+            AlertDialog alert = errorBox.create();
+            alert.show();
+
+        }else if(enabled==true){
+            setContentView(R.layout.activity_locations);
+            if (gMap == null) {
+
+                gMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+                if (gMap != null) {
+                    //sets the type of the map
+                    gMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                    //creates the array to store the banks and atms
+                    bankMarkers = new Marker[MAX];
+                    // Enables MyLocation
+                    gMap.setMyLocationEnabled(true);
+                    uiSet = gMap.getUiSettings();
+                    //To disable the toolbar when I click on a marker
+                    uiSet.setMapToolbarEnabled(disabled);
+                    Location lastLoc = lManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+                    updateLocation(lastLoc);
+                }
+
+            }
         }
-
-        //create and set marker properties for the users location
-        userMarkerLoc = gMap.addMarker(new MarkerOptions()
-                .position(lastLatLng)
-                .title("You are here"));
-                //.snippet("Your last recorded location"));
-        gMap.animateCamera(CameraUpdateFactory.newLatLng(lastLatLng),30000,null);
-
-
-        String types = "atm|bank";
-        String name = "Lloyds";
-        try {
-            types = URLEncoder.encode(types, "UTF-8");
-        } catch (UnsupportedEncodingException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-        String placesSearchStr = "https://maps.googleapis.com/maps/api/place/nearbysearch/" +
-                "json?location="+lat+","+lng+
-                "&radius=1000&sensor=true" +
-                "&types=" + types +
-                "&name="+ name +
-                "&key=AIzaSyCAXBj3NALN6N1axPkGdHbK7m9_ENYdO9I";
-
-        //execute the query
-        new GetPlaces().execute(placesSearchStr);
-        lManager.requestLocationUpdates(provider,10000,100,this);
 
     }
 
+    public void checkEnabledProviderServices(){
+        lManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        enabled =lManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if(enabled==false){
+            AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+            errorBox.setMessage("You must turn on the location services on your phone to use this feature")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert = errorBox.create();
+            alert.show();
+        }
+
+    }
     //location listener methods
     @Override
     public void onLocationChanged(Location location) {
         Log.v("Location Activity", "location changed");
-        updateLocation();
+        updateLocation(location);
     }
     @Override
     public void onProviderDisabled(String provider){
@@ -140,6 +138,46 @@ public class Locations extends Activity implements LocationListener  {
     public void onStatusChanged(String provider, int status, Bundle extras) {
         Log.v("Location Activity", "status changed");
     }
+
+    private void updateLocation(Location location){
+      /*  lManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+      Location lastLoc = lManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);*/
+        double lng = location.getLongitude();
+        double lat = location.getLatitude();
+        LatLng lastLatLng = new LatLng(lat, lng);
+        //removes old marker every time the users change their location
+        if(userMarkerLoc!=null){
+            userMarkerLoc.remove();        }
+
+        //create and set marker properties for the users location
+        userMarkerLoc = gMap.addMarker(new MarkerOptions()
+                .position(lastLatLng)
+                .title("You are here"));
+        gMap.animateCamera(CameraUpdateFactory.newLatLng(lastLatLng),5000,null);
+
+
+        String types = "atm|bank";
+        String name = "Lloyds";
+        try {
+            types = URLEncoder.encode(types, "UTF-8");
+        } catch (UnsupportedEncodingException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        String placesSearchStr = "https://maps.googleapis.com/maps/api/place/nearbysearch/" +
+                "json?location="+lat+","+lng+
+                "&radius=4000&sensor=true" +
+                "&types=" + types +
+                "&name="+ name +
+                "&key=AIzaSyCAXBj3NALN6N1axPkGdHbK7m9_ENYdO9I";
+
+        //execute the query
+        new GetPlaces().execute(placesSearchStr);
+        lManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,30000,250,this);
+    }
+
+
+
 //Inner class to parse and execute the query. All the fun happens here(not really)
     private class GetPlaces extends AsyncTask<String, Void, String> {
         @Override
@@ -306,6 +344,29 @@ public class Locations extends Activity implements LocationListener  {
             finish();
 
         }
+
+
+    private void autoLogout()
+    {
+        Connection hc = new Connection(this);
+        try
+        {
+            hc.execute("TYPE","LOGOUT", "USR", username);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+        ((KillApp) this.getApplication()).setStatus(false);
+        finish();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
+
+    }
 
 
 
