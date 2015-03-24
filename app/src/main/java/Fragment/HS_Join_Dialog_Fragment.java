@@ -15,7 +15,7 @@ import com.ncl.team5.lloydsmockup.R;
 public class HS_Join_Dialog_Fragment extends DialogFragment{
 
     public interface JoinDialogListener {
-        public void onJoinButtonClick(String house_name, HS_Join_Dialog_Fragment f);
+        public void onJoinButtonClick(String house_name, HS_Join_Dialog_Fragment f, int view_id);
         public void onCancelButtonClick(HS_Join_Dialog_Fragment f);
     }
 
@@ -35,10 +35,11 @@ public class HS_Join_Dialog_Fragment extends DialogFragment{
     }
 
 
-    public static HS_Join_Dialog_Fragment initialise(String house_name) {
+    public static HS_Join_Dialog_Fragment initialise(String house_name, int view_id) {
         HS_Join_Dialog_Fragment o = new HS_Join_Dialog_Fragment();
         Bundle b = new Bundle();
         b.putString("house_name", house_name);
+        b.putInt("view_id", view_id);
         o.setArguments(b);
         return o;
     }
@@ -52,7 +53,7 @@ public class HS_Join_Dialog_Fragment extends DialogFragment{
                 .setPositiveButton(R.string.houseshare_search_join, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mJoinDialogListener.onJoinButtonClick(getArguments().getString("house_name"), HS_Join_Dialog_Fragment.this);
+                        mJoinDialogListener.onJoinButtonClick(getArguments().getString("house_name"), HS_Join_Dialog_Fragment.this, getArguments().getInt("view_id"));
                     }
                 })
                 .setNegativeButton(R.string.houseshare_search_cancel, new DialogInterface.OnClickListener() {

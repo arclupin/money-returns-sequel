@@ -5,9 +5,7 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/house_result_container"
-    android:clickable="true"
-    android:background="@drawable/button_light_color"
-    android:onClick="showJoinDialog">
+    android:background="@drawable/button_light_color">
     <TextView
         android:paddingTop="10dp"
         android:layout_width="match_parent"
@@ -38,13 +36,14 @@
         android:background="#c0c0c0"/>
     <TextView android:text="Request Sent"
         android:id="@+id/HS_Search_Result_request_sent"
-        style="@style/HS_Search_Description"
+        style="@style/HS_Search_Request_Sent_Text"
         android:layout_width="wrap_content"
-        android:layout_gravity="right"
+        android:layout_gravity="end"
         android:layout_height="wrap_content"
         android:paddingRight="10dp"
-        android:layout_marginTop="-30dp"
-        android:visibility="invisible"/>
+        android:layout_marginTop="-50dp"
+        android:visibility="invisible"
+        android:background="@drawable/button_light_color"/>
 
 </LinearLayout>
 

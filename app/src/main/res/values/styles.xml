@@ -71,9 +71,18 @@
 
     <style name="HS_Search_Description" parent="android:Widget.TextView">
         <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
-        <item name="android:textColor">@color/text_color</item>
         <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/text_color</item>
         <item name="android:textStyle">italic</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
+    <style name="HS_Search_Request_Sent_Text" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@android:color/holo_red_light</item>
+        <item name="android:textStyle">italic|bold</item>
+        <item name="android:textAllCaps">true</item>
         <item name="android:ellipsize">marquee</item>
     </style>
 
