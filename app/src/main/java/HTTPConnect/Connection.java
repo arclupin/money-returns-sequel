@@ -105,15 +105,8 @@ public class Connection extends AsyncTask <String, Void, String>  {
     @Override
     protected  void onPostExecute(String result) {
        // DELAY the progress dialod for 2 sec (sometimes the phone processes too fast we r unable to see the progress dialog in order to design it properly)
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                if (d != null && d.isShowing()) {
-                    d.dismiss();
-                }
-            }
-        }, 2000);
+        if (d != null && d.isShowing())
+        d.dismiss();
 
     }
 

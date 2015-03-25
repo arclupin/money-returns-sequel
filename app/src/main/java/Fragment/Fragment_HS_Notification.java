@@ -1,18 +1,22 @@
 package Fragment;
 
 import android.app.Activity;
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.ncl.team5.lloydsmockup.R;
 
+import java.util.List;
+
+import HTTPConnect.Notification;
+import Utils.Animation;
 import Utils.StringUtils;
 
 /**
@@ -20,7 +24,7 @@ import Utils.StringUtils;
  * (another fragment that would be invoked in this activity is the notification fragment
  *
  */
-public class Fragment_HS_Home extends android.support.v4.app.Fragment {
+public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_DATA = "total_data";
@@ -28,10 +32,10 @@ public class Fragment_HS_Home extends android.support.v4.app.Fragment {
 
     // TODO: For now it will just display the plain response from the server
     // need updating later
-    private static String data;
+    private static List<Notification> data;
 
 
-    private OnFragmentInteractionListener_HomeView mListener;
+    private OnFragmentInteractionListener_Notification mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -41,15 +45,15 @@ public class Fragment_HS_Home extends android.support.v4.app.Fragment {
      * @return A new instance of fragment Fragment_HS_Home.
      */
     // TODO: Rename and change types and number of parameters
-    public static Fragment_HS_Home newInstance(String param1) {
-        Fragment_HS_Home fragment = new Fragment_HS_Home();
+    public static Fragment_HS_Notification newInstance(String param1) {
+        Fragment_HS_Notification fragment = new Fragment_HS_Notification();
         Bundle args = new Bundle();
 
         fragment.setArguments(args);
         return fragment;
     }
 
-    public Fragment_HS_Home() {
+    public Fragment_HS_Notification() {
         // Required empty public constructor
     }
 
@@ -58,31 +62,41 @@ public class Fragment_HS_Home extends android.support.v4.app.Fragment {
         super.onCreate(savedInstanceState);
 //        if (getArguments() != null) {
 //        }
-        String dat =  mListener.onHomeViewCreated(this);
-        Log.d("date", dat);
-        if (!StringUtils.isFieldEmpty(dat)) // I guess doing this would help that even if the user loses internet connection they still can be able to see the previous state of the home view.
-            data = dat;
+//        String dat =  mListener.onNotificationViewSelected(this);
+//        Log.d("notification", dat);
+//        if (!StringUtils.isFieldEmpty(dat)) // I guess doing this would help that even if the user loses internet connection they still can be able to see the previous state of the home view.
+//            data = dat;
+        data = mListener.onNotificationViewSelected(this);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        FrameLayout l = (FrameLayout) inflater.inflate(R.layout.fragment_home_view, container, false);
-        TextView tv = (TextView) l.findViewById(R.id.home_view_text_view);
-        Log.d("date", data);
-        tv.setText(data);
+        TableLayout l = (TableLayout) inflater.inflate(R.layout.fragment_hs_notification, container, false);
+        for (int i = 0; i < data.size(); i++) {
+            l.addView(data.get(i).makeNotiRow(getActivity()));
+        }
+//        Log.d("notification", data);
+//        tv.setText(data);
         return l;
+    }
+
+    @Override
+         public void onStop() {
+        super.onStop();
+//        Animation.fade_out(getActivity().findViewById(R.id.layout_hs_notification_container), getActivity(), Animation.SHORT, Animation.POST_EFFECT.PERMANENTLY);
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener_HomeView) activity;
+            mListener = (OnFragmentInteractionListener_Notification) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener_HomeView");
+                    + " must implement OnFragmentInteractionListener_Notification");
         }
     }
 
@@ -102,16 +116,16 @@ public class Fragment_HS_Home extends android.support.v4.app.Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener_HomeView {
+    public interface OnFragmentInteractionListener_Notification {
         // TODO: Update argument type and name
 
         /**
-         * method called when the home view fragment is created (fetch data from server) <br/>
+         * method called when the notification fragment is created (fetch data from server) <br/>
          * NOTE: there are various solutions to this.
          *
          * @param f the fragment
          */
-        public String onHomeViewCreated(Fragment_HS_Home f);
+        public List<Notification> onNotificationViewSelected(Fragment_HS_Notification f);
     }
 
 
