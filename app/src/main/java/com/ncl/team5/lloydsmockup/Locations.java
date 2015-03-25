@@ -60,9 +60,9 @@ public class Locations extends Activity implements LocationListener  {
    private MarkerOptions[] places;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent i = getIntent();
         super.onCreate(savedInstanceState);
         lManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         enabled =lManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -103,23 +103,6 @@ public class Locations extends Activity implements LocationListener  {
 
     }
 
-    public void checkEnabledProviderServices(){
-        lManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        enabled =lManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        if(enabled==false){
-            AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-            errorBox.setMessage("You must turn on the location services on your phone to use this feature")
-                    .setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
-            AlertDialog alert = errorBox.create();
-            alert.show();
-        }
-
-    }
     //location listener methods
     @Override
     public void onLocationChanged(Location location) {
@@ -298,8 +281,6 @@ public class Locations extends Activity implements LocationListener  {
             if (id == R.id.action_backHome) {
                 ((KillApp) this.getApplication()).setStatus(false);
                 this.finish();
-                //Intent intent = new Intent(this, MainActivity.class);
-                //startActivity(intent);
             } else if (id == R.id.action_notifications) {
                 Intent intent = new Intent(this, Notifications.class);
                 startActivity(intent);

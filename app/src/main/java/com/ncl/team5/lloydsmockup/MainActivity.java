@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
 
 
     private String username;
-    private String date;
+    private static String date;
     private List<String> accountNums = new ArrayList<String>();
     private String logoutTime;
     private Menu activityMenu;
@@ -57,7 +57,8 @@ public class MainActivity extends Activity {
         //gets the username that is passed from the login so the connection can stay open
         Intent i = getIntent();
         username = i.getStringExtra("ACCOUNT_USERNAME");
-        date = i.getStringExtra("DATE");
+        if (i.getStringExtra("DATE") != null)
+            date = i.getStringExtra("DATE");
 
         TextView dateText = (TextView)findViewById(R.id.lastLoginTextView);
 
@@ -292,6 +293,7 @@ public class MainActivity extends Activity {
     public void btnClickOffers(View view) {
         Intent i = new Intent(this, Locations.class);
         i.putExtra("ACCOUNT_USERNAME", username);
+
         i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
