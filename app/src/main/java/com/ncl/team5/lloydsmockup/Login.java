@@ -1,5 +1,10 @@
 package com.ncl.team5.lloydsmockup;
-
+/**
+*Danh comment
+ * Danh comment
+ * Danh comment
+ * Danh comment
+ */
 import  android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
