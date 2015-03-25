@@ -3,6 +3,7 @@ package com.ncl.team5.lloydsmockup;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,11 +13,17 @@ import android.widget.TextView;
 
 public class GroupChooser extends Activity {
 
+    private String username;
+    private String date;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_chooser);
 
+        Intent i = getIntent();
+        username = i.getStringExtra("ACCOUNT_USERNAME");
+        date = i.getStringExtra("DATE");
         /* I will need to populate the current groups here... probably by sending data to the server in some way
          * but need to wait for the tables ot be set up
          */
@@ -25,8 +32,23 @@ public class GroupChooser extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        /* Show notification icon in menu bar */
         getMenuInflater().inflate(R.menu.main, menu);
+
+        MenuItem item = menu.getItem(1);
+        GetNotification notif = new GetNotification();
+
+
+        if(notif.getNotifications(this, username)) {
+            Log.d("Notif Change", "IN HERE");
+            item.setIcon(R.drawable.ic_action_notify);
+        }
+        else
+        {
+            Log.d("Notif Change", "IN There");
+            item.setIcon(R.drawable.ic_action_email);
+        }
+
         return true;
     }
 
@@ -44,6 +66,8 @@ public class GroupChooser extends Activity {
         }
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
+            intent.putExtra("ACCOUNT_USERNAME", username);
+            intent.putExtra("DATE", date);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
         }

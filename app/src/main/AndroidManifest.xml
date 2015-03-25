@@ -42,8 +42,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:screenOrientation="portrait"
-            android:theme="@style/menuTheme" >
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Transfers"
@@ -66,8 +65,13 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".Achievements"
-            android:label="@string/title_activity_offers"
+            android:name=".Houseshare_Welcome"
+            android:label="@string/title_activity_houseshare_welcome"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".Houseshare_Search"
+            android:label="@string/title_activity_houseshare_search"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -105,7 +109,7 @@
         </activity>
         <activity
             android:name=".ChangePassword"
-            android:label= "Change Password" >
+            android:label="Change Password" >
         </activity>
 
         <meta-data
@@ -126,6 +130,19 @@
         <activity
             android:name=".RegisterHouse"
             android:label="House Sharing" >
+        </activity>
+        <activity
+            android:name=".Houseshare_Create_House"
+            android:label="@string/title_activity_houseshare__create__house"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name=".Fragment_Houseshare_Inputs"
+            android:label="@string/title_activity_fragment__houseshare__inputs" >
+        </activity>
+        <activity
+            android:name=".Houseshare_HomeView"
+            android:label="@string/title_activity_houseshare__home_view" >
         </activity>
     </application>
 

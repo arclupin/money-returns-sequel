@@ -39,4 +39,31 @@
     <string name="title_activity_payments_tabs">PaymentsTabs</string>
     <string name="title_activity_register_house">RegisterHouse</string>
 
+    <string name="title_activity_houseshare_welcome">Welcome</string>
+    <string name= "title_activity_houseshare__welcome_1">Welcome To \n House Share Service</string>
+    <string name= "title_activity_houseshare__welcome_2">Create Bills</string>
+    <string name= "title_activity_houseshare__welcome_3">Manage Bills</string>
+    <string name= "title_activity_houseshare__welcome_4">Pay Bills</string>
+    <string name="title_activity_houseshare_welcome_start">Start</string>
+    <string name="title_activity_houseshare_welcome_skip">Skip</string>
+
+    <string name="title_activity_houseshare_search">Join</string>
+    <string name="title_activity_houseshare_search_textIntro">Let\'s join a house</string>
+    <string name="houseshare_search_create">Or alternatively, create a house</string>
+    <string name="title_activity_houseshare__create__house">Creating a house</string>
+    <string name="title_activity_houseshare__create__house_name">Name of house</string>
+    <string name="title_activity_houseshare__create__house_hsno">House Number</string>
+    <string name="title_activity_houseshare__create__house_street">Street</string>
+    <string name="title_activity_houseshare__create__house_city">City</string>
+    <string name="title_activity_houseshare__create__house_postcode">Postcode</string>
+    <string name="title_activity_houseshare__create__house_description">Description</string>
+    <string name="title_activity_fragment__houseshare__inputs">Fragment_Houseshare_Inputs</string>
+    <string name="title_activity_houseshare__home_view">Houseshare_HomeView</string>
+
+    <string name="houseshare_search_join_msg">Would you like to join</string>
+    <string name="houseshare_search_empty_ini">Your search result will be displayed here.</string>
+    <string name="houseshare_search_empty_result">No result :-(</string>
+    <string name="houseshare_search_join">Join</string>
+    <string name="houseshare_search_cancel">Cancel</string>
+
 </resources>

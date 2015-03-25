@@ -4,6 +4,7 @@ import  android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +15,10 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import HTTPConnect.Connection;
 import HTTPConnect.CookieStorage;
@@ -27,6 +32,7 @@ public class Login extends Activity {
     private boolean netProbs = false;
     private boolean warning = false;
     private boolean locked = false;
+    private String date = "";
 
 
     @Override
@@ -71,20 +77,18 @@ public class Login extends Activity {
             //Starts an intent to launch the main menu
             Intent i = new Intent(this, MainActivity.class);
             i.putExtra("ACCOUNT_USERNAME", username);
+            i.putExtra("DATE","N/A"); // prevent the app from crashing due to null pointer
             startActivity(i);
             return;
         }
 
-
         if(authenticate(username, password))
         {
-
             //Starts an intent to launch the main menu
             Intent i = new Intent(this, MainActivity.class);
             i.putExtra("ACCOUNT_USERNAME", username);
+            i.putExtra("DATE",date);
             startActivity(i);
-
-
         }
         else
         {
@@ -148,16 +152,6 @@ public class Login extends Activity {
                 else
                 {
                      /* Network problems detected... dont let user in but dont increment count either */
-//                    AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-//                    errorBox.setMessage("Poor network conditions detected. Please check your connection and try again")
-//                            .setCancelable(false)
-//                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                                public void onClick(DialogInterface dialog, int id) {
-//                                    dialog.cancel();
-//                                }
-//                            });
-//                    AlertDialog alert = errorBox.create();
-//                    alert.show();
 
                     new CustomMessageBox(this, "Poor network conditions detected. Please check your connection and try again");
                     netProbs = false;
@@ -218,6 +212,7 @@ public class Login extends Activity {
 
                 if(jo.getString("status").equals("true"))
                 {
+                    date = jo.getString("last_login");
                     return true;
                 }
                 if(jo.getString("status").equals("warning"))

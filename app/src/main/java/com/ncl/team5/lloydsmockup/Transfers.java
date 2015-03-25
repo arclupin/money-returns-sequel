@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,9 @@ public class Transfers extends Activity {
 
     private String username;
     private List<String> accountStrings = new ArrayList<String>();
+    private List<String> fromSC = new ArrayList<String>();
+    private String date;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,7 @@ public class Transfers extends Activity {
         //gets the username from the intent
         Intent i = getIntent();
         username = i.getStringExtra("ACCOUNT_USERNAME");
+        date = i.getStringExtra("DATE");
 
         getAccounts();
 
@@ -49,7 +54,24 @@ public class Transfers extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+
+        /* Show notification icon in menu bar */
         getMenuInflater().inflate(R.menu.main, menu);
+
+        MenuItem item = menu.getItem(1);
+        GetNotification notif = new GetNotification();
+
+
+        if(notif.getNotifications(this, username)) {
+            Log.d("Notif Change", "IN HERE");
+            item.setIcon(R.drawable.ic_action_notify);
+        }
+        else
+        {
+            Log.d("Notif Change", "IN There");
+            item.setIcon(R.drawable.ic_action_email);
+        }
+
         return true;
     }
 
@@ -67,6 +89,8 @@ public class Transfers extends Activity {
         }
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
+            intent.putExtra("ACCOUNT_USERNAME", username);
+            intent.putExtra("DATE", date);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
 
@@ -85,6 +109,10 @@ public class Transfers extends Activity {
         String fromAccount = ((Spinner)findViewById(R.id.spinnerFrom)).getSelectedItem().toString();
         String toAccount = ((Spinner)findViewById(R.id.spinnerTo)).getSelectedItem().toString();
         String amount = ((TextView)findViewById(R.id.amountText)).getText().toString();
+        int pos = ((Spinner) findViewById(R.id.spinnerFrom)).getSelectedItemPosition();
+        String fromSort = fromSC.get(pos);
+        pos = ((Spinner) findViewById(R.id.spinnerTo)).getSelectedItemPosition();
+        String sortCode = fromSC.get(pos);
 
         if(fromAccount.equals(toAccount))
         {
@@ -107,7 +135,7 @@ public class Transfers extends Activity {
         try
         {
             //now works with the ui and passed that values of the text boxes
-            result = connect.execute("TYPE", "PAY", "USR", username, "PAYTO", toAccount, "PAYFROM", fromAccount, "AMOUNT", amount).get();
+            result = connect.execute("TYPE", "PAY", "USR", username, "PAYTO", toAccount, "PAYFROM", fromAccount, "AMOUNT", amount, "PAYFROM_SC", fromSort, "PAYTO_SC", sortCode).get();
 
 
             JSONObject jo = new JSONObject(result);
@@ -199,6 +227,7 @@ public class Transfers extends Activity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject insideObject = jsonArray.getJSONObject(i);
                 accountStrings.add(insideObject.getString("account_number"));
+                fromSC.add(insideObject.getString("sort_code"));
             }
 
 

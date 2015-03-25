@@ -1,0 +1,76 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
+    android:layout_height="fill_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.ncl.team5.lloydsmockup.Houseshare_Welcome"
+    android:background="@android:color/background_light"
+    android:id="@+id/HS_Welcome_Container">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/HS_Welcome_Slider"
+        android:padding="0px"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        >
+    </android.support.v4.view.ViewPager>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="5dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/HS_Welcome_swipe_indicators">
+        <View android:layout_height="10dp"
+            android:layout_width="10dp"
+            android:background="@drawable/swipe_circle_focused"
+            android:id="@+id/circle1"
+            android:layout_marginRight="5dp"
+            android:layout_gravity="center_vertical"/>
+
+        <View android:layout_height="10dp"
+            android:layout_width="10dp"
+            android:background="@drawable/swipe_circle_unfocused"
+            android:id="@+id/circle2"
+            android:layout_marginRight="5dp"
+            android:layout_gravity="center_vertical"/>
+
+        <View android:layout_height="10dp"
+            android:layout_width="10dp"
+            android:background="@drawable/swipe_circle_unfocused"
+            android:id="@+id/circle3"
+            android:layout_marginRight="5dp"
+            android:layout_gravity="center_vertical"/>
+
+        <View android:layout_height="10dp" android:layout_width="10dp" android:background="@drawable/swipe_circle_unfocused"
+            android:id="@+id/circle4" android:layout_marginRight="5dp" android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/HS_Welcome_Start"
+        android:text="@string/title_activity_houseshare_welcome_start"
+        style="@style/Welcome_HS_Text_Start"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:visibility="invisible"
+        android:clickable="true"
+        android:onClick="start_bttn"/>
+        <!--android:layout_toRightOf="@+id/HS_Welcome_swipe_indicators"-->
+        <!--android:layout_toEndOf="@+id/HS_Welcome_swipe_indicators" />-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/HS_Welcome_Skip"
+        android:text="@string/title_activity_houseshare_welcome_skip"
+        style="@style/Welcome_HS_Text_Start"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:visibility="visible"
+        />
+
+
+</RelativeLayout>

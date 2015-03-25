@@ -12,37 +12,36 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import HTTPConnect.Connection;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
-import java.net.URLDecoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class Accounts extends Activity {
 
     /* Used for the list view */
     private ArrayList<String> accountStrings;
     private String username;
-
-
+    private String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +54,7 @@ public class Accounts extends Activity {
 
         Intent i = getIntent();
         username = i.getStringExtra("ACCOUNT_USERNAME");
+        date = i.getStringExtra("DATE");
 
         //Log.d("Username", username);
 
@@ -80,6 +80,7 @@ public class Accounts extends Activity {
                 intent.putExtra("USERNAME", username);
                 intent.putExtra("ACCOUNT_NUM", message);
                 intent.putExtra("BALANCE", balance);
+                intent.putExtra("DATE", date);
                 startActivity(intent);
 
                 ((KillApp) Accounts.this.getApplication()).setStatus(false);
@@ -98,7 +99,7 @@ public class Accounts extends Activity {
          */
 
 
-        final Connection hc = new Connection(this);// trying to pass the activity to the coonection (not sure if this is legal though)
+        Connection hc = new Connection(this);// trying to pass the activity to the coonection (not sure if this is legal though)
 
         try {
             String result = hc.execute("TYPE","SAA","USR", username ).get();
@@ -131,7 +132,7 @@ public class Accounts extends Activity {
                 JSONArray jsonArray = jo.getJSONArray("accounts");
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject insideObject = jsonArray.getJSONObject(i);
-                    accountStrings.add(insideObject.getString("account_number") + " : £" + insideObject.getString("avail_balance"));
+                    accountStrings.add(insideObject.getString("account_number") + " : £" + insideObject.getString("avail_balance") + "  >");
                 }
             }
 
@@ -145,7 +146,24 @@ public class Accounts extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+
+        /* Show notification icon in menu bar */
         getMenuInflater().inflate(R.menu.main, menu);
+
+        MenuItem item = menu.getItem(1);
+        GetNotification notif = new GetNotification();
+
+
+        if(notif.getNotifications(this, username)) {
+            Log.d("Notif Change", "IN HERE");
+            item.setIcon(R.drawable.ic_action_notify);
+        }
+        else
+        {
+            Log.d("Notif Change", "IN There");
+            item.setIcon(R.drawable.ic_action_email);
+        }
+
         return true;
     }
 
@@ -164,9 +182,10 @@ public class Accounts extends Activity {
         }
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
+            intent.putExtra("ACCOUNT_USERNAME", username);
+            intent.putExtra("DATE", date);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
-
         }
         /*else if (id == R.id.action_location) {
             return true;
@@ -199,6 +218,7 @@ public class Accounts extends Activity {
         {
             //each time the app resumes and it wasnt killed, the variable needs to be reset
             ((KillApp) this.getApplication()).setStatus(true);
+            invalidateOptionsMenu();
         }
 
         super.onResume();
@@ -238,5 +258,20 @@ public class Accounts extends Activity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         //login again
+    }
+
+
+
+    public void onPause()
+    {
+         /* Set the logout time so it can easily get it later */
+        SharedPreferences sp = getSharedPreferences(username, 0);
+        SharedPreferences.Editor edit = sp.edit();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String logout = df.format(Calendar.getInstance().getTime());
+        edit.putString("TEMP_LOGOUT_TIME", logout);
+        edit.commit();
+
+        super.onPause();
     }
 }

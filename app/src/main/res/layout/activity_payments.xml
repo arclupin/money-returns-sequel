@@ -45,9 +45,8 @@
         android:id="@+id/payment_pager"
         android:padding="0px"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-
-        />
+        android:layout_height="fill_parent">
+        </android.support.v4.view.ViewPager>
 
     <Button
         android:layout_width="fill_parent"

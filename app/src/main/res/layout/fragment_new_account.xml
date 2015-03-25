@@ -30,7 +30,7 @@
         <Spinner
             android:layout_width="fill_parent"
             android:layout_height="@dimen/field_height"
-            android:id="@+id/Payment_Old_spinner1"
+            android:id="@+id/Payment_New_spinner1"
             android:spinnerMode="dropdown"
             android:textAlignment="center"
             android:layout_marginTop="@dimen/activity_sub_field_vertical_margin"
