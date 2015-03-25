@@ -95,7 +95,7 @@ public class Settings extends Activity {
         GetNotification notif = new GetNotification();
 
 
-        if(notif.getNotifications(this, username)) {
+        if(notif.getNotifications(this, username, date)) {
             Log.d("Notif Change", "IN HERE");
             item.setIcon(R.drawable.ic_action_notify);
         }

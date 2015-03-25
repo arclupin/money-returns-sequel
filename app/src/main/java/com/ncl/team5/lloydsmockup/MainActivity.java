@@ -1,5 +1,5 @@
 package com.ncl.team5.lloydsmockup;
-//stella daskhdkasjkda
+// not anymore
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
