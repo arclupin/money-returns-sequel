@@ -65,7 +65,6 @@ public class Locations extends Activity implements LocationListener  {
         Intent i = getIntent();
         super.onCreate(savedInstanceState);
 
-        Intent i = getIntent();
         username = i.getStringExtra("ACCOUNT_USERNAME");
         date = i.getStringExtra("DATE");
 

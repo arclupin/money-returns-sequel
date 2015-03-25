@@ -2,6 +2,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.ncl.team5.lloydsmockup.Houseshare_HomeView">
+
+    <item android:id="@+id/action_add_user"
+        android:title="Add a new user"
+        android:showAsAction="always"
+        android:icon="@drawable/add_user"
+        ></item>
+
+    <item android:id="@+id/action_hs_noti"
+        android:title="Notifications"
+        android:showAsAction="always"
+        android:icon="@drawable/globe"
+        ></item>
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>

@@ -1,5 +1,6 @@
 package com.ncl.team5.lloydsmockup;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -18,11 +19,13 @@ import java.util.concurrent.ExecutionException;
 import HTTPConnect.Connection;
 import HTTPConnect.Request_Params;
 import HTTPConnect.Responses_Format;
+import Utils.StringUtils;
 
 
 public class Houseshare_HomeView extends Activity {
     private String username;
-
+    private String house_name;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,11 @@ public class Houseshare_HomeView extends Activity {
 
         Intent i = this.getIntent();
         username = i.getExtras().getString("ACCOUNT_USERNAME");
+        house_name = i.getExtras().getString("HOUSE_NAME");
+        ActionBar a = getActionBar();
+        if (a != null)
+            a.setTitle(StringUtils.isFieldEmpty(house_name) ? "My house" : house_name);
+
 
         fetchHomeViewInfo();
 
@@ -41,6 +49,7 @@ public class Houseshare_HomeView extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_houseshare__home_view, menu);
+        this.menu = menu;
         return true;
     }
 
@@ -53,6 +62,19 @@ public class Houseshare_HomeView extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+
+        else if (id == R.id.action_add_user) {
+            menu.findItem(R.id.action_hs_noti).setIcon(R.drawable.globe);
+            item.setIcon(R.drawable.add_user_clicked);
+
+            return true;
+        }
+
+        else if (id == R.id.action_hs_noti) {
+            menu.findItem(R.id.action_add_user).setIcon(R.drawable.add_user);
+            item.setIcon(R.drawable.globe_clicked);
             return true;
         }
 

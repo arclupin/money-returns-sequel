@@ -43,7 +43,10 @@ public class MainActivity extends Activity {
 
 
     private String username;
+
+    // use static for date would help us not have to pass the date around as the value of the date wont be lost on activity change.
     private static String date;
+
     private List<String> accountNums = new ArrayList<String>();
     private String logoutTime;
     private Menu activityMenu;
@@ -57,8 +60,8 @@ public class MainActivity extends Activity {
         //gets the username that is passed from the login so the connection can stay open
         Intent i = getIntent();
         username = i.getStringExtra("ACCOUNT_USERNAME");
-        if (i.getStringExtra("DATE") != null)
-            date = i.getStringExtra("DATE");
+        if (i.getStringExtra("DATE") != null) // check for null (date coming from login)
+            date = i.getStringExtra("DATE"); // assign the date for the first and also the last time of the session
 
         TextView dateText = (TextView)findViewById(R.id.lastLoginTextView);
 
@@ -115,7 +118,7 @@ public class MainActivity extends Activity {
         MenuItem item = activityMenu.getItem(0);
         GetNotification notif = new GetNotification();
 
-        if(notif.getNotifications(this, username)) {
+        if(notif.getNotifications(this, username, date)) {
             Log.d("Notif Change", "IN HERE");
             item.setIcon(R.drawable.ic_action_notify);
         }
@@ -156,7 +159,6 @@ public class MainActivity extends Activity {
     public void btnClickPayments(View view) {
         Intent i = new Intent(this, Payments.class);
         i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
 
@@ -165,7 +167,6 @@ public class MainActivity extends Activity {
     public void btnClickTransfers(View view) {
         Intent i = new Intent(this, Transfers.class);
         i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -173,7 +174,6 @@ public class MainActivity extends Activity {
     public void btnClickAccounts(View view) {
         Intent i = new Intent(this, Accounts.class);
         i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -181,7 +181,6 @@ public class MainActivity extends Activity {
     public void btnClickAnalysis(View view) {
         Intent i = new Intent(this, Analysis.class);
         i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -228,7 +227,7 @@ public class MainActivity extends Activity {
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
-                            hs_intents(Houseshare_Welcome.class);
+                            hs_intents(Houseshare_Welcome.class, "");
                         }}, 2150); //150ms offset so that the dialog would not lag (if this was the same as in the Connection (2000s)
                        // then we might end up having 2 tasks to be posted at nearly the same time => the dialog might get interrupted resulting in a graphic lag when it disappears
                        // (my guess) - could use some other function to put this task right after the dialog task (which I dont know).
@@ -237,7 +236,7 @@ public class MainActivity extends Activity {
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
-                            hs_intents(Houseshare_Search.class);
+                            hs_intents(Houseshare_Search.class, "");
                         }}, 2150);
                 }
                 // TODO unfinished, the server will send a more detailed message i.e.
@@ -245,11 +244,11 @@ public class MainActivity extends Activity {
 
                else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE)) { // else if joined a house -> redirect to main home page
                     Toast.makeText(this, "Registered, Joined house, To redirect to main page", Toast.LENGTH_SHORT).show();
-
+                    final String hs_name = jo.getString(Responses_Format.RESPONSE_HS_CONTENT);
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
-                            hs_intents(Houseshare_HomeView.class);
+                            hs_intents(Houseshare_HomeView.class,hs_name);
                         }}, 2150);
                 }
 
@@ -282,10 +281,10 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void hs_intents(Class c) {
+    private void hs_intents(Class c, String house_name) {
         Intent i = new Intent(this, c);
         i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("DATE", date);
+        i.putExtra("HOUSE_NAME", house_name);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -293,8 +292,6 @@ public class MainActivity extends Activity {
     public void btnClickOffers(View view) {
         Intent i = new Intent(this, Locations.class);
         i.putExtra("ACCOUNT_USERNAME", username);
-
-        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -302,7 +299,6 @@ public class MainActivity extends Activity {
     public void btnClickProducts(View view) {
         Intent i = new Intent(this, Products.class);
         i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -310,7 +306,6 @@ public class MainActivity extends Activity {
     public void btnClickSettings(View view) {
         Intent i = new Intent(this, Settings.class);
         i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
