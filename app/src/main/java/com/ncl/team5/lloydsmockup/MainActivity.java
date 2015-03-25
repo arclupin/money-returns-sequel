@@ -224,32 +224,28 @@ public class MainActivity extends Activity {
                 // TODO unfinished, the server will send a more detailed message i.e. 'registered and joined house' or 'registered and not joined house'
                 else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_NOT_JOINED)) { // if not registered -> redirect to the welcome page
                     //need to see how the progress dialog works so also need to delay the start of the homeview activity.
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
+
                             hs_intents(Houseshare_Welcome.class, "");
-                        }}, 2150); //150ms offset so that the dialog would not lag (if this was the same as in the Connection (2000s)
+                         //150ms offset so that the dialog would not lag (if this was the same as in the Connection (2000s)
                        // then we might end up having 2 tasks to be posted at nearly the same time => the dialog might get interrupted resulting in a graphic lag when it disappears
                        // (my guess) - could use some other function to put this task right after the dialog task (which I dont know).
                 }
                 else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE)) { // else if not joined a house -> redirect to the search page
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
+
                             hs_intents(Houseshare_Search.class, "");
-                        }}, 2150);
+
                 }
                 // TODO unfinished, the server will send a more detailed message i.e.
 
 
                else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE)) { // else if joined a house -> redirect to main home page
-                    Toast.makeText(this, "Registered, Joined house, To redirect to main page", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, "Registered, Joined house, To redirect to main page", Toast.LENGTH_SHORT).show();
                     final String hs_name = jo.getString(Responses_Format.RESPONSE_HS_CONTENT);
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
+//                    Handler handler = new Handler();
+//                    handler.postDelayed(new Runnable() {
+//                        public void run() {
                             hs_intents(Houseshare_HomeView.class,hs_name);
-                        }}, 2150);
+//                        }}, 2150);
                 }
 
                 else {
