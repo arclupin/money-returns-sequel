@@ -58,12 +58,17 @@ public class Locations extends Activity implements LocationListener  {
     //maximum number of places returned by google
     private final int MAX = 20;
    private MarkerOptions[] places;
-
+    private String date;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent i = getIntent();
+        username = i.getStringExtra("ACCOUNT_USERNAME");
+        date = i.getStringExtra("DATE");
+
         lManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         enabled =lManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         if(enabled==false){
@@ -281,12 +286,27 @@ public class Locations extends Activity implements LocationListener  {
         }
     }
 
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-            // Inflate the menu; this adds items to the action bar if it is present.
-            getMenuInflater().inflate(R.menu.main, menu);
-            return true;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        /* Show notification icon in menu bar */
+        getMenuInflater().inflate(R.menu.main, menu);
+
+        MenuItem item = menu.getItem(1);
+        GetNotification notif = new GetNotification();
+
+
+        if(notif.getNotifications(this, username, date)) {
+            Log.d("Notif Change", "IN HERE");
+            item.setIcon(R.drawable.ic_action_notify);
         }
+        else
+        {
+            Log.d("Notif Change", "IN There");
+            item.setIcon(R.drawable.ic_action_email);
+        }
+
+        return true;
+    }
 
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
@@ -295,6 +315,7 @@ public class Locations extends Activity implements LocationListener  {
             // as you specify a parent activity in AndroidManifest.xml.
             int id = item.getItemId();
 
+
             if (id == R.id.action_backHome) {
                 ((KillApp) this.getApplication()).setStatus(false);
                 this.finish();
@@ -302,12 +323,13 @@ public class Locations extends Activity implements LocationListener  {
                 //startActivity(intent);
             } else if (id == R.id.action_notifications) {
                 Intent intent = new Intent(this, Notifications.class);
+                intent.putExtra("ACCOUNT_USERNAME", username);
+                intent.putExtra("DATE", date);
                 startActivity(intent);
                 ((KillApp) this.getApplication()).setStatus(false);
             }
-
-            return super.onOptionsItemSelected(item);
-        }
+	    return super.onOptionsItemSelected(item);
+	}
 
     /* This is how the application knows if it has been stopped by an intent or by an
      * external source (i.e. home button, phone call etc). Each time an intent is called, it

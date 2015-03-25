@@ -163,7 +163,7 @@ public class Payments extends FragmentActivity {
         GetNotification notif = new GetNotification();
 
         /* See if there are notifications and display the correct image accordingly */
-        if(notif.getNotifications(this, username)) {
+        if(notif.getNotifications(this, username, date)) {
             Log.d("Notif Change", "IN HERE");
             item.setIcon(R.drawable.ic_action_notify);
         }

@@ -44,7 +44,6 @@ public class MainActivity extends Activity {
 
     private String username;
     private String date;
-    private List<String> accountNums = new ArrayList<String>();
     private String logoutTime;
     private Menu activityMenu;
     private String tempLogout;
@@ -114,7 +113,7 @@ public class MainActivity extends Activity {
         MenuItem item = activityMenu.getItem(0);
         GetNotification notif = new GetNotification();
 
-        if(notif.getNotifications(this, username)) {
+        if(notif.getNotifications(this, username, date)) {
             Log.d("Notif Change", "IN HERE");
             item.setIcon(R.drawable.ic_action_notify);
         }

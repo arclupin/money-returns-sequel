@@ -243,7 +243,8 @@ public class Notifications extends Activity {
                             });
                     AlertDialog alert = errorBox.create();
                     alert.show();
-                } else {
+                }
+                else {
                     /* Array needed as transaction returned inside JSON array */
                     JSONArray jsonArray = jo.getJSONArray("transactions");
 
@@ -263,9 +264,25 @@ public class Notifications extends Activity {
 
                         /* Gets the date field and parse it into a date variable, can throw an exception but never should... */
                         String date = insideObject.getString("Time");
+                        Date loginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(logDate);
                         Date timeFromResponse = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
                         Date logoutTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(this.logoutTime);
 
+
+                        if(timeFromResponse.compareTo(loginTime) > 0)
+                        {
+
+                            if (insideObject.getString("Payee").equals(accountNum)) {
+                                notif.add("Into Account:\t" + "£" + insideObject.getString("Amount") + "\t" + insideObject.getString("Time"));
+                                recentCount++;
+                                toNotify.add(false);
+                            }
+                            else {
+                                notif.add("Out Account:\t" + "£" + insideObject.getString("Amount") + "\t" + insideObject.getString("Time"));
+                                recentCount++;
+                                toNotify.add(false);
+                            }
+                        }
 
                         if (notif.size() == 0 && timeFromResponse.compareTo(logoutTime) > 0 && !transInSession)
                         {

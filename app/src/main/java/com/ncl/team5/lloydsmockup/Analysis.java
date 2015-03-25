@@ -108,7 +108,7 @@ public class Analysis extends Activity {
         MenuItem item = menu.getItem(1);
         GetNotification notif = new GetNotification();
 
-        if(notif.getNotifications(this, username)) {
+        if(notif.getNotifications(this, username, date)) {
             Log.d("Notif Change", "IN HERE");
             item.setIcon(R.drawable.ic_action_notify);
         }
