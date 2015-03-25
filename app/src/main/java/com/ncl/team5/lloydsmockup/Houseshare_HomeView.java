@@ -81,6 +81,8 @@ public class Houseshare_HomeView extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    // method called when the fragment is called.
     private void fetchHomeViewInfo() {
         Connection connect = new Connection(this);
         String result;
