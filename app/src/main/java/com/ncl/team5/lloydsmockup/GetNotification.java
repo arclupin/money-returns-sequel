@@ -21,12 +21,14 @@ public class GetNotification{
     private Activity a;
     private String username;
     private List<String> accountNums = new ArrayList<String>();
+    private String date;
 
-    public boolean getNotifications(Activity a, String username)
+    public boolean getNotifications(Activity a, String username, String date)
     {
 
         this.a = a;
         this.username = username;
+        this.date = date;
 
         return getNotif();
     }
@@ -115,7 +117,12 @@ public class GetNotification{
                         String date = insideObject.getString("Time");
                         Date timeFromResponse = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
                         Date logoutTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(logTime);
+                        Date loginDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(this.date);
 
+                        if(timeFromResponse.compareTo(loginDate) > 0)
+                        {
+                           return false;
+                        }
 
                         if(timeFromResponse.compareTo(logoutTime) > 0 && !transInSession)
                         {
