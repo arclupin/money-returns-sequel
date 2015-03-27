@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,20 +13,28 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.zip.Inflater;
 
 import Fragment.Fragment_HS_Home;
 import Fragment.Fragment_HS_Notification;
@@ -49,6 +58,8 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
     private boolean isNotiVisible;
     private TextView tv;
 
+    private boolean hasNewNoti = false;
+
     private ScrollView home_view;
 
     @Override
@@ -71,6 +82,7 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
 
         fragmentManager = getSupportFragmentManager();
 
+
 //        Fragment_HS_Home fragment_hs_home = Fragment_HS_Home.newInstance("");
 //        android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
 //        transaction.add(R.id.home_view_main_container, fragment_hs_home, "fragment_home_view");
@@ -83,6 +95,9 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
 
         isNotiVisible = false;
 
+        checkNewNotification(); // check for new noti on start-up
+        if (hasNewNoti && menu != null)
+            menu.findItem(R.id.action_hs_noti).setIcon(R.drawable.globe_new);
 
     }
 
@@ -92,6 +107,8 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_houseshare__home_view, menu);
         this.menu = menu;
+        if (hasNewNoti)
+            menu.findItem(R.id.action_hs_noti).setIcon(R.drawable.globe_new);
         return true;
     }
 
@@ -106,21 +123,22 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
         if (id == R.id.action_settings) {
             current_menu_item = 0;
             return true;
-        }
-
-        else if (id == R.id.action_add_user) {
+        } else if (id == R.id.action_add_user) {
             menu.findItem(R.id.action_hs_noti).setIcon(R.drawable.globe);
             item.setIcon(R.drawable.add_user_clicked);
 
-            return true;
-        }
+            Fragment_HS_Notification f = (Fragment_HS_Notification) fragmentManager.findFragmentByTag("fragment_noti");
+            if (f != null && f.isVisible())
+                fragmentManager.beginTransaction().remove(f).commit();
+            isNotiVisible = false;
+            home_view.setAlpha(1.0f);
+            home_view.setBackgroundColor(Color.WHITE);
 
-        else if (id == R.id.action_hs_noti) {
+            return true;
+        } else if (id == R.id.action_hs_noti) {
             menu.findItem(R.id.action_add_user).setIcon(R.drawable.add_user);
             //check if the notification has already been shown or not and act accordingly
-            if (!isNotiVisible ) {
-
-
+            if (!isNotiVisible) {
                 item.setIcon(R.drawable.globe_clicked);
                 //showing the notification
                 Fragment_HS_Notification fragment_hs_noti = Fragment_HS_Notification.newInstance("");
@@ -130,12 +148,11 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
                 t.add(R.id.noti_main_container, fragment_hs_noti, "fragment_noti");
                 t.commit();
 //                Animation.fade_in(this.findViewById(R.id.home_view_main_container), this, Animation.SHORT, Animation.POST_EFFECT.PERMANENTLY);
-               Animation.fade_in(this.findViewById(R.id.noti_main_container), this, Animation.SHORT, Animation.POST_EFFECT.PERMANENTLY);
+                Animation.fade_in(this.findViewById(R.id.noti_main_container), this, Animation.SHORT, Animation.POST_EFFECT.PERMANENTLY);
                 isNotiVisible = true;
                 home_view.setAlpha(0.5f);
                 home_view.setBackgroundColor(Color.LTGRAY);
-            }
-            else {
+            } else {
                 item.setIcon(R.drawable.globe);
 //                Fragment_HS_Home fragment_hs_home = Fragment_HS_Home.newInstance("");
 //                android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -180,18 +197,16 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
 //
 //            isNotiVisible = false;
         Fragment_HS_Notification f = (Fragment_HS_Notification) fragmentManager.findFragmentByTag("fragment_noti");
-        if (f != null && f.isVisible()){
+        if (f != null && f.isVisible()) {
             menu.findItem(R.id.action_hs_noti).setIcon(R.drawable.globe);
             fragmentManager.beginTransaction().remove(f).commit();
             isNotiVisible = false;
             home_view.setAlpha(1.0f);
             home_view.setBackgroundColor(Color.WHITE);
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
     }
-
 
 
     // method called when the fragment is called.
@@ -270,18 +285,400 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
      * @param f the fragment
      */
     @Override
-    public List<Notification> onNotificationViewSelected(Fragment_HS_Notification f) {
-
-        // testing data
-        Notification n = new Notification(Notification.JOIN_ADM_VIEW);
-        n.addParam("Danh");
-        List<Notification> l = new ArrayList<Notification>();
-        l.add(n);
-        l.add(n);
-        l.add(n);
+    public List<Notification> onNotificationViewSelected(Fragment_HS_Notification f) throws ParseException {
+        List<Notification> l = fetchNotifications();
+//        if ((Fragment_HS_Notification.lastNoti != null && l.get(0).getTimeOfNotification().compareTo(Fragment_HS_Notification.lastNoti) > 0) || Fragment_HS_Notification.isThereNewNoti(l) )
+//        {
+//            Fragment_HS_Notification.newNoti = true; // atm I think it's unnecessary
+//        }
+        if (!l.isEmpty())
+            Fragment_HS_Notification.lastNoti = l.get(0).getTimeOfNotification();
+        // update the lastNoti (this is needed as the app will send this info to the server in order to
+        // check for new notifications (see the method checkNewNotification below)
 
         return l;
+    }
+
+    /**
+     * this method just check if there is any new notification, it does not fetch any notification
+     * this is needed on activity start-up.
+     * <p/>
+     * <i>when is there a new notification?</i> <br/>
+     * <p/>
+     * there is at least 1 noti in the db server holding NEW (see the Notification class)
+     * ... To be added
+     */
+    public void checkNewNotification() {
+        //TODO complete
+        //Just need to send a simple request asking for the arrival of any new noti, the server will take care of the search
+        Connection connect = new Connection(this);
+        String result;
+
+        try {
+            /* Command required to make a payment, takes username, to account, from account, both sort codes and amount
+             * Returns: JSON String */
+            result = connect.execute(Request_Params.PARAM_TYPE, Request_Params.VAL_REF_NOTI, Request_Params.PARAM_USR, this.username).get();
+            /* Turns String into JSON object, can throw JSON Exception */
+            JSONObject jo = new JSONObject(result);
+
+            /* Check if the user has timed out */
+            if (jo.getString("expired").equals("true")) {
+
+                /* Display message box and auto logout user */
+                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+                final Connection temp_connect = connect;
+                final String temp_usr = username;
+                errorBox.setMessage("Your session has been timed out, please login again")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                temp_connect.autoLogout(temp_usr);
+                            }
+                        });
+                AlertDialog alert = errorBox.create();
+                alert.show();
+            } else if (jo.getString("status").equals("true")) {
+
+                hasNewNoti = true;
+            } else if (jo.getString("status").equals("false")) {
+                hasNewNoti = false;
+            }
+
+        }
+        /* Catch the exceptions */ catch (JSONException jse) {
+            /* Error in the JSON response */
+            new CustomMessageBox(this, "There was an error in the server response");
+            jse.printStackTrace();
+        } catch (InterruptedException interex) {
+            /* Caused when the connection is interrupted */
+            new CustomMessageBox(this, "Connection has been interrupted");
+            interex.printStackTrace();
+        } catch (ExecutionException ee) {
+            /* No idea when this is caused but it throws it... */
+            new CustomMessageBox(this, "Execution Error");
+            ee.printStackTrace();
+        } catch (Exception e) {
+            /* Failsafe if something goes utterly wrong */
+            new CustomMessageBox(this, "An unknown error occurred");
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * This method will be invoked when and only when the user clicks on the noti icon
+     *
+     * @return
+     */
+    public List<Notification> fetchNotifications() {
+        //TODO complete
+
+//        // testing data
+//        Notification n = new Notification(Notification.JOIN_ADM_VIEW);
+//
+//        n.addParam("Danh");
+//        n.addParam("danh_nt_1");
+//        n.addParam("2015-03-26 17:14:06");
+//
+//        Notification n1 = new Notification(Notification.JOIN_ADM_VIEW, true);
+//        n1.addParam("Ben");
+//        n1.addParam("ben_nt_1");
+//        n1.addParam("2015-03-25 17:11:09");
+
+        List<Notification> l = new ArrayList<Notification>();
+//        l.add(n);
+//        l.add(n1);
+//        l.add(n);
+        Connection connect = new Connection(this);
+        String result;
+
+        try {
+            /* Command required to make a payment, takes username, to account, from account, both sort codes and amount
+             * Returns: JSON String */
+            result = connect.execute(Request_Params.PARAM_TYPE, Request_Params.VAL_FETCH_NOTI, Request_Params.PARAM_USR, this.username).get();
+            /* Turns String into JSON object, can throw JSON Exception */
+            JSONObject jo = new JSONObject(result);
+
+            /* Check if the user has timed out */
+            if (jo.getString("expired").equals("true")) {
+
+                /* Display message box and auto logout user */
+                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+                final Connection temp_connect = connect;
+                final String temp_usr = username;
+                errorBox.setMessage("Your session has been timed out, please login again")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                temp_connect.autoLogout(temp_usr);
+                            }
+                        });
+                AlertDialog alert = errorBox.create();
+                alert.show();
+            } else if (jo.getString("status").equals("true")) {
+                JSONArray Noti_js_arr = jo.getJSONArray(Responses_Format.RESPONSE_HS_CONTENT);
+                for (int i = 0; i < Noti_js_arr.length(); i++) {
+                    JSONArray noti_arr_in = Noti_js_arr.getJSONArray(i);
+
+                    String id = noti_arr_in.getString(0);
+                    boolean read = noti_arr_in.getString(noti_arr_in.length() - 1).equals("1");
+                    int type = noti_arr_in.getInt(1);
+
+                    Notification n = new Notification(type, read, id);
+                    n.addParam(noti_arr_in.getString(Notification.HSID_POS + 2))
+                            .addParam(noti_arr_in.getString(Notification.PARAM_POS + 2))
+                            .addParam(noti_arr_in.getString(Notification.TIME_POS + 2));
+
+                    l.add(n);
+                }
+            }
+            /* There was an error indide the status return field, display appropriate error message */
+            //TODO implement error messages
+            else {
+                /* give more info on the error here, no money taken from account */
+                /* Use the status results to display certain error messages */
+            }
+
+        }
+        /* Catch the exceptions */ catch (JSONException jse) {
+            /* Error in the JSON response */
+            new CustomMessageBox(this, "There was an error in the server response");
+            Log.d("jse", jse.getMessage(), jse);
+        } catch (InterruptedException interex) {
+            /* Caused when the connection is interrupted */
+            new CustomMessageBox(this, "Connection has been interrupted");
+            interex.printStackTrace();
+        } catch (ExecutionException ee) {
+            /* No idea when this is caused but it throws it... */
+            new CustomMessageBox(this, "Execution Error");
+            ee.printStackTrace();
+        } catch (Exception e) {
+            /* Failsafe if something goes utterly wrong */
+            new CustomMessageBox(this, "An unknown error occurred");
+            e.printStackTrace();
+        }
+
+        return l;
+    }
+
+    public void onNotificationsSeen(Fragment_HS_Notification f) {
+        Connection connect = new Connection(this);
+        String result;
+
+        List<String> request = new ArrayList<String>();
+        request.add(Request_Params.PARAM_TYPE);
+        request.add(Request_Params.MARK_NOTI_AS_SEEN_NOT_READ);
+        request.add(Request_Params.PARAM_USR);
+        request.add(username);
+
+        for (int i = 0; i < Fragment_HS_Notification.data.size(); i++) {
+            request.add(Request_Params.MARK_NOTI_AS_SEEN_NOT_READ_PARAM);
+            request.add(Fragment_HS_Notification.data.get(i).getId());
+        }
+        Log.d("Request mark as seen", Arrays.toString(request.toArray(new String[request.size()])));
+
+        try {
+
+            /* Command required to make a payment, takes username, to account, from account, both sort codes and amount
+             * Returns: JSON String */
+            result = connect.execute(request.toArray(new String[request.size()])).get();
+            /* Turns String into JSON object, can throw JSON Exception */
+            JSONObject jo = new JSONObject(result);
+
+            /* Check if the user has timed out */
+            if (jo.getString("expired").equals("true")) {
+
+                /* Display message box and auto logout user */
+                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+                final Connection temp_connect = connect;
+                final String temp_usr = username;
+                errorBox.setMessage("Your session has been timed out, please login again")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                temp_connect.autoLogout(temp_usr);
+                            }
+                        });
+                AlertDialog alert = errorBox.create();
+                alert.show();
+            }
+        }
+
+//            else if (jo.getString("status").equals("true")) {
+//                JSONArray Noti_js_arr = jo.getJSONArray(Responses_Format.RESPONSE_HS_CONTENT);
+//                for (int i = 0; i < Noti_js_arr.length(); i++) {
+//                    JSONArray noti_arr_in = Noti_js_arr.getJSONArray(i);
+//
+//                    String id = noti_arr_in.getString(0);
+//                    boolean read = noti_arr_in.getString(noti_arr_in.length() - 1).equals("1");
+//                    int type = noti_arr_in.getInt(1);
+//
+//                    Notification n = new Notification(type, read, id);
+//                    n.addParam(noti_arr_in.getString(Notification.HSID_POS + 2))
+//                            .addParam(noti_arr_in.getString(Notification.PARAM_POS + 2))
+//                            .addParam(noti_arr_in.getString(Notification.TIME_POS + 2));
+//
+//                    l.add(n);
+//                }
+//            }
+//            /* There was an error indide the status return field, display appropriate error message */
+//            //TODO implement error messages
+//            else {
+//                /* give more info on the error here, no money taken from account */
+//                /* Use the status results to display certain error messages */
+//            }
+//
+//        }
+        /* Catch the exceptions */
+        catch (Exception e) {
+            Log.d("jse", e.getMessage(), e);
         }
 
     }
+
+    @Override
+    public void onWelcomeButtonClicked(Fragment_HS_Notification f, String p) {
+        //TODO Waiting for the server to be configured for this request
+//        Connection connect = new Connection(this);
+//        String result;
+//
+//        try {
+//            /* Command required to make a payment, takes username, to account, from account, both sort codes and amount
+//             * Returns: JSON String */
+//            result = connect.execute(Request_Params.PARAM_TYPE, Request_Params.VAL_APPROVE_MEMBER, Request_Params.PARAM_USR, this.username, Request_Params.VAL_APPROVE_MEMBER_PARAM, p).get();
+//            /* Turns String into JSON object, can throw JSON Exception */
+//            JSONObject jo = new JSONObject(result);
+//
+//            /* Check if the user has timed out */
+//            if (jo.getString("expired").equals("true")) {
+//
+//                /* Display message box and auto logout user */
+//                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+//                final Connection temp_connect = connect;
+//                final String temp_usr = username;
+//                errorBox.setMessage("Your session has been timed out, please login again")
+//                        .setCancelable(false)
+//                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//                                dialog.cancel();
+//                                temp_connect.autoLogout(temp_usr);
+//                            }
+//                        });
+//                AlertDialog alert = errorBox.create();
+//                alert.show();
+//            }
+//
+//            else if (jo.getString("status").equals("true")) {
+        new CustomMessageBox(this, "You have approved " + p.substring(0, p.length() - 2) + "!\nLet's welcome them!");
+//                }
+//
+//            /* There was an error indide the status return field, display appropriate error message */
+//            //TODO implement error messages
+//            else {
+//                /* give more info on the error here, no money taken from account */
+//                /* Use the status results to display certain error messages */
+//            } }
+//        /* Catch the exceptions */ catch (JSONException jse) {
+//            /* Error in the JSON response */
+//            new CustomMessageBox(this, "There was an error in the server response");
+//            Log.d("jse", jse.getMessage(), jse);
+//        } catch (InterruptedException interex) {
+//            /* Caused when the connection is interrupted */
+//            new CustomMessageBox(this, "Connection has been interrupted");
+//            interex.printStackTrace();
+//        } catch (ExecutionException ee) {
+//            /* No idea when this is caused but it throws it... */
+//            new CustomMessageBox(this, "Execution Error");
+//            ee.printStackTrace();
+//        } catch (Exception e) {
+//            /* Failsafe if something goes utterly wrong */
+//            new CustomMessageBox(this, "An unknown error occurred");
+//            e.printStackTrace();
+//        }
+    }
+
+    @Override
+    public void onRefuseButtonClicked(Fragment_HS_Notification f, String p) {
+        //TODO Waiting for the server to be configured for this request
+//        Connection connect = new Connection(this);
+//        String result;
+//
+//        try {
+//            /* Command required to make a payment, takes username, to account, from account, both sort codes and amount
+//             * Returns: JSON String */
+//            result = connect.execute(Request_Params.PARAM_TYPE, Request_Params.VAL_REFUSE_MEMBER, Request_Params.PARAM_USR, this.username, Request_Params.VAL_REFUSE_MEMBER_PARAM, p).get();
+//            /* Turns String into JSON object, can throw JSON Exception */
+//            JSONObject jo = new JSONObject(result);
+//
+//            /* Check if the user has timed out */
+//            if (jo.getString("expired").equals("true")) {
+//
+//                /* Display message box and auto logout user */
+//                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+//                final Connection temp_connect = connect;
+//                final String temp_usr = username;
+//                errorBox.setMessage("Your session has been timed out, please login again")
+//                        .setCancelable(false)
+//                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//                                dialog.cancel();
+//                                temp_connect.autoLogout(temp_usr);
+//                            }
+//                        });
+//                AlertDialog alert = errorBox.create();
+//                alert.show();
+//            }
+//
+//            else if (jo.getString("status").equals("true")) {
+        new CustomMessageBox(this, "You have refused the request of " + p.substring(0, p.length() - 2) + "!");
+//            }
+//
+//            /* There was an error indide the status return field, display appropriate error message */
+//            //TODO implement error messages
+//            else {
+//                /* give more info on the error here, no money taken from account */
+//                /* Use the status results to display certain error messages */
+//            } }
+//        /* Catch the exceptions */ catch (JSONException jse) {
+//            /* Error in the JSON response */
+//            new CustomMessageBox(this, "There was an error in the server response");
+//            Log.d("jse", jse.getMessage(), jse);
+//        } catch (InterruptedException interex) {
+//            /* Caused when the connection is interrupted */
+//            new CustomMessageBox(this, "Connection has been interrupted");
+//            interex.printStackTrace();
+//        } catch (ExecutionException ee) {
+//            /* No idea when this is caused but it throws it... */
+//            new CustomMessageBox(this, "Execution Error");
+//            ee.printStackTrace();
+//        } catch (Exception e) {
+//            /* Failsafe if something goes utterly wrong */
+//            new CustomMessageBox(this, "An unknown error occurred");
+//            e.printStackTrace();
+//        }
+//    }
+
+    }
+
+    @Override
+    public void checkEmptyNotification(Fragment_HS_Notification f) {
+        if (isNotiVisible && f.isVisible()) {
+            TableLayout l = (TableLayout) findViewById(R.id.layout_hs_notification_container);
+            if (l.getChildCount() == 0) {
+               LayoutInflater i = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                TableRow v = (TableRow) i.inflate(R.layout.hs_noti_empty, l, false);
+                l.addView(v);
+            }
+        }
+    }
+}
+
+
+
+
+
+
 

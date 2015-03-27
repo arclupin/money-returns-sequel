@@ -130,8 +130,9 @@ public class Houseshare_Welcome extends FragmentActivity {
 
         // check the registration status
         if (registered || this.username.equals("test")) {
-            Intent i = new Intent(this, Houseshare_Search.class);
+            Intent i = new Intent(this, Houseshare_HomeView.class);
             i.putExtra("ACCOUNT_USERNAME", username);
+            i.putExtra("HOUSE_NAME", "My House Test");
             startActivity(i);
             ((KillApp) this.getApplication()).setStatus(false);
         }

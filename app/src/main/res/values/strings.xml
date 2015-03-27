@@ -72,6 +72,6 @@
     <string name="noti_type_join_request_admin_gnr">would like to join your house. </string>
     <string name="noti_type_join_request_admin_ok">Welcome</string>
     <string name="noti_type_join_request_admin_nope">Cancel</string>
-
+    <string name="noti_empty">You have no notification :-(</string>
 
 </resources>

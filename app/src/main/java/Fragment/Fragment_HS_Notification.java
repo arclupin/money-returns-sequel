@@ -9,11 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.ncl.team5.lloydsmockup.R;
 
+import java.text.ParseException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import HTTPConnect.Notification;
@@ -29,11 +32,15 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_DATA = "total_data";
+    public static Date lastNoti;
+    public static boolean newNoti;
+
+    private TableLayout l;
 
 
     // TODO: For now it will just display the plain response from the server
     // need updating later
-    private static List<Notification> data;
+    public static List<Notification> data;
 
 
     private OnFragmentInteractionListener_Notification mListener;
@@ -67,7 +74,13 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
 //        Log.d("notification", dat);
 //        if (!StringUtils.isFieldEmpty(dat)) // I guess doing this would help that even if the user loses internet connection they still can be able to see the previous state of the home view.
 //            data = dat;
-        data = mListener.onNotificationViewSelected(this);
+        try {
+            data = mListener.onNotificationViewSelected(this);
+
+        }
+        catch (ParseException e){
+            Log.e("date persing error", e.getMessage(), e);
+        }
 
     }
 
@@ -75,11 +88,54 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        TableLayout l = (TableLayout) inflater.inflate(R.layout.fragment_hs_notification, container, false);
+        l = (TableLayout) inflater.inflate(R.layout.fragment_hs_notification, container, false);
         for (int i = 0; i < data.size(); i++) {
             Log.d("data", data.toString());
-            l.addView(data.get(i).makeNotiRow(getActivity()));
+            View v = data.get(i).makeNotiRow(getActivity());
+            Log.d("rows", v.toString());
+            final TextView a = (TextView) v.findViewById(R.id.noti_join_req_admin_name);
+
+            TextView welcome_button = (TextView) v.findViewById(R.id.ok);
+            welcome_button.setClickable(true);
+            welcome_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onWelcomeButtonClicked(Fragment_HS_Notification.this, a.getText().toString() );
+                    TableRow t = (TableRow) v.getParent().getParent().getParent(); // looks quite odd
+                    Log.d("row on click", t.toString());
+                    l.removeView(t);
+
+                }
+            });
+
+            TextView cancel_button = (TextView) v.findViewById(R.id.refuse);
+            cancel_button.setClickable(true);
+            cancel_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onRefuseButtonClicked(Fragment_HS_Notification.this, a.getText().toString());
+                    TableRow t = (TableRow) v.getParent().getParent().getParent();
+                    Log.d("row on click", t.toString());
+                    l.removeView(t);
+
+                }
+            });
+            l.addView(v);
+
+
+
         }
+        l.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                mListener.checkEmptyNotification(Fragment_HS_Notification.this);
+            }
+        });
+//
+//        if (newNoti) {
+//
+//        }
+
         Log.d("notification", Integer.toString(l.getChildCount()));
 //        tv.setText(data);
         return l;
@@ -89,6 +145,28 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
          public void onStop() {
         super.onStop();
 //        Animation.fade_out(getActivity().findViewById(R.id.layout_hs_notification_container), getActivity(), Animation.SHORT, Animation.POST_EFFECT.PERMANENTLY);
+    }
+
+    public int findNotiUsingID(String id) {
+        for (int i = 0; i <  l.getChildCount(); i++) {
+            if (id.equals(data.get(i).getId())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
+    /**
+     * onDestroyView mark the noti as seen
+     * initially I put this action in the onCreateView function but this would increase the time needed for creating view which in turn would probably effect the UI
+     * so it should be done this late to improve performance
+     */
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mListener.onNotificationsSeen(this);
+
     }
 
     @Override
@@ -127,8 +205,27 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
          *
          * @param f the fragment
          */
-        public List<Notification> onNotificationViewSelected(Fragment_HS_Notification f);
+        public List<Notification> onNotificationViewSelected(Fragment_HS_Notification f) throws ParseException;
+
+        public void onNotificationsSeen(Fragment_HS_Notification f);
+
+        public void onWelcomeButtonClicked(Fragment_HS_Notification f, String name);
+
+        public void onRefuseButtonClicked(Fragment_HS_Notification f, String name);
+
+        public void checkEmptyNotification(Fragment_HS_Notification f);
+
     }
+
+    public static boolean isThereNewNoti(List<Notification> l) {
+        for (int i = 0; i < l.size(); i++) {
+            if (!l.get(i).getRead())
+                return true;
+        }
+        return false;
+    }
+
+
 
 
 

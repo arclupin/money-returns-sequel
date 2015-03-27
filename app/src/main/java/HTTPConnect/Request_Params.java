@@ -29,7 +29,19 @@ public class Request_Params {
     public static final String HS_CREATE_HOUSE_DESCRIPTION = "HS_CH_DSC";
 
 
+    public static final String VAL_REF_NOTI = "REF_NOTI";
 
 
+    public static final String VAL_FETCH_NOTI = "HS_NOTI_FTCH";
+
+    public static final String MARK_NOTI_AS_SEEN_NOT_READ = "NOTI_ASNR";
+    public static final String MARK_NOTI_AS_SEEN_NOT_READ_PARAM = "notifications[]";
+    public static final String MARK_NOTI_AS_READ= "NOTI_R";
+
+    public static final String VAL_APPROVE_MEMBER = "HS_MEMBER_IN";
+    public static final String VAL_APPROVE_MEMBER_PARAM = "MEMBER_IN_NAME";
+
+    public static final String VAL_REFUSE_MEMBER = "HS_MEMBER_RFS";
+    public static final String VAL_REFUSE_MEMBER_PARAM = "MEMBER_RFS_NAME";
     public static final String PARAM_USR = "USR";
 }
