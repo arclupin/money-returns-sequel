@@ -39,7 +39,7 @@ public class Request_Params {
     public static final String MARK_NOTI_AS_READ= "NOTI_R";
 
     public static final String VAL_APPROVE_MEMBER = "HS_MEMBER_IN";
-    public static final String VAL_APPROVE_MEMBER_PARAM = "MEMBER_IN_NAME";
+    public static final String VAL_APPROVE_MEMBER_PARAM = "HS_MEMBER_IN_NAME";
 
     public static final String VAL_REFUSE_MEMBER = "HS_MEMBER_RFS";
     public static final String VAL_REFUSE_MEMBER_PARAM = "MEMBER_RFS_NAME";

@@ -90,17 +90,19 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
         l = (TableLayout) inflater.inflate(R.layout.fragment_hs_notification, container, false);
         for (int i = 0; i < data.size(); i++) {
-            Log.d("data", data.toString());
+            Log.d("data", data.get(i).getAdditional_params().get(Notification.HSID_POS));
             View v = data.get(i).makeNotiRow(getActivity());
             Log.d("rows", v.toString());
             final TextView a = (TextView) v.findViewById(R.id.noti_join_req_admin_name);
 
+
+            final String noti_id = data.get(i).getId();
             TextView welcome_button = (TextView) v.findViewById(R.id.ok);
             welcome_button.setClickable(true);
             welcome_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onWelcomeButtonClicked(Fragment_HS_Notification.this, a.getText().toString() );
+                    mListener.onWelcomeButtonClicked(Fragment_HS_Notification.this, a.getText().toString(), noti_id );
                     TableRow t = (TableRow) v.getParent().getParent().getParent(); // looks quite odd
                     Log.d("row on click", t.toString());
                     l.removeView(t);
@@ -113,7 +115,7 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
             cancel_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onRefuseButtonClicked(Fragment_HS_Notification.this, a.getText().toString());
+                    mListener.onRefuseButtonClicked(Fragment_HS_Notification.this, a.getText().toString(), noti_id);
                     TableRow t = (TableRow) v.getParent().getParent().getParent();
                     Log.d("row on click", t.toString());
                     l.removeView(t);
@@ -209,9 +211,9 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
 
         public void onNotificationsSeen(Fragment_HS_Notification f);
 
-        public void onWelcomeButtonClicked(Fragment_HS_Notification f, String name);
+        public void onWelcomeButtonClicked(Fragment_HS_Notification f, String name, String noti_id);
 
-        public void onRefuseButtonClicked(Fragment_HS_Notification f, String name);
+        public void onRefuseButtonClicked(Fragment_HS_Notification f, String name, String noti_id);
 
         public void checkEmptyNotification(Fragment_HS_Notification f);
 
