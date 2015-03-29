@@ -86,22 +86,27 @@ android:layout_marginTop="@dimen/activity_fields_lines_space"
     android:text="Amount"
     android:id="@+id/Payment_Old_Amount"
     android:textColor="#ff000000"
-    style="@style/Sub_Text"/>
+    style="@style/Sub_Text"
+    android:layout_marginBottom="5dp" />
     <!--android:layout_marginLeft="@dimen/activity_horizontal_text_margin"-->
     <!--android:layout_marginRight="@dimen/activity_horizontal_margin"-->
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/Payment_Old_TextField_Amount"
+        android:textColor="#ff000000"
+        android:background="@drawable/edit_text_style"
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:hint="50.00"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textSize="11pt" />
 
-
-<EditText
-    android:layout_width="fill_parent"
-    android:layout_height="@dimen/field_height"
-    android:id="@+id/Payment_Old_TextField_Amount"
-    android:layout_marginTop="@dimen/activity_sub_field_vertical_margin"
-    android:background="@drawable/border"
-    android:textColor="#ff000000"
-    android:inputType="number"
-    android:hint="50.00"
-    android:imeOptions="actionDone"/>
-    <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
-    <!--android:layout_marginRight="@dimen/activity_horizontal_margin"/>-->
 </LinearLayout>
     </RelativeLayout>
