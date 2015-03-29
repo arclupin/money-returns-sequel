@@ -11,29 +11,16 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
 
 import com.ncl.team5.lloydsmockup.CustomMessageBox;
-import com.ncl.team5.lloydsmockup.Houseshare_Search;
 import com.ncl.team5.lloydsmockup.KillApp;
 import com.ncl.team5.lloydsmockup.Login;
-import com.ncl.team5.lloydsmockup.R;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -55,10 +42,6 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
 
 
 /* The bit at the end.. the String, Void, Boolean bit, thats what
@@ -74,8 +57,8 @@ public class Connection extends AsyncTask <String, Void, String>  {
     private HttpContext context = new BasicHttpContext();
     private Activity a;
 
-    private MODE mode = MODE.NORMAL_TASK;
-    public static enum MODE {NORMAL_TASK, SMALL_TASK};
+    private MODE mode = MODE.SHORT_TASK;
+    public static enum MODE {SHORT_TASK, LONG_TASK};
     private ProgressDialog d;
 
     private String text_dialog;
@@ -95,7 +78,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
     @Override
     protected void onPreExecute() {
-        if (mode == MODE.SMALL_TASK) {
+        if (mode == MODE.LONG_TASK) {
             d = new ProgressDialog(a);
             d.setMessage( text_dialog != null ? text_dialog : "Processing small task");
             d.show();
@@ -115,7 +98,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
     }
 
     public void setDialogMessage(String m)  {
-        if (this.mode == MODE.SMALL_TASK)
+        if (this.mode == MODE.LONG_TASK)
             this.text_dialog = m;
     }
 

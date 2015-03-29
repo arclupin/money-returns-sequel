@@ -1,50 +1,27 @@
 package com.ncl.team5.lloydsmockup;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.zip.Inflater;
 
-import Fragment.Fragment_HS_Home;
 import Fragment.Fragment_HS_Notification;
 import HTTPConnect.Connection;
-import HTTPConnect.Notification;
 import HTTPConnect.Request_Params;
 import HTTPConnect.Responses_Format;
-import Utils.Animation;
 import Utils.StringUtils;
 
 /**
@@ -52,10 +29,14 @@ import Utils.StringUtils;
  */
 public class Houseshare_HomeView extends NotificationActivity implements Fragment_HS_Notification.OnFragmentInteractionListener_Notification {
     private FragmentManager fragmentManager;
-    private String response;
-    private TextView tv;
+
+    private String response_content;
+
     private String house_name;
 
+    private TextView viewName;
+    private TextView viewAddressText;
+    private TextView viewDescription;
     private ScrollView home_view;
 
     /* Used for the list view */
@@ -67,7 +48,12 @@ public class Houseshare_HomeView extends NotificationActivity implements Fragmen
         setContentView(R.layout.activity_houseshare__home_view);
 
         house_name = i.getExtras().getString("HOUSE_NAME");
+
+        // find the necessary views
         main_view_container = findViewById(R.id.home_view_main_container);
+        viewName = (TextView) findViewById(R.id.viewName);
+        viewAddressText = (TextView) findViewById(R.id.viewAddressText);
+        viewDescription = (TextView) findViewById(R.id.viewAddress);
         
 
         /* Get the list view */
@@ -89,23 +75,7 @@ public class Houseshare_HomeView extends NotificationActivity implements Fragmen
         // Set The Adapter
         billList.setAdapter(arrayAdapter);
 
-
-/*
-        Intent i = this.getIntent();
-        username = i.getExtras().getString("ACCOUNT_USERNAME");
-        house_name = i.getExtras().getString("HOUSE_NAME");
-        response = fetchHomeViewInfo();
-
-        home_view = (ScrollView) findViewById(R.id.home_view_main_container);
-        tv = (TextView) findViewById(R.id.home_view_text_view);
-        tv.setText(response);
-
-        ActionBar a = getActionBar();
-        if (a != null)
-            a.setTitle(StringUtils.isFieldEmpty(house_name) ? "My house" : house_name);
-
-        fragmentManager = getSupportFragmentManager();*/
-
+        initialiseData();
 
 //        Fragment_HS_Home fragment_hs_home = Fragment_HS_Home.newInstance("");
 //        android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -130,7 +100,90 @@ public class Houseshare_HomeView extends NotificationActivity implements Fragmen
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-return super.onCreateOptionsMenu(menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    // method called when the fragment is called.
+    protected String fetchHomeViewInfo() {
+        Connection connect = new Connection(this);
+        String result = "DEFAULT INFO";
+        connect.setMode(Connection.MODE.LONG_TASK);
+        connect.setDialogMessage("Collecting your house details");
+
+        try {
+            /* Command required to make a payment, takes username, to account, from account, both sort codes and amount
+             * Returns: JSON String */
+            result = connect.execute(Request_Params.PARAM_TYPE, Request_Params.VAL_HS_2_FETCH_HOUSE_DETAIL, Request_Params.PARAM_USR, this.username).get();
+            /* Turns String into JSON object, can throw JSON Exception */
+            JSONObject jo = new JSONObject(result);
+
+            /* Check if the user has timed out */
+            if (jo.getString("expired").equals("true")) {
+
+                /* Display message box and auto logout user */
+                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+                final Connection temp_connect = connect;
+                final String temp_usr = username;
+                errorBox.setMessage("Your session has been timed out, please login again")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                temp_connect.autoLogout(temp_usr);
+                            }
+                        });
+                AlertDialog alert = errorBox.create();
+                alert.show();
+            } else {
+//               TextView tv = (TextView) findViewById(R.id.hs_hv_response);
+                jo.getString(Responses_Format.RESPONSE_HS_CONTENT); //TODO
+            }
+
+        }
+        /* Catch the exceptions */ catch (JSONException jse) {
+            /* Error in the JSON response */
+            new CustomMessageBox(this, "There was an error in the server response");
+            jse.printStackTrace();
+        } catch (InterruptedException interex) {
+            /* Caused when the connection is interrupted */
+            new CustomMessageBox(this, "Connection has been interrupted");
+            interex.printStackTrace();
+        } catch (ExecutionException ee) {
+            /* No idea when this is caused but it throws it... */
+            new CustomMessageBox(this, "Execution Error");
+            ee.printStackTrace();
+        } catch (Exception e) {
+            /* Failsafe if something goes utterly wrong */
+            new CustomMessageBox(this, "An unknown error occurred");
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public void displayContent() {
+        try {
+           JSONObject j = new JSONObject(response_content).getJSONObject(Responses_Format.RESPONSE_HS_CONTENT);
+            Log.d("jo", j.toString());
+           JSONArray house_Array = j.getJSONArray("basic_info");
+
+           viewName.setText(house_Array.getString(0));
+           viewAddressText.setText(StringUtils.implode(" ", house_Array.getString(1), house_Array.getString(2), house_Array.getString(3)));
+           viewDescription.setText(house_Array.getString(house_Array.length() - 1));
+
+            //TODO Set up the bill
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Initialise data
+     */
+    private void initialiseData() {
+        response_content = fetchHomeViewInfo();
+        displayContent();
     }
 
 }

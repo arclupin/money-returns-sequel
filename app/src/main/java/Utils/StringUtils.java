@@ -28,4 +28,12 @@ public class StringUtils {
        return date;
    }
 
+    public static String implode(String glue, String...strings) {
+        String r = "";
+        for (int i = 0; i < strings.length; i++) {
+            r += strings[i] + (i == strings.length - 1 ? "" : glue);
+        }
+        return r;
+    }
+
 }

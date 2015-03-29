@@ -1,5 +1,6 @@
 package com.ncl.team5.lloydsmockup;
 
+import android.animation.LayoutTransition;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
@@ -12,12 +13,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.SearchView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -26,7 +25,6 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,11 +53,14 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
     private TextView button_create;
     private EditText input_edittext;
     private String input;
+    private SearchView search_view;
+
 
     private final float DISTANCE_INPUT_SCROLL = 15;
     private final long ANIMATION_DURATION = 500;
 
     private Map<String, Boolean> Houses_Status;
+    private LayoutTransition transition;
 
 
     @Override
@@ -68,39 +69,42 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
         setContentView(R.layout.activity_houseshare_search);
         Intent intent = getIntent();
 
-        ActionBar a = getActionBar();
-        if (a != null) a.hide();
+//        ActionBar a = getActionBar();
+//        if (a != null) a.hide();
 
         username = intent.getExtras().getString("ACCOUNT_USERNAME");
         Houses_Status = new HashMap<String, Boolean>();
 
         button_create = (TextView) findViewById(R.id.HS_Search_CreateHouse);
+
         result_layout = (TableLayout) findViewById(R.id.table_result);
+        result_layout.setLayoutTransition(transition);
         result_scroll_container = (ScrollView) findViewById(R.id.house_search_scroll_container);
-        input_edittext = (EditText) findViewById(R.id.HS_Search_TextInput);
         setEmpty(true);
-
-        input_edittext.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                input = input_edittext.getText().toString();
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                input = input_edittext.getText().toString();
-
-                if (!StringUtils.isFieldEmpty(input))
-                    search(Connection.MODE.NORMAL_TASK);
-                else setEmpty(true);
-            }
-        });
+//        input_edittext = (EditText) findViewById(R.id.HS_Search_TextInput);
+//
+//        setEmpty(true);
+//
+//        input_edittext.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                input = input_edittext.getText().toString();
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                input = input_edittext.getText().toString();
+//
+//                if (StringUtils.isFieldEmpty(input))
+//                     setEmpty(true);
+//            }
+//        });
     }
 
 
@@ -108,6 +112,26 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_houseshare__search, menu);
+
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setIconified(false);
+        searchView.setQueryHint("Search a house");
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                input = query;
+                search(Connection.MODE.LONG_TASK);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                input = newText;
+                return true;
+            }
+        });
         return true;
     }
 
@@ -146,10 +170,9 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
 //        result2.add("Unit 1, Soul Society");
 //        result2.add("We are soul reapers!");
 
-        search(Connection.MODE.SMALL_TASK);
+        search(Connection.MODE.LONG_TASK);
 
     }
-
 
     public void search(Connection.MODE task) {
 
@@ -189,31 +212,38 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
 
                 }
                 if (result_objects.size() > 0) {
+                    // This is for the option of setting the search to be performed on each text change
+//                    for (int i = 0; i < result_objects.size(); i++) {
+//                        if (!getHouseNameAtChild(i).equals(result_objects.get(i).get(0)))
+//                        // if result row is not the same then clear it and add the new row otherwise keep it.
+//                        {
+//                            cleanSearchAtChild(i); // clean the child at this position
+//                            makeHouseResultRow(result_objects.get(i)); // add view to this position
+//                        }
+//                    }
+//                    clearTail(result_objects.size()); // clear the tail of the result table
+
+                    result_layout.removeAllViews();
                     for (int i = 0; i < result_objects.size(); i++) {
-                        if (!getHouseNameAtChild(i).equals(result_objects.get(i).get(0)))
-                        // if result row is not the same then clear it and add the new row otherwise keep it.
-                        {
-                            cleanSearchAtChild(i); // clean the child at this position
-                            makeHouseResultRow(result_objects.get(i)); // add view to this position
-                        }
+                        makeHouseResultRow(result_objects.get(i)); // add view to this position
                     }
-                    clearTail(result_objects.size()); // clear the tail of the result table
+
                 }
                 else {
                     setEmpty(false);
-                    if (task == Connection.MODE.SMALL_TASK)
+                    if (task == Connection.MODE.LONG_TASK)
                         Toast.makeText(this, "Sorry. Your key word does not match any of our records.", Toast.LENGTH_SHORT).show();
 
                 }
 
             }
             else {
-                if (task == Connection.MODE.SMALL_TASK)
+                if (task == Connection.MODE.LONG_TASK)
                     Toast.makeText(this, "Sorry. Could not process your request now.", Toast.LENGTH_SHORT).show();
             }
         }
         else
-        if (task == Connection.MODE.SMALL_TASK)
+        if (task == Connection.MODE.LONG_TASK)
             Toast.makeText(this, "Please supply the name of the house", Toast.LENGTH_SHORT).show();
     }
 
@@ -264,30 +294,8 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
             stv.setVisibility(View.INVISIBLE);
 
         }
-
-        Animation animation = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
-        animation.setInterpolator(new AccelerateInterpolator());
-        animation.setStartTime(System.currentTimeMillis());
-        animation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                newRow.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-
-        newRow.setVisibility(View.INVISIBLE);
         result_layout.addView(newRow);
-        newRow.startAnimation(animation);
+
 
 
     }

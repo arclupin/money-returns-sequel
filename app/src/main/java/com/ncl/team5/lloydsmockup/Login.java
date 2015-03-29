@@ -48,6 +48,7 @@ public class Login extends Activity {
         setContentView(R.layout.activity_login);
         ActionBar actionBar = getActionBar();
         actionBar.hide();
+        Houseshare_Welcome.registered = false; // false the registered variable (this might save us 1 connection later)
 
         //Set up the picture slide show of the adverts
         password = (EditText) findViewById(R.id.password);

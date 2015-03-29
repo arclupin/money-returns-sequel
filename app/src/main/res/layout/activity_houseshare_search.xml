@@ -5,27 +5,27 @@
 
 
 
-          <!-- tableRow1 -->
-          <TableRow android:id="@+id/tableRow1"
-             android:layout_height="wrap_content"
-             android:layout_width="match_parent"
-              >
-             <EditText android:layout_height="match_parent"
-                 android:layout_width="fill_parent"
-                android:hint="Search a house" android:inputType="text"
-                android:id="@+id/HS_Search_TextInput"
-                 android:imeOptions="actionDone"
-                 android:background="@drawable/hs_edittext_border"
-                 android:layout_marginLeft="10dp"
-                 android:paddingTop="10dp"
-                 />
-             <ImageButton android:src="@drawable/ic_action_search_light_bg"
-                 android:onClick="button_hs_search"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
-                 android:background="@drawable/button_light_color"/>
-          </TableRow>
+          <!--&lt;!&ndash; tableRow1 &ndash;&gt;-->
+          <!--<TableRow android:id="@+id/tableRow1"-->
+             <!--android:layout_height="wrap_content"-->
+             <!--android:layout_width="match_parent"-->
+              <!-->-->
+             <!--<EditText android:layout_height="match_parent"-->
+                 <!--android:layout_width="fill_parent"-->
+                <!--android:hint="Search a house" android:inputType="text"-->
+                <!--android:id="@+id/HS_Search_TextInput"-->
+                 <!--android:imeOptions="actionDone"-->
+                 <!--android:background="@drawable/hs_edittext_border"-->
+                 <!--android:layout_marginLeft="10dp"-->
+                 <!--android:paddingTop="10dp"-->
+                 <!--/>-->
+             <!--<ImageButton android:src="@drawable/ic_action_search_light_bg"-->
+                 <!--android:onClick="button_hs_search"-->
+                 <!--android:layout_width="wrap_content"-->
+                 <!--android:layout_height="wrap_content"-->
+                    <!--android:paddingTop="10dp"-->
+                 <!--android:background="@drawable/button_light_color"/>-->
+          <!--</TableRow>-->
 
 
 

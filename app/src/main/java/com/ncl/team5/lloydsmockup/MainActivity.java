@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -20,11 +19,6 @@ import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
-import org.apache.http.impl.cookie.DateParseException;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import HTTPConnect.Connection;
 import HTTPConnect.Request_Params;
@@ -55,6 +48,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         //gets the username that is passed from the login so the connection can stay open
         Intent i = getIntent();
@@ -193,7 +187,7 @@ public class MainActivity extends Activity {
             ((KillApp) this.getApplication()).setStatus(false);
         } else {
             Connection connect = new Connection(this);
-            connect.setMode(Connection.MODE.SMALL_TASK);
+            connect.setMode(Connection.MODE.LONG_TASK);
             String result;
 
             try {

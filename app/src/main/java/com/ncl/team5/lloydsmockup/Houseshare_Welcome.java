@@ -38,7 +38,7 @@ public class Houseshare_Welcome extends FragmentActivity {
 
     // STATIC var keeps track of the registration status
     // this prevents the app from sending the registration request again after already making a registration.
-    private static boolean registered;
+    public static boolean registered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,10 +129,16 @@ public class Houseshare_Welcome extends FragmentActivity {
         Log.d("registration welcome", Boolean.toString(registered));
 
         // check the registration status
-        if (registered || this.username.equals("test")) {
+        if (this.username.equals("test")) {
             Intent i = new Intent(this, Houseshare_HomeView.class);
             i.putExtra("ACCOUNT_USERNAME", username);
             i.putExtra("HOUSE_NAME", "My House Test");
+            startActivity(i);
+            ((KillApp) this.getApplication()).setStatus(false);
+        }
+        else if (registered){
+            Intent i = new Intent(this, Houseshare_Search.class);
+            i.putExtra("ACCOUNT_USERNAME", username);
             startActivity(i);
             ((KillApp) this.getApplication()).setStatus(false);
         }

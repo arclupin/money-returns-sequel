@@ -174,60 +174,7 @@ public abstract class NotificationActivity extends FragmentActivity implements F
     }
 
 
-    // method called when the fragment is called.
-    protected String fetchHomeViewInfo() {
-        Connection connect = new Connection(this);
-        String result = "DEFAULT INFO";
 
-        try {
-            /* Command required to make a payment, takes username, to account, from account, both sort codes and amount
-             * Returns: JSON String */
-            result = connect.execute(Request_Params.PARAM_TYPE, Request_Params.VAL_HS_2_FETCH_HOUSE_DETAIL, Request_Params.PARAM_USR, this.username).get();
-            /* Turns String into JSON object, can throw JSON Exception */
-            JSONObject jo = new JSONObject(result);
-
-            /* Check if the user has timed out */
-            if (jo.getString("expired").equals("true")) {
-
-                /* Display message box and auto logout user */
-                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-                final Connection temp_connect = connect;
-                final String temp_usr = username;
-                errorBox.setMessage("Your session has been timed out, please login again")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                temp_connect.autoLogout(temp_usr);
-                            }
-                        });
-                AlertDialog alert = errorBox.create();
-                alert.show();
-            } else {
-//               TextView tv = (TextView) findViewById(R.id.hs_hv_response);
-                result = jo.getString(Responses_Format.RESPONSE_HS_CONTENT).toString(); //TODO
-            }
-
-        }
-        /* Catch the exceptions */ catch (JSONException jse) {
-            /* Error in the JSON response */
-            new CustomMessageBox(this, "There was an error in the server response");
-            jse.printStackTrace();
-        } catch (InterruptedException interex) {
-            /* Caused when the connection is interrupted */
-            new CustomMessageBox(this, "Connection has been interrupted");
-            interex.printStackTrace();
-        } catch (ExecutionException ee) {
-            /* No idea when this is caused but it throws it... */
-            new CustomMessageBox(this, "Execution Error");
-            ee.printStackTrace();
-        } catch (Exception e) {
-            /* Failsafe if something goes utterly wrong */
-            new CustomMessageBox(this, "An unknown error occurred");
-            e.printStackTrace();
-        }
-        return result;
-    }
 
 //    /* TODO: I'm not really sure when would be the best time to fetch data from the server (In the main activity or on some of the fragment initialising methods?
 //    * so I would go with the onCreate method in the fragment because placing it as close the UI creation of the home view as possible might prove useful in some cases
