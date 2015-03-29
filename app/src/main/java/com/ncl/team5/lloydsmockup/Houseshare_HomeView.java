@@ -19,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -62,11 +64,35 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
 
     private ScrollView home_view;
 
+    /* Used for the list view */
+    private ArrayList<String> testData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_houseshare__home_view);
 
+        /* Get the list view */
+        ListView billList=(ListView)findViewById(R.id.listBills);
+        testData = new ArrayList<String>();
+        testData.add("Bill 1");
+        testData.add("Bill 2");
+        testData.add("Bill 3");
+        testData.add("Bill 4");
+        testData.add("Bill 5");
+        testData.add("Bill 6");
+        testData.add("Bill 7");
+        testData.add("Bill 8");
+        testData.add("Bill 9");
+
+        // Create The Adapter with passing ArrayList as 3rd parameter
+        ArrayAdapter<String> arrayAdapter =
+                new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, testData);
+        // Set The Adapter
+        billList.setAdapter(arrayAdapter);
+
+
+/*
         Intent i = this.getIntent();
         username = i.getExtras().getString("ACCOUNT_USERNAME");
         house_name = i.getExtras().getString("HOUSE_NAME");
@@ -80,7 +106,7 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
         if (a != null)
             a.setTitle(StringUtils.isFieldEmpty(house_name) ? "My house" : house_name);
 
-        fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();*/
 
 
 //        Fragment_HS_Home fragment_hs_home = Fragment_HS_Home.newInstance("");
@@ -92,12 +118,14 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
 //        transaction.commit();
 //        Animation.fade_in(this.findViewById(R.id.home_view_main_container), this, Animation.SHORT, Animation.POST_EFFECT.PERMANENTLY);
 
+/*
 
         isNotiVisible = false;
 
         checkNewNotification(); // check for new noti on start-up
         if (hasNewNoti && menu != null)
             menu.findItem(R.id.action_hs_noti).setIcon(R.drawable.globe_new);
+*/
 
     }
 

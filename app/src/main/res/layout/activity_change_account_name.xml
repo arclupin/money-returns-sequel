@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editText4"
-        android:background="@drawable/border"
+        android:background="@drawable/edit_text_style"
         android:textColor="#ff000000"
         android:inputType="text"
         android:imeOptions="actionDone"
@@ -56,13 +56,13 @@
         android:layout_alignParentStart="true"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:textSize="10pt"
+        android:textSize="11pt"
         android:hint="New Name"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save"
+        android:text="SAVE"
         android:id="@+id/buttonChangeName"
         android:layout_centerVertical="true"
         android:paddingLeft="80dp"
@@ -72,6 +72,7 @@
         android:layout_alignEnd="@+id/editText4"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        style="@style/make_payment" />
+        style="@style/button_style"
+        android:textStyle="bold" />
 
 </RelativeLayout>

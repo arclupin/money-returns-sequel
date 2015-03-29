@@ -47,12 +47,13 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="LOGIN"
         android:id="@+id/login_button"
         android:onClick="launchMain"
         android:layout_below="@id/password"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold" />
     <ViewFlipper android:id="@+id/sliding_advert"
         android:layout_below="@id/login_button"
         android:layout_height="match_parent"
