@@ -30,7 +30,7 @@ import Utils.StringUtils;
 /**
  * Created by Thanh on 25-Mar-15.
  * each object of the Notification class represents a notification
- * Server response for 1 noti: 1 param (type) + 1 param (read) + 1 list (additional info)
+ * Server response for 1 noti: 1 param (type) + 1 param (read) + 1 list (additional info) = 1 final list
  */
 public class Notification {
 
@@ -122,7 +122,7 @@ public class Notification {
         LayoutInflater inflater = (LayoutInflater) a.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = null;
 
-        //TODO if type is normal noti (noti without button should set it clickale)
+        //TODO if type is normal noti (noti without button should set it clickable)
         switch (type) {
             case JOIN_ADM_VIEW: {
                 v = inflater.inflate(R.layout.hs_noti_join_req_adm_view, null);

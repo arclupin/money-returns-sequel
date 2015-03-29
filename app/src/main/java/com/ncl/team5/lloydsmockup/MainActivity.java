@@ -41,7 +41,6 @@ import HTTPConnect.Responses_Format;
 
 public class MainActivity extends Activity {
 
-
     private String username;
 
     // use static for date would help us not have to pass the date around as the value of the date wont be lost on activity change.
