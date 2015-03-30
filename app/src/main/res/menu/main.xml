@@ -6,7 +6,7 @@
 
     <item android:title="@string/action_backHome"
         android:id="@+id/action_backHome"
-        android:icon="@drawable/ic_action_back"
+        android:icon="@drawable/back_icon"
         android:showAsAction="always"/>
 
     <item android:title="@string/action_Notifications"

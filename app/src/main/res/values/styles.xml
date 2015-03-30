@@ -13,7 +13,7 @@
     </style>
 
     <style name="action_bar" parent="android:Widget.Holo.ActionBar">
-        <item name="android:background">@color/lloyds_color</item>
+        <item name="android:background">@color/white</item>
         <item name="android:textColor">@android:color/primary_text_light</item>
         <item name="android:titleTextStyle">@style/action_bar_text</item>
     </style>
@@ -33,7 +33,7 @@
 
 </style>
     <style name="action_bar_text"  parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@android:color/black</item>
     </style>
 
     <!--<style name="tab_style" parent="android:Widget.Holo.ActionBar.TabText">-->
