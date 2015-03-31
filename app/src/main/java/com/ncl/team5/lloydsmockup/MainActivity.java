@@ -118,7 +118,7 @@ public class MainActivity extends Activity {
         else
         {
             Log.d("Notif Change", "IN There");
-            item.setIcon(R.drawable.ic_action_email);
+            item.setIcon(R.drawable.globe);
         }
 
         return true;
