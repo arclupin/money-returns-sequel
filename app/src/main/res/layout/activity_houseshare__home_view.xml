@@ -55,13 +55,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imageButton"
-                android:src="@drawable/peoplehs"
                 android:background="@android:color/transparent"
                 android:layout_alignTop="@+id/viewName"
                 android:layout_alignRight="@+id/button2"
                 android:layout_alignEnd="@+id/button2"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="5dp"
+                android:src="@drawable/ic_people"/>
 
             <Button
                 android:layout_width="match_parent"
