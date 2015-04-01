@@ -1,10 +1,13 @@
 package com.ncl.team5.lloydsmockup;
 // not anymore
+
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -16,8 +19,6 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.concurrent.ExecutionException;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -43,29 +44,71 @@ public class MainActivity extends Activity {
     private String logoutTime;
     private Menu activityMenu;
     private String tempLogout;
+    private MainConnectionWorker mWorker;
+
+    private enum BUTTON {PAYMENT, HOUSESHARE}
+
+    ; //TODO complete
+
+    /**
+     * Class MainConnectionWorker responsible for working with the server
+     */
+    public class MainConnectionWorker extends Connection {
+        private BUTTON b;
+
+        public MainConnectionWorker(Activity a) {
+            super(a);
+        }
+
+        public MainConnectionWorker(Activity a, BUTTON b) {
+            super(a);
+            this.b = b;
+        }
+
+        public MainConnectionWorker setButton(BUTTON b) {
+            this.b = b;
+            return this;
+        }
+
+        @Override
+        public void onPostExecute(String r) {
+            super.onPostExecute(r);
+
+            switch (b) {
+                case HOUSESHARE: {
+                    initialiseHouseshare(r);
+                    mWorker = mWorker.newInstance(); // reset the mWorker
+                    break;
+                }
+                //TODO more
+            }
+        }
+
+        //Asynct task cant be reused so we might need this
+        public MainConnectionWorker newInstance() {
+            return new MainConnectionWorker(MainActivity.this);
+        }
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
         //gets the username that is passed from the login so the connection can stay open
         Intent i = getIntent();
         username = i.getStringExtra("ACCOUNT_USERNAME");
         if (i.getStringExtra("DATE") != null) // check for null (date coming from login)
             date = i.getStringExtra("DATE"); // assign the date for the first and also the last time of the session
 
-        TextView dateText = (TextView)findViewById(R.id.lastLoginTextView);
+        TextView dateText = (TextView) findViewById(R.id.lastLoginTextView);
 
         //need to change this to the actual login time response stuff
-        if(date.equals("Not Available"))
-        {
+        if (date.equals("Not Available")) {
             //do some fancy first logon stuff :)
             dateText.setText("");
-        }
-        else
-        {
+        } else {
             dateText.setText(username + " : Last Login on " + date);
         }
 
@@ -73,29 +116,27 @@ public class MainActivity extends Activity {
         logoutTime = settings.getString("LOGOUT_TIME", "");
         tempLogout = settings.getString("TEMP_LOGOUT_TIME", "");
 
-
-        if(logoutTime.equals("") || tempLogout.equals(""))
-        {
+        if (logoutTime.equals("") || tempLogout.equals("")) {
             logoutTime = date;
-        }
-        else
-        {
+        } else {
             try {
                 Date normalLogout = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(logoutTime);
                 Date lastTempLogout = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(tempLogout);
 
-                if(normalLogout.compareTo(lastTempLogout) < 0)
-                {
+                if (normalLogout.compareTo(lastTempLogout) < 0) {
                     logoutTime = tempLogout;
                 }
-            }
-            catch (ParseException pe)
-            {
+            } catch (ParseException pe) {
                 logoutTime = date;
             }
 
 
         }
+
+        // set up new mWorker
+        mWorker = new MainConnectionWorker(this);
+
+
     }
 
 
@@ -111,12 +152,10 @@ public class MainActivity extends Activity {
         MenuItem item = activityMenu.getItem(0);
         GetNotification notif = new GetNotification();
 
-        if(notif.getNotifications(this, username, date)) {
+        if (notif.getNotifications(this, username, date)) {
             Log.d("Notif Change", "IN HERE");
             item.setIcon(R.drawable.ic_action_notify);
-        }
-        else
-        {
+        } else {
             Log.d("Notif Change", "IN There");
             item.setIcon(R.drawable.ic_action_email);
         }
@@ -132,13 +171,12 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-         if (id == R.id.action_backHome) {
+        if (id == R.id.action_backHome) {
             ((KillApp) this.getApplication()).setStatus(false);
             this.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
             //Intent intent = new Intent(this, MainActivity.class);
             //startActivity(intent);
-        }
-        else if (id == R.id.action_notifications) {
+        } else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
             intent.putExtra("ACCOUNT_USERNAME", username);
             intent.putExtra("DATE", date);
@@ -178,106 +216,6 @@ public class MainActivity extends Activity {
         ((KillApp) this.getApplication()).setStatus(false);
     }
 
-    //TODO unfinished function
-    public void btnClickHouseShare(View view) {
-        if (this.username.equals("test")) {
-            Intent i = new Intent(this, Houseshare_Welcome.class);
-            i.putExtra("ACCOUNT_USERNAME", username);
-            startActivity(i);
-            ((KillApp) this.getApplication()).setStatus(false);
-        } else {
-            Connection connect = new Connection(this);
-            connect.setMode(Connection.MODE.LONG_TASK);
-            String result;
-
-            try {
-             /* Returns: JSON String */
-                result = connect.execute(Request_Params.PARAM_TYPE, Request_Params.VAL_HS_INIT, Request_Params.PARAM_USR, this.username).get();
-            /* Turns String into JSON object, can throw JSON Exception */
-                JSONObject jo = new JSONObject(result);
-
-            /* Check if the user has timed out */
-                if (jo.getString("expired").equals("true")) {
-
-                /* Display message box and auto logout user */
-                    AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-                    final Connection temp_connect = connect;
-                    final String temp_usr = username;
-                    errorBox.setMessage("Your session has been timed out, please login again")
-                            .setCancelable(false)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                    temp_connect.autoLogout(temp_usr);
-                                }
-                            });
-                    AlertDialog alert = errorBox.create();
-                    alert.show();
-                }
-                // TODO unfinished, the server will send a more detailed message i.e. 'registered and joined house' or 'registered and not joined house'
-                else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_NOT_JOINED)) { // if not registered -> redirect to the welcome page
-                    //need to see how the progress dialog works so also need to delay the start of the homeview activity.
-
-                            hs_intents(Houseshare_Welcome.class, "");
-                         //150ms offset so that the dialog would not lag (if this was the same as in the Connection (2000s)
-                       // then we might end up having 2 tasks to be posted at nearly the same time => the dialog might get interrupted resulting in a graphic lag when it disappears
-                       // (my guess) - could use some other function to put this task right after the dialog task (which I dont know).
-                }
-                else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE)) { // else if not joined a house -> redirect to the search page
-
-                            hs_intents(Houseshare_Search.class, "");
-
-                }
-                // TODO unfinished, the server will send a more detailed message i.e.
-
-
-               else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE)) { // else if joined a house -> redirect to main home page
-//                    Toast.makeText(this, "Registered, Joined house, To redirect to main page", Toast.LENGTH_SHORT).show();
-                    final String hs_name = jo.getString(Responses_Format.RESPONSE_HS_CONTENT);
-//                    Handler handler = new Handler();
-//                    handler.postDelayed(new Runnable() {
-//                        public void run() {
-                            hs_intents(Houseshare_HomeView.class,hs_name);
-//                        }}, 2150);
-                }
-
-                else {
-                    Toast.makeText(this, "Some unknown error on the houseshare service on the server", Toast.LENGTH_SHORT).show();
-                }
-            /* There was an error indide the status return field, display appropriate error message */
-                //TODO implement error messages
-
-            }
-        /* Catch the exceptions */ catch (JSONException jse) {
-            /* Error in the JSON response */
-                new CustomMessageBox(this, "There was an error in the server response");
-                jse.printStackTrace();
-            } catch (InterruptedException interex) {
-            /* Caused when the connection is interrupted */
-                new CustomMessageBox(this, "Connection has been interrupted");
-                interex.printStackTrace();
-            } catch (ExecutionException ee) {
-            /* No idea when this is caused but it throws it... */
-                new CustomMessageBox(this, "Execution Error");
-                ee.printStackTrace();
-            } catch (Exception e) {
-            /* Failsafe if something goes utterly wrong */
-                new CustomMessageBox(this, "An unknown error occurred");
-                e.printStackTrace();
-            }
-
-
-        }
-    }
-
-    private void hs_intents(Class c, String house_name) {
-        Intent i = new Intent(this, c);
-        i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("HOUSE_NAME", house_name);
-        startActivity(i);
-        ((KillApp) this.getApplication()).setStatus(false);
-    }
-
     public void btnClickOffers(View view) {
         Intent i = new Intent(this, Locations.class);
         i.putExtra("ACCOUNT_USERNAME", username);
@@ -299,14 +237,26 @@ public class MainActivity extends Activity {
         ((KillApp) this.getApplication()).setStatus(false);
     }
 
+    //TODO unfinished function
+    public void btnClickHouseShare(View view) {
+        if (this.username.equals("test")) {
+            Intent i = new Intent(this, Houseshare_Welcome.class);
+            i.putExtra("ACCOUNT_USERNAME", username);
+            startActivity(i);
+            ((KillApp) this.getApplication()).setStatus(false);
+        } else {
+            mWorker.setButton(BUTTON.HOUSESHARE)
+                    .setMode(Connection.MODE.LONG_TASK)
+                    .setDialogMessage("Initialising service data")
+                    .execute("TYPE", Request_Params.VAL_HS_INIT, Request_Params.PARAM_USR, username);
+        }
+    }
+
     public void btnLogout(View view) {
         Connection connect = new Connection(this);
-        try
-        {
-            connect.execute("TYPE","LOGOUT", "USR", username);
-        }
-        finally
-        {
+        try {
+            connect.execute("TYPE", "LOGOUT", "USR", username);
+        } finally {
             /* Set the logout time so it can easily get it later */
             SharedPreferences sp = getSharedPreferences("logoutpref", 0);
             SharedPreferences.Editor edit = sp.edit();
@@ -338,17 +288,13 @@ public class MainActivity extends Activity {
      * the login class. It also clears the activity stack so the back button cannot be used to go back */
     @Override
     protected void onResume() {
-        if(((KillApp) this.getApplication()).getStatus())
-        {
+        if (((KillApp) this.getApplication()).getStatus()) {
             //APP IS KILLED :O
 
             Connection connect = new Connection(this);
-            try
-            {
-                connect.execute("TYPE","LOGOUT", "USR", username);
-            }
-            finally
-            {
+            try {
+                connect.execute("TYPE", "LOGOUT", "USR", username);
+            } finally {
                 /* Set the logout time so it can easily get it later */
                 SharedPreferences sp = getSharedPreferences(username, 0);
                 SharedPreferences.Editor edit = sp.edit();
@@ -371,9 +317,7 @@ public class MainActivity extends Activity {
             }
 
 
-        }
-        else
-        {
+        } else {
             //each time the app resumes and it wasnt killed, the variable needs to be reset
             ((KillApp) this.getApplication()).setStatus(true);
 
@@ -385,8 +329,7 @@ public class MainActivity extends Activity {
 
     }
 
-    public void onPause()
-    {
+    public void onPause() {
          /* Set the logout time so it can easily get it later */
         SharedPreferences sp = getSharedPreferences(username, 0);
         SharedPreferences.Editor edit = sp.edit();
@@ -403,12 +346,9 @@ public class MainActivity extends Activity {
     @Override
     public void onBackPressed() {
         Connection connect = new Connection(this);
-        try
-        {
-            connect.execute("TYPE","LOGOUT", "USR", username);
-        }
-        finally
-        {
+        try {
+            connect.execute("TYPE", "LOGOUT", "USR", username);
+        } finally {
             /* Set the logout time so it can easily get it later */
             SharedPreferences sp = getSharedPreferences(username, 0);
             SharedPreferences.Editor edit = sp.edit();
@@ -426,4 +366,78 @@ public class MainActivity extends Activity {
             this.finish();
         }
     }
+
+    private void initialiseHouseshare(String response) {
+        try {
+            JSONObject jo = new JSONObject(response);
+            /* Check if the user has timed out */
+            if (jo.getString("expired").equals("true")) {
+
+                /* Display message box and auto logout user */
+                AlertDialog.Builder errorBox = new AlertDialog.Builder(MainActivity.this);
+                final Connection temp_connect = new Connection(MainActivity.this);
+                final String temp_usr = username;
+                errorBox.setMessage("Your session has been timed out, please login again")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                temp_connect.autoLogout(temp_usr);
+                            }
+                        });
+                AlertDialog alert = errorBox.create();
+                alert.show();
+            }
+            // TODO unfinished, the server will send a more detailed message i.e. 'registered and joined house' or 'registered and not joined house'
+            else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_NOT_JOINED)) { // if not registered -> redirect to the welcome page
+                //need to see how the progress dialog works so also need to delay the start of the homeview activity.
+hs_intents(Houseshare_Welcome.class, "");
+                //150ms offset so that the dialog would not lag (if this was the same as in the Connection (2000s)
+                // then we might end up having 2 tasks to be posted at nearly the same time => the dialog might get interrupted resulting in a graphic lag when it disappears
+                // (my guess) - could use some other function to put this task right after the dialog task (which I dont know).
+            } else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE)) { // else if not joined a house -> redirect to the search page
+
+                hs_intents(Houseshare_Search.class, "");
+
+            }
+            // TODO unfinished, the server will send a more detailed message i.e.
+
+
+            else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE)) { // else if joined a house -> redirect to main home page
+//                    Toast.makeText(this, "Registered, Joined house, To redirect to main page", Toast.LENGTH_SHORT).show();
+                final String hs_name = jo.getString(Responses_Format.RESPONSE_HS_CONTENT);
+//                    Handler handler = new Handler();
+//                    handler.postDelayed(new Runnable() {
+//                        public void run() {
+                hs_intents(Houseshare_HomeView.class, hs_name);
+//                        }}, 2150);
+            } else {
+                Toast.makeText(MainActivity.this, "Some unknown error on the houseshare service on the server", Toast.LENGTH_SHORT).show();
+            }
+            /* There was an error indide the status return field, display appropriate error message */
+            //TODO implement error messages
+
+        }
+        /* Catch the exceptions */ catch (JSONException jse) {
+            /* Error in the JSON response */
+            new CustomMessageBox(MainActivity.this, "There was an error in the server response");
+            jse.printStackTrace();
+        } catch (Exception e) {
+            /* Failsafe if something goes utterly wrong */
+            new CustomMessageBox(MainActivity.this, "An unknown error occurred");
+            e.printStackTrace();
+        }
+    }
+
+
+    private void hs_intents(Class c, String house_name) {
+        Intent i = new Intent(this, c);
+        i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra("HOUSE_NAME", house_name);
+        startActivity(i);
+        ((KillApp) this.getApplication()).setStatus(false);
+    }
+
 }
+
+

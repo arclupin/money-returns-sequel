@@ -1,11 +1,12 @@
 package com.ncl.team5.lloydsmockup;
 /**
-*Danh comment
+ *Danh comment
  * Danh comment
  * Danh comment
  * Danh comment
  */
-import  android.app.ActionBar;
+
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -109,8 +110,7 @@ public class Login extends Activity {
 
     /* Guessing this moves the adverts on the front screen, with a small delay
      */
-    private void runSlider()
-    {
+    private void runSlider() {
         slider.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_right));
         slider.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_out_left));
         slider.setAutoStart(true);
@@ -121,23 +121,21 @@ public class Login extends Activity {
 
     public void launchMain(View view) {
         //Gets the strings from the username and password_field boxes, and then authenticates them
-        String username = ((EditText)findViewById(R.id.username)).getText().toString();
-        String password = ((EditText)findViewById(R.id.password)).getText().toString();
+        String username = ((EditText) findViewById(R.id.username)).getText().toString();
+        String password = ((EditText) findViewById(R.id.password)).getText().toString();
 
         //can use this to login to the app while the server is down...
         //MUST COMMENT OUT ON RELEASE
-        if(username.equals("test"))
-        {
+        if (username.equals("test")) {
             //Starts an intent to launch the main menu
             Intent i = new Intent(this, MainActivity.class);
             i.putExtra("ACCOUNT_USERNAME", username);
-            i.putExtra("DATE","N/A"); // prevent the app from crashing due to null pointer
+            i.putExtra("DATE", "N/A"); // prevent the app from crashing due to null pointer
             startActivity(i);
             return;
-        }
-        else {
+        } else {
             new Authenticator(this).setMode(Connection.MODE.LONG_TASK)
-                .setDialogMessage("Logging in")
+                    .setDialogMessage("Logging in")
                     .execute("TYPE", "LOGIN", "USR", username, "PWD", password);
         }
 
@@ -149,8 +147,7 @@ public class Login extends Activity {
      *
      * @param result the server response from the authenticator
      */
-    private void authenticate(String result)
-    {
+    private void authenticate(String result) {
         /* This is where the application would go out to the server to
          * authenticate the username and password_field combination. The server
          * should then return true or false as to whether the combination is
@@ -172,18 +169,18 @@ public class Login extends Activity {
 
             /* Ok, this look a bit weird... i mean it returns string right! should it not be boolean??
              * Well, if it returns 4 different messages from the server, not just true or false */
+            if (result.equals("false")) {
+                new CustomMessageBox(this, "Incorrect Username and Password Combination.");
 
+            } else {
                 JSONObject jo = new JSONObject(result);
-                if(jo.getString("status").equals("true"))
-                {
+                if (jo.getString("status").equals("true")) {
                     date = jo.getString("last_login");
                     Intent i = new Intent(this, MainActivity.class);
                     i.putExtra("ACCOUNT_USERNAME", username);
-                    i.putExtra("DATE",date);
+                    i.putExtra("DATE", date);
                     startActivity(i);
-                }
-               else if(jo.getString("status").equals("warning"))
-                {
+                } else if (jo.getString("status").equals("warning")) {
                     AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
                     errorBox.setMessage("Warning: one attempt remaining")
                             .setCancelable(false)
@@ -194,9 +191,7 @@ public class Login extends Activity {
                             });
                     AlertDialog alert = errorBox.create();
                     alert.show();
-                }
-                else if(jo.getString("status").equals("locked"))
-                {
+                } else if (jo.getString("status").equals("locked")) {
                     AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
                     errorBox.setMessage("Too many login attempts, Please contact your bank to unlock your application")
                             .setCancelable(false)
@@ -207,14 +202,11 @@ public class Login extends Activity {
                             });
                     AlertDialog alert = errorBox.create();
                     alert.show();
-                }
-                else if(jo.getString("status").equals("false"))
-                {
-                    new CustomMessageBox(this, "Username and password_field incorrect");
+                } else {
+                    new CustomMessageBox(this, "Something wrong with the server. Please try again");
                 }
             }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             //If network problems are detected, return false but dont increment the counter for failed attempts
             Log.e("error login unknown", e.getMessage(), e);
             new CustomMessageBox(this, "Something wrong. Please try again");

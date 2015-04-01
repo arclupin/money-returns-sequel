@@ -187,7 +187,7 @@ public abstract class NotificationActivity extends FragmentActivity implements F
 //     */
 //    @Override
 //    public String onHomeViewCreated(Fragment_HS_Home f) {
-//        return fetchHomeViewInfo();
+//        return processInfo();
 //    }
 
     /**

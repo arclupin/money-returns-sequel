@@ -62,6 +62,10 @@ public class Connection extends AsyncTask <String, Void, String>  {
     private MODE mode = MODE.SHORT_TASK;
     public static enum MODE {SHORT_TASK, LONG_TASK};
 
+    public ProgressDialog getD() {
+        return d;
+    }
+
     private ProgressDialog d;
     private String text_dialog;
 
