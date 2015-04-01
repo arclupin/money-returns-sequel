@@ -9,8 +9,10 @@ import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -40,6 +42,7 @@ public class Houseshare_HomeView extends NotificationActivity implements Fragmen
     private TextView viewAddressText;
     private TextView viewDescription;
 
+    private ProgressBar loadingIcon;
     /* Used for the list view */
     private ArrayList<String> testData;
 
@@ -54,23 +57,13 @@ public class Houseshare_HomeView extends NotificationActivity implements Fragmen
             super(a);
         }
 
-
-        @Override
-        protected void onPreExecute() {
-            p = new ProgressDialog(Houseshare_HomeView.this);
-            p.setMessage("Preparing homepage");
-            p.show();
-        }
-
         @Override
         protected void onPostExecute(String r) {
 
-
+            super.onPostExecute(r);
+            loadingIcon.setVisibility(View.GONE);
             response_content = processInfo(r); // do the processing
             displayContent();
-            Utilities.delayUntil(System.currentTimeMillis() + 1000);
-            if (p != null && p.isShowing())
-                p.dismiss();
         }
     }
 
@@ -78,7 +71,6 @@ public class Houseshare_HomeView extends NotificationActivity implements Fragmen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_houseshare__home_view);
-
         house_name = i.getExtras().getString("HOUSE_NAME");
 
         ActionBar a = getActionBar();
@@ -86,12 +78,11 @@ public class Houseshare_HomeView extends NotificationActivity implements Fragmen
             a.setTitle(house_name);
         }
 
-        // find the necessary views
         main_view_container = findViewById(R.id.home_view_main_container);
         viewName = (TextView) findViewById(R.id.viewName);
         viewAddressText = (TextView) findViewById(R.id.viewAddressText);
         viewDescription = (TextView) findViewById(R.id.viewAddress);
-        
+        loadingIcon = (ProgressBar) findViewById(R.id.progressBar);
 
         /* Get the list view */
         ListView billList = (ListView) findViewById(R.id.listBills);
@@ -111,6 +102,9 @@ public class Houseshare_HomeView extends NotificationActivity implements Fragmen
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, testData);
         // Set The Adapter
         billList.setAdapter(arrayAdapter);
+
+        // find the necessary views
+
 
         initialiseData();
 
@@ -202,7 +196,10 @@ public class Houseshare_HomeView extends NotificationActivity implements Fragmen
      * Initialise data
      */
     private void initialiseData() {
-        new HomeViewWorker(this).execute(Request_Params.PARAM_TYPE, Request_Params.VAL_HS_2_FETCH_HOUSE_DETAIL, Request_Params.PARAM_USR, this.username);
+
+        new HomeViewWorker(this).setMode(Connection.MODE.LONG_TASK)
+        .setDialogMessage("Fetching news")
+        .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_HS_2_FETCH_HOUSE_DETAIL, Request_Params.PARAM_USR, this.username);
 
     }
 

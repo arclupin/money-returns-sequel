@@ -17,7 +17,7 @@
             <TextView
                 android:layout_width="165dp"
                 android:layout_height="wrap_content"
-                android:text="Name"
+                android:text="Fetching"
                 android:id="@+id/viewName"
                 android:textColor="@color/text_color"
                 android:layout_gravity="left|top"
@@ -28,7 +28,6 @@
             <TextView
                 android:layout_width="165dp"
                 android:layout_height="wrap_content"
-                android:text="1 Bath Lane, Newcastle upon Tyne"
                 android:id="@+id/viewAddressText"
                 android:layout_gravity="left|top"
                 android:layout_marginLeft="25dp"
@@ -37,7 +36,6 @@
             <TextView
                 android:layout_width="165dp"
                 android:layout_height="wrap_content"
-                android:text="A nice small and cosy house"
                 android:id="@+id/viewAddress"
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="80dp"
@@ -85,6 +83,17 @@
                 android:layout_marginTop="15dp"
                 android:layout_gravity="center_horizontal|bottom"
                 android:layout_below="@+id/button2" />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/progressBar"
+                android:layout_alignTop="@+id/viewAddressText"
+                android:layout_alignLeft="@id/viewName"
+                android:layout_alignStart="@id/viewName"
+                android:visibility="visible"
+                 />
         </RelativeLayout>
 
 
