@@ -1,5 +1,7 @@
 package com.ncl.team5.lloydsmockup;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
@@ -37,7 +39,6 @@ public class Houseshare_HomeView extends NotificationActivity implements Fragmen
     private TextView viewName;
     private TextView viewAddressText;
     private TextView viewDescription;
-    private ScrollView home_view;
 
     /* Used for the list view */
     private ArrayList<String> testData;
@@ -48,6 +49,11 @@ public class Houseshare_HomeView extends NotificationActivity implements Fragmen
         setContentView(R.layout.activity_houseshare__home_view);
 
         house_name = i.getExtras().getString("HOUSE_NAME");
+
+        ActionBar a = getActionBar();
+        if (a != null && a.isShowing()) {
+            a.setTitle(house_name);
+        }
 
         // find the necessary views
         main_view_container = findViewById(R.id.home_view_main_container);

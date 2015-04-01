@@ -1,5 +1,6 @@
 package Fragment;
 
+import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import java.util.List;
 import HTTPConnect.Notification;
 import Utils.Animation;
 import Utils.StringUtils;
+import Utils.Utilities;
 
 /**
  * Fragment for displaying the home view in the home view activity <br/>
@@ -35,7 +37,12 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
     public static Date lastNoti;
     public static boolean newNoti;
 
+    public TableLayout getL() {
+        return l;
+    }
+
     private TableLayout l;
+    private LayoutTransition transition;
 
 
     // TODO: For now it will just display the plain response from the server
@@ -89,6 +96,10 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         l = (TableLayout) inflater.inflate(R.layout.fragment_hs_notification, container, false);
+        transition = new LayoutTransition();
+
+
+        l.setLayoutTransition(transition);
         for (int i = 0; i < data.size(); i++) {
             Log.d("data", data.get(i).getAdditional_params().get(Notification.HSID_POS));
             View v = data.get(i).makeNotiRow(getActivity());
@@ -122,7 +133,7 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
 
                 }
             });
-            l.addView(v);
+            l.addView(v, i);
 
 
 
@@ -168,7 +179,6 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         mListener.onNotificationsSeen(this);
-
     }
 
     @Override

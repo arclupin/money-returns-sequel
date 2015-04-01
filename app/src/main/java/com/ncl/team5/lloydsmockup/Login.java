@@ -9,36 +9,54 @@ import  android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.content.Intent;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import HTTPConnect.Connection;
-import HTTPConnect.CookieStorage;
 
 
 public class Login extends Activity {
 
     //Variables needed for the image flipper
-    private EditText password;
+    private EditText password_field;
+    private EditText username_field;
+    private String username;
+    private String password;
+
     private ViewFlipper slider;
     private boolean netProbs = false;
     private boolean warning = false;
     private boolean locked = false;
     private String date = "";
 
+
+    /**
+     * Class authenticator extending the Connection <br/>
+     * Purpose: improve user experience. <br/>
+     * The earlier method of logging in involves some unnecessary steps which could be stripped away in order to improve performance.
+     */
+    public class Authenticator extends Connection {
+
+        public Authenticator(Activity a) {
+            super(a);
+        }
+
+        @Override
+        public void onPostExecute(String r) {
+            super.onPostExecute(r);
+            authenticate(r);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +68,39 @@ public class Login extends Activity {
         actionBar.hide();
         Houseshare_Welcome.registered = false; // false the registered variable (this might save us 1 connection later)
 
+        username_field = (EditText) findViewById(R.id.username);
+        username_field.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                username = s.toString();
+            }
+        });
+
         //Set up the picture slide show of the adverts
-        password = (EditText) findViewById(R.id.password);
-        password.setTypeface(Typeface.DEFAULT);
+        password_field = (EditText) findViewById(R.id.password);
+        password_field.setTypeface(Typeface.DEFAULT);
+        password_field.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                password = s.toString();
+            }
+        });
 
         slider = (ViewFlipper) findViewById(R.id.sliding_advert);
         runSlider();
@@ -72,7 +120,7 @@ public class Login extends Activity {
 
 
     public void launchMain(View view) {
-        //Gets the strings from the username and password boxes, and then authenticates them
+        //Gets the strings from the username and password_field boxes, and then authenticates them
         String username = ((EditText)findViewById(R.id.username)).getText().toString();
         String password = ((EditText)findViewById(R.id.password)).getText().toString();
 
@@ -87,104 +135,30 @@ public class Login extends Activity {
             startActivity(i);
             return;
         }
-
-        if(authenticate(username, password))
-        {
-            //Starts an intent to launch the main menu
-            Intent i = new Intent(this, MainActivity.class);
-            i.putExtra("ACCOUNT_USERNAME", username);
-            i.putExtra("DATE",date);
-            startActivity(i);
-        }
-        else
-        {
-            /* This is a message displaying a failure to login message
-             * so the user knows they logged in incorrectly. There is a maximum number of
-             * failed attempts allowed, just implemented by a simple counter. After a
-             * user is locked out, they should not be able to access their account again
-             * until authenticated with their bank. This information could maybe be called
-             * on the server (i.e. have a locked field for the user) which can be set
-             * on the phone, but only unset via a bank. Currently it DOES NOT do this
-             */
-
-            if (locked) {
-
-                /* Failed more than the max count and are locked out */
-
-                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-                errorBox.setMessage("Too many login attempts, Please contact your bank to unlock your application")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-                AlertDialog alert = errorBox.create();
-                alert.show();
-                locked = false;
-            }
-            else if (warning)
-            {
-                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-                errorBox.setMessage("Warning: one attempt remaining")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-                AlertDialog alert = errorBox.create();
-                alert.show();
-                warning = false;
-            }
-            else
-            {
-
-                /* Username and password not authenticated by server, add 1 to count */
-                if (netProbs == false) {
-//                    AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-//                    errorBox.setMessage("Username and Password incorrect")
-//                            .setCancelable(false)
-//                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                                public void onClick(DialogInterface dialog, int id) {
-//                                    dialog.cancel();
-//                                }
-//                            });
-//                    AlertDialog alert = errorBox.create();
-//                    alert.show();
-
-                    new CustomMessageBox(this, "Username and password incorrect");
-                }
-                else
-                {
-                     /* Network problems detected... dont let user in but dont increment count either */
-
-                    new CustomMessageBox(this, "Poor network conditions detected. Please check your connection and try again");
-                    netProbs = false;
-                }
-            }
+        else {
+            new Authenticator(this).setMode(Connection.MODE.LONG_TASK)
+                .setDialogMessage("Logging in")
+                    .execute("TYPE", "LOGIN", "USR", username, "PWD", password);
         }
 
 
     }
 
-    private boolean authenticate(String username, String password)
+    /**
+     * parse the json response and act accordingly
+     *
+     * @param result the server response from the authenticator
+     */
+    private void authenticate(String result)
     {
         /* This is where the application would go out to the server to
-         * authenticate the username and password combination. The server
+         * authenticate the username and password_field combination. The server
          * should then return true or false as to whether the combination is
          * correct. This method should also send the phone data, as this is
          * also used to authenticate.
          */
-
-        /* creates a http object (my own class) to run in the background */
-        Connection connection = new Connection(this);
-
-
         // Need this for the exceptions that are throw (there are many!)
         try {
-
-
             /* This is where the main action happens. This is where the connection is
              * started, which will run in the background, and then wait for it to finish
              * and gets its result. This is then evaluated (as it returns a boolean)
@@ -198,53 +172,52 @@ public class Login extends Activity {
 
             /* Ok, this look a bit weird... i mean it returns string right! should it not be boolean??
              * Well, if it returns 4 different messages from the server, not just true or false */
-            String result = connection.execute("TYPE", "LOGIN" ,"USR", username, "PWD", password).get();
 
-
-            if(result.equals("false"))
-            {
-                return false;
-            }
-
-            if(result.equals("error"))
-            {
-                netProbs = true;
-                return false;
-            }
-            else
-            {
                 JSONObject jo = new JSONObject(result);
-
-
                 if(jo.getString("status").equals("true"))
                 {
                     date = jo.getString("last_login");
-                    return true;
+                    Intent i = new Intent(this, MainActivity.class);
+                    i.putExtra("ACCOUNT_USERNAME", username);
+                    i.putExtra("DATE",date);
+                    startActivity(i);
                 }
-                if(jo.getString("status").equals("warning"))
+               else if(jo.getString("status").equals("warning"))
                 {
-                    warning = true;
-                    return false;
+                    AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+                    errorBox.setMessage("Warning: one attempt remaining")
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog alert = errorBox.create();
+                    alert.show();
                 }
-                if(jo.getString("status").equals("locked"))
+                else if(jo.getString("status").equals("locked"))
                 {
-                    locked = true;
-                    return false;
+                    AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+                    errorBox.setMessage("Too many login attempts, Please contact your bank to unlock your application")
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog alert = errorBox.create();
+                    alert.show();
                 }
-                else
+                else if(jo.getString("status").equals("false"))
                 {
-                    return false;
+                    new CustomMessageBox(this, "Username and password_field incorrect");
                 }
             }
-
-
-
-        }
         catch (Exception e)
         {
             //If network problems are detected, return false but dont increment the counter for failed attempts
-            netProbs = true;
-            return false;
+            Log.e("error login unknown", e.getMessage(), e);
+            new CustomMessageBox(this, "Something wrong. Please try again");
         }
 
 

@@ -7,15 +7,11 @@
     tools:context="com.ncl.team5.lloydsmockup.Houseshare_HomeView"
     android:id="@+id/hs_hv_layout">
 
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/home_view_main_container"
-        android:background="@android:color/background_light">
         <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+            android:id="@+id/home_view_main_container"
+            android:background="@android:color/background_light">
 
 
             <TextView
@@ -82,8 +78,15 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="20dp" />
 
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="296dp"
+                android:id="@+id/listBills"
+                android:layout_marginTop="15dp"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_below="@+id/button2" />
         </RelativeLayout>
-    </ScrollView>
+
 
 
     <FrameLayout
@@ -95,11 +98,6 @@
         android:paddingRight="10dp">
     </FrameLayout>
 
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="296dp"
-        android:id="@+id/listBills"
-        android:layout_gravity="center_horizontal|bottom"
-        android:layout_below="@+id/viewAddress" />
+
 
 </FrameLayout>

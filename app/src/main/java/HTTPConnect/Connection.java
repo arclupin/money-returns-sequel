@@ -43,6 +43,8 @@ import org.apache.http.protocol.HttpContext;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import Utils.Utilities;
+
 
 /* The bit at the end.. the String, Void, Boolean bit, thats what
  * ASyncTask uses to do its stuff. The String is the inputs, Void is progress
@@ -59,10 +61,12 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
     private MODE mode = MODE.SHORT_TASK;
     public static enum MODE {SHORT_TASK, LONG_TASK};
-    private ProgressDialog d;
 
+    private ProgressDialog d;
     private String text_dialog;
 
+    private long expected_end_time;
+    public static final long EXPECTED_DURATION_LONG_TASK = 2000; // 2 seconds is the appropriate choice for long task I guess.
     public Connection(Activity a) {
         this.a = a;
     }
@@ -82,35 +86,36 @@ public class Connection extends AsyncTask <String, Void, String>  {
             d = new ProgressDialog(a);
             d.setMessage( text_dialog != null ? text_dialog : "Processing small task");
             d.show();
+            expected_end_time = System.currentTimeMillis() + EXPECTED_DURATION_LONG_TASK;
         }
+        else
+            expected_end_time = System.currentTimeMillis();
     }
 
     @Override
     protected  void onPostExecute(String result) {
-       // DELAY the progress dialod for 2 sec (sometimes the phone processes too fast we r unable to see the progress dialog in order to design it properly)
-        if (d != null && d.isShowing())
+       if (d != null && d.isShowing())
         d.dismiss();
 
     }
 
-    public void setMode(MODE mode) {
+    public Connection setMode(MODE mode) {
         this.mode = mode;
+        return this;
     }
 
-    public void setDialogMessage(String m)  {
+    public Connection setDialogMessage(String m)  {
         if (this.mode == MODE.LONG_TASK)
             this.text_dialog = m;
+        return this;
     }
 
      protected String doInBackground(String...strings) {
-
-
         //Set up the name value pair stuff...
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 
         for(int i = 0; i < strings.length; i= i+2)
         {
-
 
             //use this when danh sorts acronyms
             nameValuePairs.add(new BasicNameValuePair(strings[i], strings[i+1]));
@@ -122,12 +127,15 @@ public class Connection extends AsyncTask <String, Void, String>  {
             if(strings[1].equals("LOGIN"))
             {
 
-                return this.loginConnect(nameValuePairs);
+                String r = this.loginConnect(nameValuePairs);
+                // this bit guarantees that the task will execute for at least 2 seconds (not too long, not too short)
+                Utilities.delayUntil(expected_end_time);
+                return r;
             }
-
-
-
-            return this.connect(nameValuePairs);
+            String r = this.connect(nameValuePairs);
+            // this bit guarantees that the task will execute for at least 2 seconds (not too long, not too short)
+            Utilities.delayUntil(expected_end_time);
+            return r;
 
         }
         catch(IOException e)
@@ -141,8 +149,6 @@ public class Connection extends AsyncTask <String, Void, String>  {
      * input from the server, turns it into a JSON object, and then sees if it can log in */
 
      public String connect(List<NameValuePair> nameValuePairs) throws IOException {
-
-
          httpclient = new DefaultHttpClient();
          cookies = new BasicCookieStore();
 
@@ -225,9 +231,6 @@ public class Connection extends AsyncTask <String, Void, String>  {
         context = new BasicHttpContext();
         context.setAttribute(ClientContext.COOKIE_STORE,cookies);
         HttpPost httppost = new HttpPost(URL);
-
-
-
         try {
 
             Log.d("test", "test");
