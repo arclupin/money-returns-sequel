@@ -1,20 +1,35 @@
 package com.ncl.team5.lloydsmockup;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+import android.widget.Spinner;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
 import org.achartengine.model.CategorySeries;
 import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.SimpleSeriesRenderer;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import HTTPConnect.Connection;
 
 
 /* This is the analysis activity used to display an easy to read
@@ -27,6 +42,9 @@ public class Analysis extends Activity {
 
     private String username;
     private String date;
+    private Set<String> groupSets;
+    private List<String> accountStrings = new ArrayList<String>();
+    private String selectedAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,21 +55,94 @@ public class Analysis extends Activity {
         username = intent.getStringExtra("ACCOUNT_USERNAME");
         date = intent.getStringExtra("DATE");
 
+        Log.d("USERNAME",username);
+
+        getAccounts();
+
+        final Spinner accounts = (Spinner) findViewById(R.id.analysis_spinner);
+        ArrayAdapter<String> a = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, accountStrings);
+        accounts.setAdapter(a);
+
+        accounts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                selectedAccount = accounts.getItemAtPosition(position).toString();
+                getPrefs();
+                drawChart();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                //do nothing but needs overriding anyway
+            }
+        });
+
+        if(selectedAccount == null)
+        {
+            if(accountStrings.size() != 0)
+            {
+                selectedAccount = accountStrings.get(0);
+            }
+            else
+            {
+                //error
+                return;
+            }
+
+        }
+
+        if(groupSets == null)
+        {
+            Log.d("Returend Set", "NULL POINTER");
+            return;
+        }
+
+        if(groupSets.size() == 0)
+        {
+            Log.d("Returend Set", "EMPTY SET");
+            return;
+            //new CustomMessageBox(this, "Need to add a group");
+//            ((KillApp) this.getApplication()).setStatus(false);
+//            finish();
+        }
+
+
+
+        Log.d("Returend Set", "NOT NULL OR EMPTY");
         //Just creates a layout so that the chart can be displayed on it.
         //Uses the analysis activity xml file to display the graph on
+
+        drawChart();
+    }
+
+    public void getPrefs()
+    {
+        SharedPreferences settings = getSharedPreferences(username, 0);
+        groupSets = settings.getStringSet("ANALYSIS_GROUPS_" + selectedAccount, new HashSet<String>());
+    }
+
+    public void drawChart()
+    {
         FrameLayout mainLayout = (FrameLayout) findViewById(R.id.chart_layout);
-
-
-
+        GraphicalView chartView;
         //an array of doubles that is used to populate the pie chart
         //sectors.
-        double[] values = { 1, 1, 1, 1, 1, 5 } ;
+
+
+
+        double[] values = new double[groupSets.size()] ;
 
         //Adds all of the names for each of the sectors in a string array
-        String[] sectors = new String[] {
-                "Shopping", "Bills", "Rent", "Food",
-                "University", "Other"
-        };
+        String[] sectors = new String[groupSets.size()];
+
+
+        List<String> temp = new ArrayList<String>(groupSets);
+
+        for (int i = 0; i < temp.size(); i++)
+        {
+            sectors[i] = temp.get(i);
+            values[i] = 1;
+        }
 
         //colours for each of the sectors
         int[] colors = { Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
@@ -91,14 +182,97 @@ public class Analysis extends Activity {
         }
 
         //creates a new graph view (part of the library) and creates a new pie chart view
-        GraphicalView chartView = ChartFactory.getPieChartView(this, categories, render);
+        chartView = ChartFactory.getPieChartView(this, categories, render);
 
         //chartView.getLayoutParams().height = 70;
         //add this to the layout
         mainLayout.addView(chartView, 0);
-
     }
 
+    public void btnClickReset(View view)
+    {
+        SharedPreferences sp = getApplicationContext().getSharedPreferences(username, 0);
+        SharedPreferences.Editor edit = sp.edit();
+        edit.putStringSet("ANALYSIS_GROUPS_" + selectedAccount, new HashSet<String>());
+        edit.commit();
+
+        new CustomMessageBox(this, "Removed all groups");
+    }
+
+
+    void getAccounts()
+    {
+        /* What this method would really do is get the data from the webserver
+         * for a certain users accounts. This will then take that data and display it
+         * with all of the different ammounts in each account. However, this is not currently
+         * set up on the web server
+         */
+
+
+        Connection hc = new Connection(this);// trying to pass the activity to the coonection (not sure if this is legal though)
+
+        try {
+            String result = hc.execute("TYPE","SAA","USR", username ).get();
+
+            JSONObject jo = new JSONObject(result);
+
+
+            if(jo.getString("expired").equals("true"))
+            {
+
+                //This uses the same code as the main menu does to start the login, only this time it is run when the user
+                //has timed out
+                AlertDialog.Builder msg = new AlertDialog.Builder(this);
+                msg.setMessage("Your session has been timed out, please login again")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                autoLogout();
+                                //dialogClosed = true;
+
+                            }
+                        });
+                AlertDialog alert = msg.create();
+                alert.show();
+
+            }
+            else {
+
+                JSONArray jsonArray = jo.getJSONArray("accounts");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject insideObject = jsonArray.getJSONObject(i);
+                    accountStrings.add(insideObject.getString("account_number"));
+                }
+            }
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void autoLogout()
+    {
+        Connection hc = new Connection(this);
+        try
+        {
+            hc.execute("TYPE","LOGOUT", "USR", username);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+        ((KillApp) this.getApplication()).setStatus(false);
+        finish();
+        Intent intent = new Intent(getApplicationContext(), Login.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        //login again
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

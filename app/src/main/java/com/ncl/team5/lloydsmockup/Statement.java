@@ -110,6 +110,7 @@ public class Statement extends Activity {
                                 i.putExtra("TRANS_ID", transId);
                                 i.putExtra("ACCOUNT_USERNAME", username);
                                 i.putExtra("DATE", dateLogout);
+                                i.putExtra("ACCOUNT_NUM", accountNum);
                                 startActivity(i);
                             }
                         });

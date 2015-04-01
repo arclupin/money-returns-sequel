@@ -190,6 +190,7 @@ public class MainActivity extends Activity {
     public void btnClickPayments(View view) {
         Intent i = new Intent(this, Payments.class);
         i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
 
@@ -198,6 +199,7 @@ public class MainActivity extends Activity {
     public void btnClickTransfers(View view) {
         Intent i = new Intent(this, Transfers.class);
         i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -205,6 +207,7 @@ public class MainActivity extends Activity {
     public void btnClickAccounts(View view) {
         Intent i = new Intent(this, Accounts.class);
         i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -212,13 +215,17 @@ public class MainActivity extends Activity {
     public void btnClickAnalysis(View view) {
         Intent i = new Intent(this, Analysis.class);
         i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
 
+
+
     public void btnClickOffers(View view) {
         Intent i = new Intent(this, Locations.class);
         i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -226,6 +233,7 @@ public class MainActivity extends Activity {
     public void btnClickProducts(View view) {
         Intent i = new Intent(this, Products.class);
         i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -233,6 +241,7 @@ public class MainActivity extends Activity {
     public void btnClickSettings(View view) {
         Intent i = new Intent(this, Settings.class);
         i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra("DATE", date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }

@@ -2,19 +2,31 @@ package com.ncl.team5.lloydsmockup;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 public class GroupChooser extends Activity {
 
     private String username;
     private String date;
+    private String accountNum;
+    private Set<String> groupSets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +35,32 @@ public class GroupChooser extends Activity {
 
         Intent i = getIntent();
         username = i.getStringExtra("ACCOUNT_USERNAME");
+        accountNum = i.getStringExtra("ACCOUNT_NUM");
         date = i.getStringExtra("DATE");
         /* I will need to populate the current groups here... probably by sending data to the server in some way
          * but need to wait for the tables ot be set up
          */
+
+        /* Remove the space from the end of the account number */
+        accountNum = accountNum.split(" ")[0];
+
+        SharedPreferences settings = getSharedPreferences(username, 0);
+        groupSets = settings.getStringSet("ANALYSIS_GROUPS_" + accountNum, new HashSet<String>());
+
+        if(groupSets.size() == 0)
+        {
+            Log.d("SET VALS","New List");
+        }
+
+        groupSets.add("Choose Group");
+
+        List<String> temp = new ArrayList<String>();
+        temp.addAll(groupSets);
+
+        Spinner groupSpin = (Spinner) findViewById(R.id.groupNameSpinner);
+        ArrayAdapter<String> a = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, temp);
+        groupSpin.setAdapter(a);
+        groupSpin.setSelection(a.getPosition("Choose Group"));
     }
 
 
@@ -39,7 +73,8 @@ public class GroupChooser extends Activity {
         GetNotification notif = new GetNotification();
 
 
-        if(notif.getNotifications(this, username, date)) {
+        if(notif.getNotifications(this, username, date))
+        {
             Log.d("Notif Change", "IN HERE");
             item.setIcon(R.drawable.ic_action_notify);
         }
@@ -72,7 +107,6 @@ public class GroupChooser extends Activity {
             ((KillApp) this.getApplication()).setStatus(false);
         }
 
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -84,27 +118,48 @@ public class GroupChooser extends Activity {
         //one they used and dynamically remove the data in the other box...
 
         Spinner groupSpin = (Spinner) findViewById(R.id.groupNameSpinner);
-        TextView nameBox = (TextView) findViewById(R.id.nameText);
         TextView groupText = (TextView) findViewById(R.id.newGroupText);
 
-        if(groupSpin.getSelectedItem().toString() == null)
+        String groupName = "";
+
+        if(groupSpin.getSelectedItem() == null || groupSpin.getSelectedItem().toString().equals("Choose Group"))
         {
-            if(groupText.getText() == null)
+            if(groupText.getText() == null || groupText.getText().toString().equals(""))
             {
                 new CustomMessageBox(this, "Please select a group or enter a new one");
+                return;
             }
             else
             {
                 //use text box
+                if(groupSets.size() < 6) {
+                    groupName = groupText.getText().toString();
+                }
+                else
+                {
+                    new CustomMessageBox(this, "You cannot have that many groups");
+                    return;
+                }
             }
         }
         else
         {
             //use spinner
+            //groupName = groupSpin.getSelectedItem().toString();
+
+            groupName = groupText.getText().toString();
+            groupSets.remove("Choose Group");
         }
 
+        groupSets.add(groupName);
+
+        SharedPreferences sp = getApplicationContext().getSharedPreferences(username, 0);
+        SharedPreferences.Editor edit = sp.edit();
+        edit.putStringSet("ANALYSIS_GROUPS_" + accountNum, groupSets);
+        edit.commit();
+
         //add a new group here... probably save in a file somewhere
-                ((KillApp) this.getApplication()).setStatus(false);
+        ((KillApp) this.getApplication()).setStatus(false);
         this.finish();
     }
 
@@ -135,7 +190,6 @@ public class GroupChooser extends Activity {
         }
 
         super.onResume();
-
     }
 
     //overriding the on back pressed method (for the built in back button) so
@@ -144,7 +198,6 @@ public class GroupChooser extends Activity {
     public void onBackPressed() {
         ((KillApp) this.getApplication()).setStatus(false);
         finish();
-
     }
 
 }
