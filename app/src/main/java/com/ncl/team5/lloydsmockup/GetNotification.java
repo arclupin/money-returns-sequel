@@ -119,12 +119,7 @@ public class GetNotification{
                         Date logoutTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(logTime);
                         Date loginDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(this.date);
 
-                        if(timeFromResponse.compareTo(loginDate) > 0)
-                        {
-                           return false;
-                        }
-
-                        if(timeFromResponse.compareTo(logoutTime) > 0 && !transInSession)
+                        if(timeFromResponse.compareTo(logoutTime) > 0 && timeFromResponse.compareTo(loginDate) < 0 && !transInSession)
                         {
                             return true;
                         }

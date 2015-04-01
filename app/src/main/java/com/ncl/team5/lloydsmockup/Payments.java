@@ -50,6 +50,7 @@ public class Payments extends FragmentActivity {
     private TabHost tabs;
     private List<String> recentAcc = new ArrayList<String>();
     private List<String> fromSC = new ArrayList<String>();
+    private List<String> toSC = new ArrayList<String>();
     private String date;
 
     /* Runs when the activity is started */
@@ -286,6 +287,7 @@ public class Payments extends FragmentActivity {
                     /* insufficient funds in account */
                     new CustomMessageBox(this, "There are not enough funds in your account for this transaction");
                 }
+
                 else
                 {
                     /* Unknown error :( */
@@ -298,7 +300,7 @@ public class Payments extends FragmentActivity {
         catch (JSONException jse)
         {
             /* Error in the JSON response */
-            new CustomMessageBox(this, "There was an error in the server response");
+            //new CustomMessageBox(this, "There was an error in the server response");
             jse.printStackTrace();
         }
         catch (InterruptedException interex)
@@ -466,6 +468,7 @@ public class Payments extends FragmentActivity {
                             /* If payer is the current account then add */
                             if (insideObject.getString("Payer").equals(accountNum)) {
                                 recentAcc.add(insideObject.getString("Payee"));
+                                toSC.add(insideObject.getString("PayeeSC"));
                             }
                         }
                         /* if the size > 0 but the account is already in the list, then dont add */
@@ -473,6 +476,7 @@ public class Payments extends FragmentActivity {
                         else if (i < recentAcc.size() && !recentAcc.get(i).toString().equals(insideObject.getString("Payee"))) {
                             if (insideObject.getString("Payer").equals(accountNum)) {
                                 recentAcc.add(insideObject.getString("Payee"));
+                                toSC.add(insideObject.getString("PayeeSC"));
                             }
                         }
                     }
@@ -488,6 +492,7 @@ public class Payments extends FragmentActivity {
                             if (temp.compareTo(formatted) < 0) {
                                 if (insideObject.getString("Payer").equals(accountNum)) {
                                     recentAcc.add(insideObject.getString("Payee"));
+                                    toSC.add(insideObject.getString("PayeeSC"));
                                 }
                             }
                         }

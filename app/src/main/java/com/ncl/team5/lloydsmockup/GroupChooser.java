@@ -148,10 +148,11 @@ public class GroupChooser extends Activity {
             //groupName = groupSpin.getSelectedItem().toString();
 
             groupName = groupText.getText().toString();
-            groupSets.remove("Choose Group");
+
         }
 
         groupSets.add(groupName);
+        groupSets.remove("Choose Group");
 
         SharedPreferences sp = getApplicationContext().getSharedPreferences(username, 0);
         SharedPreferences.Editor edit = sp.edit();

@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -128,7 +129,21 @@ public class Analysis extends Activity {
         //an array of doubles that is used to populate the pie chart
         //sectors.
 
+        TextView errorMessage = (TextView) findViewById(R.id.Analysis_Error_Box);
+        errorMessage.setText("There is no data available for this account, please go to your statement to add a transaction to a group");
 
+
+        if(groupSets.size() == 0)
+        {
+            mainLayout.setVisibility(View.INVISIBLE);
+            errorMessage.setVisibility(View.VISIBLE);
+            return;
+        }
+        else
+        {
+            errorMessage.setVisibility(View.INVISIBLE);
+            mainLayout.setVisibility(View.VISIBLE);
+        }
 
         double[] values = new double[groupSets.size()] ;
 

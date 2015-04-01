@@ -97,20 +97,29 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //gets the username that is passed from the login so the connection can stay open
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentDate = df.format(Calendar.getInstance().getTime());
         Intent i = getIntent();
         username = i.getStringExtra("ACCOUNT_USERNAME");
-        if (i.getStringExtra("DATE") != null) // check for null (date coming from login)
-            date = i.getStringExtra("DATE"); // assign the date for the first and also the last time of the session
+        if (i.getStringExtra("DATE") != null) {// check for null (date coming from login)
+            date = i.getStringExtra("DATE");
+        }// assign the date for the first and also the last time of the session
+        else
+        {
+            date = currentDate;
+        }
 
         TextView dateText = (TextView) findViewById(R.id.lastLoginTextView);
 
         //need to change this to the actual login time response stuff
         if (date.equals("Not Available")) {
-            //do some fancy first logon stuff :)
-            dateText.setText("");
+            //Get the current date and time for first logon (no notifications)
+            dateText.setText(username + " : Logged in on " + currentDate);
         } else {
             dateText.setText(username + " : Last Login on " + date);
         }
+
+        date = currentDate;
 
         SharedPreferences settings = getSharedPreferences(username, 0);
         logoutTime = settings.getString("LOGOUT_TIME", "");

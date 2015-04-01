@@ -18,7 +18,7 @@
         android:layout_centerHorizontal="true"></FrameLayout>
 
     <Spinner
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/analysis_spinner"
         android:layout_alignParentTop="true"
@@ -33,5 +33,19 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:onClick="btnClickReset"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Error Box"
+        android:id="@+id/Analysis_Error_Box"
+        android:visibility="invisible"
+        android:layout_below="@+id/analysis_spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="26dp"
+        android:textColor="#ff000000" />
 
 </RelativeLayout>
