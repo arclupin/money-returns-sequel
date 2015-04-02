@@ -124,84 +124,85 @@ public class Analysis extends Activity {
 
     public void drawChart()
     {
-        FrameLayout mainLayout = (FrameLayout) findViewById(R.id.chart_layout);
-        GraphicalView chartView;
-        //an array of doubles that is used to populate the pie chart
-        //sectors.
+        try {
+            FrameLayout mainLayout = (FrameLayout) findViewById(R.id.chart_layout);
+            GraphicalView chartView;
+            //an array of doubles that is used to populate the pie chart
+            //sectors.
 
-        TextView errorMessage = (TextView) findViewById(R.id.Analysis_Error_Box);
-        errorMessage.setText("There is no data available for this account, please go to your statement to add a transaction to a group");
+            TextView errorMessage = (TextView) findViewById(R.id.Analysis_Error_Box);
+            errorMessage.setText("There is no data available for this account, please go to your statement to add a transaction to a group");
 
 
-        if(groupSets.size() == 0)
+            if (groupSets.size() == 0) {
+                mainLayout.setVisibility(View.INVISIBLE);
+                errorMessage.setVisibility(View.VISIBLE);
+                return;
+            } else {
+                errorMessage.setVisibility(View.INVISIBLE);
+                mainLayout.setVisibility(View.VISIBLE);
+            }
+
+            double[] values = new double[groupSets.size()];
+
+            //Adds all of the names for each of the sectors in a string array
+            String[] sectors = new String[groupSets.size()];
+
+
+            List<String> temp = new ArrayList<String>(groupSets);
+
+            for (int i = 0; i < temp.size(); i++) {
+                sectors[i] = temp.get(i).split(":")[0];
+                values[i] = Double.parseDouble(temp.get(i).split(":")[1]);
+            }
+
+            //colours for each of the sectors
+            int[] colors = {Color.parseColor("#ff6cbb6c"), Color.parseColor("#ff347834"), Color.parseColor("#ff345834"), Color.parseColor("#ff114e11"), Color.parseColor("#ff81bb81"),
+                    Color.parseColor("#ff4fb74f")};
+
+            //setup a default renderer...
+            DefaultRenderer render = new DefaultRenderer();
+
+            //Set up some properties for the renderer
+            render.setLabelsTextSize(30);
+            render.setPanEnabled(false);
+            render.setLabelsColor(getResources().getColor(android.R.color.black));
+            render.setScale(0.85f);
+            render.setZoomEnabled(false);
+            render.setShowLabels(false);
+            render.setLegendTextSize(40);
+
+            //Catergory series... needed for the chart factory
+            CategorySeries categories = new CategorySeries("Transactions");
+            for (int i = 0; i < values.length; i++) {
+                //adds the string with the values to the chart
+                categories.add(sectors[i], values[i]);
+            }
+
+
+            //setup a legend
+            for (int i = 0; i < values.length; i++) {
+                //Sets up a renderer
+                SimpleSeriesRenderer seriesRenderer = new SimpleSeriesRenderer();
+                //sets the colours for the series
+                seriesRenderer.setColor(colors[i]);
+                //sets the display to true
+                seriesRenderer.setDisplayChartValues(true);
+                //Adds a series renderer
+                render.addSeriesRenderer(seriesRenderer);
+            }
+
+            //creates a new graph view (part of the library) and creates a new pie chart view
+            chartView = ChartFactory.getPieChartView(this, categories, render);
+
+            //chartView.getLayoutParams().height = 70;
+            //add this to the layout
+            mainLayout.addView(chartView, 0);
+        }
+        catch (Exception e)
         {
-            mainLayout.setVisibility(View.INVISIBLE);
-            errorMessage.setVisibility(View.VISIBLE);
-            return;
+            e.printStackTrace();
         }
-        else
-        {
-            errorMessage.setVisibility(View.INVISIBLE);
-            mainLayout.setVisibility(View.VISIBLE);
-        }
-
-        double[] values = new double[groupSets.size()] ;
-
-        //Adds all of the names for each of the sectors in a string array
-        String[] sectors = new String[groupSets.size()];
-
-
-        List<String> temp = new ArrayList<String>(groupSets);
-
-        for (int i = 0; i < temp.size(); i++)
-        {
-            sectors[i] = temp.get(i);
-            values[i] = 1;
-        }
-
-        //colours for each of the sectors
-        int[] colors = { Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
-                Color.YELLOW };
-
-        //setup a default renderer...
-        DefaultRenderer render = new DefaultRenderer();
-
-        //Set up some properties for the renderer
-        render.setLabelsTextSize(30);
-        render.setPanEnabled(false);
-        render.setLabelsColor(getResources().getColor(android.R.color.black));
-        render.setScale(0.85f);
-        render.setZoomEnabled(false);
-        render.setShowLabels(false);
-        render.setLegendTextSize(40);
-
-        //Catergory series... needed for the chart factory
-        CategorySeries categories = new CategorySeries("Transactions");
-        for(int i=0 ; i < values.length; i++){
-            //adds the string with the values to the chart
-            categories.add(sectors[i], values[i]);
-        }
-
-
-
-        //setup a legend
-        for(int i = 0 ; i < values.length; i++){
-            //Sets up a renderer
-            SimpleSeriesRenderer seriesRenderer = new SimpleSeriesRenderer();
-            //sets the colours for the series
-            seriesRenderer.setColor(colors[i]);
-            //sets the display to true
-            seriesRenderer.setDisplayChartValues(true);
-            //Adds a series renderer
-            render.addSeriesRenderer(seriesRenderer);
-        }
-
-        //creates a new graph view (part of the library) and creates a new pie chart view
-        chartView = ChartFactory.getPieChartView(this, categories, render);
-
-        //chartView.getLayoutParams().height = 70;
-        //add this to the layout
-        mainLayout.addView(chartView, 0);
     }
 
     public void btnClickReset(View view)

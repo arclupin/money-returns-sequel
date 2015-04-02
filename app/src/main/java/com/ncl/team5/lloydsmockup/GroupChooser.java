@@ -11,10 +11,13 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +30,7 @@ public class GroupChooser extends Activity {
     private String date;
     private String accountNum;
     private Set<String> groupSets;
+    private double transValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,7 @@ public class GroupChooser extends Activity {
         username = i.getStringExtra("ACCOUNT_USERNAME");
         accountNum = i.getStringExtra("ACCOUNT_NUM");
         date = i.getStringExtra("DATE");
+        transValue = i.getDoubleExtra("VALUE", 0);
         /* I will need to populate the current groups here... probably by sending data to the server in some way
          * but need to wait for the tables ot be set up
          */
@@ -56,6 +61,11 @@ public class GroupChooser extends Activity {
 
         List<String> temp = new ArrayList<String>();
         temp.addAll(groupSets);
+
+        for(int j = 0; j < temp.size(); j++)
+        {
+            temp.set(j, temp.get(j).split(":")[0]);
+        }
 
         Spinner groupSpin = (Spinner) findViewById(R.id.groupNameSpinner);
         ArrayAdapter<String> a = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, temp);
@@ -81,7 +91,7 @@ public class GroupChooser extends Activity {
         else
         {
             Log.d("Notif Change", "IN There");
-            item.setIcon(R.drawable.ic_action_email);
+            item.setIcon(R.drawable.globe);
         }
 
         return true;
@@ -120,7 +130,7 @@ public class GroupChooser extends Activity {
         Spinner groupSpin = (Spinner) findViewById(R.id.groupNameSpinner);
         TextView groupText = (TextView) findViewById(R.id.newGroupText);
 
-        String groupName = "";
+        String groupName;
 
         if(groupSpin.getSelectedItem() == null || groupSpin.getSelectedItem().toString().equals("Choose Group"))
         {
@@ -134,6 +144,7 @@ public class GroupChooser extends Activity {
                 //use text box
                 if(groupSets.size() < 6) {
                     groupName = groupText.getText().toString();
+                    groupSets.add(groupName + ":" + transValue);
                 }
                 else
                 {
@@ -145,19 +156,42 @@ public class GroupChooser extends Activity {
         else
         {
             //use spinner
-            //groupName = groupSpin.getSelectedItem().toString();
 
-            groupName = groupText.getText().toString();
+            groupName = groupSpin.getSelectedItem().toString();
+
+            List<String> temp = new ArrayList<String>(groupSets);
+
+            for(int i = 0; i < temp.size(); i++)
+            {
+                if(temp.get(i).split(":")[0].equals(groupName))
+                {
+                    String splitStringName = temp.get(i).split(":")[0];
+                    String splitStringAmount = temp.get(i).split(":")[1];
+                    Double splitAmount = Double.parseDouble(splitStringAmount) + transValue;
+                    splitStringAmount = splitAmount.toString();
+
+                    temp.set(i, splitStringName + ":" + splitStringAmount);
+
+                    Log.d("GROUP VALUES",temp.get(i));
+                }
+            }
+
+            groupSets.clear();
+            groupSets.addAll(temp);
 
         }
 
-        groupSets.add(groupName);
+
         groupSets.remove("Choose Group");
 
         SharedPreferences sp = getApplicationContext().getSharedPreferences(username, 0);
         SharedPreferences.Editor edit = sp.edit();
         edit.putStringSet("ANALYSIS_GROUPS_" + accountNum, groupSets);
         edit.commit();
+
+        Toast msg = Toast.makeText(this, "Item Added Successfully", Toast.LENGTH_SHORT);
+        msg.show();
+
 
         //add a new group here... probably save in a file somewhere
         ((KillApp) this.getApplication()).setStatus(false);

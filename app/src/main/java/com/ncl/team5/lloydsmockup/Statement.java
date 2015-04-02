@@ -87,7 +87,7 @@ public class Statement extends Activity {
                 AlertDialog.Builder errorBox = new AlertDialog.Builder(Statement.this);
                 String details = transInfo.get(position);
                 final String transId = details.split(" ~ ")[0];
-                String amount = details.split(" ~ ")[1];
+                final String amount = details.split(" ~ ")[1];
                 String time = details.split(" ~ ")[2];
                 String date = time.split(" ")[0];
                 time = time.split(" ")[1];
@@ -111,6 +111,7 @@ public class Statement extends Activity {
                                 i.putExtra("ACCOUNT_USERNAME", username);
                                 i.putExtra("DATE", dateLogout);
                                 i.putExtra("ACCOUNT_NUM", accountNum);
+                                i.putExtra("VALUE", Double.parseDouble(amount.substring(1)));
                                 startActivity(i);
                             }
                         });
