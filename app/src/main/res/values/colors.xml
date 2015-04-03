@@ -10,5 +10,7 @@
     <color name="text_color">#323842</color>
     <color name="button_light_focus">#A8EFF7</color>
     <color name="noti_read_bg">#ecf0f1</color>
+    <color name="light_green">#2ecc71</color>
+    <color name="dark_green">#27ae60</color>
  
 </resources>

@@ -4,25 +4,49 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TabHost;
+import android.widget.TabWidget;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
+import Fragment.Fragment_HS_Home;
 import Fragment.Fragment_HS_Notification;
+import Fragment.HS_Home_FragPagerAdapter;
 import HTTPConnect.Connection;
+import HTTPConnect.Notification;
 import HTTPConnect.Request_Params;
 import HTTPConnect.Responses_Format;
 import Utils.StringUtils;
@@ -31,176 +55,175 @@ import Utils.Utilities;
 /**
  * Class providing the home view for the house share service
  */
-public class Houseshare_HomeView extends NotificationActivity implements Fragment_HS_Notification.OnFragmentInteractionListener_Notification {
+public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS_Home.OnFragmentInteractionListener_HomeView, ActionBar.TabListener {
     private FragmentManager fragmentManager;
-
     private String response_content;
+    public static String house_name;
+    public static String username;
+    private Intent i;
+    private HS_Home_FragPagerAdapter mAdapter;
+    private ViewPager pager;
+    private  ActionBar actionBar;
+    private LinearLayout l;
 
-    private String house_name;
+    private boolean hasNewNoti;
 
-    private TextView viewName;
-    private TextView viewAddressText;
-    private TextView viewDescription;
+    @Override
+    public void onCreate(Bundle savedInstanceState)         {
+            super.onCreate(savedInstanceState);
+            requestWindowFeature(Window.FEATURE_ACTION_BAR);
+            setContentView(R.layout.activity_houseshare__home_view);
 
-    private ProgressBar loadingIcon;
-    /* Used for the list view */
-    private ArrayList<String> testData;
+                actionBar = getActionBar();
+        Log.d("action Bar", actionBar.toString());
+                actionBar.setDisplayShowHomeEnabled(false);
+                actionBar.setDisplayShowTitleEnabled(false);
+                actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+                actionBar.setSplitBackgroundDrawable(new ColorDrawable((getResources().getColor(R.color.dark_green))));
+
+            i = getIntent();
+            if (i != null && i.getExtras().getString("ACCOUNT_USERNAME") != null)
+                username = i.getExtras().getString("ACCOUNT_USERNAME");
+            if (i != null && i.getExtras().getString("HOUSE_NAME") != null)
+                house_name = i.getExtras().getString("HOUSE_NAME");
+
+            fragmentManager = getSupportFragmentManager();
+            mAdapter = new HS_Home_FragPagerAdapter(getSupportFragmentManager());
+            pager = (ViewPager) findViewById(R.id.home_view_pager);
+            pager.setAdapter(mAdapter);
+            pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageSelected(int position) {
+                    // When swiping between different app sections, select the corresponding tab.
+                    // We can also use ActionBar.Tab#select() to do this if we have a reference to the
+                    // Tab.
+                    actionBar.setSelectedNavigationItem(position);
+                    Log.d("pager", Integer.toString(position));
+
+                }
+            });
+
+            for (int i = 0; i < mAdapter.getCount(); i++) {
+                // Create a tab with text corresponding to the page title defined by the adapter.
+                // Also specify this Activity object, which implements the TabListener interface, as the
+                // listener for when this tab is selected.
+                actionBar.addTab(
+                        actionBar.newTab()
+                                .setTabListener(this).setIcon(i == 0 ? R.drawable.hs_tab_home : R.drawable.hs_tab_noti));
+
+            }
+
+
+
+        }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_houseshare__home_view, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_hs_new_bill) {
+
+            Toast.makeText(this, "Id" + actionBar.getHeight(), Toast.LENGTH_LONG).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * method called when the home view fragment is created (fetch data from server) <br/>
+     * NOTE: there are various solutions to this.
+     *
+     * @param f the fragment
+     */
+    @Override
+    public void onHomeViewCreated(Fragment_HS_Home f) {
+
+    }
+
+    /**
+     * Called when a tab enters the selected state.
+     *
+     * @param tab The tab that was selected
+     * @param ft  A {@link android.app.FragmentTransaction} for queuing fragment operations to execute
+     *            during a tab switch. The previous tab's unselect and this tab's select will be
+     *            executed in a single transaction. This FragmentTransaction does not support
+     */
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, android.app.FragmentTransaction ft) {
+        pager.setCurrentItem(tab.getPosition());
+    }
+
+    /**
+     * Called when a tab exits the selected state.
+     *
+     * @param tab The tab that was unselected
+     * @param ft  A {@link android.app.FragmentTransaction} for queuing fragment operations to execute
+     *            during a tab switch. This tab's unselect and the newly selected tab's select
+     *            will be executed in a single transaction. This FragmentTransaction does not
+     */
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, android.app.FragmentTransaction ft) {
+            if (tab.getPosition() == 1) {
+                tab.setIcon(R.drawable.hs_tab_noti);
+                hasNewNoti = false;
+
+            }
+
+    }
+
+    /**
+     * Called when a tab that is already selected is chosen again by the user.
+     * Some applications may use this action to return to the top level of a category.
+     *
+     * @param tab The tab that was reselected.
+     * @param ft  A {@link android.app.FragmentTransaction} for queuing fragment operations to execute
+     *            once this method returns. This FragmentTransaction does not support
+     */
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, android.app.FragmentTransaction ft) {
+        if (tab.getPosition() == 1) {
+            tab.setIcon(R.drawable.hs_tab_noti);
+            hasNewNoti = false;
+        }
+    }
+
+//    /**
+//     * method called when the notification fragment is created (fetch data from server) <br/>
+//     * NOTE: there are various solutions to this.
+//     *
+//     * @param f the fragment
+//     */
+//    @Override
+//    public List<Notification> onNotificationViewSelected(Fragment_HS_Notification f) throws ParseException {
+//        List<Notification> l = fetchNotifications();
+////        if ((Fragment_HS_Notification.lastNoti != null && l.get(0).getTimeOfNotification().compareTo(Fragment_HS_Notification.lastNoti) > 0) || Fragment_HS_Notification.isThereNewNoti(l) )
+////        {
+////            Fragment_HS_Notification.newNoti = true; // atm I think it's unnecessary
+////        }
+//        if (!l.isEmpty())
+//            Fragment_HS_Notification.lastNoti = l.get(0).getTimeOfNotification();
+//        // update the lastNoti (this is needed as the app will send this info to the server in order to
+//        // check for new notifications (see the method checkNewNotification below)
+//
+//        return l;
+//    }
+
+
+
+
 
     /**
      *
      */
-    public class HomeViewWorker extends Connection {
-        ProgressDialog p;
-
-
-        public HomeViewWorker(Activity a) {
-            super(a);
-        }
-
-        @Override
-        protected void onPostExecute(String r) {
-
-            super.onPostExecute(r);
-            loadingIcon.setVisibility(View.GONE);
-            response_content = processInfo(r); // do the processing
-            displayContent();
-        }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_houseshare__home_view);
-        house_name = i.getExtras().getString("HOUSE_NAME");
-
-        ActionBar a = getActionBar();
-        if (a != null && a.isShowing()) {
-            a.setTitle(house_name);
-        }
-
-        main_view_container = findViewById(R.id.home_view_main_container);
-        viewName = (TextView) findViewById(R.id.viewName);
-        viewAddressText = (TextView) findViewById(R.id.viewAddressText);
-        viewDescription = (TextView) findViewById(R.id.viewAddress);
-        loadingIcon = (ProgressBar) findViewById(R.id.progressBar);
-
-        /* Get the list view */
-        ListView billList = (ListView) findViewById(R.id.listBills);
-        testData = new ArrayList<String>();
-        testData.add("Bill 1");
-        testData.add("Bill 2");
-        testData.add("Bill 3");
-        testData.add("Bill 4");
-        testData.add("Bill 5");
-        testData.add("Bill 6");
-        testData.add("Bill 7");
-        testData.add("Bill 8");
-        testData.add("Bill 9");
-
-        // Create The Adapter with passing ArrayList as 3rd parameter
-        ArrayAdapter<String> arrayAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, testData);
-        // Set The Adapter
-        billList.setAdapter(arrayAdapter);
-
-        // find the necessary views
-
-
-        initialiseData();
-
-//        Fragment_HS_Home fragment_hs_home = Fragment_HS_Home.newInstance("");
-//        android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
-//        transaction.add(R.id.home_view_main_container, fragment_hs_home, "fragment_home_view");
-//        //TODO: Investigate this
-//        // added the frag to the back stack allowing the user to go back to it by pressing the Back button
-////        transaction.addToBackStack("added the home view frag");
-//        transaction.commit();
-//        Animation.fade_in(this.findViewById(R.id.home_view_main_container), this, Animation.SHORT, Animation.POST_EFFECT.PERMANENTLY);
-
-/*
-
-        isNotiVisible = false;
-
-        checkNewNotification(); // check for new noti on start-up
-        if (hasNewNoti && menu != null)
-            menu.findItem(R.id.action_hs_noti).setIcon(R.drawable.globe_new);
-*/
-
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-    // method called when the fragment is called.
-    protected String processInfo(String response) {
-        String content = "DEFAULT";
-        try {
-
-            JSONObject jo = new JSONObject(response);
-
-            /* Check if the user has timed out */
-            if (jo.getString("expired").equals("true")) {
-
-                /* Display message box and auto logout user */
-                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-                final Connection temp_connect = new Connection(this);
-                final String temp_usr = username;
-                errorBox.setMessage("Your session has been timed out, please login again")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                temp_connect.autoLogout(temp_usr);
-                            }
-                        });
-                AlertDialog alert = errorBox.create();
-                alert.show();
-            } else {
-//               TextView tv = (TextView) findViewById(R.id.hs_hv_response);
-                content = jo.getString(Responses_Format.RESPONSE_HS_CONTENT); //TODO
-            }
-
-        }
-        /* Catch the exceptions */ catch (JSONException jse) {
-            /* Error in the JSON response */
-            new CustomMessageBox(this, "There was an error in the server response");
-            jse.printStackTrace();
-        } catch (Exception e) {
-            /* Failsafe if something goes utterly wrong */
-            new CustomMessageBox(this, "An unknown error occurred");
-            e.printStackTrace();
-        }
-        return content;
-    }
-
-    public void displayContent() {
-        Log.d("response", response_content);
-        try {
-           JSONArray house_Array = new JSONObject(response_content).getJSONArray("basic_info");
-           viewName.setText(house_Array.getString(0));
-           viewAddressText.setText(StringUtils.implode(" ", house_Array.getString(1), house_Array.getString(2), house_Array.getString(3)));
-           viewDescription.setText(house_Array.getString(house_Array.length() - 1));
-
-            //TODO Set up the bill
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Initialise data
-     */
-    private void initialiseData() {
-
-        new HomeViewWorker(this).setMode(Connection.MODE.LONG_TASK)
-        .setDialogMessage("Fetching news")
-        .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_HS_2_FETCH_HOUSE_DETAIL, Request_Params.PARAM_USR, this.username);
-
-    }
 
 }

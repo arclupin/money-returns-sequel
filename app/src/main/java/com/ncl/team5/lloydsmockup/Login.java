@@ -67,6 +67,7 @@ public class Login extends Activity {
         setContentView(R.layout.activity_login);
         ActionBar actionBar = getActionBar();
         actionBar.hide();
+        Log.d("id login", Integer.toString(actionBar.getHeight()) );
         Houseshare_Welcome.registered = false; // false the registered variable (this might save us 1 connection later)
 
         username_field = (EditText) findViewById(R.id.username);

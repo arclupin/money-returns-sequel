@@ -7,12 +7,19 @@
         <item name="android:buttonStyle">@style/button_style</item>
         <item name="android:editTextStyle">@style/editText_style</item>
         <item name="android:actionBarTabStyle">@style/tab_style</item>
+        <item name="android:actionBarTabBarStyle">@style/tab_bar_style</item>
         <item name="android:textColor">@color/text_color</item>
+    </style>
 
+    <!-- Base application theme 2. -->
+    <style name="AppTheme2" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="android:actionBarTabStyle">@style/tab_style_null</item>
+        <item name="android:actionBarTabBarStyle">@style/tab_bar_style_null</item>
 
     </style>
 
-    <style name="action_bar" parent="android:Widget.Holo.ActionBar">
+    <style name="action_bar" parent="android:Widget.Holo.Light.ActionBar">
         <item name="android:background">@color/white</item>
         <item name="android:textColor">@android:color/primary_text_light</item>
         <item name="android:titleTextStyle">@style/action_bar_text</item>
@@ -28,7 +35,7 @@
         <item name="android:paddingLeft">5dp</item>
         <item name="android:paddingRight">5dp</item>
     </style>
-    <style name="editText_style" parent="android:Widget.Holo.EditText">
+    <style name="editText_style" parent="android:Widget.Holo.Light.EditText">
     <item name="android:padding">5dp</item>
 
 </style>
@@ -40,9 +47,24 @@
         <!--<item name="android:background">@drawable/tab_color</item>-->
     <!--</style>-->
 
-    <style name="tab_style" parent="android:Widget.Holo.ActionBar.TabView">
+    <style name="tab_style" parent="android:Widget.Holo.Light.ActionBar.TabView">
         <item name="android:background">@drawable/tab_color</item>
+    </style>
+    <style name="tab_style_null" parent="android:Widget.Holo.Light.ActionBar.TabView">
+        <item name="android:background">@drawable/button_light_color</item>
+        <!-- the same as the button light color-->
 
+    </style>
+
+    <style name="tab_bar_style_null" parent="android:Widget.Holo.Light.ActionBar.TabBar">
+        <item name="android:showDividers">end</item>
+        <item name="android:dividerPadding">10dip</item>
+
+    </style>
+
+    <style name="tab_bar_style" parent="android:Widget.Holo.Light.ActionBar.TabBar">
+
+        <item name="android:dividerPadding">10dip</item>
     </style>
 
     <style name="make_payment" parent = "button_style">

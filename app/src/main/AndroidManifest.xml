@@ -140,9 +140,10 @@
             android:name=".Fragment_Houseshare_Inputs"
             android:label="@string/title_activity_fragment__houseshare__inputs" >
         </activity>
-        <activity
+        <activity android:uiOptions="splitActionBarWhenNarrow"
             android:name=".Houseshare_HomeView"
-            android:label="@string/title_activity_houseshare__home_view" >
+            android:label="@string/title_activity_houseshare__home_view"
+            android:theme="@style/AppTheme2">
         </activity>
     </application>
 
