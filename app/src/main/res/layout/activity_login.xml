@@ -13,9 +13,14 @@
         android:layout_width="fill_parent"
         android:layout_height="150dp"
         android:src="@drawable/lloyds"
-        android:layout_marginLeft="-30dp"
         android:id="@+id/image"
-        android:layout_alignParentTop="true" />
+        android:background="@android:color/transparent"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/imageButton2"
+        android:layout_marginRight="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:paddingRight="10dp" />
 
     <EditText
         android:layout_width="match_parent"
@@ -72,5 +77,16 @@
 
             />
     </ViewFlipper>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton2"
+        android:src="@drawable/globe_location"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="@android:color/transparent"
+        android:onClick="launchMaps" />
 
 </RelativeLayout>

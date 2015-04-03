@@ -10,7 +10,7 @@
     <string name="title_activity_accounts">Accounts</string>
     <string name="title_activity_analysis">Analysis</string>
     <string name="title_activity_achievements">House Sharing</string>
-    /*Don't change the names of offers and achievements*/                    <string name="title_activity_offers">Branches</string>
+    /*Don't change the names of offers and achievements*/                            <string name="title_activity_offers">Branches</string>
     <string name="title_activity_products">Products</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_notifications">Notifications</string>
@@ -38,15 +38,13 @@
     <string name="title_activity_tab_exists">TabExists</string>
     <string name="title_activity_payments_tabs">PaymentsTabs</string>
     <string name="title_activity_register_house">RegisterHouse</string>
-
     <string name="title_activity_houseshare_welcome">Welcome</string>
-    <string name= "title_activity_houseshare__welcome_1">Welcome To \n House Share Service</string>
-    <string name= "title_activity_houseshare__welcome_2">Create Bills</string>
-    <string name= "title_activity_houseshare__welcome_3">Manage Bills</string>
-    <string name= "title_activity_houseshare__welcome_4">Pay Bills</string>
+    <string name="title_activity_houseshare__welcome_1">Welcome To \n House Share Service</string>
+    <string name="title_activity_houseshare__welcome_2">Create Bills</string>
+    <string name="title_activity_houseshare__welcome_3">Manage Bills</string>
+    <string name="title_activity_houseshare__welcome_4">Pay Bills</string>
     <string name="title_activity_houseshare_welcome_start">Start</string>
     <string name="title_activity_houseshare_welcome_skip">Skip</string>
-
     <string name="title_activity_houseshare_search">Join</string>
     <string name="title_activity_houseshare_search_textIntro">Let\'s join a house</string>
     <string name="houseshare_search_create">Or alternatively, create a house</string>
@@ -59,19 +57,19 @@
     <string name="title_activity_houseshare__create__house_description">Description</string>
     <string name="title_activity_fragment__houseshare__inputs">Fragment_Houseshare_Inputs</string>
     <string name="title_activity_houseshare__home_view">Houseshare_HomeView</string>
-
     <string name="houseshare_search_join_msg">Would you like to join</string>
     <string name="houseshare_search_empty_ini">Your search result will be displayed here.</string>
     <string name="houseshare_search_empty_result">No result :-(</string>
     <string name="houseshare_search_join">Join</string>
     <string name="houseshare_search_cancel">Cancel</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="noti_type_join_request_admin_gnr">would like to join your house. </string>
     <string name="noti_type_join_request_admin_ok">Welcome</string>
     <string name="noti_type_join_request_admin_nope">Cancel</string>
     <string name="noti_empty">You have no notification :-(</string>
+    <string name="title_activity_house_share__bill">HouseShare_Bill</string>
+    <string name="title_activity_locations_login">LocationsLogin</string>
 
 </resources>

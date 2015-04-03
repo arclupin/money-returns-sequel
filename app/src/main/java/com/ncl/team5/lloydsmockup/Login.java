@@ -119,6 +119,12 @@ public class Login extends Activity {
         slider.startFlipping();
     }
 
+    public void launchMaps(View view) {
+        Intent i = new Intent(this, LocationsLogin.class);
+        startActivity(i);
+        ((KillApp) this.getApplication()).setStatus(false);
+    }
+
 
     public void launchMain(View view) {
         //Gets the strings from the username and password_field boxes, and then authenticates them

@@ -101,15 +101,18 @@
         </activity>
         <activity
             android:name=".Prefer"
-            android:label="@string/title_activity_prefer" >
+            android:label="@string/title_activity_prefer"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ChangeAccountName"
-            android:label="@string/title_activity_change_account_name" >
+            android:label="@string/title_activity_change_account_name"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ChangePassword"
-            android:label="Change Password" >
+            android:label="Change Password"
+            android:screenOrientation="portrait" >
         </activity>
 
         <meta-data
@@ -121,7 +124,8 @@
 
         <activity
             android:name=".LegalMaps"
-            android:label="Legal Notices" >
+            android:label="Legal Notices"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".GroupChooser"
@@ -143,7 +147,18 @@
         <activity android:uiOptions="splitActionBarWhenNarrow"
             android:name=".Houseshare_HomeView"
             android:label="@string/title_activity_houseshare__home_view"
-            android:theme="@style/AppTheme2">
+            android:theme="@style/AppTheme2"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".HouseShare_Bill"
+            android:label="@string/title_activity_house_share__bill"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".LocationsLogin"
+            android:label="@string/title_activity_locations_login" >
+>>>>>>> origin/stella
         </activity>
     </application>
 
