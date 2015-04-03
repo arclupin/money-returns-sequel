@@ -147,8 +147,8 @@ public class Notifications extends Activity {
         int id = item.getItemId();
 
         if (id == R.id.action_backHome) {
-            this.finish();
             ((KillApp) this.getApplication()).setStatus(false);
+            this.finish();
             //Intent intent = new Intent(this, MainActivity.class);
             //startActivity(intent);
         }

@@ -3,7 +3,6 @@
     tools:context="com.ncl.team5.lloydsmockup.MainActivity"
     >
 
-
    <!-- <item android:title="@string/action_Notifications"
         android:id="@+id/action_location"
         android:icon="@drawable/ic_action_location_searching"
