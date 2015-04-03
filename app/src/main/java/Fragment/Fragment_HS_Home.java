@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -22,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ncl.team5.lloydsmockup.CustomMessageBox;
+import com.ncl.team5.lloydsmockup.HouseShare_Bill;
 import com.ncl.team5.lloydsmockup.Houseshare_HomeView;
 import com.ncl.team5.lloydsmockup.R;
 
@@ -57,6 +60,7 @@ public class Fragment_HS_Home extends android.support.v4.app.Fragment {
     private ArrayList<String> testData;
     private String username;
     private String hs_name;
+    ListView billList;
 
 
     // TODO: For now it will just display the plain response from the server
@@ -111,7 +115,7 @@ public class Fragment_HS_Home extends android.support.v4.app.Fragment {
          Log.d("a", "a");
 
         /* Get the list view */
-        ListView billList = (ListView) l.findViewById(R.id.listBills);
+        billList = (ListView) l.findViewById(R.id.listBills);
         List<String> testData = new ArrayList<String>();
         testData.add("Bill 1");
         testData.add("Bill 2");
@@ -122,6 +126,14 @@ public class Fragment_HS_Home extends android.support.v4.app.Fragment {
         testData.add("Bill 7");
         testData.add("Bill 8");
         testData.add("Bill 9");
+
+        billList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(getActivity(), HouseShare_Bill.class);
+                startActivity(i);
+            }
+        });
 
         // Create The Adapter with passing ArrayList as 3rd parameter
         ArrayAdapter<String> arrayAdapter =

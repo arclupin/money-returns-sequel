@@ -1,12 +1,13 @@
 package com.ncl.team5.lloydsmockup;
 
+import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class HouseShare_Bill extends ActionBarActivity {
+public class HouseShare_Bill extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

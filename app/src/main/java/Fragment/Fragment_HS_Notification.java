@@ -116,6 +116,13 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("Fragement noti", "resumed");
+
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        if (getArguments() != null) {
