@@ -220,6 +220,24 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <style name="HS_homeview_name" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textColor">@color/hs_home_name</item>
+        <item name="android:textSize">19sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
+    <style name="HS_homeview_description" parent="HS_Search_Description">
+        <item name="android:textColor">@color/hs_home_address_desc</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+        <style name="HS_homeview_address" parent="android:Widget.TextView">
+            <item name="android:textColor">@color/hs_home_address_desc</item>
+        </style>
+
+
 
 
 

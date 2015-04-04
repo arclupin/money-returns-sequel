@@ -35,8 +35,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import HTTPConnect.ConcurrentConnection;
 import HTTPConnect.Connection;
+import HTTPConnect.Request;
+import HTTPConnect.RequestQueue;
 import HTTPConnect.Request_Params;
+import HTTPConnect.Response;
 import HTTPConnect.Responses_Format;
 import Utils.StringUtils;
 
@@ -45,7 +49,7 @@ import Utils.StringUtils;
  * (another fragment that would be invoked in this activity is the notification fragment
  *
  */
-public class Fragment_HS_Home extends android.support.v4.app.Fragment {
+public class Fragment_HS_Home extends Fragment_HS_Abstract {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private String response_content;
@@ -64,16 +68,14 @@ public class Fragment_HS_Home extends android.support.v4.app.Fragment {
 
 
     // TODO: For now it will just display the plain response from the server
-    // need updating later
+    // need udating later
     private static String data;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        username = Houseshare_HomeView.username;
-        hs_name = Houseshare_HomeView.house_name;
-//        username = getArguments().getString("USR");
-//        hs_name = getArguments().getString("HS_NAME");
+        username = getArguments().getString("USR");
+        hs_name = getArguments().getString("HS_NAME");
 
     }
 
@@ -111,8 +113,6 @@ public class Fragment_HS_Home extends android.support.v4.app.Fragment {
          viewAddressText = (TextView) l.findViewById(R.id.viewAddressText);
          viewDescription = (TextView) l.findViewById(R.id.viewAddress);
          loadingIcon = (ProgressBar) l.findViewById(R.id.progressBar);
-
-         Log.d("a", "a");
 
         /* Get the list view */
         billList = (ListView) l.findViewById(R.id.listBills);
@@ -163,6 +163,11 @@ public class Fragment_HS_Home extends android.support.v4.app.Fragment {
         mListener = null;
     }
 
+    @Override
+    public void update() {
+        initialiseData();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -185,22 +190,26 @@ public class Fragment_HS_Home extends android.support.v4.app.Fragment {
         public void onHomeViewCreated(Fragment_HS_Home f);
     }
 
-    public class HomeViewWorker extends Connection {
-        ProgressDialog p;
+    public class HomeViewWorker extends ConcurrentConnection {
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
 
-        public HomeViewWorker(Activity a) {
-            super(a);
+        public HomeViewWorker(Activity a, boolean showDialog) {
+            super(a, showDialog);
         }
 
         @Override
-        protected void onPostExecute(String r) {
-
-            super.onPostExecute(r);
+        protected void onPostExecute(List<Response> responses) {
+            super.onPostExecute(responses);
             loadingIcon.setVisibility(View.GONE);
-            response_content = processInfo(r); // do the processing
+            response_content = processInfo(responses.get(0).getRaw_response()); // do the processing in the home view
+            checkNewNotification(responses.get(1).getRaw_response()); // check for new notification and reflect it on the noti icon
             displayContent();
-              }
+
+           }
     }
 
     // method called when the fragment is called.
@@ -264,11 +273,61 @@ public class Fragment_HS_Home extends android.support.v4.app.Fragment {
      * Initialise data
      */
     private void initialiseData() {
+        Request home_feed_request = new Request(Request.TYPE.POST);
+        home_feed_request.addParam(Request_Params.PARAM_TYPE, Request_Params.VAL_HS_2_FETCH_HOUSE_DETAIL)
+                .addParam(Request_Params.PARAM_USR, username);
 
-        new HomeViewWorker(getActivity()).setMode(Connection.MODE.LONG_TASK)
-                .setDialogMessage("Fetching news")
-                .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_HS_2_FETCH_HOUSE_DETAIL, Request_Params.PARAM_USR, this.username);
+        Request new_noti_check_request = new Request(Request.TYPE.POST);
+        new_noti_check_request.addParam(Request_Params.PARAM_TYPE, Request_Params.VAL_REF_NOTI)
+                .addParam(Request_Params.PARAM_USR, username);
 
+        new HomeViewWorker(getActivity(), false)
+                .execute(new RequestQueue().addRequest(home_feed_request).addRequest(new_noti_check_request).toList());
+
+    }
+
+    public void checkNewNotification(String r) {
+        //TODO complete
+        //Just need to send a simple request asking for the arrival of any new noti, the server will take care of the search
+
+        try {
+            /* Command required to make a payment, takes username, to account, from account, both sort codes and amount
+             * Returns: JSON String */
+//            result = connect.execute(Request_Params.PARAM_TYPE, Request_Params.VAL_REF_NOTI, Request_Params.PARAM_USR, this.username).get();
+//            /* Turns String into JSON object, can throw JSON Exception */
+            JSONObject jo = new JSONObject(r);
+
+            /* Check if the user has timed out */
+            if (jo.getString("expired").equals("true")) {
+
+                /* Display message box and auto logout user */
+                AlertDialog.Builder errorBox = new AlertDialog.Builder(getActivity());
+                final Connection temp_connect = new Connection(getActivity());
+                final String temp_usr = username;
+                errorBox.setMessage("Your session has been timed out, please login again")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                temp_connect.autoLogout(temp_usr);
+                            }
+                        });
+                AlertDialog alert = errorBox.create();
+                alert.show();
+            } else if (jo.getString("status").equals("true")) {
+                ((Fragment_HS_Notification.OnNotificationInteraction) getActivity()).onNewNotiReceived(); // risky ~
+            }
+
+        }
+        /* Catch the exceptions */ catch (JSONException jse) {
+            /* Error in the JSON response */
+            new CustomMessageBox(getActivity(), "There was an error in the server response");
+            jse.printStackTrace();
+        } catch (Exception e) {
+            /* Failsafe if something goes utterly wrong */
+            new CustomMessageBox(getActivity(), "An unknown error occurred");
+            e.printStackTrace();
+        }
     }
 
 

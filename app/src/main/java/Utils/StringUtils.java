@@ -13,7 +13,9 @@ public class StringUtils {
 
     // check whether the field is empty (no characters or all chars are whitespaces)
    public static boolean isFieldEmpty(String input) {
-        return input.trim().isEmpty();
+        if (input == null)
+            return false;
+       return input.trim().isEmpty();
     }
 
    public static Date getDateFromServerDateResponse(String response) {

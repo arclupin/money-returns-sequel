@@ -12,5 +12,9 @@
     <color name="noti_read_bg">#ecf0f1</color>
     <color name="light_green">#2ecc71</color>
     <color name="dark_green">#27ae60</color>
+
+    <color name="hs_home_name">#666666</color>
+    <color name="hs_home_address_desc">#999999</color>
+    <color name="hs_home_bg_light">#fbfbfb</color>
  
 </resources>

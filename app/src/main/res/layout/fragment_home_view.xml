@@ -9,67 +9,49 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/home_view_main_container"
+        android:background="@color/hs_home_bg_light"
+        android:paddingTop="15dp"
+        android:paddingBottom="10dp"
         >
+       <ImageView
+           android:layout_height="wrap_content"
+           android:layout_width="wrap_content"
+           android:id="@+id/group_avatar"
+           android:src="@drawable/boy"
+           android:layout_centerHorizontal="true"
+           android:paddingBottom="15dp"
+           android:paddingTop="10dp"/>
 
 
         <TextView
-            android:layout_width="165dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Loading"
+            android:text=""
             android:id="@+id/viewName"
-            android:textColor="@color/text_color"
-            android:layout_gravity="left|top"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="25dp"
-            android:textStyle="bold" />
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/group_avatar"
+            style="@style/HS_homeview_name"
+
+            />
 
         <TextView
-            android:layout_width="165dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/viewAddressText"
-            android:layout_gravity="left|top"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="40dp" />
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/viewName"
+            style="@style/HS_homeview_address"/>
 
         <TextView
-            android:layout_width="165dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/viewAddress"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="80dp"
-            android:layout_marginBottom="15dp" />
-
-        <view
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            class="View"
-            android:id="@+id/view"
-            android:background="#c0c0c0"
-            android:layout_marginTop="130dp" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageButton"
-            android:background="@android:color/transparent"
-            android:layout_alignTop="@+id/viewName"
-            android:layout_alignRight="@+id/button2"
-            android:layout_alignEnd="@+id/button2"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
-            android:src="@drawable/ic_people"/>
-
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:id="@+id/listBills"
-            android:layout_gravity="center_horizontal|bottom"
-            android:layout_below="@+id/view"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true" />
+            android:layout_below="@id/viewAddressText"
+            android:layout_centerHorizontal="true"
+            style="@style/HS_homeview_description"
+             />
 
         <ProgressBar
             style="?android:attr/progressBarStyleSmall"
@@ -77,13 +59,31 @@
             android:layout_height="wrap_content"
             android:id="@+id/progressBar"
             android:layout_alignTop="@+id/viewAddressText"
-            android:layout_alignLeft="@id/viewName"
-            android:layout_alignStart="@id/viewName"
+android:layout_centerInParent="true"
             android:visibility="visible"
             />
     </RelativeLayout>
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:src="@drawable/horse2"/>
+
+        <!--<ImageButton-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/imageButton"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--android:layout_alignTop="@+id/viewName"-->
+            <!--android:layout_alignRight="@+id/button2"-->
+            <!--android:layout_alignEnd="@+id/button2"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:layout_marginTop="5dp"-->
+            <!--android:src="@drawable/ic_people"/>-->
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:id="@+id/listBills"
+            android:layout_gravity="center_horizontal|bottom"
+         />
+
+
+
+
 </LinearLayout>

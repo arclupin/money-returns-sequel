@@ -4,20 +4,40 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
+import android.view.ViewGroup;
 
 import com.ncl.team5.lloydsmockup.Houseshare_HomeView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Thanh on 01-Apr-15.
  */
 public class HS_Home_FragPagerAdapter extends FragmentStatePagerAdapter {
 
+    private String username;
+    private String hs_name;
+
     public static final int FRAGS = 2;
+
+    public Map<Integer, String> getTags() {
+        return tags;
+    }
+
+    private Map<Integer, String> tags = new HashMap<Integer, String>();
 
     public HS_Home_FragPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
+    public HS_Home_FragPagerAdapter(FragmentManager fm, String username, String hs_name) {
+        super(fm);
+        this.username = username;
+        this.hs_name = hs_name;
+
+    }
 
     /**
      * Return the Fragment associated with a specified position.
@@ -28,10 +48,10 @@ public class HS_Home_FragPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0: {
-                return Fragment_HS_Home.newInstance(Houseshare_HomeView.username, Houseshare_HomeView.house_name);
+                return Fragment_HS_Home.newInstance(username, hs_name);
             }
             case 1: {
-                return Fragment_HS_Notification.newInstance(Houseshare_HomeView.username, Houseshare_HomeView.house_name);
+                return Fragment_HS_Notification.newInstance(username, hs_name);
             }
             default: {
                 return null;
@@ -51,5 +71,17 @@ public class HS_Home_FragPagerAdapter extends FragmentStatePagerAdapter {
     public int getItemPosition(Object item) {
         Fragment fragment = (Fragment) item;
             return POSITION_NONE;
+    }
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        Object o = super.instantiateItem(container, position);
+            // record the fragment tag here.
+        Log.d("instantiate", o.toString());
+            Fragment f = (Fragment) o;
+            String tag = f.getTag();
+            tags.put(position, tag);
+        return o;
+
     }
 }

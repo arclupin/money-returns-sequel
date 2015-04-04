@@ -6,7 +6,7 @@
     android:clickable="true"
    >
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:paddingLeft="10dp"
+    android:paddingLeft="20dp"
     android:paddingRight="10dp"
 
     android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
     android:layout_height="wrap_content"
         android:paddingBottom="15dp"
     android:layout_below="@id/noti_join_req_admin_name"
-        android:layout_alignLeft="@id/noti_join_req_admin_name"
+        android:layout_alignParentLeft="true"
         android:id="@+id/buttons_container">
 
 

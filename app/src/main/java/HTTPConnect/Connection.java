@@ -53,14 +53,14 @@ import Utils.Utilities;
 public class Connection extends AsyncTask <String, Void, String>  {
 
     /* String to store the web address as a constant */
-    private final String URL = "http://homepages.cs.ncl.ac.uk/2014-15/csc2022_team5/PHP/main.php";
+    public static final String URL = "http://homepages.cs.ncl.ac.uk/2014-15/csc2022_team5/PHP/main.php";
     private HttpClient httpclient = new DefaultHttpClient();
     private CookieStore cookies;
     private HttpContext context = new BasicHttpContext();
     private Activity a;
 
     private MODE mode = MODE.SHORT_TASK;
-    public static enum MODE {SHORT_TASK, LONG_TASK};
+    public static enum MODE {SHORT_TASK, LONG_TASK, LONG_NO_DIALOG_TASK};
 
     public ProgressDialog getD() {
         return d;
@@ -70,7 +70,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
     private String text_dialog;
 
     private long expected_end_time;
-    public static final long EXPECTED_DURATION_LONG_TASK = 2000; // 2 seconds is the appropriate choice for long task I guess.
+    public static final long EXPECTED_DURATION_LONG_TASK = 1000; // 1 seconds is the appropriate choice for long task I guess.
     public Connection(Activity a) {
         this.a = a;
     }
@@ -86,14 +86,16 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
     @Override
     protected void onPreExecute() {
+        if (mode == MODE.LONG_NO_DIALOG_TASK || mode == MODE.LONG_TASK)
+            expected_end_time = System.currentTimeMillis() + EXPECTED_DURATION_LONG_TASK;
+        else
+            expected_end_time = System.currentTimeMillis(); // unachievable :P
         if (mode == MODE.LONG_TASK) {
             d = new ProgressDialog(a);
             d.setMessage( text_dialog != null ? text_dialog : "Processing small task");
             d.show();
-            expected_end_time = System.currentTimeMillis() + EXPECTED_DURATION_LONG_TASK;
         }
-        else
-            expected_end_time = System.currentTimeMillis();
+
     }
 
     @Override

@@ -1,48 +1,38 @@
 package Fragment;
 
-import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.test.suitebuilder.annotation.SmallTest;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.ncl.team5.lloydsmockup.CustomMessageBox;
-import com.ncl.team5.lloydsmockup.Houseshare_HomeView;
 import com.ncl.team5.lloydsmockup.R;
-import com.squareup.otto.Bus;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import HTTPConnect.Connection;
 import HTTPConnect.Notification;
 import HTTPConnect.Request_Params;
 import HTTPConnect.Responses_Format;
-import Utils.Animation;
-import Utils.StringUtils;
 import Utils.Utilities;
 
 /**
@@ -50,7 +40,7 @@ import Utils.Utilities;
  * (another fragment that would be invoked in this activity is the notification fragment
  *
  */
-public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
+public class Fragment_HS_Notification extends Fragment_HS_Abstract {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_DATA = "total_data";
@@ -60,13 +50,16 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
     private static String username;
     private static String hs_name;
     private static List<Notification> data;
-    private OnFragmentInteractionListener_Notification mListener;
-    private TableLayout l;
-    private ViewGroup container;
+    private OnNotificationInteraction mListener;
+    private TableLayout mTable;
+    private ProgressBar loading_icon;
+    private RelativeLayout mLayoutContainer;
+
+    private static enum UI_WORK_TYPE {MAIN};
 
 
-    public TableLayout getL() {
-        return l;
+    public TableLayout getmTable() {
+        return mTable;
     }
 
     public static Fragment_HS_Notification newInstance(String username, String hs_name) {
@@ -78,8 +71,67 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
         return f;
     }
 
+//    class UIWorker extends AsyncTask<UI_WORK_TYPE, Void, Boolean> {
+//
+//
+//        @Override
+//        protected void onPreExecute() {
+//            loading_icon.setVisibility(View.VISIBLE);
+//        }
+//
+//        /**
+//         * Override this method to perform a computation on a background thread. The
+//         * specified parameters are the parameters passed to {@link #execute}
+//         * by the caller of this task.
+//         * <p/>
+//         * This method can call {@link #publishProgress} to publish updates
+//         * on the UI thread.
+//         *
+//         * @param params The parameters of the task.
+//         * @return A result, defined by the subclass of this task.
+//         * @see #onPreExecute()
+//         * @see #onPostExecute
+//         * @see #publishProgress
+//         */
+//        @Override
+//        protected Boolean doInBackground(UI_WORK_TYPE... params) {
+//            switch (params[0]) {
+//                case MAIN:{
+//
+//                    // must wrap the work involving the ui inside runOnUiThread otherwise it would throw an exception that
+//                    // the current thread can't touch view it hasnt created.
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            makeUI();
+//                        }
+//                    });
+//
+//                    break;
+//                }
+//            }
+//            return true;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Boolean result) {
+//            loading_icon.setVisibility(View.GONE);
+//        }
+//    }
+
+    /**
+     * By default the fragments in pager are not updated when switched to.
+     * So use this method to achieve this
+     */
+    @Override
+    public void update() {
+            new NotificationWorker(getActivity())
+                    .setMode(NOTI_WORK.FETCH_UPDATE)
+                    .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_FETCH_NOTI, Request_Params.PARAM_USR, username);
+    }
+
     public static enum NOTI_WORK {
-        CHECK, FETCH, SEEN, WELCOME, REFUSE
+        CHECK, FETCH, SEEN, WELCOME, REFUSE, FETCH_UPDATE
     }
 
 
@@ -92,8 +144,16 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
         }
 
         @Override
+        protected String doInBackground(String... params) {
+            return super.doInBackground(params);
+        }
+
+        @Override
         protected void onPreExecute(){
-            setMode(MODE.SHORT_TASK);
+            setMode(MODE.LONG_NO_DIALOG_TASK);
+            if (mode == NOTI_WORK.FETCH_UPDATE) {
+                loading_icon.setVisibility(View.VISIBLE);
+            }
         }
 
         public NotificationWorker(Activity a) {
@@ -103,6 +163,13 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
         @Override
         protected void onPostExecute(String r) {
             super.onPostExecute(r);
+
+            if (mode == NOTI_WORK.FETCH_UPDATE) {
+                fetchNotifications(r);
+                loading_icon.setVisibility(View.GONE);
+                makeUI();
+            }
+
 
 
         }
@@ -115,44 +182,34 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
         // Required empty public constructor
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d("Fragement noti", "resumed");
-
-    }
+public interface OnNotificationInteraction {
+    public void onNewNotiReceived();
+}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
+        username = getArguments().getString("USR");
+        hs_name = getArguments().getString("HS_NAME");
+
+//        Log.d("on create noti", username);
+//        try {
+//            String n =  new NotificationWorker(getActivity())
+//                    .setMode(NOTI_WORK.FETCH)
+//                    .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_REF_NOTI, Request_Params.PARAM_USR, username).get();
+//            checkNewNotification(n);
+//
+//            String r =  new NotificationWorker(getActivity())
+//                    .setMode(NOTI_WORK.FETCH)
+//                    .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_FETCH_NOTI, Request_Params.PARAM_USR, username).get();
+//            fetchNotifications(r);
 //        }
-//        String dat =  mListener.onNotificationViewSelected(this);
-//        Log.d("notification", dat);
-//        if (!StringUtils.isFieldEmpty(dat)) // I guess doing this would help that even if the user loses internet connection they still can be able to see the previous state of the home view.
-//            data = dat;
-
-//        username = getArguments().getString("USR");
-//        hs_name = getArguments().getString("HS_NAME");
-        username = Houseshare_HomeView.username;
-        hs_name = Houseshare_HomeView.house_name;
-
-
-        Log.d("on create noti", username);
-//        new NotificationWorker(getActivity())
-//               .setMode(NOTI_WORK.FETCH)
-//               .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_FETCH_NOTI, Request_Params.PARAM_USR, username);
-        try {
-            String r =  new NotificationWorker(getActivity())
-                    .setMode(NOTI_WORK.FETCH)
-                    .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_FETCH_NOTI, Request_Params.PARAM_USR, username).get();
-            fetchNotifications(r);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        Bus b = new Bus();
+//        catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        }
+//        Bus b = new Bus();
 
 
     }
@@ -162,69 +219,17 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        l = (TableLayout) getActivity().getLayoutInflater().inflate(R.layout.fragment_hs_notification, container, false);
-        for (int i = 0; i < data.size(); i++) {
-            Log.d("data", data.get(i).getAdditional_params().get(Notification.HSID_POS));
-            View v = data.get(i).makeNotiRow(getActivity());
-            Log.d("rows", v.toString());
-            final TextView a = (TextView) v.findViewById(R.id.noti_join_req_admin_name);
+        mLayoutContainer = (RelativeLayout) inflater.inflate(R.layout.fragment_hs_notification, container, false);
+        mTable = (TableLayout) mLayoutContainer.findViewById(R.id.hs_notification_table);
+        loading_icon = (ProgressBar) mLayoutContainer.findViewById(R.id.noti_loading_icon);
+        checkEmptyNotification(this);
 
-
-            final String noti_id = data.get(i).getId();
-            TextView welcome_button = (TextView) v.findViewById(R.id.ok);
-            welcome_button.setClickable(true);
-            welcome_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    mListener.onWelcomeButtonClicked(Fragment_HS_Notification.this, a.getText().toString(), noti_id );
-                    TableRow t = (TableRow) v.getParent().getParent().getParent(); // looks quite odd
-                    Log.d("row on click", t.toString());
-                    l.removeView(t);
-
-                }
-            });
-
-            TextView cancel_button = (TextView) v.findViewById(R.id.refuse);
-            cancel_button.setClickable(true);
-            cancel_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    mListener.onRefuseButtonClicked(Fragment_HS_Notification.this, a.getText().toString(), noti_id);
-                    TableRow t = (TableRow) v.getParent().getParent().getParent();
-                    Log.d("row on click", t.toString());
-                    l.removeView(t);
-
-                }
-            });
-            l.addView(v, i);
-
-
-
-        }
-        l.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                checkEmptyNotification(Fragment_HS_Notification.this);
-            }
-        });
-        checkEmptyNotification(Fragment_HS_Notification.this);
-//
-//        if (newNoti) {
-//
-//        }
-
-//        tv.setText(data);
-        return l;
+        return mLayoutContainer;
     }
 
-    @Override
-         public void onStop() {
-        super.onStop();
-//        Animation.fade_out(getActivity().findViewById(R.id.layout_hs_notification_container), getActivity(), Animation.SHORT, Animation.POST_EFFECT.PERMANENTLY);
-    }
 
     public int findNotiUsingID(String id) {
-        for (int i = 0; i <  l.getChildCount(); i++) {
+        for (int i = 0; i <  mTable.getChildCount(); i++) {
             if (id.equals(data.get(i).getId())) {
                 return i;
             }
@@ -247,12 +252,12 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-//        try {
-//            mListener = (OnFragmentInteractionListener_Notification) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener_Notification");
-//        }
+        try {
+            mListener = (OnNotificationInteraction) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnNotificationInteraction");
+        }
     }
 
     @Override
@@ -261,36 +266,7 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
 //        mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener_Notification {
-        // TODO: Update argument type and name
 
-        /**
-         * method called when the notification fragment is created (fetch data from server) <br/>
-         * NOTE: there are various solutions to this.
-         *
-         * @param f the fragment
-         */
-        public List<Notification> onNotificationViewSelected(Fragment_HS_Notification f) throws ParseException;
-
-        public void onNotificationsSeen(Fragment_HS_Notification f);
-
-        public void onWelcomeButtonClicked(Fragment_HS_Notification f, String name, String noti_id);
-
-        public void onRefuseButtonClicked(Fragment_HS_Notification f, String name, String noti_id);
-
-        public void checkEmptyNotification(Fragment_HS_Notification f);
-
-    }
 
     /**
      * this method just check if there is any new notification, it does not fetch any notification
@@ -330,9 +306,7 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
                 AlertDialog alert = errorBox.create();
                 alert.show();
             } else if (jo.getString("status").equals("true")) {
-//                hasNewNoti = true;
-            } else if (jo.getString("status").equals("false")) {
-//                hasNewNoti = false;
+                mListener.onNewNotiReceived();
             }
 
         }
@@ -415,10 +389,7 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
             new CustomMessageBox(getActivity(), "An unknown error occurred");
             e.printStackTrace();
         }
-
         data = l;
-
-
     }
 
 
@@ -496,12 +467,59 @@ public class Fragment_HS_Notification extends android.support.v4.app.Fragment {
 
     public void checkEmptyNotification(Fragment_HS_Notification f) {
         if (f.isVisible()) {
-            if (l.getChildCount() == 0) {
+            if (mTable.getChildCount() == 0) {
                 LayoutInflater i = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                TableRow v = (TableRow) i.inflate(R.layout.hs_noti_empty, l, false);
-                l.addView(v);
+                TableRow v = (TableRow) i.inflate(R.layout.hs_noti_empty, null);
+                mTable.addView(v);
             }
         }
+    }
+
+    private void makeUI() {
+        mTable.removeAllViews();
+        for (int i = 0; i < data.size(); i++) {
+            Log.d("data", data.get(i).getAdditional_params().get(Notification.HSID_POS));
+            View v = data.get(i).makeNotiRow(getActivity());
+            Log.d("rows", v.toString());
+            final TextView a = (TextView) v.findViewById(R.id.noti_join_req_admin_name);
+            final String noti_id = data.get(i).getId();
+            TextView welcome_button = (TextView) v.findViewById(R.id.ok);
+            welcome_button.setClickable(true);
+            welcome_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    mListener.onWelcomeButtonClicked(Fragment_HS_Notification.this, a.getText().toString(), noti_id );
+                    TableRow t = (TableRow) v.getParent().getParent().getParent(); // looks quite odd
+                    Log.d("row on click", t.toString());
+                    mTable.removeView(t);
+
+                }
+            });
+
+            TextView cancel_button = (TextView) v.findViewById(R.id.refuse);
+            cancel_button.setClickable(true);
+            cancel_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    mListener.onRefuseButtonClicked(Fragment_HS_Notification.this, a.getText().toString(), noti_id);
+                    TableRow t = (TableRow) v.getParent().getParent().getParent();
+                    Log.d("row on click", t.toString());
+                    mTable.removeView(t);
+
+                }
+            });
+            mTable.addView(v, i);
+
+
+
+        }
+        mTable.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                checkEmptyNotification(Fragment_HS_Notification.this);
+            }
+        });
+        checkEmptyNotification(Fragment_HS_Notification.this);
     }
 
     }
