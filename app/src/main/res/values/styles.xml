@@ -9,6 +9,7 @@
         <item name="android:actionBarTabStyle">@style/tab_style</item>
         <item name="android:actionBarTabBarStyle">@style/tab_bar_style</item>
         <item name="android:textColor">@color/text_color</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
     </style>
 
     <!-- Base application theme 2. -->
@@ -237,6 +238,10 @@
             <item name="android:textColor">@color/hs_home_address_desc</item>
         </style>
 
+    <style name="WindowAnimationTransition">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
 
 
 

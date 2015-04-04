@@ -148,7 +148,8 @@
             android:name=".Houseshare_HomeView"
             android:label="@string/title_activity_houseshare__home_view"
             android:theme="@style/AppTheme2"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity">
         </activity>
         <activity
             android:name=".HouseShare_Bill"

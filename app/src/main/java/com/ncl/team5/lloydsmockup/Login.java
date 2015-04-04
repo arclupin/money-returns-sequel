@@ -21,6 +21,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ViewFlipper;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import HTTPConnect.Connection;
@@ -35,9 +36,12 @@ public class Login extends Activity {
     private String password;
 
     private ViewFlipper slider;
-    private boolean netProbs = false;
-    private boolean warning = false;
-    private boolean locked = false;
+
+    private static final int OKAY = 0;
+    private static final int WRONG = 1;
+    private static final int WARNING = 2;
+    private static final int LOCKED = 3;
+    private static final int NETPROBS = 4;
     private String date = "";
 
 
@@ -54,8 +58,17 @@ public class Login extends Activity {
 
         @Override
         public void onPostExecute(String r) {
+            int status = 4;
+            try {
+               status = new JSONObject(r).getInt("status");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             super.onPostExecute(r);
-            authenticate(r);
+            authenticate(status);
+
+
+
         }
     }
 
@@ -152,9 +165,9 @@ public class Login extends Activity {
     /**
      * parse the json response and act accordingly
      *
-     * @param result the server response from the authenticator
+     * @param status the server response from the authenticator
      */
-    private void authenticate(String result) {
+    private void authenticate(int status) {
         /* This is where the application would go out to the server to
          * authenticate the username and password_field combination. The server
          * should then return true or false as to whether the combination is
@@ -162,7 +175,7 @@ public class Login extends Activity {
          * also used to authenticate.
          */
         // Need this for the exceptions that are throw (there are many!)
-        try {
+
             /* This is where the main action happens. This is where the connection is
              * started, which will run in the background, and then wait for it to finish
              * and gets its result. This is then evaluated (as it returns a boolean)
@@ -176,50 +189,49 @@ public class Login extends Activity {
 
             /* Ok, this look a bit weird... i mean it returns string right! should it not be boolean??
              * Well, if it returns 4 different messages from the server, not just true or false */
-            if (result.equals("false")) {
-                new CustomMessageBox(this, "Incorrect Username and Password Combination.");
+                switch (status) {
+                    case OKAY: {
+                        Intent i = new Intent(this, MainActivity.class);
+                        i.putExtra("ACCOUNT_USERNAME", username);
+                        i.putExtra("DATE", date);
+                        startActivity(i);
+                        break;
+                    }
+                    case WARNING: {
+                        AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+                        errorBox.setMessage("Warning: one attempt remaining")
+                                .setCancelable(false)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                        AlertDialog alert = errorBox.create();
+                        alert.show();
+                        break;
+                    }
+                    case LOCKED: {
+                        AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
+                        errorBox.setMessage("Too many login attempts, Please contact your bank to unlock your application")
+                                .setCancelable(false)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                        AlertDialog alert = errorBox.create();
+                        alert.show();
+                        break;
+                    }
 
-            } else {
-                JSONObject jo = new JSONObject(result);
-                if (jo.getString("status").equals("true")) {
-                    date = jo.getString("last_login");
-                    Intent i = new Intent(this, MainActivity.class);
-                    i.putExtra("ACCOUNT_USERNAME", username);
-                    i.putExtra("DATE", date);
-                    startActivity(i);
-                } else if (jo.getString("status").equals("warning")) {
-                    AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-                    errorBox.setMessage("Warning: one attempt remaining")
-                            .setCancelable(false)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-                    AlertDialog alert = errorBox.create();
-                    alert.show();
-                } else if (jo.getString("status").equals("locked")) {
-                    AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-                    errorBox.setMessage("Too many login attempts, Please contact your bank to unlock your application")
-                            .setCancelable(false)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-                    AlertDialog alert = errorBox.create();
-                    alert.show();
-                } else {
-                    new CustomMessageBox(this, "Something wrong with the server. Please try again");
+                    case WRONG: {
+                        new CustomMessageBox(this, "Incorrect Username and Password Combination.");
+                    }
+
+                    default:{
+                            new CustomMessageBox(this, "Something wrong. Please try again");
+                    }
                 }
-            }
-        } catch (Exception e) {
-            //If network problems are detected, return false but dont increment the counter for failed attempts
-            Log.e("error login unknown", e.getMessage(), e);
-            new CustomMessageBox(this, "Something wrong. Please try again");
-        }
-
-
     }
 
     // This removes the text in the text boxes when the focus comes back to this app..
