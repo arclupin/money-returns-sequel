@@ -1,22 +1,18 @@
 package Fragment;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -25,7 +21,6 @@ import android.widget.TextView;
 
 import com.ncl.team5.lloydsmockup.CustomMessageBox;
 import com.ncl.team5.lloydsmockup.HouseShare_Bill;
-import com.ncl.team5.lloydsmockup.Houseshare_HomeView;
 import com.ncl.team5.lloydsmockup.R;
 
 import org.json.JSONArray;
@@ -52,18 +47,21 @@ import Utils.StringUtils;
 public class Fragment_HS_Home extends Fragment_HS_Abstract {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private String username;
+    private String hs_name;
+    private String view_type;
+
+
     private String response_content;
     private TextView viewName;
     private TextView viewAddressText;
     private TextView viewDescription;
-
-    private LinearLayout l;
+    private RelativeLayout l;
     private RelativeLayout main_view_container;
     private ProgressBar loadingIcon;
+    private ImageView avatar;
     /* Used for the list view */
     private ArrayList<String> testData;
-    private String username;
-    private String hs_name;
     ListView billList;
 
 
@@ -76,6 +74,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         super.onCreate(savedInstanceState);
         username = getArguments().getString("USR");
         hs_name = getArguments().getString("HS_NAME");
+        view_type = getArguments().getString("TYPE");
 
     }
 
@@ -88,11 +87,12 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
      *
      */
     // TODO: Rename and change types and number of parameters
-    public static Fragment_HS_Home newInstance(String username, String house_name) {
+    public static Fragment_HS_Home newInstance(String username, String house_name, String view_type) {
         Fragment_HS_Home fragment = new Fragment_HS_Home();
         Bundle args = new Bundle();
         args.putString("USR", username);
         args.putString("HS_NAME", house_name);
+        args.putString("TYPE", view_type);
         fragment.setArguments(args);
         return fragment;
     }
@@ -106,42 +106,61 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         super.onCreateView(inflater, container, savedInstanceState);
-        l  = (LinearLayout) inflater.inflate(R.layout.fragment_home_view, container, false);
+        l  = (RelativeLayout) inflater.inflate(R.layout.fragment_home_view, container, false);
 
          main_view_container = (RelativeLayout) l.findViewById(R.id.home_view_main_container);
+         avatar = (ImageView) l.findViewById(R.id.group_avatar);
          viewName = (TextView) l.findViewById(R.id.viewName);
          viewAddressText = (TextView) l.findViewById(R.id.viewAddressText);
          viewDescription = (TextView) l.findViewById(R.id.viewAddress);
          loadingIcon = (ProgressBar) l.findViewById(R.id.progressBar);
 
+        if (view_type.equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE)) {
+            //TODO real bills come here
         /* Get the list view */
-        billList = (ListView) l.findViewById(R.id.listBills);
-        List<String> testData = new ArrayList<String>();
-        testData.add("Bill 1");
-        testData.add("Bill 2");
-        testData.add("Bill 3");
-        testData.add("Bill 4");
-        testData.add("Bill 5");
-        testData.add("Bill 6");
-        testData.add("Bill 7");
-        testData.add("Bill 8");
-        testData.add("Bill 9");
+            billList = (ListView) l.findViewById(R.id.listBills);
+            List<String> testData = new ArrayList<String>();
+            testData.add("Bill 1");
+            testData.add("Bill 2");
+            testData.add("Bill 3");
+            testData.add("Bill 4");
+            testData.add("Bill 5");
+            testData.add("Bill 6");
+            testData.add("Bill 7");
+            testData.add("Bill 8");
+            testData.add("Bill 9");
 
-        billList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getActivity(), HouseShare_Bill.class);
-                startActivity(i);
-            }
-        });
+            billList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent i = new Intent(getActivity(), HouseShare_Bill.class);
+                    startActivity(i);
+                }
+            });
 
-        // Create The Adapter with passing ArrayList as 3rd parameter
-        ArrayAdapter<String> arrayAdapter =
-                new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, testData);
-        // Set The Adapter
-        billList.setAdapter(arrayAdapter);
+            // Create The Adapter with passing ArrayList as 3rd parameter
+            ArrayAdapter<String> arrayAdapter =
+                    new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, testData);
+            // Set The Adapter
+            billList.setAdapter(arrayAdapter);
+            initialiseData();
+        }
 
-        initialiseData();
+        else if (view_type.equals(Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ)) {
+
+            l.setBackgroundColor(getResources().getColor(R.color.hs_home_bg_light));
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.CENTER_VERTICAL);
+            params.setMargins(0, -100, 0, 0); // move the whole thing a bit up
+            main_view_container.setLayoutParams(params);
+
+            viewName.setText(hs_name);
+            viewAddressText.setPadding(20, 20, 20, 20);
+            viewAddressText.setText("Your request to this house has been sent.\nThe admin is considering your request.\n Hang in there. :)");
+            avatar.setImageDrawable(getResources().getDrawable(R.drawable.lock));
+        }
 
         return l;
     }
@@ -165,7 +184,10 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
 
     @Override
     public void update() {
-        initialiseData();
+        // only update date when the user has joined a house
+        // because the view of the other type (sent-request type) need not updating
+        if (view_type.equals(Request_Params.VAL_HS_JOIN_GROUP))
+             initialiseData();
     }
 
     /**
@@ -207,8 +229,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
             loadingIcon.setVisibility(View.GONE);
             response_content = processInfo(responses.get(0).getRaw_response()); // do the processing in the home view
             checkNewNotification(responses.get(1).getRaw_response()); // check for new notification and reflect it on the noti icon
-            displayContent();
-
+            displayHomeViewContent();
            }
     }
 
@@ -254,13 +275,17 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         return content;
     }
 
-    public void displayContent() {
+    /**
+     * called to set the home view content, provided that user has joined a house
+     */
+    public void displayHomeViewContent() {
         Log.d("response", response_content);
         try {
             JSONArray house_Array = new JSONObject(response_content).getJSONArray("basic_info");
             viewName.setText(house_Array.getString(0));
             viewAddressText.setText(StringUtils.implode(" ", house_Array.getString(1), house_Array.getString(2), house_Array.getString(3)));
             viewDescription.setText(house_Array.getString(house_Array.length() - 1));
+            avatar.setImageDrawable(getResources().getDrawable(R.drawable.boy));
 
             //TODO Set up the bill
         }
@@ -269,10 +294,18 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         }
     }
 
+//    /**
+//     * called to set the pending page, provided that user has sent a request
+//     */
+//    public void displayPendingContent() {
+//        avatar.setImageDrawable(getResources().getDrawable(R.drawable.boy));
+//    }
+
     /**
      * Initialise data
      */
     private void initialiseData() {
+
         Request home_feed_request = new Request(Request.TYPE.POST);
         home_feed_request.addParam(Request_Params.PARAM_TYPE, Request_Params.VAL_HS_2_FETCH_HOUSE_DETAIL)
                 .addParam(Request_Params.PARAM_USR, username);

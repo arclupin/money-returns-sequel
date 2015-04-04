@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,7 +19,6 @@
            android:layout_height="wrap_content"
            android:layout_width="wrap_content"
            android:id="@+id/group_avatar"
-           android:src="@drawable/boy"
            android:layout_centerHorizontal="true"
            android:paddingBottom="15dp"
            android:paddingTop="10dp"/>
@@ -33,6 +32,9 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/group_avatar"
             style="@style/HS_homeview_name"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:gravity="center_horizontal"
 
             />
 
@@ -42,7 +44,10 @@
             android:id="@+id/viewAddressText"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/viewName"
-            style="@style/HS_homeview_address"/>
+            style="@style/HS_homeview_address"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:gravity="center_horizontal"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -51,6 +56,9 @@
             android:layout_below="@id/viewAddressText"
             android:layout_centerHorizontal="true"
             style="@style/HS_homeview_description"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:gravity="center_horizontal"
              />
 
         <ProgressBar
@@ -59,8 +67,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/progressBar"
             android:layout_alignTop="@+id/viewAddressText"
-android:layout_centerInParent="true"
-            android:visibility="visible"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
             />
     </RelativeLayout>
 
@@ -81,9 +89,10 @@ android:layout_centerInParent="true"
             android:layout_height="fill_parent"
             android:id="@+id/listBills"
             android:layout_gravity="center_horizontal|bottom"
+            android:layout_below="@+id/home_view_main_container"
          />
 
 
 
 
-</LinearLayout>
+</RelativeLayout>

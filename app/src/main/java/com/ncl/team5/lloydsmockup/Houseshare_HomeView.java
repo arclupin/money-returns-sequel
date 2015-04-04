@@ -1,66 +1,47 @@
 package com.ncl.team5.lloydsmockup;
 
 import android.app.ActionBar;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import Fragment.Fragment_HS_Abstract;
 import Fragment.Fragment_HS_Home;
 import Fragment.Fragment_HS_Notification;
 import Fragment.HS_Home_FragPagerAdapter;
 import HTTPConnect.Connection;
-import HTTPConnect.Notification;
 import HTTPConnect.Request_Params;
 import HTTPConnect.Responses_Format;
-import Utils.StringUtils;
-import Utils.Utilities;
 
 /**
  * Class providing the home view for the house share service
  */
 public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS_Home.OnFragmentInteractionListener_HomeView, ActionBar.TabListener, Fragment_HS_Notification.OnNotificationInteraction {
     private FragmentManager fragmentManager;
-    public static String house_name;
-    public static String username;
+
+    private String house_name;
+    private String username;
+    private String view_type; // joined house or sent request?
+
     private Intent i;
+    private Menu menu;
     private HS_Home_FragPagerAdapter mAdapter;
     private ViewPager pager;
     private  ActionBar actionBar;
     private LinearLayout l;
 
-    private boolean hasNewNoti;
     private static final int HOME_VIEW_TAB_POSITION = 0;
     private static final int NOTIFICATION_TAB = 1;
 
@@ -81,13 +62,17 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
                 actionBar.setSplitBackgroundDrawable(new ColorDrawable((getResources().getColor(R.color.dark_green))));
 
             i = getIntent();
-            if (i != null && i.getExtras().getString("ACCOUNT_USERNAME") != null)
-                username = i.getExtras().getString("ACCOUNT_USERNAME");
-            if (i != null && i.getExtras().getString("HOUSE_NAME") != null)
-                house_name = i.getExtras().getString("HOUSE_NAME");
+            if (i != null) {
+                if (i.getExtras().getString("ACCOUNT_USERNAME") != null)
+                    username = i.getExtras().getString("ACCOUNT_USERNAME");
+                if (i != null && i.getExtras().getString("HOUSE_NAME") != null)
+                    house_name = i.getExtras().getString("HOUSE_NAME");
+                if (i != null && i.getExtras().getString("TYPE") != null)
+                    view_type = i.getExtras().getString("TYPE");
+            }
 
             fragmentManager = getSupportFragmentManager();
-            mAdapter = new HS_Home_FragPagerAdapter(fragmentManager, username, house_name);
+            mAdapter = new HS_Home_FragPagerAdapter(fragmentManager, username, house_name, view_type);
             pager = (ViewPager) findViewById(R.id.home_view_pager);
             pager.setAdapter(mAdapter);
             pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -124,7 +109,12 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         noti_listener = (Fragment_HS_Notification) fragmentManager.getFragments().get(1);
-        getMenuInflater().inflate(R.menu.menu_houseshare__home_view, menu);
+        if (view_type.equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE))
+             getMenuInflater().inflate(R.menu.menu_houseshare__home_view, menu);
+        else if (view_type.equals(Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ)){
+             getMenuInflater().inflate(R.menu.menu_homeview_search, menu);
+        }
+        this.menu = menu;
         return true;
     }
 
@@ -135,14 +125,24 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_hs_new_bill) {
-
-            Toast.makeText(this, "Id" + actionBar.getHeight(), Toast.LENGTH_LONG).show();
-            for (Map.Entry<Integer, String> entry : mAdapter.getTags().entrySet()) {
-                Log.d("Frag entry" , entry.getKey() + ": " + entry.getValue());
-            }
+       switch (id){
+           case R.id.action_hs_new_bill: {
+               Toast.makeText(this, "Id" + actionBar.getHeight(), Toast.LENGTH_LONG).show();
+               for (Map.Entry<Integer, String> entry : mAdapter.getTags().entrySet()) {
+                   Log.d("Frag entry", entry.getKey() + ": " + entry.getValue());
+               }
+           }
+           case R.id.search: {
+               Log.d("search item", "clicked");
+               Intent i = new Intent(this, Houseshare_Search.class);
+               i.putExtra("ACCOUNT_USERNAME", username);
+               i.putExtra("HOUSE_NAME", house_name);
+               startActivity(i);
+           }
             return true;
         }
+
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -204,7 +204,7 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
         if (tab.getPosition() == 1) {
 
             tab.setIcon(R.drawable.hs_tab_noti);
-            hasNewNoti = false;
+
         }
     }
 

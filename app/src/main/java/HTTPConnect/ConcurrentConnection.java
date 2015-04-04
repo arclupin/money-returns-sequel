@@ -66,7 +66,7 @@ public class ConcurrentConnection extends AsyncTask<List<Request>, Void, List<Re
      */
     @Override
     protected List<Response> doInBackground(List<Request>... params) {
-        assert params.length == 1; // some assertion to make sure only 1 list added.
+        assert params.length == 1; // an assertion to make sure only 1 list is added.
 
         List<Request> requests = params[0];
         List<Response> responses = new ArrayList<Response>();

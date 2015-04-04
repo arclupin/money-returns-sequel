@@ -30,6 +30,7 @@ import java.util.List;
 
 import HTTPConnect.Connection;
 import HTTPConnect.Request_Params;
+import HTTPConnect.Response;
 import HTTPConnect.Responses_Format;
 
 
@@ -409,7 +410,7 @@ public class MainActivity extends Activity {
             // TODO unfinished, the server will send a more detailed message i.e. 'registered and joined house' or 'registered and not joined house'
             else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_NOT_JOINED)) { // if not registered -> redirect to the welcome page
                 //need to see how the progress dialog works so also need to delay the start of the homeview activity.
-hs_intents(Houseshare_Welcome.class, "");
+                hs_intents(Houseshare_Welcome.class, "");
                 //150ms offset so that the dialog would not lag (if this was the same as in the Connection (2000s)
                 // then we might end up having 2 tasks to be posted at nearly the same time => the dialog might get interrupted resulting in a graphic lag when it disappears
                 // (my guess) - could use some other function to put this task right after the dialog task (which I dont know).
@@ -418,18 +419,23 @@ hs_intents(Houseshare_Welcome.class, "");
                 hs_intents(Houseshare_Search.class, "");
 
             }
+
+
             // TODO unfinished, the server will send a more detailed message i.e.
 
 
             else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE)) { // else if joined a house -> redirect to main home page
 //                    Toast.makeText(this, "Registered, Joined house, To redirect to main page", Toast.LENGTH_SHORT).show();
                 final String hs_name = jo.getString(Responses_Format.RESPONSE_HS_CONTENT);
-//                    Handler handler = new Handler();
-//                    handler.postDelayed(new Runnable() {
-//                        public void run() {
-                hs_intents(Houseshare_HomeView.class, hs_name);
-//                        }}, 2150);
-            } else {
+                hs_intents_home_view(Houseshare_HomeView.class, Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE, hs_name);
+
+            }
+            else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ)){
+                final String hs_name = jo.getString(Responses_Format.RESPONSE_HS_CONTENT);
+                hs_intents_home_view(Houseshare_HomeView.class, Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ, hs_name);
+//
+            }
+            else {
                 Toast.makeText(MainActivity.this, "Some unknown error on the houseshare service on the server", Toast.LENGTH_SHORT).show();
             }
             /* There was an error indide the status return field, display appropriate error message */
@@ -453,7 +459,15 @@ hs_intents(Houseshare_Welcome.class, "");
         i.putExtra("ACCOUNT_USERNAME", username);
         i.putExtra("HOUSE_NAME", house_name);
         startActivity(i);
-        ((KillApp) this.getApplication()).setStatus(false);
+    }
+
+    // at this stage the home view will be called
+    private void hs_intents_home_view(Class c, String type, String house_name) {
+        Intent i = new Intent(this, c);
+        i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra("TYPE", type);
+        i.putExtra("HOUSE_NAME", house_name);
+        startActivity(i);
     }
 
 }
