@@ -279,7 +279,7 @@ public interface OnNotificationInteraction {
      */
     public void checkNewNotification(String r) {
         //TODO complete
-        //Just need to send a simple request asking for the arrival of any new noti, the server will take care of the search
+        //Just need to send a simple request asking for the arrival of any new noti, the server will take care of the display_search
 
         try {
             /* Command required to make a payment, takes username, to account, from account, both sort codes and amount

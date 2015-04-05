@@ -32,7 +32,7 @@
         style="@style/HS_Search_Description"/>
     <View
         android:layout_width="fill_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="#c0c0c0"/>
     <TextView android:text="Request Sent"
         android:id="@+id/HS_Search_Result_request_sent"
@@ -41,7 +41,7 @@
         android:layout_gravity="end"
         android:layout_height="wrap_content"
         android:paddingRight="10dp"
-        android:layout_marginTop="-50dp"
+        android:layout_marginTop="-20dp"
         android:visibility="invisible"
         android:background="@drawable/button_light_color"/>
 

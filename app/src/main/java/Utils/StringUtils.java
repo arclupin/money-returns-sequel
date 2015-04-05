@@ -14,7 +14,7 @@ public class StringUtils {
     // check whether the field is empty (no characters or all chars are whitespaces)
    public static boolean isFieldEmpty(String input) {
         if (input == null)
-            return false;
+            return true;
        return input.trim().isEmpty();
     }
 

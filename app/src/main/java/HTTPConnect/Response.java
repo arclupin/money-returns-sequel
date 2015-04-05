@@ -21,6 +21,10 @@ public class Response {
         return jsonObject;
     }
 
+    /**
+     *
+     * @return the raw response in JSON form
+     */
     public String getRaw_response() {
         return raw_response;
     }
@@ -34,6 +38,11 @@ public class Response {
         }
     }
 
+    /**
+     * Simple + quick method for getting a value from the json object
+     * @param key the key
+     * @return the token extracted from the json response or null if not found.
+     */
     public String getToken(String key) {
         String token = null;
         try {

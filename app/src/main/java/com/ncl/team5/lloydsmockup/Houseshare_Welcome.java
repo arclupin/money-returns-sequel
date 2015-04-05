@@ -27,6 +27,8 @@ import java.util.concurrent.ExecutionException;
 import Fragment.HS_Welcome_FragmentPagerAdapter;
 import HTTPConnect.Connection;
 import HTTPConnect.Request_Params;
+import HTTPConnect.Responses_Format;
+import Utils.Houseshares;
 
 
 public class Houseshare_Welcome extends FragmentActivity {
@@ -47,7 +49,7 @@ public class Houseshare_Welcome extends FragmentActivity {
         setContentView(R.layout.activity_houseshare_welcome);
 
         Intent intent = getIntent();
-        username = intent.getExtras().getString("ACCOUNT_USERNAME");
+        username = intent.getExtras().getString(IntentConstants.USERNAME);
         // hide the action bar at welcome page
         ActionBar actionBar = getActionBar();
         if (actionBar != null) actionBar.hide();
@@ -131,19 +133,15 @@ public class Houseshare_Welcome extends FragmentActivity {
         // check the registration status
         if (this.username.equals("test")) {
             Intent i = new Intent(this, Houseshare_HomeView.class);
-            i.putExtra("ACCOUNT_USERNAME", username);
-            i.putExtra("HOUSE_NAME", "My House Test");
+            i.putExtra(IntentConstants.USERNAME, username);
+            i.putExtra(IntentConstants.HOUSE_NAME, "My House Test");
             startActivity(i);
             ((KillApp) this.getApplication()).setStatus(false);
         }
         else if (registered){
-            Intent i = new Intent(this, Houseshare_Search.class);
-            i.putExtra("ACCOUNT_USERNAME", username);
-            startActivity(i);
-            ((KillApp) this.getApplication()).setStatus(false);
+            Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, "", username, Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE);
         }
     else register();
-
     }
 
     public void register() {
@@ -175,19 +173,11 @@ public class Houseshare_Welcome extends FragmentActivity {
                     AlertDialog alert = errorBox.create();
                     alert.show();
                 }
-
                 else if (jo.getString("status").equals("true")) {
-                    registered = true;
-                    Intent i = new Intent(this, Houseshare_Search.class);
-                    i.putExtra("ACCOUNT_USERNAME", username);
-                    startActivity(i);
-                    ((KillApp) this.getApplication()).setStatus(false);
+                    Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, "", username, Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE);
                 }
-            /* There was an error indide the status return field, display appropriate error message */
-                //TODO implement error messages
                 else {
-                /* give more info on the error here, no money taken from account */
-                /* Use the status results to display certain error messages */
+                    new CustomMessageBox(this, "We are sorry. We could not perform your registration at the moment. Try again later.");
                 }
 
             }

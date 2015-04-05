@@ -6,7 +6,12 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.ncl.team5.lloydsmockup.IntentConstants;
 import com.ncl.team5.lloydsmockup.R;
 
 /**
@@ -40,8 +45,8 @@ public class HS_Cancel_Request_Dialog_Fragment extends DialogFragment{
     public static HS_Cancel_Request_Dialog_Fragment initialise(String house_name, int view_id) {
         HS_Cancel_Request_Dialog_Fragment o = new HS_Cancel_Request_Dialog_Fragment();
         Bundle b = new Bundle();
-        b.putString("house_name", house_name);
-        b.putInt("view_id", view_id);
+        b.putString(IntentConstants.HOUSE_NAME, house_name);
+        b.putInt(IntentConstants.VIEW_ID, view_id);
         o.setArguments(b);
         return o;
     }
@@ -50,23 +55,41 @@ public class HS_Cancel_Request_Dialog_Fragment extends DialogFragment{
     public Dialog onCreateDialog(Bundle saveState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setTitle("Cancel Request")
-                .setMessage("Would you like to cancel your request to " + getArguments().getString("house_name") + "?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mCancelRequestDialogListener.onCancelRequestButtonClick(getArguments().getString("house_name"), HS_Cancel_Request_Dialog_Fragment.this, getArguments().getInt("view_id"));
+//        builder.setTitle("Cancel Request")
+//                .setMessage("Would you like to cancel your request to " + getArguments().getString("house_name") + "?")
+//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        mCancelRequestDialogListener.onCancelRequestButtonClick(getArguments().getString("house_name"), HS_Cancel_Request_Dialog_Fragment.this, getArguments().getInt("view_id"));
+//
+//
+//                    }
+//                })
+//                .setNegativeButton(R.string.houseshare_search_cancel, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        mCancelRequestDialogListener.onCancelButtonClick(HS_Cancel_Request_Dialog_Fragment.this);
+//                    }
+//                });
 
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_fragment, null);
+        ((TextView) v.findViewById(R.id.title)).setText("Cancelling request");
+        ((TextView) v.findViewById(R.id.content)).setText("Would you like to cancel your request to " + getArguments().getString(IntentConstants.HOUSE_NAME) + "?");
+        ((TextView) v.findViewById(R.id.dialog_okay)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCancelRequestDialogListener.onCancelRequestButtonClick(getArguments().getString(IntentConstants.HOUSE_NAME), HS_Cancel_Request_Dialog_Fragment.this, getArguments().getInt(IntentConstants.VIEW_ID));
+            }
+        });
+        ((TextView) v.findViewById(R.id.dialog_cancel)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCancelRequestDialogListener.onCancelButtonClick(HS_Cancel_Request_Dialog_Fragment.this);
 
-                    }
-                })
-                .setNegativeButton(R.string.houseshare_search_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mCancelRequestDialogListener.onCancelButtonClick(HS_Cancel_Request_Dialog_Fragment.this);
-                    }
-                });
-
+            }
+        });
+        builder.setView(v);
         return builder.create();
     }
 }

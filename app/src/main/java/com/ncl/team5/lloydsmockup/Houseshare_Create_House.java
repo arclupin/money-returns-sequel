@@ -68,7 +68,7 @@ public class Houseshare_Create_House extends Activity {
         scrollContainer.setSmoothScrollingEnabled(true);
 
         Intent intent = getIntent();
-        username = intent.getExtras().getString("ACCOUNT_USERNAME");
+        username = intent.getExtras().getString(IntentConstants.USERNAME);
 
         watcher = new TextWatcher() {
             @Override

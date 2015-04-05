@@ -70,7 +70,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
     private String text_dialog;
 
     private long expected_end_time;
-    public static final long EXPECTED_DURATION_LONG_TASK = 1000; // 1 seconds is the appropriate choice for long task I guess.
+    public static final long EXPECTED_DURATION_LONG_TASK = 2000; // 1 seconds is the appropriate choice for long task I guess.
     public Connection(Activity a) {
         this.a = a;
     }

@@ -13,7 +13,7 @@ public class Request_Params {
     public static final String VAL_HS_2_FETCH_HOUSE_DETAIL = "HS_2_FTCH_1"; // 2: status code for having joined service, 1: ini.
 
     public static final String VAL_HS_SEARCH_HOUSE = "HS_SRCH_HOUSE";// request type name
-    public static final String HS_SEARCH_HOUSE_KEY = "HS_SRCH_HOUSE_KEY"; // key for search house (house name or part of it)
+    public static final String HS_SEARCH_HOUSE_KEY = "HS_SRCH_HOUSE_KEY"; // key for display_search house (house name or part of it)
 
     public static final String VAL_HS_JOIN_GROUP = "HS_JOIN_GRP";
     public static final String HS_JOIN_GROUP_GRPNAME = "HS_JOIN_GRP_NAME";

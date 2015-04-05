@@ -21,6 +21,13 @@ public class RequestQueue {
         return this;
     }
 
+    public RequestQueue addRequests(Request... rs) {
+        for (int i = 0; i < rs.length; i++)
+            queue.add(rs[i]);
+
+        return this;
+    }
+
     public List<Request> toList() {
         return queue;
     }

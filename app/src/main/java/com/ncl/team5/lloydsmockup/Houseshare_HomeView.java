@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
@@ -63,12 +64,12 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
 
             i = getIntent();
             if (i != null) {
-                if (i.getExtras().getString("ACCOUNT_USERNAME") != null)
-                    username = i.getExtras().getString("ACCOUNT_USERNAME");
-                if (i != null && i.getExtras().getString("HOUSE_NAME") != null)
-                    house_name = i.getExtras().getString("HOUSE_NAME");
-                if (i != null && i.getExtras().getString("TYPE") != null)
-                    view_type = i.getExtras().getString("TYPE");
+                if (i.getExtras().getString(IntentConstants.USERNAME) != null)
+                    username = i.getStringExtra(IntentConstants.USERNAME);
+                if (i != null && i.getStringExtra(IntentConstants.HOUSE_NAME) != null)
+                    house_name = i.getStringExtra(IntentConstants.HOUSE_NAME);
+                if (i != null && i.getStringExtra(IntentConstants.HOME_VIEW_TYPE) != null)
+                    view_type = i.getStringExtra(IntentConstants.HOME_VIEW_TYPE);
             }
 
             fragmentManager = getSupportFragmentManager();
@@ -101,9 +102,6 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
                                 .setTabListener(this).setIcon(i == 0 ? R.drawable.hs_tab_home : R.drawable.hs_tab_noti));
 
             }
-
-
-
         }
 
     @Override
@@ -111,9 +109,8 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
         noti_listener = (Fragment_HS_Notification) fragmentManager.getFragments().get(1);
         if (view_type.equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE))
              getMenuInflater().inflate(R.menu.menu_houseshare__home_view, menu);
-        else if (view_type.equals(Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ)){
+        else
              getMenuInflater().inflate(R.menu.menu_homeview_search, menu);
-        }
         this.menu = menu;
         return true;
     }
@@ -133,10 +130,10 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
                }
            }
            case R.id.search: {
-               Log.d("search item", "clicked");
+               Log.d("display_search item", "clicked");
                Intent i = new Intent(this, Houseshare_Search.class);
-               i.putExtra("ACCOUNT_USERNAME", username);
-               i.putExtra("HOUSE_NAME", house_name);
+               i.putExtra(IntentConstants.USERNAME, username);
+               i.putExtra(IntentConstants.HOUSE_NAME, house_name);
                startActivity(i);
            }
             return true;
@@ -211,6 +208,14 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
     @Override
     public void onNewNotiReceived() {
         actionBar.getTabAt(NOTIFICATION_TAB).setIcon(R.drawable.hs_tab_noti_new);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("back pressed", "Parent of home view is: " + NavUtils.getParentActivityName(this));
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtra(MainActivity.RESUME_FROM_INSIDE, true);
+        NavUtils.navigateUpTo(this, i);
     }
 
 //    /**

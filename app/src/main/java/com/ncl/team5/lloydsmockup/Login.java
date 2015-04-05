@@ -60,7 +60,10 @@ public class Login extends Activity {
         public void onPostExecute(String r) {
             int status = 4;
             try {
-               status = new JSONObject(r).getInt("status");
+               JSONObject j = new JSONObject(r);
+                status = j.getInt("status");
+                if (status == OKAY)
+                    date = j.getString("last_login");
             } catch (JSONException e) {
                 e.printStackTrace();
             }

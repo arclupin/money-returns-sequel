@@ -3,11 +3,9 @@ package com.ncl.team5.lloydsmockup;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -15,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,13 +27,13 @@ import java.util.List;
 
 import HTTPConnect.Connection;
 import HTTPConnect.Request_Params;
-import HTTPConnect.Response;
 import HTTPConnect.Responses_Format;
+import Utils.Houseshares;
 
 
 public class MainActivity extends Activity {
 
-    private String username;
+    private static String username;
 
     // use static for date would help us not have to pass the date around as the value of the date wont be lost on activity change.
     private static String date;
@@ -47,6 +44,7 @@ public class MainActivity extends Activity {
     private String tempLogout;
     private MainConnectionWorker mWorker;
 
+    public static final String RESUME_FROM_INSIDE = "0";
     private enum BUTTON {PAYMENT, HOUSESHARE}
 
     ; //TODO complete
@@ -101,7 +99,9 @@ public class MainActivity extends Activity {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentDate = df.format(Calendar.getInstance().getTime());
         Intent i = getIntent();
-        username = i.getStringExtra("ACCOUNT_USERNAME");
+
+        username = i.getStringExtra("ACCOUNT_USERNAME") != null ? i.getStringExtra("ACCOUNT_USERNAME") : username;
+
         if (i.getStringExtra("DATE") != null) {// check for null (date coming from login)
             date = i.getStringExtra("DATE");
         }// assign the date for the first and also the last time of the session
@@ -307,45 +307,51 @@ public class MainActivity extends Activity {
      * the login class. It also clears the activity stack so the back button cannot be used to go back */
     @Override
     protected void onResume() {
-        if (((KillApp) this.getApplication()).getStatus()) {
-            //APP IS KILLED :O
 
-            Connection connect = new Connection(this);
-            try {
-                connect.execute("TYPE", "LOGOUT", "USR", username);
-            } finally {
+        Log.d("On main resume", "Intent:" );
+        if (getIntent().getBooleanExtra(RESUME_FROM_INSIDE, false)) {
+            super.onResume();
+        }
+        else {
+            if (((KillApp) this.getApplication()).getStatus()) {
+                //APP IS KILLED :O
+
+                Connection connect = new Connection(this);
+                try {
+                    connect.execute("TYPE", "LOGOUT", "USR", username);
+                } finally {
                 /* Set the logout time so it can easily get it later */
-                SharedPreferences sp = getSharedPreferences(username, 0);
-                SharedPreferences.Editor edit = sp.edit();
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String logout = df.format(Calendar.getInstance().getTime());
-                edit.putString("LOGOUT_TIME", logout);
-                edit.commit();
+                    SharedPreferences sp = getSharedPreferences(username, 0);
+                    SharedPreferences.Editor edit = sp.edit();
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String logout = df.format(Calendar.getInstance().getTime());
+                    edit.putString("LOGOUT_TIME", logout);
+                    edit.commit();
 
-                sp = getSharedPreferences("transinsession", 0);
-                edit = sp.edit();
-                edit.putBoolean("IN_SESSION", false);
-                edit.commit();
+                    sp = getSharedPreferences("transinsession", 0);
+                    edit = sp.edit();
+                    edit.putBoolean("IN_SESSION", false);
+                    edit.commit();
 
-                ((KillApp) this.getApplication()).setStatus(false);
-                finish();
-                Intent intent = new Intent(getApplicationContext(), Login.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                    ((KillApp) this.getApplication()).setStatus(false);
+                    finish();
+                    Intent intent = new Intent(getApplicationContext(), Login.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+
+                }
+
+
+            } else {
+                //each time the app resumes and it wasnt killed, the variable needs to be reset
+                ((KillApp) this.getApplication()).setStatus(true);
+
+                invalidateOptionsMenu();
 
             }
 
-
-        } else {
-            //each time the app resumes and it wasnt killed, the variable needs to be reset
-            ((KillApp) this.getApplication()).setStatus(true);
-
-            invalidateOptionsMenu();
-
+            super.onResume();
         }
-
-        super.onResume();
-
     }
 
     public void onPause() {
@@ -407,41 +413,40 @@ public class MainActivity extends Activity {
                 AlertDialog alert = errorBox.create();
                 alert.show();
             }
-            // TODO unfinished, the server will send a more detailed message i.e. 'registered and joined house' or 'registered and not joined house'
-            else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_NOT_JOINED)) { // if not registered -> redirect to the welcome page
-                //need to see how the progress dialog works so also need to delay the start of the homeview activity.
-                hs_intents(Houseshare_Welcome.class, "");
-                //150ms offset so that the dialog would not lag (if this was the same as in the Connection (2000s)
-                // then we might end up having 2 tasks to be posted at nearly the same time => the dialog might get interrupted resulting in a graphic lag when it disappears
-                // (my guess) - could use some other function to put this task right after the dialog task (which I dont know).
-            } else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE)) { // else if not joined a house -> redirect to the search page
 
-                hs_intents(Houseshare_Search.class, "");
+            // if not registered -> redirect to the welcome page
+            else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_NOT_JOINED)) {
+                Houseshares.hs_intents(this, Houseshare_Welcome.class, username);
 
             }
 
-
-            // TODO unfinished, the server will send a more detailed message i.e.
-
-
-            else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE)) { // else if joined a house -> redirect to main home page
-//                    Toast.makeText(this, "Registered, Joined house, To redirect to main page", Toast.LENGTH_SHORT).show();
-                final String hs_name = jo.getString(Responses_Format.RESPONSE_HS_CONTENT);
-                hs_intents_home_view(Houseshare_HomeView.class, Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE, hs_name);
-
-            }
-            else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ)){
-                final String hs_name = jo.getString(Responses_Format.RESPONSE_HS_CONTENT);
-                hs_intents_home_view(Houseshare_HomeView.class, Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ, hs_name);
-//
-            }
             else {
-                Toast.makeText(MainActivity.this, "Some unknown error on the houseshare service on the server", Toast.LENGTH_SHORT).show();
+                final String hs_name = (jo.has(Responses_Format.RESPONSE_HS_CONTENT) ? jo.getString(Responses_Format.RESPONSE_HS_CONTENT) : "");
+                Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, hs_name, username, jo.getString("status"));
             }
+        }
+
+
+//            // TODO unfinished, the server will send a more detailed message i.e.
+//
+//
+//            else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE)) { // else if joined a house -> redirect to main home page
+////                    Toast.makeText(this, "Registered, Joined house, To redirect to main page", Toast.LENGTH_SHORT).show();
+//                final String hs_name = jo.getString(Responses_Format.RESPONSE_HS_CONTENT);
+//                Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, hs_name, username, Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE);
+//
+//            }
+//            else if (jo.getString("status").equals(Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ)){
+//                final String hs_name = jo.getString(Responses_Format.RESPONSE_HS_CONTENT);
+//                Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, hs_name, username, Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ);
+//            }
+//            else {
+//                Toast.makeText(MainActivity.this, "Some unknown error on the houseshare service on the server", Toast.LENGTH_SHORT).show();
+//            }
             /* There was an error indide the status return field, display appropriate error message */
             //TODO implement error messages
 
-        }
+
         /* Catch the exceptions */ catch (JSONException jse) {
             /* Error in the JSON response */
             new CustomMessageBox(MainActivity.this, "There was an error in the server response");
@@ -454,21 +459,26 @@ public class MainActivity extends Activity {
     }
 
 
-    private void hs_intents(Class c, String house_name) {
-        Intent i = new Intent(this, c);
-        i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("HOUSE_NAME", house_name);
-        startActivity(i);
-    }
-
-    // at this stage the home view will be called
-    private void hs_intents_home_view(Class c, String type, String house_name) {
-        Intent i = new Intent(this, c);
-        i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("TYPE", type);
-        i.putExtra("HOUSE_NAME", house_name);
-        startActivity(i);
-    }
+//    /**
+//     * called for the welcome page to be activated.
+//     * @param c activity class to be started
+//     * @param house_name the name of the house (optional)
+//     */
+//    private void hs_intents(Class c, String house_name) {
+//        Intent i = new Intent(this, c);
+//        i.putExtra("ACCOUNT_USERNAME", username);
+//        i.putExtra("HOUSE_NAME", house_name);
+//        startActivity(i);
+//    }
+//
+//    // at this stage the home view will be called
+//    private void hs_intents_home_view(Class c, String type, String house_name) {
+//        Intent i = new Intent(this, c);
+//        i.putExtra("ACCOUNT_USERNAME", username);
+//        i.putExtra("TYPE", type);
+//        i.putExtra("HOUSE_NAME", house_name);
+//        startActivity(i);
+//    }
 
 }
 

@@ -44,7 +44,7 @@ import android.util.Log;
 import HTTPConnect.Connection;
 
 //References: http://code.tutsplus.com/tutorials/android-sdk-working-with-google-maps-displaying-places-of-interest--mobile-16145
-//https://developers.google.com/places/documentation/search
+//https://developers.google.com/places/documentation/display_search
 public class Locations extends Activity implements LocationListener  {
     private String username;
     GoogleMap gMap;

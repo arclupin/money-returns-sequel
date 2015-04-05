@@ -64,10 +64,8 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
     private ArrayList<String> testData;
     ListView billList;
 
-
-    // TODO: For now it will just display the plain response from the server
-    // need udating later
-    private static String data;
+    // user has sent a request or not
+    private enum pending_mode {SENT, NOT_SENT};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +73,8 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         username = getArguments().getString("USR");
         hs_name = getArguments().getString("HS_NAME");
         view_type = getArguments().getString("TYPE");
+
+        Log.d("onCreate home_view", hs_name + " - " + view_type + " - " + username);
 
     }
 
@@ -115,6 +115,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
          viewDescription = (TextView) l.findViewById(R.id.viewAddress);
          loadingIcon = (ProgressBar) l.findViewById(R.id.progressBar);
 
+        // if user has joined some house then show it at home page
         if (view_type.equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE)) {
             //TODO real bills come here
         /* Get the list view */
@@ -146,20 +147,17 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
             initialiseData();
         }
 
+        // else if user has sent a request then show the sent-request prompt in the home view
         else if (view_type.equals(Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ)) {
+                displayPendingContent("You have sent a request to this house.\n" +
+                        "The admin is considering your request.\nHang in there :)", pending_mode.SENT);
 
-            l.setBackgroundColor(getResources().getColor(R.color.hs_home_bg_light));
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.MATCH_PARENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.CENTER_VERTICAL);
-            params.setMargins(0, -100, 0, 0); // move the whole thing a bit up
-            main_view_container.setLayoutParams(params);
+        }
 
-            viewName.setText(hs_name);
-            viewAddressText.setPadding(20, 20, 20, 20);
-            viewAddressText.setText("Your request to this house has been sent.\nThe admin is considering your request.\n Hang in there. :)");
-            avatar.setImageDrawable(getResources().getDrawable(R.drawable.lock));
+        // else show them a prompt for searching for a house
+        else if (view_type.equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE)) {
+            displayPendingContent("You have not joined any house.\nUse the search bar below to start looking for one!", pending_mode.NOT_SENT);
+
         }
 
         return l;
@@ -294,6 +292,37 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         }
     }
 
+    /**
+     * called when either the user has sent a request to some house but yet to receive the response
+     * or the user has not joined any house as well as not sent out any request
+     */
+    private void displayPendingContent(String prompt, pending_mode mode) {
+        l.setBackgroundColor(getResources().getColor(R.color.hs_home_bg_light));
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        params.setMargins(0, 200, 0, 0); // move the whole thing a bit up
+        main_view_container.setLayoutParams(params);
+        main_view_container.requestLayout();
+
+
+        if (mode == pending_mode.SENT) {
+            viewName.setText(hs_name);
+            viewAddressText.setPadding(20, 20, 20, 20);
+        }
+        else {
+            RelativeLayout.LayoutParams margins = (RelativeLayout.LayoutParams) viewAddressText.getLayoutParams();
+            margins.setMargins(0, -40, 0, 0);
+            viewAddressText.setLayoutParams(margins);
+
+            viewAddressText.setLineSpacing(0, 1.3f);
+            viewAddressText.requestLayout();
+        }
+        viewAddressText.setText(prompt);
+        avatar.setImageDrawable(getResources().getDrawable( mode == pending_mode.SENT ? R.drawable.lock : R.drawable.sad));
+    }
+
 //    /**
 //     * called to set the pending page, provided that user has sent a request
 //     */
@@ -321,7 +350,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
 
     public void checkNewNotification(String r) {
         //TODO complete
-        //Just need to send a simple request asking for the arrival of any new noti, the server will take care of the search
+        //Just need to send a simple request asking for the arrival of any new noti, the server will take care of the display_search
 
         try {
             /* Command required to make a payment, takes username, to account, from account, both sort codes and amount
@@ -362,6 +391,9 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
             e.printStackTrace();
         }
     }
+
+
+
 
 
 
