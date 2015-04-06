@@ -64,6 +64,7 @@ public class Analysis extends Activity {
         ArrayAdapter<String> a = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, accountStrings);
         accounts.setAdapter(a);
 
+
         accounts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -148,10 +149,11 @@ public class Analysis extends Activity {
             //Adds all of the names for each of the sectors in a string array
             String[] sectors = new String[groupSets.size()];
 
-
+            groupSets.remove("Choose Group");
             List<String> temp = new ArrayList<String>(groupSets);
 
             for (int i = 0; i < temp.size(); i++) {
+                Log.d("Values",temp.get(i));
                 sectors[i] = temp.get(i).split(":")[0];
                 values[i] = Double.parseDouble(temp.get(i).split(":")[1]);
             }
@@ -210,9 +212,13 @@ public class Analysis extends Activity {
         SharedPreferences sp = getApplicationContext().getSharedPreferences(username, 0);
         SharedPreferences.Editor edit = sp.edit();
         edit.putStringSet("ANALYSIS_GROUPS_" + selectedAccount, new HashSet<String>());
+        edit.putStringSet("TRANS_ID_" + selectedAccount, new HashSet<String>());
         edit.commit();
 
         new CustomMessageBox(this, "Removed all groups");
+
+        getPrefs();
+        drawChart();
     }
 
 
@@ -350,6 +356,9 @@ public class Analysis extends Activity {
      * the login class. It also clears the activity stack so the back button cannot be used to go back */
     @Override
     protected void onResume() {
+
+
+
         if(((KillApp) this.getApplication()).getStatus())
         {
             //only finish is needed for all other apps apart from the main screen

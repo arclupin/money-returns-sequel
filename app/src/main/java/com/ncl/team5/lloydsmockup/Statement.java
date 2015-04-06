@@ -4,14 +4,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,7 +22,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import HTTPConnect.Connection;
 
@@ -33,6 +38,7 @@ public class Statement extends Activity {
     private Statement s = this;
     private ListView transactions;
     private String dateLogout;
+    private Set<String> transIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +54,11 @@ public class Statement extends Activity {
         accountNum = i.getStringExtra("ACCOUNT_NUM");
         dateLogout = i.getStringExtra(IntentConstants.DATE);
         String balance = i.getStringExtra("BALANCE");
+
+        accountNum = accountNum.split(" ")[0];
+
+        SharedPreferences settings = getSharedPreferences(username, 0);
+        transIds = settings.getStringSet("TRANS_ID_" + accountNum, new HashSet<String>());
 
 
         /* Sets the account name from the result text */
@@ -71,54 +82,145 @@ public class Statement extends Activity {
         //needs actual data from the other parts of the app adding to it
         getStatement();
         // Create The Adapter with passing ArrayList as 3rd parameter
-        final ArrayAdapter<String> arrayAdapter =
-                new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, statementList);
+        // final ArrayAdapter<String> arrayAdapter =
+        //        new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, statementList);
         // Set The Adapter
-        transactions.setAdapter(arrayAdapter);
+        transactions.setAdapter(new BaseAdapter() {
+            @Override
+            public int getCount() {
+                return statementList.size();
+            }
+
+            @Override
+            public Object getItem(int i) {
+                return statementList.get(i);
+            }
+
+            @Override
+            public long getItemId(int i) {
+                return i;
+            }
+
+            @Override
+            public View getView(int i, View view, ViewGroup viewGroup) {
+
+                final int position = i;
+                if (view == null)
+                {
+                    view = new TextView(Statement.this);
+                    view.setPadding(10, 30, 10, 10);
+                    ((TextView)view).setTextColor(Color.WHITE);
+                }
+
+                if(transIds.contains(statementList.get(i).split(":")[0].split(" ")[0])) {
+                    view.setBackgroundColor(Color.DKGRAY);
+                    ((TextView) view).setText((String) getItem(i));
+                }
+                else
+                {
+                    view.setBackgroundColor(Color.GRAY);
+                    ((TextView) view).setText((String) getItem(i));
+                }
+
+                viewGroup.setVerticalScrollBarEnabled(true);
+                view.setClickable(true);
+                ((TextView) view).setHeight(150);
+                ((TextView) view).setTextSize(18);
+
+                ((TextView) view).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        if(transIds.contains(statementList.get(position).split(":")[0].split(" ")[0])) {
+                            new CustomMessageBox(Statement.this, "This transaction has already been added to a group, go into settings to remove it from a group.");
+                            return;
+                        }
+
+                        AlertDialog.Builder errorBox = new AlertDialog.Builder(Statement.this);
+                        String details = transInfo.get(position);
+                        final String transId = details.split(" ~ ")[0];
+                        final String amount = details.split(" ~ ")[1];
+                        String time = details.split(" ~ ")[2];
+                        String date = time.split(" ")[0];
+                        time = time.split(" ")[1];
+                        String to = details.split(" ~ ")[3];
+
+                        details = "ID : " + transId + "\nAmount : " + amount + "\nDate : " + date + "\nTime : " + time + "\nTo account : " + to;
+
+
+                        errorBox.setMessage(details)
+                                .setCancelable(true)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setNegativeButton("Add to Group", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        ((KillApp) s.getApplication()).setStatus(false);
+                                        Intent i = new Intent(s, GroupChooser.class);
+                                        i.putExtra("TRANS_ID", transId);
+                                        i.putExtra("ACCOUNT_USERNAME", username);
+                                        i.putExtra("DATE", dateLogout);
+                                        i.putExtra("ACCOUNT_NUM", accountNum);
+                                        i.putExtra("VALUE", Double.parseDouble(amount.substring(1)));
+                                        startActivity(i);
+                                    }
+                                });
+                        AlertDialog alert = errorBox.create();
+                        alert.show();
+                    }
+
+                });
+
+
+                return view;
+            }
+        });
 
         /* Creates a listener for a click on the statement, which will load a small
          * message box that the user will be able to see details about the transaction
          * and also be able to set groups for the transaction for the pie chart */
-        transactions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,
-                                    long id) {
-                //Just sets up a basic alert box for now...
-                AlertDialog.Builder errorBox = new AlertDialog.Builder(Statement.this);
-                String details = transInfo.get(position);
-                final String transId = details.split(" ~ ")[0];
-                final String amount = details.split(" ~ ")[1];
-                String time = details.split(" ~ ")[2];
-                String date = time.split(" ")[0];
-                time = time.split(" ")[1];
-                String to = details.split(" ~ ")[3];
-
-                details = "ID : " + transId + "\nAmount : " + amount + "\nDate : " + date + "\nTime : " + time + "\nTo account : " + to;
-
-
-                errorBox.setMessage(details)
-                        .setCancelable(true)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                            }
-                        })
-                .setNegativeButton("Add to Group", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                ((KillApp) s.getApplication()).setStatus(false);
-                                Intent i = new Intent(s, GroupChooser.class);
-                                i.putExtra("TRANS_ID", transId);
-                                i.putExtra(IntentConstants.USERNAME, username);
-                                i.putExtra(IntentConstants.DATE, dateLogout);
-                                i.putExtra("ACCOUNT_NUM", accountNum);
-                                i.putExtra("VALUE", Double.parseDouble(amount.substring(1)));
-                                startActivity(i);
-                            }
-                        });
-                AlertDialog alert = errorBox.create();
-                alert.show();
-            }
-        });
+//        transactions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position,
+//                                    long id) {
+//                //Just sets up a basic alert box for now...
+//                AlertDialog.Builder errorBox = new AlertDialog.Builder(Statement.this);
+//                String details = transInfo.get(position);
+//                final String transId = details.split(" ~ ")[0];
+//                final String amount = details.split(" ~ ")[1];
+//                String time = details.split(" ~ ")[2];
+//                String date = time.split(" ")[0];
+//                time = time.split(" ")[1];
+//                String to = details.split(" ~ ")[3];
+//
+//                details = "ID : " + transId + "\nAmount : " + amount + "\nDate : " + date + "\nTime : " + time + "\nTo account : " + to;
+//
+//
+//                errorBox.setMessage(details)
+//                        .setCancelable(true)
+//                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//                                dialog.dismiss();
+//                            }
+//                        })
+//                .setNegativeButton("Add to Group", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//                                ((KillApp) s.getApplication()).setStatus(false);
+//                                Intent i = new Intent(s, GroupChooser.class);
+//                                i.putExtra("TRANS_ID", transId);
+//                                i.putExtra("ACCOUNT_USERNAME", username);
+//                                i.putExtra("DATE", dateLogout);
+//                                i.putExtra("ACCOUNT_NUM", accountNum);
+//                                i.putExtra("VALUE", Double.parseDouble(amount.substring(1)));
+//                                startActivity(i);
+//                            }
+//                        });
+//                AlertDialog alert = errorBox.create();
+//                alert.show();
+//            }
+//        });
 
     }
 
@@ -269,6 +371,9 @@ public class Statement extends Activity {
      * the login class. It also clears the activity stack so the back button cannot be used to go back */
     @Override
     protected void onResume() {
+
+        transactions.invalidateViews();
+
         if(((KillApp) this.getApplication()).getStatus())
         {
             //only finish is needed for all other apps apart from the main screen

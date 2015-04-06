@@ -30,7 +30,10 @@ public class GroupChooser extends Activity {
     private String date;
     private String accountNum;
     private Set<String> groupSets;
+    private Set<String> transIDs;
+    private String transId;
     private double transValue;
+    private final int MAX_NUMBER_OF_GROUPS = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,7 @@ public class GroupChooser extends Activity {
         accountNum = i.getStringExtra("ACCOUNT_NUM");
         date = i.getStringExtra(IntentConstants.DATE);
         transValue = i.getDoubleExtra("VALUE", 0);
+        transId = i.getStringExtra("TRANS_ID");
         /* I will need to populate the current groups here... probably by sending data to the server in some way
          * but need to wait for the tables ot be set up
          */
@@ -51,6 +55,7 @@ public class GroupChooser extends Activity {
 
         SharedPreferences settings = getSharedPreferences(username, 0);
         groupSets = settings.getStringSet("ANALYSIS_GROUPS_" + accountNum, new HashSet<String>());
+        transIDs = settings.getStringSet("TRANS_ID_" + accountNum, new HashSet<String>());
 
         if(groupSets.size() == 0)
         {
@@ -142,9 +147,37 @@ public class GroupChooser extends Activity {
             else
             {
                 //use text box
-                if(groupSets.size() < 6) {
+                if(groupSets.size() <= MAX_NUMBER_OF_GROUPS) {
                     groupName = groupText.getText().toString();
-                    groupSets.add(groupName + ":" + transValue);
+
+                    List<String> temp = new ArrayList<String>(groupSets);
+
+                    if(temp.size() == 0)
+                    {
+                        temp.add(groupName + ":" + transValue);
+                    }
+                    else {
+
+                        for (int i = 0; i < temp.size(); i++) {
+                            if (temp.get(i).split(":")[0].equals(groupName)) {
+                                String splitStringName = temp.get(i).split(":")[0];
+                                String splitStringAmount = temp.get(i).split(":")[1];
+                                Double splitAmount = Double.parseDouble(splitStringAmount) + transValue;
+                                splitStringAmount = splitAmount.toString();
+
+                                temp.set(i, splitStringName + ":" + splitStringAmount);
+
+                                Log.d("GROUP VALUES", temp.get(i));
+                                i = temp.size();
+                            } else if (i == temp.size() - 1) {
+                                temp.add(groupName + ":" + transValue);
+                            }
+                        }
+                    }
+
+                    groupSets.clear();
+                    groupSets.addAll(temp);
+
                 }
                 else
                 {
@@ -183,10 +216,13 @@ public class GroupChooser extends Activity {
 
 
         groupSets.remove("Choose Group");
+        transIDs.add(transId);
 
         SharedPreferences sp = getApplicationContext().getSharedPreferences(username, 0);
         SharedPreferences.Editor edit = sp.edit();
         edit.putStringSet("ANALYSIS_GROUPS_" + accountNum, groupSets);
+        edit.commit();
+        edit.putStringSet("TRANS_ID_" + accountNum, transIDs);
         edit.commit();
 
         Toast msg = Toast.makeText(this, "Item Added Successfully", Toast.LENGTH_SHORT);
