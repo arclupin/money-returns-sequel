@@ -293,19 +293,16 @@ public interface OnNotificationInteraction {
             if (jo.getString("expired").equals("true")) {
 
                 /* Display message box and auto logout user */
-                AlertDialog.Builder errorBox = new AlertDialog.Builder(getActivity());
                 final Connection temp_connect = new Connection(getActivity());
-                final String temp_usr = username;
-                errorBox.setMessage("Your session has been timed out, please login again")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                temp_connect.autoLogout(temp_usr);
+                // experimenting a new message box builder
+                CustomMessageBox.MessageBoxBuilder builder = new CustomMessageBox.MessageBoxBuilder(getActivity(), "Your session has been timed out, please login again");
+                builder.setTitle("Expired")
+                        .setActionOnClick(new CustomMessageBox.ToClick() {
+                            @Override
+                            public void DoOnClick() {
+                                temp_connect.autoLogout(username);
                             }
-                        });
-                AlertDialog alert = errorBox.create();
-                alert.show();
+                        }).build();
             } else if (jo.getString("status").equals("true")) {
                 mListener.onNewNotiReceived();
             }
@@ -342,20 +339,17 @@ public interface OnNotificationInteraction {
             /* Check if the user has timed out */
             if (jo.getString("expired").equals("true")) {
 
-                /* Display message box and auto logout user */
-                AlertDialog.Builder errorBox = new AlertDialog.Builder(getActivity());
+                 /* Display message box and auto logout user */
                 final Connection temp_connect = new Connection(getActivity());
-                final String temp_usr = username;
-                errorBox.setMessage("Your session has been timed out, please login again")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                temp_connect.autoLogout(temp_usr);
+                // experimenting a new message box builder
+                CustomMessageBox.MessageBoxBuilder builder = new CustomMessageBox.MessageBoxBuilder(getActivity(), "Your session has been timed out, please login again");
+                builder.setTitle("Expired")
+                        .setActionOnClick(new CustomMessageBox.ToClick() {
+                            @Override
+                            public void DoOnClick() {
+                                temp_connect.autoLogout(username);
                             }
-                        });
-                AlertDialog alert = errorBox.create();
-                alert.show();
+                        }).build();
             } else if (jo.getString("status").equals("true")) {
                 JSONArray Noti_js_arr = jo.getJSONArray(Responses_Format.RESPONSE_HS_CONTENT);
                 for (int i = 0; i < Noti_js_arr.length(); i++) {
@@ -432,20 +426,17 @@ public interface OnNotificationInteraction {
             /* Check if the user has timed out */
             if (jo.getString("expired").equals("true")) {
 
-                /* Display message box and auto logout user */
-                AlertDialog.Builder errorBox = new AlertDialog.Builder(getActivity());
+                 /* Display message box and auto logout user */
                 final Connection temp_connect = new Connection(getActivity());
-                final String temp_usr = username;
-                errorBox.setMessage("Your session has been timed out, please login again")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                temp_connect.autoLogout(temp_usr);
+                // experimenting a new message box builder
+                CustomMessageBox.MessageBoxBuilder builder = new CustomMessageBox.MessageBoxBuilder(getActivity(), "Your session has been timed out, please login again");
+                builder.setTitle("Expired")
+                        .setActionOnClick(new CustomMessageBox.ToClick() {
+                            @Override
+                            public void DoOnClick() {
+                                temp_connect.autoLogout(username);
                             }
-                        });
-                AlertDialog alert = errorBox.create();
-                alert.show();
+                        }).build();
             }
 
             else if (jo.getString("status").equals("true")) {

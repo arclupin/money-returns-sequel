@@ -17,7 +17,7 @@ import HTTPConnect.Connection;
 import HTTPConnect.Request_Params;
 
 
-public class GetNotification{
+public class GetNotification {
 
     private Activity a;
     private String username;

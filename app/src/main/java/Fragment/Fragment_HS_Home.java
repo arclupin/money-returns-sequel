@@ -244,19 +244,16 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
             if (jo.getString("expired").equals("true")) {
 
                 /* Display message box and auto logout user */
-                AlertDialog.Builder errorBox = new AlertDialog.Builder(getActivity());
                 final Connection temp_connect = new Connection(getActivity());
-                final String temp_usr = username;
-                errorBox.setMessage("Your session has been timed out, please login again")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                temp_connect.autoLogout(temp_usr);
+                // experimenting a new message box builder
+                CustomMessageBox.MessageBoxBuilder builder = new CustomMessageBox.MessageBoxBuilder(getActivity(), "Your session has been timed out, please login again");
+                builder.setTitle("Expired")
+                        .setActionOnClick(new CustomMessageBox.ToClick() {
+                            @Override
+                            public void DoOnClick() {
+                                temp_connect.autoLogout(username);
                             }
-                        });
-                AlertDialog alert = errorBox.create();
-                alert.show();
+                        }).build();
             } else {
 //               TextView tv = (TextView) findViewById(R.id.hs_hv_response);
                 content = jo.getString(Responses_Format.RESPONSE_HS_CONTENT); //TODO
@@ -365,19 +362,16 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
             if (jo.getString("expired").equals("true")) {
 
                 /* Display message box and auto logout user */
-                AlertDialog.Builder errorBox = new AlertDialog.Builder(getActivity());
                 final Connection temp_connect = new Connection(getActivity());
-                final String temp_usr = username;
-                errorBox.setMessage("Your session has been timed out, please login again")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                temp_connect.autoLogout(temp_usr);
+                // experimenting a new message box builder
+                CustomMessageBox.MessageBoxBuilder builder = new CustomMessageBox.MessageBoxBuilder(getActivity(), "Your session has been timed out, please login again");
+                builder.setTitle("Expired")
+                        .setActionOnClick(new CustomMessageBox.ToClick() {
+                            @Override
+                            public void DoOnClick() {
+                                temp_connect.autoLogout(username);
                             }
-                        });
-                AlertDialog alert = errorBox.create();
-                alert.show();
+                        }).build();
             } else if (jo.getString("status").equals("true")) {
                 ((Fragment_HS_Notification.OnNotificationInteraction) getActivity()).onNewNotiReceived(); // risky ~
             }

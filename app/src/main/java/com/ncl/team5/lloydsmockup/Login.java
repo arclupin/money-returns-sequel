@@ -213,12 +213,15 @@ public class Login extends Activity {
                     }
 
                     case WRONG: {
-                        new CustomMessageBox(this, "Incorrect Username and Password Combination.");
+//                        new CustomMessageBox(this, "Incorrect Username and Password Combination.");
+                        new CustomMessageBox.MessageBoxBuilder(this,  "Incorrect Username and Password Combination.")
+                                .setTitle("Login failed")
+                                .build();
                         break;
                     }
 
                     default:{
-                            new CustomMessageBox(this, "Something wrong. Please try again", "Error");
+                        new CustomMessageBox(this, "Something wrong. Please try again", "Error");
                     }
                 }
     }
