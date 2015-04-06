@@ -229,8 +229,9 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
                     l.add(result_arr_in.getString(t));
                 }
                 result_objects.add(l);
+            }
 
-
+                Log.d("# of noti", Integer.toString(result_objects.size()));
                 if (result_objects.size() > 0) {
                     result_layout.removeAllViews();
                     for (int v = 0; v < result_objects.size(); v++) {
@@ -239,7 +240,6 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
                 } else {
                     setEmpty(false);
                 }
-            }
 
 
         } catch (JSONException e) {
