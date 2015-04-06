@@ -2,25 +2,35 @@
 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    >
-<TableLayout
+    android:layout_height="match_parent">
 
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/refresh_view_noti">
 
-android:layout_width="fill_parent"
-android:layout_height="match_parent"
-tools:context="Fragment.Fragment_HS_Home"
-android:id="@+id/hs_notification_table"
-android:stretchColumns="*"
+        <ScrollView
+            android:id="@+id/scrollViewNoti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-    />
+            <TableLayout
+                android:id="@+id/hs_notification_table"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:stretchColumns="*"
+                tools:context="Fragment.Fragment_HS_Home"
+
+                />
+        </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <ProgressBar
+        android:id="@+id/noti_loading_icon"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/noti_loading_icon"
         android:layout_centerInParent="true" />
 
 </RelativeLayout>

@@ -3,6 +3,9 @@ package Fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +55,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
     private TableLayout mTable;
     private ProgressBar loading_icon;
     private RelativeLayout mLayoutContainer;
+    private SwipeRefreshLayout mRefreshView;
 
     private static enum UI_WORK_TYPE {MAIN};
 
@@ -124,12 +128,27 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
     @Override
     public void update() {
             new NotificationWorker(getActivity())
-                    .setMode(NOTI_WORK.FETCH_UPDATE)
+                    .setMode(NOTI_WORK.FETCH)
                     .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_FETCH_NOTI, Request_Params.PARAM_USR, username);
     }
 
+    /**
+     * This method is called when the user performs the swipe to refresh gesture
+     * It will go fetch the data in short.
+     */
+    public void refresh() {
+        new NotificationWorker(getActivity())
+                .setMode(NOTI_WORK.FETCH_REFRESH)
+                .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_FETCH_NOTI, Request_Params.PARAM_USR, username);
+    }
+
     public static enum NOTI_WORK {
-        CHECK, FETCH, SEEN, APPROVE, REFUSE, FETCH_UPDATE
+        CHECK,
+        SEEN, // user has seen the notifications
+        APPROVE,
+        REFUSE,
+        FETCH, // initial data fetch
+        FETCH_REFRESH // user swipe down to refresh
     }
 
 
@@ -163,7 +182,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
         @Override
         protected void onPreExecute(){
             setMode(MODE.LONG_NO_DIALOG_TASK);
-            if (mode == NOTI_WORK.FETCH_UPDATE) {
+            if (mode == NOTI_WORK.FETCH) {
                 loading_icon.setVisibility(View.VISIBLE);
             }
         }
@@ -178,14 +197,17 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
             super.onPostExecute(r);
 
             switch (mode) {
-                case FETCH_UPDATE: {
+                case FETCH: case FETCH_REFRESH: {
                     fetchNotifications(r);
                     loading_icon.setVisibility(View.GONE);
                     makeUI();
+                    if (mRefreshView.isRefreshing())
+                        mRefreshView.setRefreshing(false); // only invoked through FETCH_REFRESH
                     break;
+
                 }
 
-                case FETCH: case APPROVE: {
+                case REFUSE: case APPROVE: {
                     onSubButtonClicked(additional_params.get(PARAM_USERNAME_IN_NOTI), r, mode);
                     break;
                 }
@@ -240,8 +262,12 @@ public interface OnNotificationInteraction {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         mLayoutContainer = (RelativeLayout) inflater.inflate(R.layout.fragment_hs_notification, container, false);
+
+        //set up the refresh view
+        mRefreshView = (SwipeRefreshLayout) mLayoutContainer.findViewById(R.id.refresh_view_noti);
+        mRefreshView.setColorSchemeColors(R.color.light_green,android.R.color.holo_red_light);
+
         mTable = (TableLayout) mLayoutContainer.findViewById(R.id.hs_notification_table);
         loading_icon = (ProgressBar) mLayoutContainer.findViewById(R.id.noti_loading_icon);
         checkEmptyNotification(this);
@@ -249,14 +275,33 @@ public interface OnNotificationInteraction {
         return mLayoutContainer;
     }
 
+    /**
+     * Called immediately after {@link #onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)}
+     * has returned, but before any saved state has been restored in to the view.
+     * This gives subclasses a chance to initialize themselves once
+     * they know their view hierarchy has been completely created.  The fragment's
+     * view hierarchy is not however attached to its parent at this point.
+     *
+     * @param view               The View returned by {@link #onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     */
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-    public int findNotiUsingID(String id) {
-        for (int i = 0; i <  mTable.getChildCount(); i++) {
-            if (id.equals(data.get(i).getId())) {
-                return i;
+        mRefreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.d("refresh", " action performed");
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        refresh();
+                    }
+                }, 5000);
             }
-        }
-        return -1;
+        });
     }
 
 
@@ -500,7 +545,7 @@ public interface OnNotificationInteraction {
     }
 
     private void makeUI() {
-        mTable.removeAllViews();
+        mTable.removeAllViews(); // remove all old views first
         for (int i = 0; i < data.size(); i++) {
             Log.d("data", data.get(i).getAdditional_params().get(Notification.HSID_POS));
 
@@ -570,6 +615,8 @@ public interface OnNotificationInteraction {
         //initial empty check
         checkEmptyNotification(Fragment_HS_Notification.this);
     }
+
+
 
     }
 

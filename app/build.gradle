@@ -4,6 +4,7 @@ android {
     compileSdkVersion 20
     buildToolsVersion "20.0.0"
 
+
     defaultConfig {
         applicationId "com.ncl.team5.lloydsmockup"
         minSdkVersion 15
