@@ -45,6 +45,7 @@ public class MainActivity extends Activity {
     private MainConnectionWorker mWorker;
 
     public static final String RESUME_FROM_INSIDE = "0";
+
     private enum BUTTON {PAYMENT, HOUSESHARE}
 
     ; //TODO complete
@@ -108,6 +109,7 @@ public class MainActivity extends Activity {
         else
         {
             date = currentDate;
+            //TODO this would cause the last login time to be constantly updated whenever the activity is created perhaps?
         }
 
         TextView dateText = (TextView) findViewById(R.id.lastLoginTextView);
@@ -397,21 +399,17 @@ public class MainActivity extends Activity {
             JSONObject jo = new JSONObject(response);
             /* Check if the user has timed out */
             if (jo.getString("expired").equals("true")) {
-
                 /* Display message box and auto logout user */
-                AlertDialog.Builder errorBox = new AlertDialog.Builder(MainActivity.this);
                 final Connection temp_connect = new Connection(MainActivity.this);
-                final String temp_usr = username;
-                errorBox.setMessage("Your session has been timed out, please login again")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                temp_connect.autoLogout(temp_usr);
-                            }
-                        });
-                AlertDialog alert = errorBox.create();
-                alert.show();
+                // experimenting a new message box builder
+                CustomMessageBox.MessageBoxBuilder builder = new CustomMessageBox.MessageBoxBuilder(this, "Your session has been timed out, please login again");
+                builder.setTitle("Expired")
+                        .setActionOnClick(new CustomMessageBox.ToClick() {
+                    @Override
+                    public void DoOnClick() {
+                        temp_connect.autoLogout(username);
+                    }
+                }).build();
             }
 
             // if not registered -> redirect to the welcome page

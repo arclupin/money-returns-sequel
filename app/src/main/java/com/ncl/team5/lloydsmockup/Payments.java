@@ -253,18 +253,17 @@ public class Payments extends FragmentActivity {
             /* Check if the user has timed out */
             if (jo.getString("expired").equals("true")) {
 
-                /* Display message box and auto logout user */
-                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-                errorBox.setMessage("Your session has been timed out, please login again")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                autoLogout();
+               /* Display message box and auto logout user */
+                final Connection temp_connect = new Connection(this);
+                // experimenting a new message box builder
+                CustomMessageBox.MessageBoxBuilder builder = new CustomMessageBox.MessageBoxBuilder(this, "Your session has been timed out, please login again");
+                builder.setTitle("Expired")
+                        .setActionOnClick(new CustomMessageBox.ToClick() {
+                            @Override
+                            public void DoOnClick() {
+                                temp_connect.autoLogout(username);
                             }
-                        });
-                AlertDialog alert = errorBox.create();
-                alert.show();
+                        }).build();
             }
             /* Payment was successful, show message box */
             else if (jo.getString("status").equals("true")) {
@@ -340,18 +339,17 @@ public class Payments extends FragmentActivity {
 
             if(jo.getString("expired").equals("true"))
             {
-                /* Display error message and log user out as they have expired */
-                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-                errorBox.setMessage("You have been timed out, please login again")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                autoLogout();
+              /* Display message box and auto logout user */
+                final Connection temp_connect = new Connection(this);
+                // experimenting a new message box builder
+                CustomMessageBox.MessageBoxBuilder builder = new CustomMessageBox.MessageBoxBuilder(this, "Your session has been timed out, please login again");
+                builder.setTitle("Expired")
+                        .setActionOnClick(new CustomMessageBox.ToClick() {
+                            @Override
+                            public void DoOnClick() {
+                                temp_connect.autoLogout(username);
                             }
-                        });
-                AlertDialog alert = errorBox.create();
-                alert.show();
+                        }).build();
             }
             else {
             /* JSONArray needed as accounts are returned as an array */
@@ -424,18 +422,17 @@ public class Payments extends FragmentActivity {
 
             /* Check if account has expired (very unlikely as this is called after get accounts) */
             if (jo.getString("expired").equals("true")) {
-                /* Display error message and log user out as they have expired */
-                AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-                errorBox.setMessage("You have been timed out, please login again")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                autoLogout();
+              /* Display message box and auto logout user */
+                final Connection temp_connect = new Connection(this);
+                // experimenting a new message box builder
+                CustomMessageBox.MessageBoxBuilder builder = new CustomMessageBox.MessageBoxBuilder(this, "Your session has been timed out, please login again");
+                builder.setTitle("Expired")
+                        .setActionOnClick(new CustomMessageBox.ToClick() {
+                            @Override
+                            public void DoOnClick() {
+                                temp_connect.autoLogout(username);
                             }
-                        });
-                AlertDialog alert = errorBox.create();
-                alert.show();
+                        }).build();
             }
             else {
                 /* Array needed as transaction returned inside JSON array */
