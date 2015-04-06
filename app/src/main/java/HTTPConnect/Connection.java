@@ -257,19 +257,21 @@ public class Connection extends AsyncTask <String, Void, String>  {
             if(cookies.getCookies().size() == 0)
             {
                 Log.d("cookies", "no cookies found");
-                return "false";
+                //TODO DELETE THE OLD COOKIE
+                //return "false";
             }
+            else {
 
-            Log.d("cookies", cookies.toString());
+                Log.d("cookies", cookies.toString());
 
-            BasicClientCookie cookie = (BasicClientCookie) cookies.getCookies().get(0);
-            Log.d("login cookies",cookies.getCookies().get(0).toString());
-            CookieStorage cookieStorage = new CookieStorage(this.a.getSharedPreferences("cookies", Activity.MODE_PRIVATE));
-            cookieStorage.writeToFile(cookies.getCookies().get(0).getName(), cookies.getCookies().get(0).getValue()); // write this cookie to file
+                BasicClientCookie cookie = (BasicClientCookie) cookies.getCookies().get(0);
+                Log.d("login cookies", cookies.getCookies().get(0).toString());
+                CookieStorage cookieStorage = new CookieStorage(this.a.getSharedPreferences("cookies", Activity.MODE_PRIVATE));
+                cookieStorage.writeToFile(cookies.getCookies().get(0).getName(), cookies.getCookies().get(0).getValue()); // write this cookie to file
 //            BasicClientCookie storedCookie = (BasicClientCookie)cookieStorage.pullFromFile(cookie.getName());
-  //          storedCookie.setDomain(cookie.getDomain());
-    //        storedCookie.getPath(cookie.getPath());
-
+                //          storedCookie.setDomain(cookie.getDomain());
+                //        storedCookie.getPath(cookie.getPath());
+            }
 
             HttpEntity entity = response.getEntity();
 
@@ -293,13 +295,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
             /* check the value of status */
             try {
                 JSONObject jObject = new JSONObject(result);
-
-
                 return jObject.toString();
-
-
-
-
             }catch(Exception e)
             {
                 Log.d("error", "JSON PARSE ERROR");

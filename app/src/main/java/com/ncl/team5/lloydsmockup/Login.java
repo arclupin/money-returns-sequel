@@ -61,6 +61,7 @@ public class Login extends Activity {
         public void onPostExecute(String r) {
             int status = 4;
             try {
+                Log.d("R goes here", r);
                JSONObject j = new JSONObject(r);
                 status = j.getInt("status");
                 if (status == OKAY)
@@ -193,7 +194,8 @@ public class Login extends Activity {
 
             /* Ok, this look a bit weird... i mean it returns string right! should it not be boolean??
              * Well, if it returns 4 different messages from the server, not just true or false */
-                switch (status) {
+        Log.d("status/authenticator", Integer.toString(status));
+        switch (status) {
                     case OKAY: {
                         Intent i = new Intent(this, MainActivity.class);
                         i.putExtra(IntentConstants.USERNAME, username);
@@ -202,38 +204,21 @@ public class Login extends Activity {
                         break;
                     }
                     case WARNING: {
-                        AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-                        errorBox.setMessage("Warning: one attempt remaining")
-                                .setCancelable(false)
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-                        AlertDialog alert = errorBox.create();
-                        alert.show();
+                        new CustomMessageBox(this, "You have one attempt remaining", "Warning");
                         break;
                     }
                     case LOCKED: {
-                        AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
-                        errorBox.setMessage("Too many login attempts, Please contact your bank to unlock your application")
-                                .setCancelable(false)
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-                        AlertDialog alert = errorBox.create();
-                        alert.show();
+                        new CustomMessageBox(this, "Too many login attempts, Please contact your bank to unlock your application", "Account locked");
                         break;
                     }
 
                     case WRONG: {
                         new CustomMessageBox(this, "Incorrect Username and Password Combination.");
+                        break;
                     }
 
                     default:{
-                            new CustomMessageBox(this, "Something wrong. Please try again");
+                            new CustomMessageBox(this, "Something wrong. Please try again", "Error");
                     }
                 }
     }

@@ -216,6 +216,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingIcon.setVisibility(View.VISIBLE);
         }
 
         public HomeViewWorker(Activity a, boolean showDialog) {

@@ -24,7 +24,8 @@ public class CustomMessageBox {
 
     /**
      * Create a message box with specified text in the body
-     * @param a the the calling activity
+     *
+     * @param a    the the calling activity
      * @param text the text in the body of the dialog
      */
     public CustomMessageBox(Activity a, String text) {
@@ -39,8 +40,9 @@ public class CustomMessageBox {
 
     /**
      * Create a message box like above plus the specified button text
-     * @param a the calling activity
-     * @param text the text in the body of the dialog
+     *
+     * @param a          the calling activity
+     * @param text       the text in the body of the dialog
      * @param buttonText the button text
      */
     public CustomMessageBox(Activity a, String text, String buttonText) {
@@ -54,8 +56,27 @@ public class CustomMessageBox {
     }
 
     /**
+     * Create a message box like above plus the specified button text plus a title for the box
+     *
+     * @param a          the calling activity
+     * @param text       the text in the body of the dialog
+     * @param buttonText the button text
+     *                   @param title the title of the dialog
+     */
+    public CustomMessageBox(Activity a, String text, String buttonText, String title) {
+        AlertDialog.Builder msg = new AlertDialog.Builder(a);
+        View v = prepareDialog(a, text, title);
+        ((TextView) v.findViewById(R.id.dialog_okay)).setText(buttonText);
+        msg.setView(v);
+        AlertDialog alert = msg.create();
+        alert.show();
+        d = alert;
+    }
+
+    /**
      * prepare the dialog view
-     * @param a the calling activity
+     *
+     * @param a    the calling activity
      * @param text the text in the body of the dialog
      * @return the view of the dialog
      */
@@ -72,6 +93,21 @@ public class CustomMessageBox {
                 d.cancel();
             }
         });
+
+        return v;
+    }
+
+    /**
+     * prepare the dialog view like above plus a specified title
+     *
+     * @param a    the calling activity
+     * @param text the text in the body of the dialog
+     * @return the view of the dialog
+     */
+    public static View prepareDialog(Activity a, String text, String title) {
+
+        View v = prepareDialog(a, text);
+        ((TextView) v.findViewById(R.id.title)).setText(title);
 
         return v;
     }
