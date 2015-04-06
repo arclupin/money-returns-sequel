@@ -38,9 +38,9 @@ public class GroupChooser extends Activity {
         setContentView(R.layout.activity_group_chooser);
 
         Intent i = getIntent();
-        username = i.getStringExtra("ACCOUNT_USERNAME");
+        username = i.getStringExtra(IntentConstants.USERNAME);
         accountNum = i.getStringExtra("ACCOUNT_NUM");
-        date = i.getStringExtra("DATE");
+        date = i.getStringExtra(IntentConstants.DATE);
         transValue = i.getDoubleExtra("VALUE", 0);
         /* I will need to populate the current groups here... probably by sending data to the server in some way
          * but need to wait for the tables ot be set up
@@ -111,8 +111,8 @@ public class GroupChooser extends Activity {
         }
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
-            intent.putExtra("ACCOUNT_USERNAME", username);
-            intent.putExtra("DATE", date);
+            intent.putExtra(IntentConstants.USERNAME, username);
+            intent.putExtra(IntentConstants.DATE, date);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
         }

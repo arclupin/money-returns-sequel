@@ -51,13 +51,13 @@ import Utils.StringUtils;
  * The display_search request will only be sent when the user press the display_search button
  */
 
+
 public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialog_Fragment.JoinDialogListener,
         HS_Cancel_Request_Dialog_Fragment.CancelRequestDialogListener, HS_Join_Confirm_Dialog.JoinConfirmedDialogListener
         , HS_Join_Conflict_Dialog.JoinConflictDialogListener, HS_Cancel_Confirm_Dialog.CancelConfirmedDialogListener {
     private String username;
     private String chose_hs_name;
     private String pending_new_hs_name;
-
 
 
     private static enum search_mode {SEARCH, CONFLICT_OK}
@@ -78,18 +78,18 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
     private LayoutTransition transition;
 
     @Override
-   protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_houseshare_search);
         Intent intent = getIntent();
 
         ActionBar a = getActionBar();
-            if (a != null) {
-                a.setDisplayShowTitleEnabled(false);
-                a.setDisplayShowHomeEnabled(false);
-                a.setDisplayUseLogoEnabled(false);
-                a.setDisplayHomeAsUpEnabled(false);
-            }
+        if (a != null) {
+            a.setDisplayShowTitleEnabled(false);
+            a.setDisplayShowHomeEnabled(false);
+            a.setDisplayUseLogoEnabled(false);
+            a.setDisplayHomeAsUpEnabled(false);
+        }
 
         username = intent.getExtras().getString(IntentConstants.USERNAME);
         chose_hs_name = intent.getStringExtra(IntentConstants.HOUSE_NAME);
@@ -105,6 +105,10 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
         setEmpty(true);
 
         //Auto searching
+        // For User experience, this feature is currently disabled.
+        /* TODO We might need to store caches (latest house names available) internally to perform
+         a faster and smoother search operation.
+         */
 //        input_edittext = (EditText) findViewById(R.id.HS_Search_TextInput);
 //
 //        setEmpty(true);
@@ -142,19 +146,19 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
         searchView.setIconified(false);
         searchView.setQueryHint("Search a house");
 
-        // set the listner for the search text
+        // set the listener for the search text
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 input = query;
                 if (!StringUtils.isFieldEmpty(input))
                     new Search_Worker(Houseshare_Search.this, false).setMode(search_mode.SEARCH).
-                        execute(
-                                new RequestQueue().addRequest(new Request(Request.TYPE.POST).
-                                addParam(Request_Params.PARAM_TYPE, Request_Params.VAL_HS_SEARCH_HOUSE).
-                                addParam(Request_Params.PARAM_USR, username).
-                                addParam(Request_Params.HS_SEARCH_HOUSE_KEY, input)).toList()
-                        );
+                            execute(
+                                    new RequestQueue().addRequest(new Request(Request.TYPE.POST).
+                                            addParam(Request_Params.PARAM_TYPE, Request_Params.VAL_HS_SEARCH_HOUSE).
+                                            addParam(Request_Params.PARAM_USR, username).
+                                            addParam(Request_Params.HS_SEARCH_HOUSE_KEY, input)).toList()
+                            );
                 else
                     Toast.makeText(Houseshare_Search.this, "Please supply the name of the house", Toast.LENGTH_SHORT).show();
 
@@ -187,15 +191,14 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
 
     /**
      * See if the user has got any request active after working with the search page. <br/>
-     *
+     * <p/>
      * Set the home page accordingly
      */
     @Override
     public void onBackPressed() {
         if (StringUtils.isFieldEmpty(chose_hs_name)) {
             Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, chose_hs_name, username, Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE);
-        }
-        else
+        } else
             Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, chose_hs_name, username, Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ);
 
     }
@@ -209,44 +212,40 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
 
     public void display_search(String response) {
 
-            try {
-                JSONObject j = new JSONObject(response);
-                if (j != null) {
-                    List<ArrayList<String>> result_objects = new ArrayList<ArrayList<String>>();
-                    Houses_Status = new HashMap<String, Boolean>();
+        try {
+            JSONObject j = new JSONObject(response);
+            List<ArrayList<String>> result_objects = new ArrayList<ArrayList<String>>();
+            Houses_Status = new HashMap<String, Boolean>();
 
-                    JSONArray result_arr_out = j.getJSONArray(Responses_Format.RESPONSE_HS_CONTENT);
-                    //                Log.d("Search json arr", result_arr.toString());
-                    for (int i = 0; i < result_arr_out.length(); i++) {
+            JSONArray result_arr_out = j.getJSONArray(Responses_Format.RESPONSE_HS_CONTENT);
+            //                Log.d("Search json arr", result_arr.toString());
+            for (int i = 0; i < result_arr_out.length(); i++) {
 
-                        JSONArray result_arr_in = result_arr_out.getJSONArray(i);
-                        ArrayList<String> l = new ArrayList<String>();
+                JSONArray result_arr_in = result_arr_out.getJSONArray(i);
+                ArrayList<String> l = new ArrayList<String>();
 
-                        Houses_Status.put(result_arr_in.getString(0), result_arr_in.getString(result_arr_in.length() - 1).equalsIgnoreCase("1"));
-                        for (int t = 0; t < result_arr_in.length(); t++) {
-                            l.add(result_arr_in.getString(t));
-                        }
-                        result_objects.add(l);
-                    }
-
-
-                    if (result_objects.size() > 0) {
-                        result_layout.removeAllViews();
-                        for (int i = 0; i < result_objects.size(); i++) {
-                            makeHouseResultRow(result_objects.get(i)); // add view to this position
-                        }
-                    }
-                    else {
-                        setEmpty(false);
-                    }
+                Houses_Status.put(result_arr_in.getString(0), result_arr_in.getString(result_arr_in.length() - 1).equalsIgnoreCase("1"));
+                for (int t = 0; t < result_arr_in.length(); t++) {
+                    l.add(result_arr_in.getString(t));
                 }
-                else {
-                        Toast.makeText(this, "Sorry. Could not process your request now.", Toast.LENGTH_SHORT).show();
+                result_objects.add(l);
+
+
+                if (result_objects.size() > 0) {
+                    result_layout.removeAllViews();
+                    for (int v = 0; v < result_objects.size(); v++) {
+                        makeHouseResultRow(result_objects.get(v)); // add view to this position
+                    }
+                } else {
+                    setEmpty(false);
                 }
-            } catch (JSONException e) {
-                new CustomMessageBox(this, "There was an error in the server response");
-                Log.e("JSON parsing exception", e.getMessage() + "End of JSON parsing exception msg", e);
             }
+
+
+        } catch (JSONException e) {
+            Toast.makeText(this, "Sorry. Could not process your request now.", Toast.LENGTH_SHORT).show();
+            Log.e("JSON parsing exception", e.getMessage() + "End of JSON parsing exception msg", e);
+        }
     }
 
     // display a display_search result
@@ -259,7 +258,7 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
         TextView text_view = (TextView) l.getChildAt(0);
         text_view.setText(house_result.get(0));
         text_view = (TextView) l.getChildAt(2);
-        text_view.setText(!StringUtils.isFieldEmpty((house_result.get(house_result.size() - 2))) ? house_result.get(house_result.size() - 2) : "No description available" );
+        text_view.setText(!StringUtils.isFieldEmpty((house_result.get(house_result.size() - 2))) ? house_result.get(house_result.size() - 2) : "No description available");
         text_view = (TextView) l.getChildAt(1);
         String address = "";
         for (int i = 1; i < house_result.size() - 2; i++) {
@@ -281,9 +280,7 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
             });
             stv.setVisibility(View.VISIBLE);
 
-        }
-
-       else if (house_result.get(house_result.size() - 1).equals("0")) {
+        } else if (house_result.get(house_result.size() - 1).equals("0")) {
             l.setClickable(true);
             l.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -302,7 +299,7 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
 
     // get house name of a result row
     private String getHouseNameAtChild(int i) {
-        if (result_layout.getChildCount() >= (i+1)) {
+        if (result_layout.getChildCount() >= (i + 1)) {
             TableRow r = (TableRow) result_layout.getChildAt(i);
             LinearLayout l = (LinearLayout) r.getChildAt(0);
             TextView tv = (TextView) l.getChildAt(0);
@@ -325,7 +322,7 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
     // clean the tail
     public void clearTail(int from) {
         // need to delete from tail otherwise it wont work as the childCount get decremented after each child removal
-        for (int i =  result_layout.getChildCount() - 1; i >= from ; i--)
+        for (int i = result_layout.getChildCount() - 1; i >= from; i--)
             cleanSearchAtChild(i);
         Log.d("Clear tail from", Integer.toString(from));
     }
@@ -357,8 +354,7 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
         if (StringUtils.isFieldEmpty(chose_hs_name)) {
             HS_Join_Dialog_Fragment dialog = HS_Join_Dialog_Fragment.initialise(house_name, l.getId());
             dialog.show(getFragmentManager(), "JoinDialog");
-        }
-        else {
+        } else {
             // else if user has already joined a house => we need to show them the conflict dialog to tell them that
             // they have already sent a join request to a different house and that continuing would cancel the previous request
             Log.d("conflict goes", "here");
@@ -419,6 +415,7 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
 
     /**
      * Cancel clicked from join dialog
+     *
      * @param f
      */
     @Override
@@ -428,10 +425,9 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
 
 
     /**
-     *
-     * @param f the dialog itself (for dismission)
+     * @param f        the dialog itself (for dismission)
      * @param username the username
-     * @param hs_name the house name that user has sent request to
+     * @param hs_name  the house name that user has sent request to
      */
     @Override
     public void onButtonClick(HS_Join_Confirm_Dialog f, String username, String hs_name) {
@@ -442,11 +438,11 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
 
 
 // ***************************************CANCEL REQUEST DIALOG*************************************************
+
     /**
-     *
      * @param house_name the house user clicked
-     * @param f the dialog fragment itself
-     * @param view_id the view id of the parent
+     * @param f          the dialog fragment itself
+     * @param view_id    the view id of the parent
      */
     @Override
     public void onCancelRequestButtonClick(String house_name, HS_Cancel_Request_Dialog_Fragment f, int view_id) {
@@ -472,12 +468,9 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
                 });
                 TextView v = (TextView) parent.findViewById(R.id.HS_Search_Result_request_sent);
                 v.setVisibility(View.INVISIBLE);
-            }
-            else
+            } else
                 new CustomMessageBox(this, "We are sorry that we could not process your request at the moment. \nIf you are experiencing this error constantly, please contact our team.");
-        }
-        catch (JSONException e)
-        {
+        } catch (JSONException e) {
             Log.e("JSON error at join", e.getMessage() + "End", e);
         }
     }
@@ -497,21 +490,25 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
 
     /**
      * Cancel clicked on cancelling join request dialog
+     *
      * @param f
      */
     @Override
     public void onCancelButtonClick(HS_Cancel_Request_Dialog_Fragment f) {
-            f.dismiss();
+        f.dismiss();
     }
 
 // ***************************************END CANCEL REQUEST DIALOG*************************************************
 
 
 // ***************************************JOIN REQUEST CONFLICT DIALOG**********************************************
+
     /**
-     * see if the new request has taken the old request place. That is, the old request has been cancelled and the new request has been sent.
+     * see if the new request has taken the old request place. That is, the old request has been cancelled and the
+     * new request has been sent.
      *
-     * @params old, new_req responses regarding the requests.
+     * @param old     responses regarding the requests.
+     * @param new_req responses regarding the requests.
      */
     private void resolveConflict(Response old, Response new_req) {
         if (old.getToken("status").equals("true") || new_req.getToken("status").equals("true")) {
@@ -523,7 +520,14 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
     }
 
 
-
+    /**
+     * User clicks on the okay button to confirm overriding join request
+     *
+     * @param f           the fragment dialog itself
+     * @param username    the username
+     * @param old_hs_name the old house name
+     * @param new_hs_name the new house name
+     */
     @Override
     public void onPositiveButtonClick(HS_Join_Conflict_Dialog f, String username, String old_hs_name, String new_hs_name) {
         f.dismiss();
@@ -533,11 +537,11 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
         Request cancel_old = new Request(Request.TYPE.POST);
         cancel_old.addParam(Request_Params.PARAM_TYPE, Request_Params.VAL_HS_CANCEL_REQUEST_GROUP)
                 .addParam(Request_Params.HS_JOIN_GROUP_GRPNAME, chose_hs_name)
-                .addParam( Request_Params.PARAM_USR, username);
+                .addParam(Request_Params.PARAM_USR, username);
 
         Request join_new = new Request(Request.TYPE.POST);
         join_new.addParam(Request_Params.PARAM_TYPE, Request_Params.VAL_HS_JOIN_GROUP)
-                .addParam( Request_Params.HS_JOIN_GROUP_GRPNAME, new_hs_name)
+                .addParam(Request_Params.HS_JOIN_GROUP_GRPNAME, new_hs_name)
                 .addParam(Request_Params.PARAM_USR, username);
 
         new Search_Worker(this, false).setMode(search_mode.CONFLICT_OK)
@@ -552,7 +556,9 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
 
 
     /**
-     * Class Search_Worker responsible for doing the server connection
+     * Class Search_Worker responsible for getting information from the server
+     * This class subclasses the {@link HTTPConnect.ConcurrentConnection} rather than {@link HTTPConnect.Connection}
+     * since a lot of requests need sending in one go.
      */
     class Search_Worker extends ConcurrentConnection {
         private search_mode mode;
@@ -592,7 +598,13 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
         }
     }
 
-
+    /**
+     * Find the order of the row having the house name match the arg
+     * TODO Could be improved by using a map to store this sort of information as soon as the information is fetched
+     *
+     * @param house_name the name of the house whose row's order is being retrieved
+     * @return the order of the row
+     */
     public int findIdOfHouseName(String house_name) {
         for (int i = 0; i < result_layout.getChildCount(); i++) {
             if (getHouseNameAtChild(i).equals(house_name))

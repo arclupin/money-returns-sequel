@@ -63,8 +63,8 @@ public class Payments extends FragmentActivity {
 
         /* Get the username and date via the intent */
         Intent intent = getIntent();
-        username = intent.getStringExtra("ACCOUNT_USERNAME");
-        date = intent.getStringExtra("DATE");
+        username = intent.getStringExtra(IntentConstants.USERNAME);
+        date = intent.getStringExtra(IntentConstants.DATE);
 
         /* Gets all of the users accounts from the server, and populates accountStrings with them */
         getAccounts();
@@ -142,8 +142,8 @@ public class Payments extends FragmentActivity {
         /* Launch notifications activity, dont kill app */
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
-            intent.putExtra("ACCOUNT_USERNAME", username);
-            intent.putExtra("DATE", date);
+            intent.putExtra(IntentConstants.USERNAME, username);
+            intent.putExtra(IntentConstants.DATE, date);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
         }
@@ -245,7 +245,7 @@ public class Payments extends FragmentActivity {
         try {
             /* Command required to make a payment, takes username, to account, from account, both sort codes and amount
              * Returns: JSON String */
-            result = connect.execute("TYPE", "PAY", "USR", username, "PAYTO", toAccountNum, "PAYFROM", fromAccountNum, "PAYFROM_SC", fromSort, "PAYTO_SC", sortCode,  "AMOUNT", amount).get();
+            result = connect.execute("TYPE", "PAY", IntentConstants.USERNAME, username, "PAYTO", toAccountNum, "PAYFROM", fromAccountNum, "PAYFROM_SC", fromSort, "PAYTO_SC", sortCode,  "AMOUNT", amount).get();
 
             /* Turns String into JSON object, can throw JSON Exception */
             JSONObject jo = new JSONObject(result);
@@ -333,7 +333,7 @@ public class Payments extends FragmentActivity {
 
         try {
             /* Command to get the accounts, returns JSON string */
-            String result = hc.execute("TYPE", "SAA", "USR", username).get();
+            String result = hc.execute("TYPE", "SAA", IntentConstants.USERNAME, username).get();
 
             /* Convert string to JSON object, can throw JSON Exception */
             JSONObject jo = new JSONObject(result);
@@ -417,7 +417,7 @@ public class Payments extends FragmentActivity {
 
         try {
             /* This is the command needed for the transactions, takes username and account number, returns JSON String */
-            String result = hc.execute("TYPE", "TRANSLIST", "USR", username, "ACC_NUMBER", accountNum).get();
+            String result = hc.execute("TYPE", "TRANSLIST", IntentConstants.USERNAME, username, "ACC_NUMBER", accountNum).get();
 
             /* Tries to convert to JSON Object, can throw JSON Exception */
             JSONObject jo = new JSONObject(result);
@@ -570,7 +570,7 @@ public class Payments extends FragmentActivity {
         Connection hc = new Connection(this);
         try {
             /* try to execute a logout on the server */
-            hc.execute("TYPE", "LOGOUT", "USR", username);
+            hc.execute("TYPE", "LOGOUT", IntentConstants.USERNAME, username);
         }
         catch (Exception e) {
             /* Doesnt really need a detailed error as user is logged out anyway, just print stack trace */

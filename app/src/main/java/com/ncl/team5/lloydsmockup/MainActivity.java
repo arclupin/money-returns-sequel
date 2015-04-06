@@ -100,10 +100,10 @@ public class MainActivity extends Activity {
         String currentDate = df.format(Calendar.getInstance().getTime());
         Intent i = getIntent();
 
-        username = i.getStringExtra("ACCOUNT_USERNAME") != null ? i.getStringExtra("ACCOUNT_USERNAME") : username;
+        username = i.getStringExtra(IntentConstants.USERNAME) != null ? i.getStringExtra(IntentConstants.USERNAME) : username;
 
-        if (i.getStringExtra("DATE") != null) {// check for null (date coming from login)
-            date = i.getStringExtra("DATE");
+        if (i.getStringExtra(IntentConstants.DATE) != null) {// check for null (date coming from login)
+            date = i.getStringExtra(IntentConstants.DATE);
         }// assign the date for the first and also the last time of the session
         else
         {
@@ -188,8 +188,8 @@ public class MainActivity extends Activity {
             //startActivity(intent);
         } else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
-            intent.putExtra("ACCOUNT_USERNAME", username);
-            intent.putExtra("DATE", date);
+            intent.putExtra(IntentConstants.USERNAME, username);
+            intent.putExtra(IntentConstants.DATE, date);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
         }
@@ -199,8 +199,8 @@ public class MainActivity extends Activity {
 
     public void btnClickPayments(View view) {
         Intent i = new Intent(this, Payments.class);
-        i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("DATE", date);
+        i.putExtra(IntentConstants.USERNAME, username);
+        i.putExtra(IntentConstants.DATE, date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
 
@@ -208,24 +208,24 @@ public class MainActivity extends Activity {
 
     public void btnClickTransfers(View view) {
         Intent i = new Intent(this, Transfers.class);
-        i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("DATE", date);
+        i.putExtra(IntentConstants.USERNAME, username);
+        i.putExtra(IntentConstants.DATE, date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
 
     public void btnClickAccounts(View view) {
         Intent i = new Intent(this, Accounts.class);
-        i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("DATE", date);
+        i.putExtra(IntentConstants.USERNAME, username);
+        i.putExtra(IntentConstants.DATE, date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
 
     public void btnClickAnalysis(View view) {
         Intent i = new Intent(this, Analysis.class);
-        i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("DATE", date);
+        i.putExtra(IntentConstants.USERNAME, username);
+        i.putExtra(IntentConstants.DATE, date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -234,24 +234,24 @@ public class MainActivity extends Activity {
 
     public void btnClickOffers(View view) {
         Intent i = new Intent(this, Locations.class);
-        i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("DATE", date);
+        i.putExtra(IntentConstants.USERNAME, username);
+        i.putExtra(IntentConstants.DATE, date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
 
     public void btnClickProducts(View view) {
         Intent i = new Intent(this, Products.class);
-        i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("DATE", date);
+        i.putExtra(IntentConstants.USERNAME, username);
+        i.putExtra(IntentConstants.DATE, date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
 
     public void btnClickSettings(View view) {
         Intent i = new Intent(this, Settings.class);
-        i.putExtra("ACCOUNT_USERNAME", username);
-        i.putExtra("DATE", date);
+        i.putExtra(IntentConstants.USERNAME, username);
+        i.putExtra(IntentConstants.DATE, date);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -260,7 +260,7 @@ public class MainActivity extends Activity {
     public void btnClickHouseShare(View view) {
         if (this.username.equals("test")) {
             Intent i = new Intent(this, Houseshare_Welcome.class);
-            i.putExtra("ACCOUNT_USERNAME", username);
+            i.putExtra(IntentConstants.USERNAME, username);
             startActivity(i);
             ((KillApp) this.getApplication()).setStatus(false);
         } else {
@@ -274,7 +274,7 @@ public class MainActivity extends Activity {
     public void btnLogout(View view) {
         Connection connect = new Connection(this);
         try {
-            connect.execute("TYPE", "LOGOUT", "USR", username);
+            connect.execute("TYPE", "LOGOUT", IntentConstants.USERNAME, username);
         } finally {
             /* Set the logout time so it can easily get it later */
             SharedPreferences sp = getSharedPreferences("logoutpref", 0);
@@ -318,7 +318,7 @@ public class MainActivity extends Activity {
 
                 Connection connect = new Connection(this);
                 try {
-                    connect.execute("TYPE", "LOGOUT", "USR", username);
+                    connect.execute("TYPE", "LOGOUT", IntentConstants.USERNAME, username);
                 } finally {
                 /* Set the logout time so it can easily get it later */
                     SharedPreferences sp = getSharedPreferences(username, 0);
@@ -372,7 +372,7 @@ public class MainActivity extends Activity {
     public void onBackPressed() {
         Connection connect = new Connection(this);
         try {
-            connect.execute("TYPE", "LOGOUT", "USR", username);
+            connect.execute("TYPE", "LOGOUT", IntentConstants.USERNAME, username);
         } finally {
             /* Set the logout time so it can easily get it later */
             SharedPreferences sp = getSharedPreferences(username, 0);
@@ -466,7 +466,7 @@ public class MainActivity extends Activity {
 //     */
 //    private void hs_intents(Class c, String house_name) {
 //        Intent i = new Intent(this, c);
-//        i.putExtra("ACCOUNT_USERNAME", username);
+//        i.putExtra(IntentConstants.USERNAME, username);
 //        i.putExtra("HOUSE_NAME", house_name);
 //        startActivity(i);
 //    }
@@ -474,7 +474,7 @@ public class MainActivity extends Activity {
 //    // at this stage the home view will be called
 //    private void hs_intents_home_view(Class c, String type, String house_name) {
 //        Intent i = new Intent(this, c);
-//        i.putExtra("ACCOUNT_USERNAME", username);
+//        i.putExtra(IntentConstants.USERNAME, username);
 //        i.putExtra("TYPE", type);
 //        i.putExtra("HOUSE_NAME", house_name);
 //        startActivity(i);

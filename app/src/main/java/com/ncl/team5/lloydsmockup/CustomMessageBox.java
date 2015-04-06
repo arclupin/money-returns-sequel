@@ -59,7 +59,7 @@ public class CustomMessageBox {
      * @param text the text in the body of the dialog
      * @return the view of the dialog
      */
-    private View prepareDialog(Activity a, String text) {
+    public static View prepareDialog(Activity a, String text) {
 
         LayoutInflater inflater = a.getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog_fragment, null);

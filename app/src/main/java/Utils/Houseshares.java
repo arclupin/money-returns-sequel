@@ -16,7 +16,7 @@ public class Houseshares {
 
     public static void hs_intents(Activity callingActivity, Class startingActivity, String username) {
         Intent i = new Intent(callingActivity, startingActivity);
-        i.putExtra("ACCOUNT_USERNAME", username);
+        i.putExtra(IntentConstants.USERNAME, username);
         callingActivity.startActivity(i);
     }
 

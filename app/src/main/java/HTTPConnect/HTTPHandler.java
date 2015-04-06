@@ -23,6 +23,8 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 /**
+ * Class handling the request post and its response retrieval
+ *
  * Created by Thanh on 04-Apr-15.
  */
 public class HTTPHandler {
@@ -39,7 +41,10 @@ public class HTTPHandler {
         cookies = new BasicCookieStore();
 
         CookieStorage cookieStorage = new CookieStorage(mContext.getSharedPreferences("cookies", Activity.MODE_PRIVATE));
-        BasicClientCookie cookie_sessid = cookieStorage.pullFromFile("PHPSESSID");
+        BasicClientCookie cookie_sessid = cookieStorage.pullFromFile("PHPSESSID"); // pull the cookie from the file
+
+        // set the domain and path for the cookie
+        // this must be set, the cookie would not be complete otherwise
         cookie_sessid.setDomain("homepages.cs.ncl.ac.uk");
         cookie_sessid.setPath("/");
 
@@ -51,8 +56,7 @@ public class HTTPHandler {
         Response rp = null;
         if (r.getType() == Request.TYPE.POST)
             rp =  post(r);
-        //TODO
-
+        //TODO handle other types of request
         return rp;
     }
 

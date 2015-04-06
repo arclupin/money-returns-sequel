@@ -53,8 +53,8 @@ public class Accounts extends Activity {
         ListView accountsList=(ListView)findViewById(R.id.listView);
 
         Intent i = getIntent();
-        username = i.getStringExtra("ACCOUNT_USERNAME");
-        date = i.getStringExtra("DATE");
+        username = i.getStringExtra(IntentConstants.USERNAME);
+        date = i.getStringExtra(IntentConstants.DATE);
 
         //Log.d("Username", username);
 
@@ -80,7 +80,7 @@ public class Accounts extends Activity {
                 intent.putExtra("USERNAME", username);
                 intent.putExtra("ACCOUNT_NUM", message);
                 intent.putExtra("BALANCE", balance);
-                intent.putExtra("DATE", date);
+                intent.putExtra(IntentConstants.DATE, date);
                 startActivity(intent);
 
                 ((KillApp) Accounts.this.getApplication()).setStatus(false);
@@ -102,7 +102,7 @@ public class Accounts extends Activity {
         Connection hc = new Connection(this);// trying to pass the activity to the coonection (not sure if this is legal though)
 
         try {
-            String result = hc.execute("TYPE","SAA","USR", username ).get();
+            String result = hc.execute("TYPE","SAA",IntentConstants.USERNAME, username ).get();
 
             JSONObject jo = new JSONObject(result);
 
@@ -182,8 +182,8 @@ public class Accounts extends Activity {
         }
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
-            intent.putExtra("ACCOUNT_USERNAME", username);
-            intent.putExtra("DATE", date);
+            intent.putExtra(IntentConstants.USERNAME, username);
+            intent.putExtra(IntentConstants.DATE, date);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
         }
@@ -244,7 +244,7 @@ public class Accounts extends Activity {
         Connection hc = new Connection(this);
         try
         {
-            hc.execute("TYPE","LOGOUT", "USR", username);
+            hc.execute("TYPE","LOGOUT", IntentConstants.USERNAME, username);
         }
         catch(Exception e)
         {

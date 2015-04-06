@@ -46,7 +46,7 @@ public class Statement extends Activity {
         Intent i = getIntent();
         username = i.getStringExtra("USERNAME");
         accountNum = i.getStringExtra("ACCOUNT_NUM");
-        dateLogout = i.getStringExtra("DATE");
+        dateLogout = i.getStringExtra(IntentConstants.DATE);
         String balance = i.getStringExtra("BALANCE");
 
 
@@ -108,8 +108,8 @@ public class Statement extends Activity {
                                 ((KillApp) s.getApplication()).setStatus(false);
                                 Intent i = new Intent(s, GroupChooser.class);
                                 i.putExtra("TRANS_ID", transId);
-                                i.putExtra("ACCOUNT_USERNAME", username);
-                                i.putExtra("DATE", dateLogout);
+                                i.putExtra(IntentConstants.USERNAME, username);
+                                i.putExtra(IntentConstants.DATE, dateLogout);
                                 i.putExtra("ACCOUNT_NUM", accountNum);
                                 i.putExtra("VALUE", Double.parseDouble(amount.substring(1)));
                                 startActivity(i);
@@ -131,7 +131,7 @@ public class Statement extends Activity {
         Connection hc = new Connection(this);
 
         try {
-            String result = hc.execute("TYPE", "TRANSLIST", "USR", username, "ACC_NUMBER", accountNum).get();
+            String result = hc.execute("TYPE", "TRANSLIST", IntentConstants.USERNAME, username, "ACC_NUMBER", accountNum).get();
 
             JSONObject jo = new JSONObject(result);
 
@@ -245,8 +245,8 @@ public class Statement extends Activity {
         }
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
-            intent.putExtra("ACCOUNT_USERNAME", username);
-            intent.putExtra("DATE", dateLogout);
+            intent.putExtra(IntentConstants.USERNAME, username);
+            intent.putExtra(IntentConstants.DATE, dateLogout);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
         }
@@ -300,7 +300,7 @@ public class Statement extends Activity {
         Connection hc = new Connection(this);
         try
         {
-            hc.execute("TYPE","LOGOUT", "USR", username);
+            hc.execute("TYPE","LOGOUT", IntentConstants.USERNAME, username);
         }
         catch(Exception e)
         {

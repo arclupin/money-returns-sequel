@@ -49,8 +49,8 @@ public class Notifications extends Activity {
         setContentView(R.layout.activity_notifications);
 
         Intent intent = getIntent();
-        username = intent.getStringExtra("ACCOUNT_USERNAME");
-        logDate = intent.getStringExtra("DATE");
+        username = intent.getStringExtra(IntentConstants.USERNAME);
+        logDate = intent.getStringExtra(IntentConstants.DATE);
 
 
         SharedPreferences settings = getSharedPreferences(username, 0);
@@ -161,7 +161,7 @@ public class Notifications extends Activity {
         Connection hc = new Connection(this);
 
         try {
-            String result = hc.execute("TYPE","SAA","USR", username ).get();
+            String result = hc.execute("TYPE","SAA",IntentConstants.USERNAME, username ).get();
 
             JSONObject jo = new JSONObject(result);
 
@@ -224,7 +224,7 @@ public class Notifications extends Activity {
 
             try {
                 /* This is the command needed for the transactions, takes username and account number, returns JSON String */
-                String result = hc.execute("TYPE", "TRANSLIST", "USR", username, "ACC_NUMBER", accountNum).get();
+                String result = hc.execute("TYPE", "TRANSLIST", IntentConstants.USERNAME, username, "ACC_NUMBER", accountNum).get();
 
                 /* Tries to convert to JSON Object, can throw JSON Exception */
                 JSONObject jo = new JSONObject(result);
@@ -435,7 +435,7 @@ public class Notifications extends Activity {
         Connection hc = new Connection(this);
         try {
             /* try to execute a logout on the server */
-            hc.execute("TYPE", "LOGOUT", "USR", username);
+            hc.execute("TYPE", "LOGOUT", IntentConstants.USERNAME, username);
         }
         catch (Exception e) {
             /* Doesnt really need a detailed error as user is logged out anyway, just print stack trace */

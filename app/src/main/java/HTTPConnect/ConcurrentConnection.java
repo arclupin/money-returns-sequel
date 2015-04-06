@@ -19,7 +19,20 @@ import Utils.Utilities;
  * Allow multiple requests to be sent in one async task <br/>
  * The order of responses in the result adheres to the order of the requests coming in. <br/>
  *
- * Created by Thanh on 04-Apr-15.
+ *
+ * This class will be subclassed by any activity requiring connection to the server (which most do)
+ * The sub class hence would have a private field (a mode) for each type of request.
+ *
+ *
+ *
+ * The mode is used for deciding what to do before and after each request (typically related to UI update). <br/>
+ * <u>Example</u>
+ * For search activity, a search object in mode MAIN would show a loading spinner before the
+ * search, and update the main layout after the search whereas a search in mode SEND_JOIN_REQUEST might
+ * just mark a flag for the house the user sent the request to.
+ *
+ * @see Fragment.Fragment_HS_Home.HomeViewWorker
+ * @author Thanh
  */
 public class ConcurrentConnection extends AsyncTask<List<Request>, Void, List<Response>>{
     private Activity mContext;

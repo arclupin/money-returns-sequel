@@ -22,6 +22,12 @@ public class Request {
         this.type = t;
     }
 
+    /**
+     * Add a param + value pair to the request
+     * @param key the param name
+     * @param value the param value
+     * @return this request
+     */
     public Request addParam(String key, String value) {
         params.add(new BasicNameValuePair(key, value));
         return this;

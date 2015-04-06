@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.ncl.team5.lloydsmockup.CustomMessageBox;
 import com.ncl.team5.lloydsmockup.HouseShare_Bill;
+import com.ncl.team5.lloydsmockup.IntentConstants;
 import com.ncl.team5.lloydsmockup.R;
 
 import org.json.JSONArray;
@@ -70,8 +71,8 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        username = getArguments().getString("USR");
-        hs_name = getArguments().getString("HS_NAME");
+        username = getArguments().getString(IntentConstants.USERNAME);
+        hs_name = getArguments().getString(IntentConstants.HOUSE_NAME);
         view_type = getArguments().getString("TYPE");
 
         Log.d("onCreate home_view", hs_name + " - " + view_type + " - " + username);
@@ -90,8 +91,8 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
     public static Fragment_HS_Home newInstance(String username, String house_name, String view_type) {
         Fragment_HS_Home fragment = new Fragment_HS_Home();
         Bundle args = new Bundle();
-        args.putString("USR", username);
-        args.putString("HS_NAME", house_name);
+        args.putString(IntentConstants.USERNAME, username);
+        args.putString(IntentConstants.HOUSE_NAME, house_name);
         args.putString("TYPE", view_type);
         fragment.setArguments(args);
         return fragment;

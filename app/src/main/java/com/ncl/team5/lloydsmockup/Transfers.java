@@ -36,8 +36,8 @@ public class Transfers extends Activity {
         super.onCreate(savedInstanceState);
         //gets the username from the intent
         Intent i = getIntent();
-        username = i.getStringExtra("ACCOUNT_USERNAME");
-        date = i.getStringExtra("DATE");
+        username = i.getStringExtra(IntentConstants.USERNAME);
+        date = i.getStringExtra(IntentConstants.DATE);
 
         getAccounts();
 
@@ -90,8 +90,8 @@ public class Transfers extends Activity {
         }
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
-            intent.putExtra("ACCOUNT_USERNAME", username);
-            intent.putExtra("DATE", date);
+            intent.putExtra(IntentConstants.USERNAME, username);
+            intent.putExtra(IntentConstants.DATE, date);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
 
@@ -136,7 +136,7 @@ public class Transfers extends Activity {
         try
         {
             //now works with the ui and passed that values of the text boxes
-            result = connect.execute("TYPE", "PAY", "USR", username, "PAYTO", toAccount, "PAYFROM", fromAccount, "AMOUNT", amount, "PAYFROM_SC", fromSort, "PAYTO_SC", sortCode).get();
+            result = connect.execute("TYPE", "PAY", IntentConstants.USERNAME, username, "PAYTO", toAccount, "PAYFROM", fromAccount, "AMOUNT", amount, "PAYFROM_SC", fromSort, "PAYTO_SC", sortCode).get();
 
 
             JSONObject jo = new JSONObject(result);
@@ -219,7 +219,7 @@ public class Transfers extends Activity {
         Connection hc = new Connection(this);// trying to pass the activity to the coonection (not sure if this is legal though)
 
         try {
-            String result = hc.execute("TYPE","SAA","USR", username ).get();
+            String result = hc.execute("TYPE","SAA",IntentConstants.USERNAME, username ).get();
 
 
             JSONObject jo = new JSONObject(result);
@@ -267,7 +267,7 @@ public class Transfers extends Activity {
         Connection hc = new Connection(this);
         try
         {
-            hc.execute("TYPE","LOGOUT", "USR", username);
+            hc.execute("TYPE","LOGOUT", IntentConstants.USERNAME, username);
         }
         catch(Exception e)
         {

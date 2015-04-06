@@ -19,4 +19,6 @@ public class IntentConstants {
 
     public static final String VIEW_ID = "VIEW_ID";
 
+    public static final String DATE = "DATE";
+
 }

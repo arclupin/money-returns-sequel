@@ -53,8 +53,8 @@ public class Analysis extends Activity {
         setContentView(R.layout.activity_analysis);
 
         Intent intent = getIntent();
-        username = intent.getStringExtra("ACCOUNT_USERNAME");
-        date = intent.getStringExtra("DATE");
+        username = intent.getStringExtra(IntentConstants.USERNAME);
+        date = intent.getStringExtra(IntentConstants.DATE);
 
         Log.d("USERNAME",username);
 
@@ -228,7 +228,7 @@ public class Analysis extends Activity {
         Connection hc = new Connection(this);// trying to pass the activity to the coonection (not sure if this is legal though)
 
         try {
-            String result = hc.execute("TYPE","SAA","USR", username ).get();
+            String result = hc.execute("TYPE","SAA",IntentConstants.USERNAME, username ).get();
 
             JSONObject jo = new JSONObject(result);
 
@@ -274,7 +274,7 @@ public class Analysis extends Activity {
         Connection hc = new Connection(this);
         try
         {
-            hc.execute("TYPE","LOGOUT", "USR", username);
+            hc.execute("TYPE","LOGOUT", IntentConstants.USERNAME, username);
         }
         catch(Exception e)
         {
@@ -326,8 +326,8 @@ public class Analysis extends Activity {
         }
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
-            intent.putExtra("ACCOUNT_USERNAME", username);
-            intent.putExtra("DATE", date);
+            intent.putExtra(IntentConstants.USERNAME, username);
+            intent.putExtra(IntentConstants.DATE, date);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
 

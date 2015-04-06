@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import HTTPConnect.Connection;
+import HTTPConnect.Request_Params;
 
 
 public class GetNotification{
@@ -39,7 +40,7 @@ public class GetNotification{
         Connection hc = new Connection(a);
 
         try {
-            String result = hc.execute("TYPE","SAA","USR", username ).get();
+            String result = hc.execute("TYPE","SAA", Request_Params.PARAM_USR, username ).get();
 
             JSONObject jo = new JSONObject(result);
 
@@ -90,7 +91,7 @@ public class GetNotification{
 
             try {
                 /* This is the command needed for the transactions, takes username and account number, returns JSON String */
-                String result = hc.execute("TYPE", "TRANSLIST", "USR", username, "ACC_NUMBER", accountNum).get();
+                String result = hc.execute("TYPE", "TRANSLIST", IntentConstants.USERNAME, username, "ACC_NUMBER", accountNum).get();
 
                 /* Tries to convert to JSON Object, can throw JSON Exception */
                 JSONObject jo = new JSONObject(result);

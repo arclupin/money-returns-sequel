@@ -65,8 +65,8 @@ public class LocationsLogin extends Activity implements LocationListener  {
         Intent i = getIntent();
         super.onCreate(savedInstanceState);
 
-        username = i.getStringExtra("ACCOUNT_USERNAME");
-        date = i.getStringExtra("DATE");
+        username = i.getStringExtra(IntentConstants.USERNAME);
+        date = i.getStringExtra(IntentConstants.DATE);
 
         lManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         enabled =lManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -303,8 +303,8 @@ public class LocationsLogin extends Activity implements LocationListener  {
             this.finish();
         } else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
-            intent.putExtra("ACCOUNT_USERNAME", username);
-            intent.putExtra("DATE", date);
+            intent.putExtra(IntentConstants.USERNAME, username);
+            intent.putExtra(IntentConstants.DATE, date);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
         }
@@ -353,7 +353,7 @@ public class LocationsLogin extends Activity implements LocationListener  {
         Connection hc = new Connection(this);
         try
         {
-            hc.execute("TYPE","LOGOUT", "USR", username);
+            hc.execute("TYPE","LOGOUT", IntentConstants.USERNAME, username);
         }
         catch(Exception e)
         {

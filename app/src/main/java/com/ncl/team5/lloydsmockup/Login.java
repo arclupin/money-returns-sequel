@@ -25,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import HTTPConnect.Connection;
+import HTTPConnect.Request_Params;
 
 
 public class Login extends Activity {
@@ -152,14 +153,14 @@ public class Login extends Activity {
         if (username.equals("test")) {
             //Starts an intent to launch the main menu
             Intent i = new Intent(this, MainActivity.class);
-            i.putExtra("ACCOUNT_USERNAME", username);
-            i.putExtra("DATE", "N/A"); // prevent the app from crashing due to null pointer
+            i.putExtra(IntentConstants.USERNAME, username);
+            i.putExtra(IntentConstants.DATE, "N/A"); // prevent the app from crashing due to null pointer
             startActivity(i);
             return;
         } else {
             new Authenticator(this).setMode(Connection.MODE.LONG_TASK)
                     .setDialogMessage("Logging in")
-                    .execute("TYPE", "LOGIN", "USR", username, "PWD", password);
+                    .execute("TYPE", "LOGIN", Request_Params.PARAM_USR, username, "PWD", password);
         }
 
 
@@ -195,8 +196,8 @@ public class Login extends Activity {
                 switch (status) {
                     case OKAY: {
                         Intent i = new Intent(this, MainActivity.class);
-                        i.putExtra("ACCOUNT_USERNAME", username);
-                        i.putExtra("DATE", date);
+                        i.putExtra(IntentConstants.USERNAME, username);
+                        i.putExtra(IntentConstants.DATE, date);
                         startActivity(i);
                         break;
                     }

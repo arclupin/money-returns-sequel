@@ -58,7 +58,7 @@
 //        fragmentManager = getSupportFragmentManager();
 //
 //        i = getIntent();
-//        username = i.getExtras().getString("ACCOUNT_USERNAME");
+//        username = i.getExtras().getString(IntentConstants.USERNAME);
 //
 //        isNotiVisible = false;
 ////        checkNewNotification(); // check for new noti on start-up

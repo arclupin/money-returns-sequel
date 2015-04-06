@@ -17,6 +17,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.ncl.team5.lloydsmockup.CustomMessageBox;
+import com.ncl.team5.lloydsmockup.IntentConstants;
 import com.ncl.team5.lloydsmockup.R;
 
 import org.json.JSONArray;
@@ -65,8 +66,8 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
     public static Fragment_HS_Notification newInstance(String username, String hs_name) {
         Fragment_HS_Notification f = new Fragment_HS_Notification();
         Bundle b = new Bundle();
-        b.putString("USR", username);
-        b.putString("HS_NAME", hs_name);
+        b.putString(IntentConstants.USERNAME, username);
+        b.putString(IntentConstants.HOUSE_NAME, hs_name);
         f.setArguments(b);
         return f;
     }
@@ -189,8 +190,8 @@ public interface OnNotificationInteraction {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        username = getArguments().getString("USR");
-        hs_name = getArguments().getString("HS_NAME");
+        username = getArguments().getString(IntentConstants.USERNAME);
+        hs_name = getArguments().getString(IntentConstants.HOUSE_NAME);
 
 //        Log.d("on create noti", username);
 //        try {
@@ -393,6 +394,11 @@ public interface OnNotificationInteraction {
     }
 
 
+    /**
+     * prepare the request to be sent to the server letting it know the notifications have been seen (might not yet read)
+     * @param f the fragment itself
+     * @return the request param - use String[] instead of {@link HTTPConnect.Request} to comply with the Connection
+     */
     public String[] onNotificationsSeen(Fragment_HS_Notification f) {
 
         List<String> request = new ArrayList<String>();
@@ -405,7 +411,7 @@ public interface OnNotificationInteraction {
             request.add(Request_Params.MARK_NOTI_AS_SEEN_NOT_READ_PARAM);
             request.add(Fragment_HS_Notification.data.get(i).getId());
         }
-        Log.d("Request mark as seen", Arrays.toString(request.toArray(new String[request.size()])));
+        Log.d("Request marked as seen", Arrays.toString(request.toArray(new String[request.size()])));
         return request.toArray(new String[request.size()]);
 
     }

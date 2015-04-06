@@ -24,8 +24,8 @@ public class Products extends Activity {
         setContentView(R.layout.activity_products);
 
         Intent intent = getIntent();
-        username = intent.getStringExtra("ACCOUNT_USERNAME");
-        date = intent.getStringExtra("DATE");
+        username = intent.getStringExtra(IntentConstants.USERNAME);
+        date = intent.getStringExtra(IntentConstants.DATE);
 
         browser=(WebView)findViewById(R.id.webkit);
         WebSettings webSettings = browser.getSettings();
@@ -71,8 +71,8 @@ public class Products extends Activity {
         }
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
-            intent.putExtra("ACCOUNT_USERNAME", username);
-            intent.putExtra("DATE", date);
+            intent.putExtra(IntentConstants.USERNAME, username);
+            intent.putExtra(IntentConstants.DATE, date);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
         }

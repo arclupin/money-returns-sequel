@@ -46,10 +46,15 @@ import org.json.JSONObject;
 import Utils.Utilities;
 
 
-/* The bit at the end.. the String, Void, Boolean bit, thats what
+/**
+ * The bit at the end.. the String, Void, Boolean bit, thats what
  * ASyncTask uses to do its stuff. The String is the inputs, Void is progress
  * (if progress bar is needed) and Boolean is return type. However
- * They cannot be primitives so the wrappers are needed */
+ * They cannot be primitives so the wrappers are needed <br/>
+ *
+ * Consider using {@link HTTPConnect.ConcurrentConnection} (based on this class) instead for a neater and quicker solution
+ * @see HTTPConnect.ConcurrentConnection
+ */
 public class Connection extends AsyncTask <String, Void, String>  {
 
     /* String to store the web address as a constant */
@@ -70,7 +75,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
     private String text_dialog;
 
     private long expected_end_time;
-    public static final long EXPECTED_DURATION_LONG_TASK = 2000; // 1 seconds is the appropriate choice for long task I guess.
+    public static final long EXPECTED_DURATION_LONG_TASK = 1000; // 1 seconds is the appropriate choice for long task I guess.
     public Connection(Activity a) {
         this.a = a;
     }
@@ -92,7 +97,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
             expected_end_time = System.currentTimeMillis(); // unachievable :P
         if (mode == MODE.LONG_TASK) {
             d = new ProgressDialog(a);
-            d.setMessage( text_dialog != null ? text_dialog : "Processing small task");
+            d.setMessage( text_dialog != null ? text_dialog : "Loading");
             d.show();
         }
 
@@ -317,7 +322,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
         /* Start a new connection */
         try {
             /* try to execute a logout on the server */
-            this.execute("TYPE", "LOGOUT", "USR", username);
+            this.execute("TYPE", "LOGOUT", Request_Params.PARAM_USR, username);
         }
         catch (Exception e) {
             /* Doesnt really need a detailed error as user is logged out anyway, just print stack trace */

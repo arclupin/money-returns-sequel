@@ -31,8 +31,8 @@ public class Settings extends Activity {
         setContentView(R.layout.activity_settings);
 
         Intent i = getIntent();
-        username = i.getStringExtra("ACCOUNT_USERNAME");
-        date = i.getStringExtra("DATE");
+        username = i.getStringExtra(IntentConstants.USERNAME);
+        date = i.getStringExtra(IntentConstants.DATE);
 
         ListView optionList=(ListView)findViewById(R.id.listOptions);
         optionsList=  new ArrayList<String>();
@@ -122,8 +122,8 @@ public class Settings extends Activity {
         }
         else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
-            intent.putExtra("ACCOUNT_USERNAME", username);
-            intent.putExtra("DATE", date);
+            intent.putExtra(IntentConstants.USERNAME, username);
+            intent.putExtra(IntentConstants.DATE, date);
             startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
         }
