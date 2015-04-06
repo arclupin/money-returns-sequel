@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -83,6 +84,16 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
                     // We can also use ActionBar.Tab#select() to do this if we have a reference to the
                     // Tab.
                     actionBar.setSelectedNavigationItem(position);
+                    if (position == 1)
+                    {
+                        invalidateOptionsMenu();
+                        getMenuInflater().inflate(R.menu.menu_hs_noti, menu);
+                    }
+                    else {
+                        invalidateOptionsMenu();
+                        Houseshare_HomeView.this.onCreateOptionsMenu(menu);
+                    }
+
                     Log.d("pager", Integer.toString(position));
 
                     Fragment_HS_Abstract f = (Fragment_HS_Abstract) fragmentManager.getFragments().get(position);
@@ -115,6 +126,33 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
         return true;
     }
 
+    /**
+     * Prepare the Screen's standard options menu to be displayed.  This is
+     * called right before the menu is shown, every time it is shown.  You can
+     * use this method to efficiently enable/disable items or otherwise
+     * dynamically modify the contents.
+     * <p/>
+     * <p>The default implementation updates the system menu items based on the
+     * activity's state.  Deriving classes should always call through to the
+     * base class implementation.
+     *
+     * @param menu The options menu as last shown or first initialized by
+     *             onCreateOptionsMenu().
+     * @return You must return true for the menu to be displayed;
+     * if you return false it will not be shown.
+     * @see #onCreateOptionsMenu
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        if (pager.getCurrentItem() == 1) {
+            menu.removeItem(R.id.action_add_user);
+            menu.removeItem(R.id.action_hs_new_bill);
+            getMenuInflater().inflate(R.menu.menu_hs_noti, menu);
+        }
+       return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -135,6 +173,15 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
                i.putExtra(IntentConstants.USERNAME, username);
                i.putExtra(IntentConstants.HOUSE_NAME, house_name);
                startActivity(i);
+           }
+           case R.id.action_refresh: {
+               Fragment_HS_Notification f = (Fragment_HS_Notification) fragmentManager.getFragments().get(1);
+               if (f.isVisible())
+
+               {
+                   f.getmRefreshView().setRefreshing(true);
+                   f.refresh();
+               }
            }
             return true;
         }

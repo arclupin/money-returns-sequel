@@ -75,7 +75,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
     private String text_dialog;
 
     private long expected_end_time;
-    public static final long EXPECTED_DURATION_LONG_TASK = 1000; // 1 seconds is the appropriate choice for long task I guess.
+    public static long EXPECTED_DURATION_LONG_TASK = 1000; // 1 seconds is the appropriate choice for long task I guess.
     public Connection(Activity a) {
         this.a = a;
     }
@@ -118,6 +118,16 @@ public class Connection extends AsyncTask <String, Void, String>  {
     public Connection setDialogMessage(String m)  {
         if (this.mode == MODE.LONG_TASK)
             this.text_dialog = m;
+        return this;
+    }
+
+    /**
+     * set the expected time for this task to finish
+     * @param howLong
+     * @return
+     */
+    public Connection setTimeExpected(long howLong) {
+        EXPECTED_DURATION_LONG_TASK = howLong;
         return this;
     }
 
@@ -234,6 +244,8 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
 
     }
+
+
 
     public String loginConnect(List<NameValuePair> nameValuePairs) throws IOException {
         // Create a new HttpClient and Post Header

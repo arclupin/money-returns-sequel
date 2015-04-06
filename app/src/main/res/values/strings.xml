@@ -29,6 +29,7 @@
     <string name="title_activity_payments">Payments</string>
     <string name="title_activity_statement">Statement</string>
     <string name="action_backHome">Back to menu</string>
+    <string name="action_hs_refresh">Click (or swipe down) to refresh</string>
     <string name="action_Notifications">Notifications</string>
     <string name="action_location">Location Service</string>
     <string name="title_activity_change_password">ChangePassword</string>

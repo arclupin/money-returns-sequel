@@ -3,8 +3,8 @@
     tools:context="com.ncl.team5.lloydsmockup.MainActivity" >
 
 
-    <item android:title="@string/action_backHome"
-        android:id="@+id/action_backHome"
-        android:icon="@drawable/back_icon"
+    <item android:title="@string/action_hs_refresh"
+        android:id="@+id/action_refresh"
+        android:icon="@drawable/ic_action_refresh"
         android:showAsAction="always"/>
 </menu>
