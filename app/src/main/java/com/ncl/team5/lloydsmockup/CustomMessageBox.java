@@ -159,7 +159,7 @@ public class CustomMessageBox {
     private static View prepareDialogView(Activity a, String text) {
 
         LayoutInflater inflater = a.getLayoutInflater();
-        View v = inflater.inflate(R.layout.dialog_fragment, null);
+        View v = inflater.inflate(R.layout.dialog_normal_fragment, null);
         ((TextView) v.findViewById(R.id.title)).setText("Notice");
         ((TextView) v.findViewById(R.id.content)).setText(text);
         v.findViewById(R.id.dialog_cancel).setVisibility(View.INVISIBLE);

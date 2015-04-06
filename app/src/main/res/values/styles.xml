@@ -259,6 +259,14 @@
         <item name="android:ellipsize">marquee</item>
     </style>
 
+    <style name="Dialog_Text_PS" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textColor">@color/hs_home_address_desc</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
 
 
 

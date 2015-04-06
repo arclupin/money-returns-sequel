@@ -48,9 +48,9 @@ import Utils.StringUtils;
 public class Fragment_HS_Home extends Fragment_HS_Abstract {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private String username;
-    private String hs_name;
-    private String view_type;
+    private static String username;
+    private static String hs_name;
+    private static String view_type;
 
 
     private String response_content;
@@ -71,9 +71,13 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        username = getArguments().getString(IntentConstants.USERNAME);
-        hs_name = getArguments().getString(IntentConstants.HOUSE_NAME);
-        view_type = getArguments().getString("TYPE");
+
+        if (getArguments().getString(IntentConstants.USERNAME) != null)
+            username = getArguments().getString(IntentConstants.USERNAME);
+        if (getArguments().getString(IntentConstants.HOUSE_NAME) != null)
+            hs_name = getArguments().getString(IntentConstants.HOUSE_NAME);
+        if (getArguments().getString(IntentConstants.HOME_VIEW_TYPE) != null)
+           view_type = getArguments().getString(IntentConstants.HOME_VIEW_TYPE);
 
         Log.d("onCreate home_view", hs_name + " - " + view_type + " - " + username);
 

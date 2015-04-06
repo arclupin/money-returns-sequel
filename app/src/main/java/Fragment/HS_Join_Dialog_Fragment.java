@@ -4,19 +4,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ncl.team5.lloydsmockup.IntentConstants;
 import com.ncl.team5.lloydsmockup.R;
-
-import java.util.List;
 
 /**
  * Created by Thanh on 23-Mar-15.
@@ -60,7 +56,7 @@ public class HS_Join_Dialog_Fragment extends DialogFragment{
         Log.d("house name from frag", "/" + house_name);
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_fragment, null);
+        RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_normal_fragment, null);
         ((TextView) v.findViewById(R.id.title)).setText("Confirmation");
         ((TextView) v.findViewById(R.id.content)).setText("Would you like to join " + house_name + "?");
         ((TextView) v.findViewById(R.id.dialog_okay)).setOnClickListener(new View.OnClickListener() {

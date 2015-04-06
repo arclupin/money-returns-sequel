@@ -144,12 +144,13 @@
             android:name=".Fragment_Houseshare_Inputs"
             android:label="@string/title_activity_fragment__houseshare__inputs" >
         </activity>
-        <activity android:uiOptions="splitActionBarWhenNarrow"
+        <activity
             android:name=".Houseshare_HomeView"
             android:label="@string/title_activity_houseshare__home_view"
-            android:theme="@style/AppTheme2"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity">
+            android:theme="@style/AppTheme2"
+            android:uiOptions="splitActionBarWhenNarrow" >
         </activity>
         <activity
             android:name=".HouseShare_Bill"
@@ -160,6 +161,22 @@
             android:name=".LocationsLogin"
             android:label="@string/title_activity_locations_login" >
 >>>>>>> origin/stella
+        </activity>
+        <activity
+            android:name=".NewBillAuto"
+            android:label="@string/title_activity_new_bill_auto"
+            android:parentActivityName=".Houseshare_HomeView" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ncl.team5.lloydsmockup.Houseshare_HomeView" />
+        </activity>
+        <activity
+            android:name=".NewBillManual"
+            android:label="@string/title_activity_new_bill_manual"
+            android:parentActivityName=".Houseshare_HomeView" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ncl.team5.lloydsmockup.Houseshare_HomeView" />
         </activity>
     </application>
 

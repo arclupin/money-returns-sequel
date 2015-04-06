@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,7 +72,7 @@ public class HS_Cancel_Request_Dialog_Fragment extends DialogFragment{
 //                });
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_fragment, null);
+        RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_normal_fragment, null);
         ((TextView) v.findViewById(R.id.title)).setText("Cancelling request");
         ((TextView) v.findViewById(R.id.content)).setText("Would you like to cancel your request to " + getArguments().getString(IntentConstants.HOUSE_NAME) + "?");
         ((TextView) v.findViewById(R.id.dialog_okay)).setOnClickListener(new View.OnClickListener() {

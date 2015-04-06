@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialog_bill_type_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border_dialog"
+    android:paddingBottom="15dp">
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/Dialog_Text_Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp"
+        android:textSize="20sp"
+        android:text="@string/title_new_bill_dialog"/>
+
+    <RelativeLayout
+        android:id="@+id/bill_create_auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:clickable="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginRight="15dp"
+        android:paddingLeft="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="15dp"
+        android:background="@drawable/button_light_color">
+
+        <ImageView
+            android:id="@+id/bill_type_auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/auto" />
+
+        <LinearLayout
+            android:id="@+id/dialog_new_bill_texts_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/bill_type_auto"
+            android:layout_toEndOf="@+id/bill_type_auto"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:layout_alignTop="@+id/bill_type_auto"
+
+            >
+
+            <TextView
+                android:id="@+id/bill_type_name_auto"
+                style="@style/Dialog_Text_Content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dialog_new_bill_type_auto" />
+
+            <TextView
+                android:id="@+id/bill_type_name_auto_description"
+                style="@style/Dialog_Text_PS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dialog_new_bill_type_auto_description" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/bill_create_manual"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bill_create_auto"
+        android:clickable="true"
+        android:paddingBottom="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginRight="15dp"
+        android:paddingLeft="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="15dp"
+        android:background="@drawable/button_light_color">
+
+        <ImageView
+            android:id="@+id/bill_type_manual"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/manual" />
+
+        <LinearLayout
+            android:id="@+id/dialog_new_bill_texts_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/bill_type_manual"
+            android:layout_toEndOf="@+id/bill_type_manual"
+            android:layout_alignTop="@+id/bill_type_manual"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+
+
+            >
+
+            <TextView
+                android:id="@+id/bill_type_name_manual"
+                style="@style/Dialog_Text_Content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dialog_new_bill_type_manual" />
+
+            <TextView
+                android:id="@+id/bill_type_name_manual_description"
+                style="@style/Dialog_Text_PS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dialog_new_bill_type_manual_description" />
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</RelativeLayout>

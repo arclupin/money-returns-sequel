@@ -23,6 +23,7 @@ import Fragment.Fragment_HS_Abstract;
 import Fragment.Fragment_HS_Home;
 import Fragment.Fragment_HS_Notification;
 import Fragment.HS_Home_FragPagerAdapter;
+import Fragment.HS_New_Bill_Dialog;
 import HTTPConnect.Connection;
 import HTTPConnect.Request_Params;
 import HTTPConnect.Responses_Format;
@@ -30,7 +31,8 @@ import HTTPConnect.Responses_Format;
 /**
  * Class providing the home view for the house share service
  */
-public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS_Home.OnFragmentInteractionListener_HomeView, ActionBar.TabListener, Fragment_HS_Notification.OnNotificationInteraction {
+public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS_Home.OnFragmentInteractionListener_HomeView,
+        ActionBar.TabListener, Fragment_HS_Notification.OnNotificationInteraction, HS_New_Bill_Dialog.NewBillDialogListener {
     private FragmentManager fragmentManager;
 
     private String house_name;
@@ -38,7 +40,7 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
     private String view_type; // joined house or sent request?
 
     private Intent i;
-    private Menu menu;
+    private static Menu menu;
     private HS_Home_FragPagerAdapter mAdapter;
     private ViewPager pager;
     private  ActionBar actionBar;
@@ -65,7 +67,7 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
 
             i = getIntent();
             if (i != null) {
-                if (i.getExtras().getString(IntentConstants.USERNAME) != null)
+                if (i.getStringExtra(IntentConstants.USERNAME) != null)
                     username = i.getStringExtra(IntentConstants.USERNAME);
                 if (i != null && i.getStringExtra(IntentConstants.HOUSE_NAME) != null)
                     house_name = i.getStringExtra(IntentConstants.HOUSE_NAME);
@@ -122,7 +124,7 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
              getMenuInflater().inflate(R.menu.menu_houseshare__home_view, menu);
         else
              getMenuInflater().inflate(R.menu.menu_homeview_search, menu);
-        this.menu = menu;
+        Houseshare_HomeView.menu = menu;
         return true;
     }
 
@@ -162,10 +164,9 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
 
        switch (id){
            case R.id.action_hs_new_bill: {
-               Toast.makeText(this, "Id" + actionBar.getHeight(), Toast.LENGTH_LONG).show();
-               for (Map.Entry<Integer, String> entry : mAdapter.getTags().entrySet()) {
-                   Log.d("Frag entry", entry.getKey() + ": " + entry.getValue());
-               }
+              HS_New_Bill_Dialog dialog = new HS_New_Bill_Dialog();
+               dialog.show(getFragmentManager(), "billDialogFrag");
+               break;
            }
            case R.id.search: {
                Log.d("display_search item", "clicked");
@@ -173,6 +174,7 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
                i.putExtra(IntentConstants.USERNAME, username);
                i.putExtra(IntentConstants.HOUSE_NAME, house_name);
                startActivity(i);
+               break;
            }
            case R.id.action_refresh: {
                Fragment_HS_Notification f = (Fragment_HS_Notification) fragmentManager.getFragments().get(1);
@@ -182,12 +184,9 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
                    f.getmRefreshView().setRefreshing(true);
                    f.refresh();
                }
+               break;
            }
-            return true;
         }
-
-
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -263,6 +262,20 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
         Intent i = new Intent(this, MainActivity.class);
         i.putExtra(MainActivity.RESUME_FROM_INSIDE, true);
         NavUtils.navigateUpTo(this, i);
+    }
+
+    /**
+     * User clicks on 1 option to click a new bill
+     *
+     * @param f
+     * @param bill_type the type of the dialog
+     */
+    @Override
+    public void onNewBillOptionClicked(HS_New_Bill_Dialog f, HS_New_Bill_Dialog.BILL_TYPE bill_type) {
+        f.dismiss();
+        Intent i = new Intent(this, bill_type == HS_New_Bill_Dialog.BILL_TYPE.AUTO ? NewBillAuto.class : NewBillManual.class);
+        startActivity(i);
+
     }
 
 //    /**

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,7 +78,7 @@ public class HS_Join_Conflict_Dialog extends DialogFragment{
 //        });
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_fragment, null);
+        RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_normal_fragment, null);
         ((TextView) v.findViewById(R.id.title)).setText("Confirmation");
         ((TextView) v.findViewById(R.id.content)).setText("Your old request to "+old_hsn+" will be cancelled. \nWould you like to join " + new_hsn + " anyway?");
         ((TextView) v.findViewById(R.id.dialog_okay)).setOnClickListener(new View.OnClickListener() {

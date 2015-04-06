@@ -74,4 +74,12 @@
     <string name="title_activity_locations_login">LocationsLogin</string>
     <string name="title_search_another_hs">Find another house</string>
 
+    <string name="title_new_bill_dialog">New Bill</string>
+    <string name="dialog_new_bill_type_auto">Automatic calculation</string>
+    <string name="dialog_new_bill_type_manual">Manual calculation</string>
+    <string name="dialog_new_bill_type_auto_description">Let the app do the calculation for you</string>
+    <string name="dialog_new_bill_type_manual_description">You got all calculations ready</string>
+    <string name="title_activity_new_bill_auto">NewBillAuto</string>
+    <string name="title_activity_new_bill_manual">NewBillManual</string>
+
 </resources>

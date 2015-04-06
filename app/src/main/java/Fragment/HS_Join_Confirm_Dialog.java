@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,7 +64,7 @@ public class HS_Join_Confirm_Dialog extends DialogFragment{
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_fragment, null);
+        RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_normal_fragment, null);
         ((TextView) v.findViewById(R.id.title)).setText("Request sent");
         ((TextView) v.findViewById(R.id.content)).setText("Your request has been sent to the house admin. \n" +
                       "You will be notified soon.");
