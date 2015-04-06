@@ -54,6 +54,19 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
     private OnNotificationInteraction mListener;
     private TableLayout mTable;
     private ProgressBar loading_icon;
+
+    public RelativeLayout getmLayoutContainer() {
+        return mLayoutContainer;
+    }
+
+    public ProgressBar getLoading_icon() {
+        return loading_icon;
+    }
+
+    public SwipeRefreshLayout getmRefreshView() {
+        return mRefreshView;
+    }
+
     private RelativeLayout mLayoutContainer;
     private SwipeRefreshLayout mRefreshView;
 
@@ -137,8 +150,8 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
      * It will go fetch the data in short.
      */
     public void refresh() {
-        new NotificationWorker(getActivity())
-                .setMode(NOTI_WORK.FETCH_REFRESH)
+         new NotificationWorker(getActivity())
+                .setMode(NOTI_WORK.FETCH_REFRESH).setTimeExpected(5000)
                 .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_FETCH_NOTI, Request_Params.PARAM_USR, username);
     }
 
@@ -170,6 +183,17 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
             return this;
         }
 
+        /**
+         * set the expected time for this task to finish
+         *
+         * @param howLong
+         * @return
+         */
+        @Override
+        public Connection setTimeExpected(long howLong) {
+            return super.setTimeExpected(howLong);
+        }
+
         public String getParam(String key) {
             return additional_params.get(key);
         }
@@ -181,14 +205,16 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
 
         @Override
         protected void onPreExecute(){
-            setMode(MODE.LONG_NO_DIALOG_TASK);
+
             if (mode == NOTI_WORK.FETCH) {
                 loading_icon.setVisibility(View.VISIBLE);
             }
+            super.onPreExecute();
         }
 
         public NotificationWorker(Activity a) {
             super(a);
+            setMode(MODE.LONG_NO_DIALOG_TASK);
             additional_params = new HashMap<String, String>();
         }
 
@@ -266,7 +292,8 @@ public interface OnNotificationInteraction {
 
         //set up the refresh view
         mRefreshView = (SwipeRefreshLayout) mLayoutContainer.findViewById(R.id.refresh_view_noti);
-        mRefreshView.setColorSchemeColors(getResources().getColor(R.color.light_green),getResources().getColor(android.R.color.holo_red_light));
+       mRefreshView.setColorSchemeColors(getResources().getColor(R.color.light_green), getResources().getColor(android.R.color.holo_red_light));
+
 
         mTable = (TableLayout) mLayoutContainer.findViewById(R.id.hs_notification_table);
         loading_icon = (ProgressBar) mLayoutContainer.findViewById(R.id.noti_loading_icon);
@@ -293,13 +320,7 @@ public interface OnNotificationInteraction {
             @Override
             public void onRefresh() {
                 Log.d("refresh", " action performed");
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        refresh();
-                    }
-                }, 5000);
+                refresh();
             }
         });
     }

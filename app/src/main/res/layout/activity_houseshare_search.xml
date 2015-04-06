@@ -50,11 +50,12 @@
                android:layout_height="fill_parent">
 
                <ProgressBar
-                   style="?android:attr/progressBarStyle"
+                   style="?android:attr/progressBarStyleSmall"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:id="@+id/progressBar_search"
                    android:layout_span="2"
+
                    android:visibility="invisible"/>
            </TableRow>
            <!-- tableRow3 -->
