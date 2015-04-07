@@ -89,7 +89,7 @@
             android:id="@+id/bill_type_manual"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/manual" />
+            android:src="@drawable/decision" />
 
         <LinearLayout
             android:id="@+id/dialog_new_bill_texts_2"

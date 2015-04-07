@@ -221,7 +221,9 @@ public class Login extends Activity {
                     }
 
                     default:{
-                        new CustomMessageBox(this, "Something wrong. Please try again", "Error");
+                        new CustomMessageBox.MessageBoxBuilder(this,  "Something wrong.")
+                                .setTitle("Error")
+                                .build();
                     }
                 }
     }

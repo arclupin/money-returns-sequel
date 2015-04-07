@@ -3,9 +3,14 @@ package com.ncl.team5.lloydsmockup;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
 
 /**
  * Created by benlambert on 24/02/2015. <br/>
@@ -19,7 +24,10 @@ import android.widget.TextView;
  */
 public class CustomMessageBox {
 
-    static DialogInterface d;
+    // a stack of dialogues that can shrink on each dialog cancellation
+    // this is needed because multiple dialogues might show up at the same time so they need to be dismissed
+    // in correct order
+    static Stack<DialogInterface> dialog_queue;
 
     //functional interface for the action on click
     // Lambda expression could not be used unfortunately
@@ -74,7 +82,9 @@ public class CustomMessageBox {
      */
     public CustomMessageBox(MessageBoxBuilder builder) {
        AlertDialog alert = makeDialogInternal(builder.a, prepareDialogView(builder.a, builder));
-        d = alert;
+        if (dialog_queue == null)
+            dialog_queue = new Stack<DialogInterface>();
+            dialog_queue.add(alert); // add this dialog to the tail of the queue
         alert.show();
 
     }
@@ -97,8 +107,11 @@ public class CustomMessageBox {
     public CustomMessageBox(Activity a, String text) {
         View v = prepareDialogView(a, text);
         AlertDialog alert = makeDialogInternal(a, v);
+        if (dialog_queue == null)
+            dialog_queue = new Stack<DialogInterface>();
+        dialog_queue.add(alert); // add this dialog to the tail of the queue
         alert.show();
-        d = alert;
+
     }
 
     /**
@@ -112,8 +125,8 @@ public class CustomMessageBox {
         View v = prepareDialogView(a, text);
         ((TextView) v.findViewById(R.id.dialog_okay)).setText(buttonText);
         AlertDialog alert = makeDialogInternal(a, v);
+        dialog_queue.add(alert); // add this dialog to the tail of the stack
         alert.show();
-        d = alert;
     }
 
     /**
@@ -127,8 +140,9 @@ public class CustomMessageBox {
     public CustomMessageBox(Activity a, String text, String buttonText, String title) {
         View v = prepareDialogView(a, text, title, buttonText);
         AlertDialog alert = makeDialogInternal(a, v);
+        dialog_queue.add(alert); // add this dialog to the tail of the queue
         alert.show();
-        d = alert;
+
     }
 
 
@@ -166,7 +180,8 @@ public class CustomMessageBox {
         v.findViewById(R.id.dialog_okay).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                d.cancel();
+                dialog_queue.pop().cancel();
+
             }
         });
 
@@ -218,7 +233,7 @@ public class CustomMessageBox {
         v.findViewById(R.id.dialog_okay).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                d.cancel();
+                dialog_queue.pop().cancel();
                 if (action != null)
                     action.DoOnClick(); // perform the action after the dialog is dismissed
             }
@@ -227,6 +242,12 @@ public class CustomMessageBox {
         return v;
     }
 
+    /**
+     * Craft a view for the dialog using a builder
+     * @param a the calling activity
+     * @param builder the configured builder
+     * @return the view of the dialog
+     */
     private static View prepareDialogView(Activity a, MessageBoxBuilder builder) {
         return prepareDialogView(builder.a, builder.text, builder.title, builder.buttonText, builder.action);
     }
