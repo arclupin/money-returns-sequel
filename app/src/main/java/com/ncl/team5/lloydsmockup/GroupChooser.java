@@ -46,9 +46,6 @@ public class GroupChooser extends Activity {
         date = i.getStringExtra(IntentConstants.DATE);
         transValue = i.getDoubleExtra("VALUE", 0);
         transId = i.getStringExtra("TRANS_ID");
-        /* I will need to populate the current groups here... probably by sending data to the server in some way
-         * but need to wait for the tables ot be set up
-         */
 
         /* Remove the space from the end of the account number */
         accountNum = accountNum.split(" ")[0];

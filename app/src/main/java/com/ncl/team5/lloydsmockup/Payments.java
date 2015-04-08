@@ -105,10 +105,6 @@ public class Payments extends FragmentActivity {
         final TabHost temp_tabs = tabs;
         final ViewPager temp_pager = pager;
 
-        //registering tab and page switch events (tab switch <-> view switch)
-        // 1. on tab switch -> view switch
-        // (needed because we don't use the default frame layout of TabHost as we want to achieve the swipe view hassle-free using the ViewPager)
-
         /* Event Handler for the tabs */
         tabs.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -160,7 +156,7 @@ public class Payments extends FragmentActivity {
         getMenuInflater().inflate(R.menu.main, menu);
 
         /* Get the correct item in the menu */
-        MenuItem item = menu.getItem(1);
+        MenuItem item = menu.getItem(R.id.action_notifications);
         GetNotification notif = new GetNotification();
 
         /* See if there are notifications and display the correct image accordingly */
@@ -176,6 +172,10 @@ public class Payments extends FragmentActivity {
 
         return true;
     }
+
+    /*====================================================================================================================
+     *                                   Start of user defined methods
+     =====================================================================================================================*/
 
     /* this is ran when the user presses the payment button, nothing returned, message box show be shown */
     public void btnMakePay(View view) {
@@ -524,16 +524,12 @@ public class Payments extends FragmentActivity {
     }
 
 
-    /* This is how the application knows if it has been stopped by an intent or by an
-     * external source (i.e. home button, phone call etc). Each time an intent is called, it
-     * sets an application global variable denoted as KillApp to false. This means that when a new
-     * activity is opened, it does not want to restart the application. However if no intent is
-     * fired (i.e. phonecall, home button pressed) KillApp will have the value true so it will
-     * restart back to the login activity.
-     */
+
 
     /* This is where the test is done to see whether the KillApp variable is true, and if it is, to call
-     * the login class. It also clears the activity stack so the back button cannot be used to go back */
+     * the login class. It also clears the activity stack so the back button cannot be used to go back
+     *
+     * @see bottom of class for more explination */
     @Override
     public void onResume() {
 
@@ -582,3 +578,11 @@ public class Payments extends FragmentActivity {
         startActivity(intent1);
     }
 }
+
+/* Kill App is how the application knows if it has been stopped by an intent or by an
+ * external source (i.e. home button, phone call etc). Each time an intent is called, it
+ * sets an application global variable denoted as KillApp to false. This means that when a new
+ * activity is opened, it does not want to restart the application. However if no intent is
+ * fired (i.e. phonecall, home button pressed) KillApp will have the value true so it will
+ * restart back to the login activity.
+ */
