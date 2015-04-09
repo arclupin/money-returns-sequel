@@ -129,7 +129,8 @@
         </activity>
         <activity
             android:name=".GroupChooser"
-            android:label="@string/title_activity_group_chooser" >
+            android:label="@string/title_activity_group_chooser"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".RegisterHouse"

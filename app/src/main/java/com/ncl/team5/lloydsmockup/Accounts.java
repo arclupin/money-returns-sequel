@@ -77,7 +77,7 @@ public class Accounts extends Activity {
                 Intent intent = new Intent(Accounts.this, Statement.class);
                 String message = accountStrings.get(position).split(":")[0];
                 String balance = accountStrings.get(position).split(":")[1];
-                intent.putExtra("USERNAME", username);
+                intent.putExtra(IntentConstants.USERNAME, username);
                 intent.putExtra("ACCOUNT_NUM", message);
                 intent.putExtra("BALANCE", balance);
                 intent.putExtra(IntentConstants.DATE, date);

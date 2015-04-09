@@ -91,7 +91,7 @@ public class GetNotification {
 
             try {
                 /* This is the command needed for the transactions, takes username and account number, returns JSON String */
-                String result = hc.execute("TYPE", "TRANSLIST", IntentConstants.USERNAME, username, "ACC_NUMBER", accountNum).get();
+                String result = hc.execute("TYPE", "TRANSLIST", Request_Params.PARAM_USR, username, "ACC_NUMBER", accountNum).get();
 
                 /* Tries to convert to JSON Object, can throw JSON Exception */
                 JSONObject jo = new JSONObject(result);

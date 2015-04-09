@@ -61,7 +61,8 @@ public class Analysis extends Activity {
         getAccounts();
 
         final Spinner accounts = (Spinner) findViewById(R.id.analysis_spinner);
-        ArrayAdapter<String> a = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, accountStrings);
+        ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, accountStrings);
+        a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         accounts.setAdapter(a);
 
 
@@ -130,6 +131,8 @@ public class Analysis extends Activity {
             GraphicalView chartView;
             //an array of doubles that is used to populate the pie chart
             //sectors.
+
+            mainLayout.removeAllViews();
 
             TextView errorMessage = (TextView) findViewById(R.id.Analysis_Error_Box);
             errorMessage.setText("There is no data available for this account, please go to your statement to add a transaction to a group");

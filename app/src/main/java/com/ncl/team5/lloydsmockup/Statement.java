@@ -64,7 +64,7 @@ public class Statement extends Activity {
 
         /* Get the intent messages from accounts activity */
         Intent i = getIntent();
-        username = i.getStringExtra("USERNAME");
+        username = i.getStringExtra(IntentConstants.USERNAME);
         accountNum = i.getStringExtra("ACCOUNT_NUM");
         dateLogout = i.getStringExtra(IntentConstants.DATE);
         String balance = i.getStringExtra("BALANCE");
@@ -192,7 +192,7 @@ public class Statement extends Activity {
                                         ((KillApp) statement.getApplication()).setStatus(false);
                                         Intent i = new Intent(statement, GroupChooser.class);
                                         i.putExtra("TRANS_ID", transId);
-                                        i.putExtra("ACCOUNT_USERNAME", username);
+                                        i.putExtra(IntentConstants.USERNAME, username);
                                         i.putExtra("DATE", dateLogout);
                                         i.putExtra("ACCOUNT_NUM", accountNum);
                                         i.putExtra("VALUE", Double.parseDouble(amount.substring(1)));

@@ -36,7 +36,7 @@ public class GroupChooser extends Activity {
         setContentView(R.layout.activity_group_chooser);
 
         Intent i = getIntent();
-        username = i.getStringExtra("USERNAME");
+        username = i.getStringExtra(IntentConstants.USERNAME);
         accountNum = i.getStringExtra("ACCOUNT_NUM");
         date = i.getStringExtra(IntentConstants.DATE);
         transValue = i.getDoubleExtra("VALUE", 0);
@@ -65,7 +65,8 @@ public class GroupChooser extends Activity {
         }
 
         Spinner groupSpin = (Spinner) findViewById(R.id.groupNameSpinner);
-        ArrayAdapter<String> a = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, temp);
+        ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, temp);
+        a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         groupSpin.setAdapter(a);
         groupSpin.setSelection(a.getPosition("Choose Group"));
     }
