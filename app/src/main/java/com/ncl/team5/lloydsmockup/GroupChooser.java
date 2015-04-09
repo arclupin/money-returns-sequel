@@ -1,5 +1,9 @@
 package com.ncl.team5.lloydsmockup;
 
+/* This is the group chooser class. This is where the
+ * user can select a group for each transaction to go into
+ */
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,53 +25,69 @@ import java.util.Set;
 
 public class GroupChooser extends Activity {
 
+    /* -- Variables -- */
+    /* Strings */
     private String username;
     private String date;
     private String accountNum;
+    private String currentTransId;
+
+    /* Collections */
     private Set<String> groupSets;
-    private Set<String> transIDs;
-    private String transId;
+    private Set<String> allTransId;
+
+    /* Numbers */
     private double transValue;
     private final int MAX_NUMBER_OF_GROUPS = 6;
 
+    /* Runs when activity is created */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_chooser);
 
+        /* get the intents from the statement class */
         Intent i = getIntent();
         username = i.getStringExtra(IntentConstants.USERNAME);
         accountNum = i.getStringExtra("ACCOUNT_NUM");
         date = i.getStringExtra(IntentConstants.DATE);
         transValue = i.getDoubleExtra("VALUE", 0);
-        transId = i.getStringExtra("TRANS_ID");
+        currentTransId = i.getStringExtra("TRANS_ID");
 
         /* Remove the space from the end of the account number */
         accountNum = accountNum.split(" ")[0];
 
+        /* get the list of transaction ids that are in a group and a list of the groups */
         SharedPreferences settings = getSharedPreferences(username, 0);
         groupSets = settings.getStringSet("ANALYSIS_GROUPS_" + accountNum, new HashSet<String>());
-        transIDs = settings.getStringSet("TRANS_ID_" + accountNum, new HashSet<String>());
+        allTransId = settings.getStringSet("TRANS_ID_" + accountNum, new HashSet<String>());
 
+        /* Just for debugging, new list has been created */
         if(groupSets.size() == 0)
         {
             Log.d("SET VALS","New List");
         }
 
+        /* Add a choose group option to display */
         groupSets.add("Choose Group");
 
-        List<String> temp = new ArrayList<String>();
-        temp.addAll(groupSets);
+        /* Create a list from the set */
+        List<String> groupsList = new ArrayList<String>();
+        groupsList.addAll(groupSets);
 
-        for(int j = 0; j < temp.size(); j++)
+        /* remove the amount from the group */
+        for(int j = 0; j < groupsList.size(); j++)
         {
-            temp.set(j, temp.get(j).split(":")[0]);
+            groupsList.set(j, groupsList.get(j).split(":")[0]);
         }
 
+        /* get the spinner and set the adapter */
         Spinner groupSpin = (Spinner) findViewById(R.id.groupNameSpinner);
-        ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, temp);
+        ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, groupsList);
         a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         groupSpin.setAdapter(a);
+
+        /* set the default position to be choose group */
         groupSpin.setSelection(a.getPosition("Choose Group"));
     }
 
@@ -95,6 +115,7 @@ public class GroupChooser extends Activity {
         return true;
     }
 
+    /* Runs when an item is selected */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -118,62 +139,90 @@ public class GroupChooser extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /*===============================================================================================
+                                    Start of user defined methods
+     *===============================================================================================*/
 
+    /*---------------------------------------------
+     * addGroupButton Click method
+     *
+     * @params : Current view
+     *
+     * @return : void
+     *
+     * @usage : adds a group to the set. Takes
+     *          the value in the text box if there
+     *          is a value there, if not uses the
+     *          spinner. Saves sets to shared
+     *          preferences and closes activity
+     *---------------------------------------------*/
 
     public void btnClickAddGroup(View view)
     {
-        //will need to make a selection about whether to choose group from text box or spinner... probably last
-        //one they used and dynamically remove the data in the other box...
-
+        /* Get the spinner and the text view */
         Spinner groupSpin = (Spinner) findViewById(R.id.groupNameSpinner);
         TextView groupText = (TextView) findViewById(R.id.newGroupText);
 
-        String groupName;
+        /* where the new group name is saved to */
+        String newGroupName;
 
+        /* checks if the spinner value has changed */
         if(groupSpin.getSelectedItem() == null || groupSpin.getSelectedItem().toString().equals("Choose Group"))
         {
+            /* Checks if text box is empty */
             if(groupText.getText() == null || groupText.getText().toString().equals(""))
             {
+                /* Error message */
                 new CustomMessageBox(this, "Please select a group or enter a new one");
                 return;
             }
             else
             {
-                //use text box
-                if(groupSets.size() <= MAX_NUMBER_OF_GROUPS) {
-                    groupName = groupText.getText().toString();
+                /* use text box */
 
-                    List<String> temp = new ArrayList<String>(groupSets);
+                /* check that there are not too many groups */
+                if(groupSets.size() <= MAX_NUMBER_OF_GROUPS)
+                {
+                    newGroupName = groupText.getText().toString();
 
-                    if(temp.size() == 0)
+                    /* list from the set */
+                    List<String> groupList = new ArrayList<String>(groupSets);
+
+                    /* if no values in list */
+                    if(groupList.size() == 0)
                     {
-                        temp.add(groupName + ":" + transValue);
+                        groupList.add(newGroupName + ":" + transValue);
                     }
                     else {
+                        /* Loop through list */
+                        for (int i = 0; i < groupList.size(); i++) {
 
-                        for (int i = 0; i < temp.size(); i++) {
-                            if (temp.get(i).split(":")[0].equals(groupName)) {
-                                String splitStringName = temp.get(i).split(":")[0];
-                                String splitStringAmount = temp.get(i).split(":")[1];
+                            /* Need to check the name of each group without the value */
+                            if (groupList.get(i).split(":")[0].equals(newGroupName)) {
+                                /* Add the transValue onto the value currently in the list */
+                                String splitStringName = groupList.get(i).split(":")[0];
+                                String splitStringAmount = groupList.get(i).split(":")[1];
                                 Double splitAmount = Double.parseDouble(splitStringAmount) + transValue;
                                 splitStringAmount = splitAmount.toString();
 
-                                temp.set(i, splitStringName + ":" + splitStringAmount);
+                                groupList.set(i, splitStringName + ":" + splitStringAmount);
 
-                                Log.d("GROUP VALUES", temp.get(i));
-                                i = temp.size();
-                            } else if (i == temp.size() - 1) {
-                                temp.add(groupName + ":" + transValue);
+                                /* exit the loop */
+                                i = groupList.size();
+                            } else if (i == groupList.size() - 1) {
+                                groupList.add(newGroupName + ":" + transValue);
                             }
                         }
                     }
 
+                    /* clear the group and then add the list into it */
                     groupSets.clear();
-                    groupSets.addAll(temp);
+                    groupSets.addAll(groupList);
 
                 }
                 else
                 {
+                    /* Too many groups */
                     new CustomMessageBox(this, "You cannot have that many groups");
                     return;
                 }
@@ -181,63 +230,63 @@ public class GroupChooser extends Activity {
         }
         else
         {
-            //use spinner
+            /* use spinner */
 
-            groupName = groupSpin.getSelectedItem().toString();
+            newGroupName = groupSpin.getSelectedItem().toString();
 
-            List<String> temp = new ArrayList<String>(groupSets);
+            /* Same as above */
+            List<String> groupList = new ArrayList<String>(groupSets);
 
-            for(int i = 0; i < temp.size(); i++)
+            /* Loop through list and add to the current value
+             * @see above for more info */
+            for(int i = 0; i < groupList.size(); i++)
             {
-                if(temp.get(i).split(":")[0].equals(groupName))
+                if(groupList.get(i).split(":")[0].equals(newGroupName))
                 {
-                    String splitStringName = temp.get(i).split(":")[0];
-                    String splitStringAmount = temp.get(i).split(":")[1];
+                    String splitStringName = groupList.get(i).split(":")[0];
+                    String splitStringAmount = groupList.get(i).split(":")[1];
                     Double splitAmount = Double.parseDouble(splitStringAmount) + transValue;
                     splitStringAmount = splitAmount.toString();
 
-                    temp.set(i, splitStringName + ":" + splitStringAmount);
-
-                    Log.d("GROUP VALUES",temp.get(i));
+                    groupList.set(i, splitStringName + ":" + splitStringAmount);
                 }
             }
 
+            /* clear the set and add the list to it */
             groupSets.clear();
-            groupSets.addAll(temp);
+            groupSets.addAll(groupList);
 
         }
 
-
+        /* remove the choose group option */
         groupSets.remove("Choose Group");
-        transIDs.add(transId);
 
+        /* add the trans id to the set */
+        allTransId.add(currentTransId);
+
+        /* save the sets to shared preferences */
         SharedPreferences sp = getApplicationContext().getSharedPreferences(username, 0);
         SharedPreferences.Editor edit = sp.edit();
         edit.putStringSet("ANALYSIS_GROUPS_" + accountNum, groupSets);
-        edit.commit();
-        edit.putStringSet("TRANS_ID_" + accountNum, transIDs);
+        edit.putStringSet("TRANS_ID_" + accountNum, allTransId);
         edit.commit();
 
+        /* Give the user a message */
         Toast msg = Toast.makeText(this, "Item Added Successfully", Toast.LENGTH_SHORT);
         msg.show();
 
-
-        //add a new group here... probably save in a file somewhere
+        /* return to statement */
         ((KillApp) this.getApplication()).setStatus(false);
         this.finish();
     }
 
 
-    /* This is how the application knows if it has been stopped by an intent or by an
-     * external source (i.e. home button, phone call etc). Each time an intent is called, it
-     * sets an application global variable denoted as KillApp to false. This means that when a new
-     * activity is opened, it does not want to restart the application. However if no intent is
-     * fired (i.e. phonecall, home button pressed) KillApp will have the value true so it will
-     * restart back to the login activity.
-     */
+
 
     /* This is where the test is done to see whether the KillApp variable is true, and if it is, to call
-     * the login class. It also clears the activity stack so the back button cannot be used to go back */
+     * the login class. It also clears the activity stack so the back button cannot be used to go back
+     *
+     * @see below for more info */
     @Override
     protected void onResume() {
         if(((KillApp) this.getApplication()).getStatus())
@@ -263,5 +312,12 @@ public class GroupChooser extends Activity {
         ((KillApp) this.getApplication()).setStatus(false);
         finish();
     }
-
 }
+
+/* Kill App is how the application knows if it has been stopped by an intent or by an
+ * external source (i.e. home button, phone call etc). Each time an intent is called, it
+ * sets an application global variable denoted as KillApp to false. This means that when a new
+ * activity is opened, it does not want to restart the application. However if no intent is
+ * fired (i.e. phonecall, home button pressed) KillApp will have the value true so it will
+ * restart back to the login activity.
+ */
