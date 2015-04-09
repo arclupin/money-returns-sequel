@@ -27,30 +27,34 @@
     </style>
 
 
-
     <style name="menuTheme" parent="AppTheme">
         <!--<item name="android:textColor">@color/lloyds_color</item>-->
     </style>
+
     <style name="button_style" parent="android:Widget.Holo.Button">
         <item name="android:background">@color/lloyds_color</item>
         <item name="android:paddingLeft">5dp</item>
         <item name="android:paddingRight">5dp</item>
     </style>
-    <style name="editText_style" parent="android:Widget.Holo.Light.EditText">
-    <item name="android:padding">5dp</item>
 
-</style>
-    <style name="action_bar_text"  parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+    <style name="editText_style" parent="android:Widget.Holo.Light.EditText">
+        <item name="android:padding">5dp</item>
+    </style>
+
+
+
+    <style name="action_bar_text" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@android:color/black</item>
     </style>
 
     <!--<style name="tab_style" parent="android:Widget.Holo.ActionBar.TabText">-->
-        <!--<item name="android:background">@drawable/tab_color</item>-->
+    <!--<item name="android:background">@drawable/tab_color</item>-->
     <!--</style>-->
 
     <style name="tab_style" parent="android:Widget.Holo.Light.ActionBar.TabView">
         <item name="android:background">@drawable/tab_color</item>
     </style>
+
     <style name="tab_style_null" parent="android:Widget.Holo.Light.ActionBar.TabView">
         <item name="android:background">@drawable/button_light_color</item>
         <!-- the same as the button light color-->
@@ -68,19 +72,21 @@
         <item name="android:dividerPadding">10dip</item>
     </style>
 
-    <style name="make_payment" parent = "button_style">
+    <style name="make_payment" parent="button_style">
         <item name="android:textAppearance">@android:style/TextAppearance.Holo.Medium</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:ellipsize">marquee</item>
-        <item name="android:background">@drawable/button_color</item> <!-- should be the same with the tab having the focus -->
+        <item name="android:background">@drawable/button_color</item>
+        <!-- should be the same with the tab having the focus -->
 
     </style>
 
     <style name="Sub_Text" parent="android:Widget.TextView">
-        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
         <item name="android:textColor">?android:attr/textColorHighlight</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
@@ -89,7 +95,8 @@
     </style>
 
     <style name="HS_Search_Name" parent="android:Widget.TextView">
-        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
         <item name="android:textColor">@color/text_color</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
@@ -97,7 +104,8 @@
     </style>
 
     <style name="HS_Search_Description" parent="android:Widget.TextView">
-        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/text_color</item>
         <item name="android:textStyle">italic</item>
@@ -105,7 +113,8 @@
     </style>
 
     <style name="HS_Search_Request_Sent_Text" parent="android:Widget.TextView">
-        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@android:color/holo_red_light</item>
         <item name="android:textStyle">italic|bold</item>
@@ -115,14 +124,16 @@
 
 
     <style name="HS_Noti_Sub_Text" parent="android:Widget.TextView">
-        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
         <item name="android:textColor">@color/text_color</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:ellipsize">marquee</item>
     </style>
 
     <style name="HS_Noti_Sub_Text_Name" parent="android:Widget.TextView">
-        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
         <item name="android:textColor">@color/text_color</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textStyle">bold</item>
@@ -130,7 +141,8 @@
     </style>
 
     <style name="HS_Noti_Sub_Button" parent="android:Widget.TextView">
-        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
         <item name="android:textSize">13sp</item>
         <item name="android:textColor">@color/text_color</item>
         <item name="android:textStyle">bold</item>
@@ -139,25 +151,18 @@
     </style>
 
     <style name="HS_Search_Empty" parent="android:Widget.TextView">
-        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
         <item name="android:textColor">@android:color/darker_gray</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textStyle">italic</item>
         <item name="android:ellipsize">marquee</item>
     </style>
-    
-
-
-
-
-
-
-
-
 
 
     <style name="Welcome_HS_Text" parent="android:Widget.TextView">
-        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
         <item name="android:textColor">@color/lloyds_color</item>
         <item name="android:textSize">30sp</item>
         <item name="android:textStyle">normal</item>
@@ -165,13 +170,14 @@
         <!--<item name="android:layout_centerInParent">true</item>-->
         <!--<item name="android:layout_centerHorizontal">true</item>-->
         <!--<item name="android:layout_centerVertical">true</item>-->
-<item name="android:padding">20dp</item>
+        <item name="android:padding">20dp</item>
         <item name="android:gravity">center</item>
 
     </style>
 
     <style name="Welcome_HS_Text_Start" parent="Sub_Text">
-        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
         <item name="android:textColor">@color/lloyds_color</item>
         <item name="android:textStyle">normal</item>
         <item name="android:ellipsize">marquee</item>
@@ -179,11 +185,13 @@
         <!--<item name="android:layout_centerHorizontal">true</item>-->
         <!--<item name="android:layout_centerVertical">true</item>-->
         <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/button_light_color</item>
 
     </style>
 
     <style name="Button_Light" parent="Sub_Text">
-        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
         <item name="android:textStyle">normal</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:textSize">25dp</item>
@@ -198,12 +206,12 @@
 
 
     <!--<style name="Tab_Text_2" parent="android:Widget.Holo.ActionBar.TabText">-->
-        <!--<item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>-->
-        <!--<item name="android:textColor">@color/tab_text_color_2</item>-->
-        <!--<item name="android:textStyle">bold</item>-->
-        <!--<item name="android:textSize">20sp</item>-->
-        <!--<item name="android:textAllCaps">true</item>-->
-        <!--<item name="android:ellipsize">marquee</item>-->
+    <!--<item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>-->
+    <!--<item name="android:textColor">@color/tab_text_color_2</item>-->
+    <!--<item name="android:textStyle">bold</item>-->
+    <!--<item name="android:textSize">20sp</item>-->
+    <!--<item name="android:textAllCaps">true</item>-->
+    <!--<item name="android:ellipsize">marquee</item>-->
 
     <!--</style>-->
 
@@ -222,7 +230,8 @@
     </style>
 
     <style name="HS_homeview_name" parent="android:Widget.TextView">
-        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
         <item name="android:textColor">@color/hs_home_name</item>
         <item name="android:textSize">19sp</item>
         <item name="android:textStyle">normal</item>
@@ -234,9 +243,9 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-        <style name="HS_homeview_address" parent="android:Widget.TextView">
-            <item name="android:textColor">@color/hs_home_address_desc</item>
-        </style>
+    <style name="HS_homeview_address" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/hs_home_address_desc</item>
+    </style>
 
     <style name="WindowAnimationTransition">
         <item name="android:windowEnterAnimation">@anim/anim_fade_in</item>
@@ -244,7 +253,8 @@
     </style>
 
     <style name="Dialog_Text_Title" parent="android:Widget.TextView">
-        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
         <item name="android:textColor">@color/hs_dialog_text_title</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">normal</item>
@@ -252,7 +262,8 @@
     </style>
 
     <style name="Dialog_Text_Content" parent="android:Widget.TextView">
-        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
         <item name="android:textColor">@color/hs_dialog_text_content</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">normal</item>
@@ -260,30 +271,67 @@
     </style>
 
     <style name="Dialog_Text_PS" parent="android:Widget.TextView">
-        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
         <item name="android:textColor">@color/hs_home_address_desc</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textStyle">italic</item>
         <item name="android:ellipsize">marquee</item>
     </style>
 
+    <style name="New_Bill" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
+        <item name="android:textColor">@color/hs_home_address_desc</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
 
+    <style name="Bill_Confirmation_Title" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
+        <item name="android:textColor">@color/hs_bill_confirmation_titles</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
 
+    <style name="Bill_Confirmation_Sub_Title" parent="Bill_Confirmation_Title">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
+        <item name="android:textColor">@color/hs_bill_confirmation_titles</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
 
+    <style name="Bill_Confirmation_Value" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/hs_bill_confirmation_value</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
 
+    <style name="editText_style_confirm" parent="android:Widget.Holo.Light.EditText">
+        <item name="android:padding">5dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:editTextStyle">@style/Bill_Confirmation_Value</item>
 
-
-
+    </style>
 
     <!--<style name = "tab_text" parent="android:Widget.ActionBar.TabText">-->
-        <!--<item name="android:textColor">@android:color/black</item>-->
-        <!--<item name="android:textSize">4sp</item>-->
-        <!--<item name="android:textStyle">italic</item>-->
-        <!--<item name="android:textAllCaps">true</item>-->
-        <!--<item name="android:ellipsize">marquee</item>-->
-        <!--<item name="android:maxLines">1</item>-->
+    <!--<item name="android:textColor">@android:color/black</item>-->
+    <!--<item name="android:textSize">4sp</item>-->
+    <!--<item name="android:textStyle">italic</item>-->
+    <!--<item name="android:textAllCaps">true</item>-->
+    <!--<item name="android:ellipsize">marquee</item>-->
+    <!--<item name="android:maxLines">1</item>-->
     <!--</style>-->
-
 
 
 </resources>

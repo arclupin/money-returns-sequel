@@ -18,7 +18,7 @@ public class StringUtils {
        return input.trim().isEmpty();
     }
 
-   public static Date getDateFromServerDateResponse(String response) {
+   public static Date getDateTimeFromServerDateResponse(String response) {
        Date date = null;
        try {
            date =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(response);
@@ -29,6 +29,18 @@ public class StringUtils {
        }
        return date;
    }
+
+    public static Date getDateFromServerDateResponse(String response) {
+        Date date = null;
+        try {
+            date =  new SimpleDateFormat("yyyy-MM-dd").parse(response);
+        }
+        catch (ParseException e)
+        {
+            Log.e("date parsing error", e.getMessage(), e);
+        }
+        return date;
+    }
 
     public static String implode(String glue, String...strings) {
         String r = "";

@@ -1,0 +1,57 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.ncl.team5.lloydsmockup.NewBillAuto"
+    android:id="@+id/user1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginStart="15dp"
+    android:background="@drawable/button_light_color"
+    android:clickable="true"
+    android:paddingBottom="10dp"
+    android:paddingEnd="10dp"
+    android:paddingLeft="10dp"
+    android:paddingStart="10dp"
+    android:paddingTop="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/input">
+        <TextView
+            android:id="@+id/username_sub_bill"
+
+            android:layout_width="wrap_content"
+            android:width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@+id/sub_bill_amount"
+            android:gravity="center_vertical"
+            android:text="Alice"
+            style="@style/Dialog_Text_Content"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/sub_bill_amount"
+            android:layout_toEndOf="@id/username_sub_bill"
+            android:layout_toRightOf="@id/username_sub_bill"
+            android:inputType="numberDecimal"
+            android:hint="enter the bill amount"
+            style="@style/editText_style_confirm"
+            />
+    </RelativeLayout>
+    <View
+
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/input"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/divider">
+        </View>
+
+
+
+</RelativeLayout>

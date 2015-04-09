@@ -21,7 +21,8 @@ public class RequestQueue {
      * @param r the request to be added
      * @return this queue
      */
-    public RequestQueue addRequest(Request r) {
+    public RequestQueue
+    addRequest(Request r) {
         queue.add(r);
         return this;
     }

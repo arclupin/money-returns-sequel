@@ -1,4 +1,4 @@
-package Fragment;
+package Fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,9 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.ncl.team5.lloydsmockup.IntentConstants;
 import com.ncl.team5.lloydsmockup.R;
 
 /**
@@ -62,7 +60,7 @@ public class HS_New_Bill_Dialog extends DialogFragment{
 
             }
         });
-        v.findViewById(R.id.bill_create_auto).setOnClickListener(new View.OnClickListener() {
+        v.findViewById(R.id.bill_create_manual).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mNewBillDialogListener.onNewBillOptionClicked(HS_New_Bill_Dialog.this, BILL_TYPE.MANUAL);

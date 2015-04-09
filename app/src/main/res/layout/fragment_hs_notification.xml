@@ -20,7 +20,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:stretchColumns="*"
-                tools:context="Fragment.Fragment_HS_Home"
+                tools:context="Fragments.Fragment_HS_Home"
 
                 />
         </ScrollView>

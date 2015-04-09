@@ -1,0 +1,167 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ncl.team5.lloydsmockup.NewBillAuto">
+
+    <TextView
+        android:id="@+id/title_bill_break_down"
+        style="@style/Dialog_Text_Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp"
+        android:text="@string/title_enter_sub_bills"
+        android:textColor="#808080"
+        android:textSize="20sp" />
+
+    <ScrollView
+        android:id="@+id/scrollViewSelectUsers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_bill_break_down">
+
+        <TableLayout
+            android:id="@+id/table_sub_bills"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*">
+
+            <TableRow>
+
+                <RelativeLayout
+                    android:id="@+id/totals_container"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent">
+
+                    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:tools="http://schemas.android.com/tools"
+                        android:id="@+id/option_share_equally_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginStart="15dp"
+                        android:background="@drawable/button_light_color"
+                        android:clickable="true"
+                        android:paddingBottom="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingStart="10dp"
+                        android:paddingTop="10dp"
+                        tools:context="com.ncl.team5.lloydsmockup.NewBillAuto">
+
+                        <CheckBox
+                            android:id="@+id/checkBox_share_equally"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true" />
+
+                        <TextView
+                            android:id="@+id/option_share_equally_text"
+                            style="@style/Dialog_Text_Content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@+id/checkBox_share_equally"
+                            android:layout_toRightOf="@+id/checkBox_share_equally"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:paddingStart="10dp"
+                            android:text="@string/option_shared_equally" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/net_bill_amount"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginStart="15dp"
+                        android:background="@drawable/button_light_color"
+                        android:clickable="true"
+                        android:paddingBottom="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingLeft="10dp"
+                        android:layout_below="@+id/option_share_equally_container"
+                        android:paddingStart="10dp"
+                        android:paddingTop="10dp">
+
+                        <TextView
+                            android:id="@+id/net_bill_amount_text"
+                            style="@style/Dialog_Text_Content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignBottom="@+id/net_bill_amount_tv"
+                            android:layout_alignTop="@+id/net_bill_amount_tv"
+                            android:layout_toLeftOf="@+id/net_bill_amount_tv"
+                            android:layout_toStartOf="@+id/net_bill_amount_tv"
+                            android:gravity="center_vertical"
+                            android:paddingRight="10dp"
+                            android:text="@string/net_bill"
+
+                            />
+
+                        <EditText
+                            android:id="@+id/net_bill_amount_tv"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:inputType="none"
+                            android:text="150.0" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/expected_bill_amount"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/net_bill_amount"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginStart="15dp"
+                        android:paddingBottom="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingStart="10dp"
+                        android:paddingTop="5dp"
+
+                        android:background="@drawable/button_light_color"
+                        android:clickable="true">
+
+                        <TextView
+                            android:id="@+id/expected_bill_amount_text"
+                            style="@style/Dialog_Text_Content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignBottom="@+id/expected_bill_amount_tv"
+                            android:layout_alignTop="@+id/expected_bill_amount_tv"
+                            android:layout_toLeftOf="@+id/expected_bill_amount_tv"
+                            android:layout_toStartOf="@+id/expected_bill_amount_tv"
+                            android:gravity="center_vertical"
+                            android:paddingRight="10dp"
+                            android:text="@string/expected_bill"
+
+                            />
+
+                        <EditText
+                            android:id="@+id/expected_bill_amount_tv"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:inputType="none"
+                            android:text="150.0" />
+                    </RelativeLayout>
+                </RelativeLayout>
+            </TableRow>
+        </TableLayout>
+    </ScrollView>
+</RelativeLayout>
+
+

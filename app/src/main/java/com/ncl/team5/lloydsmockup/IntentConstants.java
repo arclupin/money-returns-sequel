@@ -21,4 +21,6 @@ public class IntentConstants {
 
     public static final String DATE = "DATE";
 
+    public static final String MEMBERS = "MEMBERS";
+
 }

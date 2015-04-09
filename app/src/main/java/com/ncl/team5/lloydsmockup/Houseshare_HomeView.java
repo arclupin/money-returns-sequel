@@ -8,24 +8,18 @@ import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
-import android.widget.Toast;
 
-import java.util.Map;
-
-import Fragment.Fragment_HS_Abstract;
-import Fragment.Fragment_HS_Home;
-import Fragment.Fragment_HS_Notification;
-import Fragment.HS_Home_FragPagerAdapter;
-import Fragment.HS_New_Bill_Dialog;
+import Fragments.Fragment_HS_Abstract;
+import Fragments.Fragment_HS_Home;
+import Fragments.Fragment_HS_Notification;
+import Fragments.HS_Home_FragPagerAdapter;
+import Fragments.HS_New_Bill_Dialog;
 import HTTPConnect.Connection;
-import HTTPConnect.Request_Params;
 import HTTPConnect.Responses_Format;
 
 /**
@@ -106,6 +100,7 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
 
 
 
+
             for (int i = 0; i < mAdapter.getCount(); i++) {
                 // Create a tab with text corresponding to the page title defined by the adapter.
                 // Also specify this Activity object, which implements the TabListener interface, as the
@@ -119,7 +114,8 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        noti_listener = (Fragment_HS_Notification) fragmentManager.getFragments().get(1);
+        Log.d("view_type onMenu", view_type);
+
         if (view_type.equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE))
              getMenuInflater().inflate(R.menu.menu_houseshare__home_view, menu);
         else
@@ -224,10 +220,10 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
      */
     @Override
     public void onTabUnselected(ActionBar.Tab tab, android.app.FragmentTransaction ft) {
-            if (tab.getPosition() == 1) {
-
+//        noti_listener = (Fragment_HS_Notification) fragmentManager.getFragments().get(1);
+        if (tab.getPosition() == 1) {
                 // let the server know that the notifications have been seen
-                new Connection(this).execute(noti_listener.onNotificationsSeen(noti_listener));
+                new Connection(this).execute(noti_listener.onNotificationsSeen((Fragment_HS_Notification)fragmentManager.getFragments().get(1)));
                 tab.setIcon(R.drawable.hs_tab_noti);
 
             }
@@ -272,8 +268,11 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
      */
     @Override
     public void onNewBillOptionClicked(HS_New_Bill_Dialog f, HS_New_Bill_Dialog.BILL_TYPE bill_type) {
+       Log.d("new bill clicked", bill_type.name());
         f.dismiss();
         Intent i = new Intent(this, bill_type == HS_New_Bill_Dialog.BILL_TYPE.AUTO ? NewBillAuto.class : NewBillManual.class);
+        i.putExtra(IntentConstants.USERNAME, username);
+        i.putExtra(IntentConstants.HOUSE_NAME, house_name);
         startActivity(i);
 
     }

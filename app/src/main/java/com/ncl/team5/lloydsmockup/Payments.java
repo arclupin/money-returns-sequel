@@ -8,8 +8,6 @@ package com.ncl.team5.lloydsmockup;
 //TODO: need to edit and test getRecentTrans method, needs more database data
 
 /* Lots of imports */
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -35,7 +33,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import Fragment.Payment_FragmentPagerAdapter;
+import Fragments.Payment_FragmentPagerAdapter;
 import HTTPConnect.Connection;
 
 

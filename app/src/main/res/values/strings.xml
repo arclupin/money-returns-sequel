@@ -82,4 +82,12 @@
     <string name="title_activity_new_bill_auto">NewBillAuto</string>
     <string name="title_activity_new_bill_manual">NewBillManual</string>
 
+    <string name="title_selecte_users">Select users</string>
+    <string name="join_since">Joined since 01/01/1970</string>
+
+    <string name="title_enter_sub_bills">Bill break-down</string>
+    <string name="option_shared_equally">This bill is shared equally</string>
+    <string name="net_bill">Net total</string>
+    <string name="expected_bill">Expected total</string>
+    <string name="POUND_SYMBOL">£</string>
 </resources>

@@ -1,0 +1,47 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.ncl.team5.lloydsmockup.NewBillAuto"
+    android:id="@+id/user1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/title"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginStart="15dp"
+    android:background="@drawable/button_light_color"
+    android:clickable="true"
+    android:paddingBottom="10dp"
+    android:paddingEnd="10dp"
+    android:paddingLeft="10dp"
+    android:paddingStart="10dp"
+    android:paddingTop="10dp">
+
+    <TextView
+        android:id="@+id/username_sub_title"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="20dp"
+        android:paddingStart="20dp"
+        android:paddingRight="10dp"
+        android:paddingEnd="10dp"
+        android:text="Alice"
+        style="@style/Bill_Confirmation_Sub_Title"
+        />
+    <TextView
+        android:id="@+id/user_sub_bill_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/username_sub_title"
+        android:layout_toEndOf="@id/username_sub_title"
+        android:layout_alignTop="@id/username_sub_title"
+        android:layout_alignBottom="@id/username_sub_title"
+        android:gravity="center_vertical"
+        android:text="£150.4"
+        style="@style/Bill_Confirmation_Value"
+        />
+
+
+</RelativeLayout>
