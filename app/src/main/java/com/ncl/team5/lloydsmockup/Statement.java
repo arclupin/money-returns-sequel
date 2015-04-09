@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import HTTPConnect.Connection;
+import HTTPConnect.Request_Params;
 
 
 public class Statement extends Activity {
@@ -287,8 +288,9 @@ public class Statement extends Activity {
 
         /* Start of error catching */
         try {
+            Log.d("Server Error", username + ":" + accountNum + "|");
             /* Get transactions for the account */
-            String result = hc.execute("TYPE", "TRANSLIST", "USERNAME", username, "ACC_NUMBER", accountNum).get();
+            String result = hc.execute("TYPE", "TRANSLIST", Request_Params.PARAM_USR, username, "ACC_NUMBER", accountNum).get();
 
             /* Create JSON object from the returned string */
             JSONObject jo = new JSONObject(result);

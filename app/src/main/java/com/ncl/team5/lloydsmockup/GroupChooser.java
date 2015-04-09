@@ -36,7 +36,7 @@ public class GroupChooser extends Activity {
         setContentView(R.layout.activity_group_chooser);
 
         Intent i = getIntent();
-        username = i.getStringExtra(IntentConstants.USERNAME);
+        username = i.getStringExtra("USERNAME");
         accountNum = i.getStringExtra("ACCOUNT_NUM");
         date = i.getStringExtra(IntentConstants.DATE);
         transValue = i.getDoubleExtra("VALUE", 0);
