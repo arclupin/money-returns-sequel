@@ -218,7 +218,7 @@ public class Statement extends Activity {
         getMenuInflater().inflate(R.menu.main, menu);
 
         /* Gets the menu item */
-        MenuItem item = menu.getItem(R.id.action_notifications);
+        MenuItem item = menu.getItem(1);
         /* Creates a get notification object */
         GetNotification notif = new GetNotification();
 

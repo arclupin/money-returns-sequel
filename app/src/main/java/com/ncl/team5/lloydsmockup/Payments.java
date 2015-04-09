@@ -154,7 +154,7 @@ public class Payments extends FragmentActivity {
         getMenuInflater().inflate(R.menu.main, menu);
 
         /* Get the correct item in the menu */
-        MenuItem item = menu.getItem(R.id.action_notifications);
+        MenuItem item = menu.getItem(1);
         GetNotification notif = new GetNotification();
 
         /* See if there are notifications and display the correct image accordingly */
