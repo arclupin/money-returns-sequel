@@ -16,7 +16,7 @@
         android:id="@+id/due_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/bill_name"
+        android:layout_below="@id/bill_name"
         android:hint="Due Date"
         android:inputType="date"
         android:padding="20dp" />

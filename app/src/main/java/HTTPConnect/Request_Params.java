@@ -4,6 +4,8 @@ package HTTPConnect;
  * Created by Thanh on 16-Mar-15.
  */
 public class Request_Params {
+    //TODO needed to change to hex in the end
+
     public static final String PARAM_TYPE = "TYPE";
 
     public static final String VAL_HS_INIT = "HS_INIT";
@@ -28,6 +30,11 @@ public class Request_Params {
     public static final String HS_CREATE_HOUSE_POSTCODE = "HS_CH_PC";
     public static final String HS_CREATE_HOUSE_DESCRIPTION = "HS_CH_DSC";
 
+    public static final String HS_CREATE_BILL = "HS_CRT_BILL"; // request type for creating a bill
+    public static final String HS_CREATE_BILL_NAME = "BILL_NAME"; // name of the bill
+    public static final String HS_CREATE_BILL_DUE_DATE = "DUE_DATE"; // due date
+    public static final String HS_CREATE_BILL_AMOUNT = "AMOUNT"; // amount of the bill
+    public static final String HS_CREATE_BILL_USERS = "users"; // array storing involved users
 
     public static final String VAL_REF_NOTI = "REF_NOTI";
 
@@ -44,4 +51,7 @@ public class Request_Params {
     public static final String VAL_REFUSE_MEMBER = "HS_MEMBER_RFS";
     public static final String VAL_REFUSE_MEMBER_PARAM = "MEMBER_RFS_NAME";
     public static final String PARAM_USR = "USR";
+
+    public static final String HS_ALL_MEMBERS = "MEMBERS";
+
 }

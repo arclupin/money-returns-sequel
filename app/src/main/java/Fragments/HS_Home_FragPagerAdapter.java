@@ -1,13 +1,10 @@
-package Fragment;
+package Fragments;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 import android.view.ViewGroup;
-
-import com.ncl.team5.lloydsmockup.Houseshare_HomeView;
 
 import java.util.HashMap;
 import java.util.Map;

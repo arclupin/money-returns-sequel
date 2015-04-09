@@ -1,4 +1,4 @@
-package Fragment;
+package Fragments;
 
 /* This is the fragment that is used on the payments screen
  * that is used for the recent payee tab, so it can send to the last 3 payees */

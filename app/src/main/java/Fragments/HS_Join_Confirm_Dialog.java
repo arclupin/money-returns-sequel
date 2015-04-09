@@ -1,4 +1,4 @@
-package Fragment;
+package Fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;

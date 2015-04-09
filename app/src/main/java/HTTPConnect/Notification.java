@@ -1,29 +1,18 @@
 package HTTPConnect;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.ncl.team5.lloydsmockup.CustomMessageBox;
 import com.ncl.team5.lloydsmockup.R;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.zip.Inflater;
 
 import Utils.StringUtils;
 
@@ -144,7 +133,7 @@ public class Notification {
     }
 
     public Date getTimeOfNotification() throws ParseException{
-        return StringUtils.getDateFromServerDateResponse(additional_params.get(TIME_POS));
+        return StringUtils.getDateTimeFromServerDateResponse(additional_params.get(TIME_POS));
     }
 
 }

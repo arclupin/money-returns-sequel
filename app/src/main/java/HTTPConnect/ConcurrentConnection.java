@@ -3,10 +3,7 @@ package HTTPConnect;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.util.Log;
-
-import com.ncl.team5.lloydsmockup.BuildConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +28,7 @@ import Utils.Utilities;
  * search, and update the main layout after the search whereas a search in mode SEND_JOIN_REQUEST might
  * just mark a flag for the house the user sent the request to.
  *
- * @see Fragment.Fragment_HS_Home.HomeViewWorker
+ * @see Fragments.Fragment_HS_Home.HomeViewWorker
  * @author Thanh
  */
 public class ConcurrentConnection extends AsyncTask<List<Request>, Void, List<Response>>{
@@ -47,8 +44,10 @@ public class ConcurrentConnection extends AsyncTask<List<Request>, Void, List<Re
      * Constructor #1 <br/>
      * Default option is not to show the dialog
      * @param a the the calling activity
-     */
+     */;
     public ConcurrentConnection(Activity a) {
+
+        this.mContext = a;
         showDialog = false;
     }
 
@@ -68,7 +67,6 @@ public class ConcurrentConnection extends AsyncTask<List<Request>, Void, List<Re
         this.dialogMsg = msg;
         return this;
     }
-
 
     @Override
     protected void onPreExecute() {

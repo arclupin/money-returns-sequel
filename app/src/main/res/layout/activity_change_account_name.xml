@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editText4"
-        android:background="@drawable/edit_text_style"
+        android:background="@drawable/edit_text_unselected"
         android:textColor="#ff000000"
         android:inputType="text"
         android:imeOptions="actionDone"

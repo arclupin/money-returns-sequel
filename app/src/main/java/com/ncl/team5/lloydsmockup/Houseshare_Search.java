@@ -31,11 +31,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import Fragment.HS_Cancel_Confirm_Dialog;
-import Fragment.HS_Cancel_Request_Dialog_Fragment;
-import Fragment.HS_Join_Confirm_Dialog;
-import Fragment.HS_Join_Conflict_Dialog;
-import Fragment.HS_Join_Dialog_Fragment;
+import Fragments.HS_Cancel_Confirm_Dialog;
+import Fragments.HS_Cancel_Request_Dialog_Fragment;
+import Fragments.HS_Join_Confirm_Dialog;
+import Fragments.HS_Join_Conflict_Dialog;
+import Fragments.HS_Join_Dialog_Fragment;
 import HTTPConnect.ConcurrentConnection;
 import HTTPConnect.Connection;
 import HTTPConnect.Request;

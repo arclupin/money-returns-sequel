@@ -1,0 +1,59 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.ncl.team5.lloydsmockup.NewBillAuto"
+    android:id="@+id/user1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/title"
+
+    android:background="@drawable/button_light_color"
+    android:clickable="true"
+    android:paddingBottom="10dp"
+    android:paddingEnd="20dp"
+    android:paddingRight="20dp"
+    android:paddingLeft="20dp"
+    android:paddingStart="20dp"
+    android:paddingTop="10dp">
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+
+        android:layout_alignParentTop="true" />
+
+    <LinearLayout
+        android:id="@+id/dialog_new_bill_texts_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/checkBox"
+        android:layout_toRightOf="@+id/checkBox"
+        android:orientation ="vertical"
+
+        >
+
+        <TextView
+            android:id="@+id/username_select"
+            style="@style/Dialog_Text_Content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Alice In Wonderland"
+            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            />
+        <TextView
+            android:id="@+id/user_joined_since"
+            style="@style/Dialog_Text_PS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/join_since"
+            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -1,4 +1,4 @@
-package Fragment;
+package Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,7 +14,7 @@ import com.ncl.team5.lloydsmockup.R;
  * Created by Thanh on 07-Mar-15.
  */
 //Old Account Fragment
-public class Fragment_HS_Welcome_4 extends Fragment {
+public class Fragment_HS_Welcome_2 extends Fragment {
     int height;
 
     public static Fragment_HS_Welcome_1  getFragment_HS_Welcome_1(int height) {
@@ -38,9 +38,9 @@ public class Fragment_HS_Welcome_4 extends Fragment {
         Log.d("On creating height: ", Integer.toString(height));
 
         // TODO with saveInstance? Perhaps save some input on losing focus
-        View view = inflater.inflate(R.layout.fragment_hs_welcome_4, parent, false);
+        View view = inflater.inflate(R.layout.fragment_hs_welcome_2, parent, false);
 
-        TextView textView = (TextView) view.findViewById(R.id.Welcome_HS_4_TextView);
+        TextView textView = (TextView) view.findViewById(R.id.Welcome_HS_2_TextView);
 //        Log.d("TextView", Integer.toString(this.getArguments().getInt("layout")));
 //        Toast.makeText(this.getActivity(), textView.getText(), Toast.LENGTH_SHORT).show();
         textView.setY(height * 3 / 10);

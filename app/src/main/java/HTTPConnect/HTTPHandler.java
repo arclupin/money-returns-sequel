@@ -37,9 +37,10 @@ public class HTTPHandler {
 
         mContext = a;
         context = new BasicHttpContext();
-        client = new DefaultHttpClient();
+        client  = new DefaultHttpClient();
         cookies = new BasicCookieStore();
 
+        Log.d("mContext", mContext.toString());
         CookieStorage cookieStorage = new CookieStorage(mContext.getSharedPreferences("cookies", Activity.MODE_PRIVATE));
         BasicClientCookie cookie_sessid = cookieStorage.pullFromFile("PHPSESSID"); // pull the cookie from the file
 

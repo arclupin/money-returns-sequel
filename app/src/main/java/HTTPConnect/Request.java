@@ -41,4 +41,13 @@ public class Request {
         return type;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder b = new StringBuilder();
+        b.append(type.name());
+        for (int i = 0; i < params.size(); i++)
+            b.append(params.get(i).getName()).append(": ").append(params.get(i).getValue()).append(" // ");
+        return b.toString();
+
+    }
 }
