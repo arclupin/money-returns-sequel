@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <!--
          The following two permissions are not required to use
@@ -130,20 +129,24 @@
         <activity
             android:name=".GroupChooser"
             android:label="@string/title_activity_group_chooser"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            >
         </activity>
         <activity
             android:name=".RegisterHouse"
-            android:label="House Sharing" >
+            android:label="House Sharing"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Houseshare_Create_House"
             android:label="@string/title_activity_houseshare__create__house"
-            android:windowSoftInputMode="stateHidden" >
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Fragment_Houseshare_Inputs"
-            android:label="@string/title_activity_fragment__houseshare__inputs" >
+            android:label="@string/title_activity_fragment__houseshare__inputs"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Houseshare_HomeView"
@@ -165,7 +168,9 @@
         <activity
             android:name=".NewBillAuto"
             android:label="@string/title_activity_new_bill_auto"
-            android:parentActivityName=".Houseshare_HomeView" >
+            android:parentActivityName=".Houseshare_HomeView"
+            android:screenOrientation="portrait"
+            android:uiOptions="splitActionBarWhenNarrow">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ncl.team5.lloydsmockup.Houseshare_HomeView" />
@@ -174,10 +179,22 @@
             android:name=".NewBillManual"
             android:label="@string/title_activity_new_bill_manual"
             android:parentActivityName=".Houseshare_HomeView"
-            android:windowSoftInputMode="stateHidden">
+            android:screenOrientation="portrait"
+            android:uiOptions="splitActionBarWhenNarrow"
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ncl.team5.lloydsmockup.Houseshare_HomeView" />
+        </activity>
+        <activity
+            android:name=".NewBillManual_SubBill"
+            android:label="@string/title_activity_new_bill_manual__sub_bill"
+            android:parentActivityName=".NewBillManual"
+            android:screenOrientation="portrait"
+            android:uiOptions="splitActionBarWhenNarrow">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ncl.team5.lloydsmockup.NewBillManual" />
         </activity>
     </application>
 

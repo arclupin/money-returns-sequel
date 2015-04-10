@@ -85,12 +85,31 @@ public class Member implements Parcelable, Comparable<Member>{
         return b.toString();
     }
 
-    public View craftView(LayoutInflater inflater) {
+
+    /**
+     * craft a view a displaying member
+     * @param inflater
+     * @return
+     */
+    public View craftViewInfo(LayoutInflater inflater) {
         View v = inflater.inflate(R.layout.hs_select_users_row, null);
         ((TextView) v.findViewById(R.id.username_select)).setText(username);
-        ((TextView) v.findViewById(R.id.user_joined_since)).setText("Joined since " + joined_since) ;
+        ((TextView) v.findViewById(R.id.user_joined_since)).setText("Joined since " + StringUtils.getStringDate(joined_since)) ;
         return v;
     }
+
+    /**
+     * craft a view for entering this member sub bill
+     * @param inflater
+     * @return
+     */
+    public View craftViewSubBill(LayoutInflater inflater){
+        View v = inflater.inflate(R.layout.hs_sub_bill_manual, null);
+        ((TextView) v.findViewById(R.id.username_sub_bill)).setText(username);
+        return v;
+    }
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -105,9 +124,9 @@ public class Member implements Parcelable, Comparable<Member>{
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += houseshare_id.hashCode();
-        hash = HASH*hash + username.hashCode();
+        int hash = HASH;
+        hash = HASH * hash + houseshare_id.hashCode();
+        hash = HASH * hash + username.hashCode();
         hash = HASH * hash + joined_since.hashCode();
         return hash;
     }
@@ -116,6 +135,7 @@ public class Member implements Parcelable, Comparable<Member>{
     @Override
     public int compareTo(Member another) {
         Log.d("compare To", StringUtils.getDateFromServerDateResponse(joined_since).toString() + StringUtils.getDateFromServerDateResponse(another.joined_since).toString() + " //");
-        return StringUtils.getDateFromServerDateResponse(joined_since).compareTo(StringUtils.getDateFromServerDateResponse(another.joined_since));
+        int chronological_order = StringUtils.getDateFromServerDateResponse(joined_since).compareTo(StringUtils.getDateFromServerDateResponse(another.joined_since));
+        return chronological_order != 0 ? chronological_order : username.compareTo(another.username);
     }
 }

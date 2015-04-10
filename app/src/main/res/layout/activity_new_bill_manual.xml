@@ -10,7 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/basic_info_container"
-        android:paddingTop="10dp">
+        android:paddingTop="10dp"
+        android:layout_alignParentTop="true"
+        >
 
         <TextView
             android:id="@+id/bill_name"
@@ -23,6 +25,7 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:text="Bill name"
+
             style="@style/Bill_Confirmation_Title"
             />
         <EditText
@@ -38,6 +41,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginEnd="20dp"
             style="@style/editText_style_confirm"
+            android:hint="Ex: Electricity Oct"
             />
 
         <View
@@ -51,6 +55,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginEnd="20dp"
+
             android:background="@color/divider">
         </View>
 
@@ -68,6 +73,7 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:text="Due Date"
+
             style="@style/Bill_Confirmation_Title"
 
             />
@@ -85,6 +91,7 @@
             android:layout_marginEnd="20dp"
             android:inputType="date"
             style="@style/editText_style_confirm"
+            android:hint="Ex: 23/01/2015"
             />
 
         <View
@@ -98,6 +105,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginEnd="20dp"
+
             android:background="@color/divider">
         </View>
 
@@ -114,7 +122,9 @@
             android:paddingRight="10dp"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
+
             android:text="Total Amount"
+
             style="@style/Bill_Confirmation_Title"
             />
         <EditText
@@ -128,6 +138,8 @@
             android:layout_marginRight="20dp"
             android:layout_marginEnd="20dp"
             style="@style/editText_style_confirm"
+            android:inputType="numberDecimal"
+            android:hint="Ex: 150.4"
             />
 
         <View
@@ -144,15 +156,61 @@
             android:background="@color/divider">
         </View>
 
+        <TextView
+            android:id="@+id/bill_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divider3"
+            android:layout_alignLeft="@+id/due_date"
+            android:layout_alignStart="@+id/due_date"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="10dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="Message"
+
+            style="@style/Bill_Confirmation_Title"
+            />
+        <EditText
+            android:id="@+id/bill_message_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/total_amount_value"
+            android:layout_alignStart="@+id/total_amount_value"
+            android:layout_toRightOf="@id/bill_message"
+            android:layout_toEndOf="@id/bill_message"
+            android:layout_alignTop="@id/bill_message"
+            android:layout_alignBottom="@id/bill_message"
+            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
+            style="@style/editText_style_confirm"
+            android:hint="Ex: Pay this fast mates"
+            />
+
+        <View
+            android:id="@+id/divider4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/bill_message"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@color/divider">
+        </View>
+
     </RelativeLayout>
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/basic_info_container"
         android:id="@+id/scrollView_select_users"
-        android:layout_above="@+id/NewBill_next"
         >
 
         <TextView
@@ -238,15 +296,5 @@
             </TableLayout>
         </ScrollView>
     </RelativeLayout>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content"
-        android:id="@+id/NewBill_next"
-        android:text="Next"
-        style="@style/Welcome_HS_Text_Start"
-        android:layout_alignParentBottom="true"
-        android:clickable="true"
-        android:padding="10dp"/>
 
 </RelativeLayout>

@@ -1,19 +1,18 @@
 package com.ncl.team5.lloydsmockup;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Parcelable;
+import android.support.v4.app.NavUtils;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -29,8 +28,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,6 +41,9 @@ import HTTPConnect.RequestQueue;
 import HTTPConnect.Request_Params;
 import HTTPConnect.Response;
 import HTTPConnect.Responses_Format;
+import Utils.StringUtils;
+import Utils.Utilities;
+import Utils.Validator;
 
 
 public class NewBillManual extends Activity {
@@ -53,6 +53,7 @@ public class NewBillManual extends Activity {
     private EditText amount_view;
     private CheckBox addAll_view;
     private TableLayout members_table_view;
+    private ActionBar actionBar;
 
     private String billName;
     private String dueDate;
@@ -62,6 +63,10 @@ public class NewBillManual extends Activity {
     private static String housename;
     private RelativeLayout loading;
 
+    private boolean isDueDateSupplied = false;
+    private boolean isAmountSupplied = false;
+    //no need for bill name as we have the text watcher do this job
+
 
     private Set<Member> involved_members = new TreeSet<Member>();
     private Intent i;
@@ -70,6 +75,10 @@ public class NewBillManual extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_bill_manual);
+        actionBar = getActionBar();
+        if (actionBar != null)
+            actionBar.setSplitBackgroundDrawable(new ColorDrawable((getResources().getColor(R.color.dark_green))));
+
         i = getIntent();
         if (i.getStringExtra(IntentConstants.USERNAME) != null)
             username = i.getStringExtra(IntentConstants.USERNAME);
@@ -93,6 +102,7 @@ public class NewBillManual extends Activity {
             }
         });
 
+        // add text listener for bill name
         billName_view.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -108,6 +118,13 @@ public class NewBillManual extends Activity {
             }
         });
 
+        // register data validator on UI
+        Utilities.registerValidator(dueDate_view, new Validator() {
+            @Override
+            public boolean isDataValid(String s) {
+                return StringUtils.isStringADate(s);
+            }
+        });
         dueDate_view.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -119,10 +136,23 @@ public class NewBillManual extends Activity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                dueDate = s.toString();
+                if (StringUtils.isStringADate(s.toString())) {
+                    dueDate = s.toString();
+                    isDueDateSupplied = true;
+                } else
+                    isDueDateSupplied = false; // false it
             }
         });
 
+        // register data validator on UI
+        Utilities.registerValidator(amount_view, new Validator() {
+            @Override
+            public boolean isDataValid(String s) {
+                return StringUtils.isStringValidAmount(s);
+            }
+        });
+
+        // TODO _FIXME I still haven't figured out a way to make this code snippet reusable
         amount_view.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -134,9 +164,14 @@ public class NewBillManual extends Activity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                totalAmount = s.toString();
-            }
-        });
+                if (StringUtils.isStringValidAmount(s.toString())) {
+                    totalAmount = s.toString();
+                    isAmountSupplied = true;
+                }
+                else
+                    isAmountSupplied = false; // false it
+        }});
+
 
         Request r = new Request(Request.TYPE.POST);
         r.addParam(Request_Params.PARAM_TYPE, Request_Params.HS_ALL_MEMBERS)
@@ -163,13 +198,55 @@ public class NewBillManual extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+
+            case android.R.id.home: {
+                Intent i = new Intent(this, Houseshare_HomeView.class);
+                i.putExtra(IntentConstants.USERNAME, username);
+                i.putExtra(IntentConstants.HOUSE_NAME, housename);
+                NavUtils.navigateUpTo(this, i);
+                return true;
+            }
+            case R.id.action_back: {
+                Intent i = new Intent(this, Houseshare_HomeView.class);
+                i.putExtra(IntentConstants.USERNAME, username);
+                i.putExtra(IntentConstants.HOUSE_NAME, housename);
+                NavUtils.navigateUpTo(this, i);
+                return true;
+            }
+            case R.id.action_forward: {
+                bttn_next_sub_bill();
+                return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    public void bttn_next_sub_bill() {
+        if (isDataSupplied()) {
+            Intent i = new Intent(this, NewBillManual_SubBill.class);
+            i.putExtra(IntentConstants.USERNAME, username);
+            i.putExtra(IntentConstants.HOUSE_NAME, housename);
+            i.putExtra(IntentConstants.BILL_NAME, billName);
+            i.putExtra(IntentConstants.BILL_DUE_DATE, dueDate);
+            i.putExtra(IntentConstants.BILL_AMOUNT, totalAmount);
+            Log.d("involved intent", ""+ involved_members.size());
+            i.putParcelableArrayListExtra(IntentConstants.MEMBERS, new ArrayList<Parcelable>(involved_members));
+            startActivity(i);
+        }
+
+        else {
+            // users have not chosen any user
+            if (involved_members.size() == 0)
+                 new CustomMessageBox.MessageBoxBuilder(this, "Please select at least one target member for this bill.")
+                    .setTitle("Warning").build();
+            else // something wrong with the data
+                new CustomMessageBox.MessageBoxBuilder(this, "Please review your data and supply correct information.")
+                        .setTitle("Warning").build();
+        }
+
+    }
 
     private void filterMembers(String r) {
         try {
@@ -205,16 +282,17 @@ public class NewBillManual extends Activity {
         int i = 1;
         for (final String memberName : members.keySet())
         {
-            View v = members.get(memberName).craftView(getLayoutInflater());
+            Log.d("member", memberName + members.get(memberName) + " hash: " + members.get(memberName).hashCode());
+            View v = members.get(memberName).craftViewInfo(getLayoutInflater());
             members_table_view.addView(v, i++);
             ((CheckBox) v.findViewById(R.id.checkBox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Member m = members.get(
                             ((TextView) ((RelativeLayout) buttonView.getParent()).findViewById(R.id.username_select)).getText().toString());
-
+                    Log.d("member checked changed", m.toString());
                     if (isChecked) {
-                        involved_members.add(m);
+                        Log.d("add okay?" , "/" + involved_members.add(m));
                         Log.d("involved", Arrays.toString(involved_members.toArray(new Member[involved_members.size()])));
 
                         if (involved_members.size() == members.size()) {
@@ -335,6 +413,11 @@ public class NewBillManual extends Activity {
         involved_members.clear();
 
         Log.d("involved", Arrays.toString(involved_members.toArray(new Member[involved_members.size()])));
+    }
+
+    private boolean isDataSupplied() {
+        Log.d("validate date", billName + " / amount supplied: " + isAmountSupplied + "/ due date supplied: " + isDueDateSupplied);
+        return billName != null && isDueDateSupplied && isAmountSupplied && involved_members.size() > 0;
     }
 
 }

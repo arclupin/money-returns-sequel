@@ -1,13 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.ncl.team5.lloydsmockup.NewBillManual">
-    <item android:title="@string/action_back"
+    tools:context="com.ncl.team5.lloydsmockup.NewBillManual_SubBill">
+    <item android:title="Back"
         android:id="@+id/action_back"
         android:icon="@drawable/ic_action_back"
         android:showAsAction="always"/>
-    <item android:title="@string/action_forward"
-        android:id="@+id/action_forward"
-        android:icon="@drawable/ic_action_forward"
+    <item android:title="Create the bill now"
+        android:id="@+id/action_create_bill"
+        android:icon="@drawable/create"
         android:showAsAction="always"/>
 </menu>

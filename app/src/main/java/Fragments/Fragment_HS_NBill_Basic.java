@@ -183,7 +183,7 @@
 //        int i = 0;
 //        for (String memberName : members.keySet())
 //        {
-//            View v = members.get(memberName).craftView(getActivity().getLayoutInflater());
+//            View v = members.get(memberName).craftViewInfo(getActivity().getLayoutInflater());
 //            members_table_view.addView(v, i++);
 //            ((CheckBox) v.findViewById(R.id.checkBox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 //                @Override

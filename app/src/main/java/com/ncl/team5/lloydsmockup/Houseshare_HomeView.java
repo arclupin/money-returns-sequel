@@ -31,7 +31,7 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
 
     private String house_name;
     private String username;
-    private String view_type; // joined house or sent request?
+    private static String view_type; // joined house or sent request?
 
     private Intent i;
     private static Menu menu;
@@ -49,7 +49,13 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
     @Override
     public void onCreate(Bundle savedInstanceState)         {
             super.onCreate(savedInstanceState);
-            requestWindowFeature(Window.FEATURE_ACTION_BAR);
+            if (savedInstanceState != null) {
+                username = savedInstanceState.getString(IntentConstants.USERNAME);
+                house_name = savedInstanceState.getString(IntentConstants.HOUSE_NAME);
+                view_type = savedInstanceState.getString(IntentConstants.HOME_VIEW_TYPE);
+            }
+
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
             setContentView(R.layout.activity_houseshare__home_view);
 
                 actionBar = getActionBar();
@@ -69,6 +75,9 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
                     view_type = i.getStringExtra(IntentConstants.HOME_VIEW_TYPE);
             }
 
+        Log.d("In state home view", username + " - " + house_name + " - " + view_type);
+
+
             fragmentManager = getSupportFragmentManager();
             mAdapter = new HS_Home_FragPagerAdapter(fragmentManager, username, house_name, view_type);
             pager = (ViewPager) findViewById(R.id.home_view_pager);
@@ -80,12 +89,10 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
                     // We can also use ActionBar.Tab#select() to do this if we have a reference to the
                     // Tab.
                     actionBar.setSelectedNavigationItem(position);
-                    if (position == 1)
-                    {
+                    if (position == 1) {
                         invalidateOptionsMenu();
                         getMenuInflater().inflate(R.menu.menu_hs_noti, menu);
-                    }
-                    else {
+                    } else {
                         invalidateOptionsMenu();
                         Houseshare_HomeView.this.onCreateOptionsMenu(menu);
                     }
@@ -110,18 +117,28 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
                                 .setTabListener(this).setIcon(i == 0 ? R.drawable.hs_tab_home : R.drawable.hs_tab_noti));
 
             }
+
         }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d("view_type onMenu", view_type);
+        Log.d("view_type onMenu", "view type: " + view_type);
 
         if (view_type.equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE))
              getMenuInflater().inflate(R.menu.menu_houseshare__home_view, menu);
-        else
+        else //TODO potential bug here
              getMenuInflater().inflate(R.menu.menu_homeview_search, menu);
         Houseshare_HomeView.menu = menu;
         return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(IntentConstants.USERNAME, username);
+        outState.putString(IntentConstants.HOUSE_NAME, house_name);
+        outState.putString(IntentConstants.HOME_VIEW_TYPE, view_type);
+        Log.d("Out state home view", username + " - " + house_name + " - " + view_type);
     }
 
     /**
@@ -220,7 +237,9 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
      */
     @Override
     public void onTabUnselected(ActionBar.Tab tab, android.app.FragmentTransaction ft) {
-//        noti_listener = (Fragment_HS_Notification) fragmentManager.getFragments().get(1);
+        if (noti_listener == null)
+            noti_listener = (Fragment_HS_Notification) fragmentManager.getFragments().get(1);
+        Log.d("Noti_listener", "// " + noti_listener.toString());
         if (tab.getPosition() == 1) {
                 // let the server know that the notifications have been seen
                 new Connection(this).execute(noti_listener.onNotificationsSeen((Fragment_HS_Notification)fragmentManager.getFragments().get(1)));

@@ -6,6 +6,7 @@ package com.ncl.team5.lloydsmockup;
  * Created by Thanh on 05-Apr-15.
  */
 public class IntentConstants {
+    //TODO "hex"ification
 
     public static final String USERNAME = "USR";
 
@@ -22,5 +23,11 @@ public class IntentConstants {
     public static final String DATE = "DATE";
 
     public static final String MEMBERS = "MEMBERS";
+
+    public static final String BILL_NAME = "BILL_NAME";
+
+    public static final String BILL_AMOUNT = "BILL_AMOUNT";
+
+    public static final String BILL_DUE_DATE = "BILL_DUE_DATE";
 
 }

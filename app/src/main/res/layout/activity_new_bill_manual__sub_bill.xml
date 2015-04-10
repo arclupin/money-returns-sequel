@@ -1,29 +1,20 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android" />
+<RelativeLayout
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.ncl.team5.lloydsmockup.NewBillAuto">
-
-    <TextView
-        android:id="@+id/title_bill_break_down"
-        style="@style/Dialog_Text_Title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp"
-        android:text="@string/title_enter_sub_bills"
-        android:textColor="#808080"
-        android:textSize="20sp" />
-
     <ScrollView
         android:id="@+id/scrollViewSelectUsers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title_bill_break_down">
+        android:layout_below="@+id/title_bill_break_down"
+        android:background="@color/white">
 
         <TableLayout
             android:id="@+id/table_sub_bills"
@@ -113,7 +104,8 @@
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
                             android:inputType="none"
-                            android:text="150.0" />
+                            android:maxLines="1"
+                            android:text="0.0" />
 
                     </RelativeLayout>
 
@@ -156,12 +148,13 @@
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
                             android:inputType="none"
-                            android:text="150.0" />
+                            android:maxLines="1"
+                            android:text="0.0" />
                     </RelativeLayout>
                 </RelativeLayout>
             </TableRow>
         </TableLayout>
     </ScrollView>
 </RelativeLayout>
-
+</ScrollView>
 

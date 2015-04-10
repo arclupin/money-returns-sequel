@@ -84,7 +84,7 @@
                             android:layout_alignBottom="@+id/bill_type_auto"
                             android:layout_alignParentTop="true" />
                         <TextView
-                            android:id="@+id/username_select"
+                            android:id="@+id/username_select_auto"
                             style="@style/Dialog_Text_Content"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

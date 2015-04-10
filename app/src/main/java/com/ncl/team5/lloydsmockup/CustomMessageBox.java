@@ -140,6 +140,7 @@ public class CustomMessageBox {
     public CustomMessageBox(Activity a, String text, String buttonText, String title) {
         View v = prepareDialogView(a, text, title, buttonText);
         AlertDialog alert = makeDialogInternal(a, v);
+
         dialog_queue.add(alert); // add this dialog to the tail of the queue
         alert.show();
 
@@ -158,6 +159,7 @@ public class CustomMessageBox {
         AlertDialog.Builder msg = new AlertDialog.Builder(a);
         msg.setView(v);
         AlertDialog alert = msg.create();
+        alert.setCancelable(false);
         return alert;
 
     }
