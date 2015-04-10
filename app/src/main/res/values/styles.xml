@@ -300,7 +300,7 @@
     <style name="Bill_Confirmation_Sub_Title" parent="Bill_Confirmation_Title">
         <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
         </item>
-        <item name="android:textColor">@color/hs_bill_confirmation_titles</item>
+        <item name="android:textColor">@color/hs_bill_confirmation_sub_titles</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:ellipsize">marquee</item>
@@ -309,7 +309,7 @@
     <style name="Bill_Confirmation_Value" parent="android:Widget.TextView">
         <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
         </item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/hs_bill_confirmation_value</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textAllCaps">true</item>

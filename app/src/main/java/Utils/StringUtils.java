@@ -15,6 +15,8 @@ import java.util.GregorianCalendar;
  * Created by Thanh on 20-Mar-15.
  */
 public class StringUtils {
+public static final String POUND_SIGN = "\u00A3";
+
 
     /**
      * check whether a string is empty (without any visible characters) or not

@@ -126,7 +126,6 @@
             android:layout_alignBottom="@id/total_amount"
             android:layout_marginRight="20dp"
             android:layout_marginEnd="20dp"
-
             style="@style/Bill_Confirmation_Value"
             />
 
@@ -161,13 +160,6 @@
             android:text="Bill shares"
             style="@style/Bill_Confirmation_Title" />
 
-        <ListView
-            android:id="@+id/scrollViewSelectUsers"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/title"
-            >
-        </ListView>
     </RelativeLayout>
 
 </RelativeLayout>

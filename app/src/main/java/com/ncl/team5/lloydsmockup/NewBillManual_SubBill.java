@@ -33,12 +33,13 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import Fragments.HS_Bill_Confirmation_Dialog;
 import Utils.StringUtils;
 import Utils.Utilities;
 import Utils.Validator;
 
 
-public class NewBillManual_SubBill extends Activity {
+public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmation_Dialog.BillConfirmationDialogListener{
 
     private TableLayout subbill_table;
     private CheckBox option_shared_equally;
@@ -164,12 +165,16 @@ public class NewBillManual_SubBill extends Activity {
                 return true;
             }
             case R.id.action_create_bill: {
-
-                if (isDataValid())
-                    Toast.makeText(this, "Dialog to show up", Toast.LENGTH_SHORT).show();
-                else new CustomMessageBox.MessageBoxBuilder(this, "Please review your data and supply correct information.")
+                if (isDataValid()) {
+                    //show the confirmation dialog
+                    HS_Bill_Confirmation_Dialog confirmation_dialog = HS_Bill_Confirmation_Dialog.initialise(billName, dueDate,
+                            String.valueOf(expectedBill));
+                    confirmation_dialog.show(getFragmentManager(), "bill_confirm_dialog");
+                }
+                else
+                    new CustomMessageBox.MessageBoxBuilder(this, "Please review your data and supply correct information.")
                         .setTitle("Warning").build();
-                return  true;
+                return true;
             }
         }
 
@@ -177,6 +182,10 @@ public class NewBillManual_SubBill extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    /**
+     * display members for sub bills
+     */
     private void showMembers() {
         clearViews();
         int i = 0;
@@ -194,12 +203,10 @@ public class NewBillManual_SubBill extends Activity {
             tv.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
                 }
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 }
 
                 @Override
@@ -231,11 +238,18 @@ public class NewBillManual_SubBill extends Activity {
 
     }
 
+    /**
+     * Clear all views in the sub bill table <u>EXCEPT</u> the last one which contains the required views
+     * (option for sharing the bill equally, expected bill amount text view etc.)
+     */
     private void clearViews() {
         for (int i = 0; i < subbill_table.getChildCount() - 1; i++)
             subbill_table.removeViewAt(i);
     }
 
+    /**
+     * UI listener for sub bills validity
+     */
     private void checkBillsValidity() {
         if (netBill == expectedBill)
         {
@@ -248,6 +262,10 @@ public class NewBillManual_SubBill extends Activity {
         }
     }
 
+
+    /**
+     * Check the state of the sub bills to see if data is okay to proceed
+     */
     private boolean isDataValid() {
 
         if (Double.parseDouble(net_bill_tv.getText().toString()) == expectedBill)
@@ -256,4 +274,29 @@ public class NewBillManual_SubBill extends Activity {
     }
 
 
+    /*
+     * Overriding bill confirmation dialog interating methods
+     */
+    @Override
+    public void onBillConfirmedButtonClick(String bill_name, HS_Bill_Confirmation_Dialog f) {
+        //TODO server connection
+        f.dismiss();
+        new CustomMessageBox.MessageBoxBuilder(this, "Your bill has been created. All target members will be notified soon." +
+                "\nWe will let you know if any update on the bill is available.")
+                .setTitle("Bill " + bill_name + " confirmed").build();
+    }
+
+    @Override
+    public void onBillCancelButtonClick(HS_Bill_Confirmation_Dialog f) {
+        f.dismiss();
+    }
+
+    /**
+     * Simply return the sub bill map to the dialog
+     * @return the sub bill map
+     */
+    @Override
+    public Map<String, Double> getSubBills() {
+        return subbills;
+    }
 }

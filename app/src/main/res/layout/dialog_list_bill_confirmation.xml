@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialog_bill_type_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border_dialog"
+
+    android:paddingBottom="15dp">
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/Dialog_Text_Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp"
+        android:textSize="20sp"
+        android:text="Electricity October"/>
+
+    <RelativeLayout
+        android:id="@+id/content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+
+       >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/basic_info_container"
+            android:paddingTop="10dp"
+            >
+
+            <TextView
+                android:id="@+id/bill_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:text="Bill name"
+                style="@style/Bill_Confirmation_Title"
+                />
+            <TextView
+                android:id="@+id/bill_name_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/bill_name"
+                android:layout_toEndOf="@id/bill_name"
+                android:layout_alignTop="@id/bill_name"
+                android:layout_alignBottom="@id/bill_name"
+                android:layout_alignLeft="@id/total_amount_value"
+                android:layout_alignStart="@id/total_amount_value"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                style="@style/Bill_Confirmation_Value"
+                />
+
+
+            <TextView
+                android:id="@+id/due_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/bill_name"
+                android:layout_alignLeft="@id/bill_name"
+                android:layout_alignStart="@id/bill_name"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:text="Due Date"
+                style="@style/Bill_Confirmation_Title"
+
+                />
+            <TextView
+                android:id="@+id/due_date_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/total_amount_value"
+                android:layout_alignStart="@id/total_amount_value"
+                android:layout_toRightOf="@id/due_date"
+                android:layout_toEndOf="@id/due_date"
+                android:layout_alignTop="@id/due_date"
+                android:layout_alignBottom="@id/due_date"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+
+                style="@style/Bill_Confirmation_Value"
+                />
+
+
+
+            <TextView
+                android:id="@+id/total_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/due_date"
+                android:layout_alignLeft="@id/due_date"
+                android:layout_alignStart="@id/due_date"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:text="Total Amount"
+                style="@style/Bill_Confirmation_Title"
+                />
+            <TextView
+                android:id="@+id/total_amount_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/total_amount"
+                android:layout_toEndOf="@id/total_amount"
+                android:layout_alignTop="@id/total_amount"
+                android:layout_alignBottom="@id/total_amount"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                style="@style/Bill_Confirmation_Value"
+                />
+
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/basic_info_container"
+            android:id="@+id/shares_container"
+            >
+            <TextView
+                android:id="@+id/bill_confirmation_shares_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                android:text="Bill shares"
+                style="@style/Bill_Confirmation_Title" />
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/bill_confirmation_shares_text"
+                >
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bill_confirmation_shares_table">
+
+                </TableLayout>
+            </ScrollView>
+        </RelativeLayout>
+
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/dialog_okay"
+        android:text="Create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_below="@id/content_layout"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:padding="15dp"
+
+        style="@style/Dialog_Text_Content"
+        android:textSize="14sp"
+        android:background="@drawable/button_light_color"
+        android:clickable="true"
+        />
+    <TextView
+        android:id="@+id/dialog_cancel"
+        android:text="Cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:layout_toLeftOf="@+id/dialog_okay"
+        android:layout_toStartOf="@+id/dialog_okay"
+        android:layout_alignTop="@id/dialog_okay"
+        android:layout_alignBottom="@id/dialog_okay"
+
+        style="@style/Dialog_Text_Content"
+        android:background="@drawable/button_light_color"
+        android:textSize="13sp"
+        android:clickable="true"/>
+
+
+</RelativeLayout>
