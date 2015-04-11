@@ -83,15 +83,57 @@
             <!--android:layout_marginTop="5dp"-->
             <!--android:src="@drawable/ic_people"/>-->
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/bill_listview_container"
+        android:layout_below="@+id/home_view_main_container">
         <ListView
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/listBills"
             android:layout_gravity="center_horizontal|bottom"
-            android:layout_below="@+id/home_view_main_container"
+
          />
 
+        <TextView
+            android:id="@+id/loading_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            style="@style/Bill_Confirmation_Sub_Title"
+            android:textStyle="bold"
+            android:visibility="invisible"
+            android:text="Loading"
+            />
 
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:id="@+id/bill_view_empty_row"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_centerInParent="true"
+            android:clickable="false"
+            android:visibility="invisible">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/sad"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/sad"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/bill_row_bill_info"
+                android:layout_below="@id/sad"
+                android:layout_centerInParent="true"
+                style="@style/HS_homeview_address"
+                android:textSize="15sp"
+                android:text="Empty"
+                />
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

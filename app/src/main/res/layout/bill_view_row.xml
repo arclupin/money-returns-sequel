@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    android:id="@+id/bill_view_row_layout"
+    android:clickable="true"
+    android:background="@drawable/button_light_color">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Electricity October"
+        android:id="@+id/bill_row_bill_name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        style="@style/HS_bill_view_row"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bill_row_bill_info"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/bill_row_bill_name"
+        android:paddingLeft="30dp"
+        android:paddingStart="30dp"
+        android:paddingRight="20dp"
+        android:paddingEnd="20dp"
+        style="@style/HS_homeview_address"
+        android:text="This bill is due in 12 days"
+        />
+</RelativeLayout>

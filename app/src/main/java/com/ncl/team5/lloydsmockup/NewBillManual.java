@@ -291,7 +291,7 @@ public class NewBillManual extends Activity {
             JSONArray arr_out = j.getJSONArray(Responses_Format.RESPONSE_MEMBERS);
             for (int i = 0; i < arr_out.length(); i++) {
                 JSONArray arr_in = arr_out.getJSONArray(i);
-                members.put(arr_in.getString(1), new Member(arr_in.getString(0), arr_in.getString(1), arr_in.getString(2)));
+                members.put(arr_in.getString(0), new Member(arr_in.getString(0), arr_in.getString(1), arr_in.getString(2)));
             }
 
         } catch (JSONException e) {
@@ -302,16 +302,16 @@ public class NewBillManual extends Activity {
     private void showMembers() {
         clearViews();
         int i = 1;
-        for (final String memberName : members.keySet())
+        for (final String houseshareID : members.keySet())
         {
-            Log.d("member", memberName + members.get(memberName) + " hash: " + members.get(memberName).hashCode());
-            View v = members.get(memberName).craftViewInfo(getLayoutInflater());
+            Log.d("member", houseshareID + members.get(houseshareID) + " hash: " + members.get(houseshareID).hashCode());
+            View v = members.get(houseshareID).craftViewInfo(getLayoutInflater());
             members_table_view.addView(v, i++);
             ((CheckBox) v.findViewById(R.id.checkBox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    Member m = members.get(
-                            ((TextView) ((RelativeLayout) buttonView.getParent()).findViewById(R.id.username_select)).getText().toString());
+                    Member m = members.get(getHouseshareID(
+                            ((TextView) ((RelativeLayout) buttonView.getParent()).findViewById(R.id.username_select)).getText().toString()));
                     Log.d("member checked changed", m.toString());
                     if (isChecked) {
                         Log.d("add okay?" , "/" + involved_members.add(m));
@@ -442,4 +442,12 @@ public class NewBillManual extends Activity {
         return billName != null && isDueDateSupplied && isAmountSupplied && involved_members.size() > 0;
     }
 
+    private String getHouseshareID(String username) {
+
+        String id = null;
+        for (Map.Entry<String, Member> entry : members.entrySet())
+            if (entry.getValue().getUsername().equals(username.trim()))
+                return entry.getKey();
+        return id;
+    }
 }

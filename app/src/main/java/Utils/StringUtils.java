@@ -24,9 +24,7 @@ public static final String POUND_SIGN = "\u00A3";
      * @return the result
      */
    public static boolean isFieldEmpty(String input) {
-        if (input == null)
-            return true;
-       return input.trim().isEmpty();
+        return (input == null) || input.trim().isEmpty();
     }
 
 
@@ -81,16 +79,31 @@ public static final String POUND_SIGN = "\u00A3";
         return "";
     }
 
+
+    /**
+     * Return a simple string representing this date object in dd-MM-yyyy format
+     * @param date
+     * @return
+     */
+    public static String getGeneralDateString(Date date) {
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        StringBuilder dateString = new StringBuilder();
+        dateString.append(calendar.get(Calendar.DAY_OF_MONTH)).append("-")
+                .append(calendar.get(Calendar.MONTH) + 1).append("-")
+                .append(calendar.get(Calendar.YEAR));
+
+        return dateString.toString();
+    }
+
     /**
      * round a double to the correct format (2 decimal digits)
-     * @param amount
-     * @return
+     * @param amount the double input
+     * @return the rounded to 2 decimal places value
      */
     public static double roundAmount(double amount) {
         return Double.parseDouble(String.format("%.2f", amount));
     }
-
-
 
 
 

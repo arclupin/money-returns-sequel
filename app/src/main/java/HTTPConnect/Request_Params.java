@@ -38,10 +38,10 @@ public class Request_Params {
     public static final String HS_CREATE_BILL_MEMBERS = "members[]"; // array storing involved users
 
 
+    public static final String REQUEST_HS_GET_MY_BILLS = "HS_GET_MY_BILLS";
+
 
     public static final String VAL_REF_NOTI = "REF_NOTI";
-
-
     public static final String VAL_FETCH_NOTI = "HS_NOTI_FTCH";
 
     public static final String MARK_NOTI_AS_SEEN_NOT_READ = "NOTI_ASNR";

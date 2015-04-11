@@ -94,6 +94,7 @@
     <string name="option_shared_equally">This bill is shared equally</string>
     <string name="net_bill">Net total</string>
     <string name="expected_bill">Expected total</string>
-    <string name="POUND_SYMBOL">£</string>
     <string name="title_activity_new_bill_manual__sub_bill">Bill break-down</string>
+
+
 </resources>
