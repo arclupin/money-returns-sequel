@@ -150,7 +150,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
      */
     public void refresh() {
          new NotificationWorker(getActivity())
-                .setMode(NOTI_WORK.FETCH_REFRESH).setTimeExpected(5000)
+                .setMode(NOTI_WORK.FETCH_REFRESH).setTimeExpected(3000)
                 .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_FETCH_NOTI, Request_Params.PARAM_USR, username);
     }
 
@@ -439,16 +439,22 @@ public interface OnNotificationInteraction {
             } else if (jo.getString("status").equals("true")) {
                 JSONArray Noti_js_arr = jo.getJSONArray(Responses_Format.RESPONSE_HS_CONTENT);
                 for (int i = 0; i < Noti_js_arr.length(); i++) {
+
+                    //typical response looks like this
+                    // TODO _IMPORTANT! [["65","16","hs_100000","wgriffin","2015-04-11 02:38:14","0","electricity oct"]
+
                     JSONArray noti_arr_in = Noti_js_arr.getJSONArray(i);
 
+
                     String id = noti_arr_in.getString(0);
-                    boolean read = noti_arr_in.getString(noti_arr_in.length() - 1).equals("1");
+                    boolean read = noti_arr_in.getString(noti_arr_in.length() - 2).equals("1");
                     int type = noti_arr_in.getInt(1);
 
                     Notification n = new Notification(type, read, id);
                     n.addParam(noti_arr_in.getString(Notification.HSID_POS + 2))
                             .addParam(noti_arr_in.getString(Notification.PARAM_POS + 2))
-                            .addParam(noti_arr_in.getString(Notification.TIME_POS + 2));
+                            .addParam(noti_arr_in.getString(Notification.TIME_POS + 2))
+                            .addParam(noti_arr_in.getString(Notification.PARAM2_POS + 3));
 
                     l.add(n);
                 }
@@ -577,47 +583,50 @@ public interface OnNotificationInteraction {
             final TextView a = (TextView) v.findViewById(R.id.noti_join_req_admin_name);
             final String noti_id = data.get(i).getId();
 
-            //set up the welcome sub button
-            TextView welcome_button = (TextView) v.findViewById(R.id.ok);
-            welcome_button.setClickable(true);
-            welcome_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new NotificationWorker(Fragment_HS_Notification.this.getActivity())
-                            .setMode(NOTI_WORK.APPROVE)
-                            .addNewParam(NotificationWorker.PARAM_USERNAME_IN_NOTI, a.getText().toString())
-                            .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_APPROVE_MEMBER,
-                                    Request_Params.PARAM_USR, username,
-                                    Request_Params.VAL_APPROVE_MEMBER_PARAM, a.getText().toString(),
-                                    "NOTI_ID", noti_id);
+            // set listeners for sub buttons in join request notis
+            if (data.get(i).getType() == Notification.JOIN_ADM) {
+                //set up the welcome sub button
+                TextView welcome_button = (TextView) v.findViewById(R.id.ok);
+                welcome_button.setClickable(true);
+                welcome_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new NotificationWorker(Fragment_HS_Notification.this.getActivity())
+                                .setMode(NOTI_WORK.APPROVE)
+                                .addNewParam(NotificationWorker.PARAM_USERNAME_IN_NOTI, a.getText().toString())
+                                .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_APPROVE_MEMBER,
+                                        Request_Params.PARAM_USR, username,
+                                        Request_Params.VAL_APPROVE_MEMBER_PARAM, a.getText().toString(),
+                                        "NOTI_ID", noti_id);
 
-                    TableRow t = (TableRow) v.getParent().getParent().getParent(); // looks quite odd
-                    Log.d("row on click", t.toString());
-                    mTable.removeView(t);
+                        TableRow t = (TableRow) v.getParent().getParent().getParent(); // looks quite odd
+                        Log.d("row on click", t.toString());
+                        mTable.removeView(t);
 
-                }
-            });
+                    }
+                });
 
-            // set up the cancel sub button
-            TextView cancel_button = (TextView) v.findViewById(R.id.refuse);
-            cancel_button.setClickable(true);
-            cancel_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new NotificationWorker(Fragment_HS_Notification.this.getActivity())
-                            .setMode(NOTI_WORK.REFUSE)
-                            .addNewParam(NotificationWorker.PARAM_USERNAME_IN_NOTI, a.getText().toString())
-                            .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_REFUSE_MEMBER,
-                                    Request_Params.PARAM_USR, username,
-                                    Request_Params.VAL_REFUSE_MEMBER_PARAM, a.getText().toString(),
-                                    "NOTI_ID", noti_id);
+                // set up the cancel sub button
+                TextView cancel_button = (TextView) v.findViewById(R.id.refuse);
+                cancel_button.setClickable(true);
+                cancel_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new NotificationWorker(Fragment_HS_Notification.this.getActivity())
+                                .setMode(NOTI_WORK.REFUSE)
+                                .addNewParam(NotificationWorker.PARAM_USERNAME_IN_NOTI, a.getText().toString())
+                                .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_REFUSE_MEMBER,
+                                        Request_Params.PARAM_USR, username,
+                                        Request_Params.VAL_REFUSE_MEMBER_PARAM, a.getText().toString(),
+                                        "NOTI_ID", noti_id);
 
-                    TableRow t = (TableRow) v.getParent().getParent().getParent();
-                    Log.d("row on click", t.toString());
-                    mTable.removeView(t);
+                        TableRow t = (TableRow) v.getParent().getParent().getParent();
+                        Log.d("row on click", t.toString());
+                        mTable.removeView(t);
 
-                }
-            });
+                    }
+                });
+            }
             mTable.addView(v, i);
 
 

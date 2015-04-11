@@ -7,6 +7,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import Utils.StringUtils;
 import Utils.Utilities;
@@ -37,7 +38,7 @@ public class ConcurrentConnection extends AsyncTask<List<Request>, Void, List<Re
     private boolean showDialog;
     private String dialogMsg;
     private long expected_end_time;
-
+    protected Map<String, String> additional_params;
 
 
     /**
@@ -46,7 +47,6 @@ public class ConcurrentConnection extends AsyncTask<List<Request>, Void, List<Re
      * @param a the the calling activity
      */;
     public ConcurrentConnection(Activity a) {
-
         this.mContext = a;
         showDialog = false;
     }

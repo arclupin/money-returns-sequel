@@ -51,6 +51,7 @@ public class NewBillManual extends Activity {
     private EditText billName_view;
     private EditText dueDate_view;
     private EditText amount_view;
+    private EditText message_view;
     private CheckBox addAll_view;
     private TableLayout members_table_view;
     private ActionBar actionBar;
@@ -58,6 +59,7 @@ public class NewBillManual extends Activity {
     private String billName;
     private String dueDate;
     private String totalAmount;
+    private String message;
     private Map<String, Member> members = new TreeMap<String, Member>();
     private static String username;
     private static String housename;
@@ -90,6 +92,8 @@ public class NewBillManual extends Activity {
         billName_view = (EditText) layout.findViewById(R.id.bill_name_value);
         dueDate_view = (EditText) layout.findViewById(R.id.due_date_value);
         amount_view = (EditText) layout.findViewById(R.id.total_amount_value);
+        message_view = (EditText) layout.findViewById(R.id.bill_message_value);
+
         loading = (RelativeLayout) layout.findViewById(R.id.loading_notice);
         addAll_view = (CheckBox) layout.findViewById(R.id.checkBox_all);
         addAll_view.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -172,6 +176,23 @@ public class NewBillManual extends Activity {
                     isAmountSupplied = false; // false it
         }});
 
+        message_view.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                message = s.toString();
+            }
+        });
+
 
         Request r = new Request(Request.TYPE.POST);
         r.addParam(Request_Params.PARAM_TYPE, Request_Params.HS_ALL_MEMBERS)
@@ -231,6 +252,7 @@ public class NewBillManual extends Activity {
             i.putExtra(IntentConstants.BILL_NAME, billName);
             i.putExtra(IntentConstants.BILL_DUE_DATE, dueDate);
             i.putExtra(IntentConstants.BILL_AMOUNT, totalAmount);
+            i.putExtra(IntentConstants.BILL_MESSAGE, message);
             Log.d("involved intent", ""+ involved_members.size());
             i.putParcelableArrayListExtra(IntentConstants.MEMBERS, new ArrayList<Parcelable>(involved_members));
             startActivity(i);

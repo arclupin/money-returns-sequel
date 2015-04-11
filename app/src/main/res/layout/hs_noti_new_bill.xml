@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:id="@+id/hs_noti_row_container"
+    android:background="@drawable/button_light_color"
+    android:clickable="true"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+   >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingLeft="20dp"
+    android:paddingRight="10dp"
+
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/noti_new_bill_container"
+   >
+
+    <TextView
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/noti_bill_creator"
+        android:text="Alice "
+        style="@style/HS_Noti_Sub_Text_Name" />
+    <TextView
+        android:layout_toEndOf="@+id/noti_bill_creator"
+        android:layout_toRightOf="@id/noti_bill_creator"
+       android:layout_alignTop="@id/noti_bill_creator"
+        android:paddingTop="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/noti_bill_text"
+        android:text="@string/noti_type_new_bill_gnr"
+        style="@style/HS_Noti_Sub_Text"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+    <TextView
+        android:layout_toEndOf="@+id/noti_bill_text"
+        android:layout_toRightOf="@id/noti_bill_text"
+        android:layout_alignTop="@id/noti_bill_text"
+        android:paddingTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/noti_bill_name"
+        android:text=" Electricity"
+        android:maxLines="1"
+        style="@style/HS_Noti_Sub_Text_Name"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
+
+</TableRow>

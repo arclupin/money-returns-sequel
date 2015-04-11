@@ -71,6 +71,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="noti_type_join_request_admin_gnr">would like to join your house. </string>
+    <string name="noti_type_new_bill_gnr">created a new bill </string>
     <string name="noti_type_join_request_admin_ok">Welcome</string>
     <string name="noti_type_join_request_admin_nope">Cancel</string>
     <string name="noti_empty">You have no notification :-(</string>

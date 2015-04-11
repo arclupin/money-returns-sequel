@@ -30,4 +30,5 @@ public class IntentConstants {
 
     public static final String BILL_DUE_DATE = "BILL_DUE_DATE";
 
+    public static final String BILL_MESSAGE = "BILL_MSG";
 }

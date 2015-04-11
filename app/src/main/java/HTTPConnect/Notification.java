@@ -23,11 +23,14 @@ import Utils.StringUtils;
  */
 public class Notification {
 
-    public static final int JOIN_ADM_VIEW = 1;
+    //types of notifications
+    public static final int JOIN_ADM = 0x00001; // new join request
+    public static final int NEW_BILL = 0x00010; // new bill
 
     public static final int HSID_POS = 0;
     public static final int PARAM_POS = 1;
     public static final int TIME_POS = 2;
+    public static final int PARAM2_POS = 3;
 
     /**
      * 3 types of noti
@@ -76,7 +79,7 @@ public class Notification {
     private List<String> additional_params;
 
     public Notification() {
-        type = JOIN_ADM_VIEW;
+        type = JOIN_ADM;
         additional_params = new ArrayList<String>();
     }
 
@@ -113,21 +116,25 @@ public class Notification {
 
         //TODO if type is normal noti (noti without button should set it clickable)
         switch (type) {
-            case JOIN_ADM_VIEW: {
+            case JOIN_ADM: {
                 v = inflater.inflate(R.layout.hs_noti_join_req_adm_view, null);
-
                 TextView tv = (TextView) v.findViewById(R.id.noti_join_req_admin_name);
-
+                //TODO use spanner to ensure the correct display in narrow screen phones
                 tv.setText(additional_params.get(PARAM_POS) + " ");
-
-                if (read) {
-                    v.setBackgroundResource(R.drawable.noti_read_bg);
-                    Log.d("read at", this.toString());
-                }
-
-
-                return v;
+                break;
             }
+            case NEW_BILL: {
+                v = inflater.inflate(R.layout.hs_noti_new_bill, null);
+                //TODO use spannableString to ensure the correct display in narrow screen phones
+                ((TextView) v.findViewById(R.id.noti_bill_creator)).setText(additional_params.get(PARAM_POS) + " ");
+                ((TextView) v.findViewById(R.id.noti_bill_name)).setText(" " + additional_params.get(PARAM2_POS));
+                break;
+            }
+        }
+
+        if (read) {
+            v.setBackgroundResource(R.drawable.noti_read_bg);
+            Log.d("read at", this.toString());
         }
         return v;
     }

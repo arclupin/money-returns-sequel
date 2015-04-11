@@ -94,7 +94,7 @@ public class Member implements Parcelable, Comparable<Member>{
     public View craftViewInfo(LayoutInflater inflater) {
         View v = inflater.inflate(R.layout.hs_select_users_row, null);
         ((TextView) v.findViewById(R.id.username_select)).setText(username);
-        ((TextView) v.findViewById(R.id.user_joined_since)).setText("Joined since " + StringUtils.getStringDate(joined_since)) ;
+        ((TextView) v.findViewById(R.id.user_joined_since)).setText("Joined since " + StringUtils.getStringDate(joined_since, "yyyy-MM-dd", "dd-MM-yyyy")) ;
         return v;
     }
 

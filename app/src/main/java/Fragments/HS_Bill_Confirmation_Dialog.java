@@ -29,9 +29,12 @@ public class HS_Bill_Confirmation_Dialog extends DialogFragment{
     public interface BillConfirmationDialogListener {
 
         // methods needed to interact with the host activity
-        public void onBillConfirmedButtonClick(String bill_name, HS_Bill_Confirmation_Dialog f);
-        public void onBillCancelButtonClick(HS_Bill_Confirmation_Dialog f);
-        public Map<String, Double> getSubBills();
+        void onBillConfirmedButtonClick(String bill_name, HS_Bill_Confirmation_Dialog f);
+        void onBillCancelButtonClick(HS_Bill_Confirmation_Dialog f);
+        Map<String, Double> getSubBills();
+
+
+
     }
 
     private BillConfirmationDialogListener mBillConfirmationDialogListener;

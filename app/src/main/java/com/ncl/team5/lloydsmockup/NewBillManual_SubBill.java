@@ -28,12 +28,20 @@ import com.ncl.team5.lloydsmockup.Houseshares.Member;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
 import Fragments.HS_Bill_Confirmation_Dialog;
+import HTTPConnect.ConcurrentConnection;
+import HTTPConnect.Connection;
+import HTTPConnect.Request;
+import HTTPConnect.RequestQueue;
+import HTTPConnect.Request_Params;
+import HTTPConnect.Response;
+import HTTPConnect.Responses_Format;
 import Utils.StringUtils;
 import Utils.Utilities;
 import Utils.Validator;
@@ -49,6 +57,7 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
 
     private String billName;
     private String dueDate;
+    private String message;
     private static String username;
     private static String housename;
     private Set<Member> involved_members = new TreeSet<Member>();
@@ -62,7 +71,6 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
 
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,22 +80,30 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
             actionBar.setSplitBackgroundDrawable(new ColorDrawable((getResources().getColor(R.color.dark_green))));
 
         i = getIntent();
+        //get data from the intent
         if (i != null) {
             username = i.getStringExtra(IntentConstants.USERNAME);
             housename = i.getStringExtra(IntentConstants.HOUSE_NAME);
             billName = i.getStringExtra(IntentConstants.BILL_NAME);
-            expectedBill = Double.parseDouble(i.getStringExtra(IntentConstants.BILL_AMOUNT));
+
             dueDate = i.getStringExtra(IntentConstants.BILL_DUE_DATE);
+            expectedBill = Double.parseDouble(i.getStringExtra(IntentConstants.BILL_AMOUNT));
+            message = i.getStringExtra(IntentConstants.BILL_MESSAGE);
+
+            // get the members list passed from the NewBillManual
             ArrayList<Parcelable> m = i.getParcelableArrayListExtra(IntentConstants.MEMBERS);
             for (Parcelable parcel : m) {
                 involved_members.add((Member) parcel);
                 Log.d("Parcel from intent", parcel.toString());
             }
-            share = expectedBill / involved_members.size();
+            share = StringUtils.roundAmount(expectedBill / involved_members.size()); // get the equal share value
             Log.d("share", "/" + share);
         }
 
+        // get views on the layout
         subbill_table = (TableLayout) findViewById(R.id.table_sub_bills);
+
+        // set listener for check box
         option_shared_equally = (CheckBox) findViewById(R.id.checkBox_share_equally);
         option_shared_equally.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -122,6 +138,7 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
             }
         });
 
+        //get views for bill value indicators
         net_bill_tv = (TextView) findViewById(R.id.net_bill_amount_tv);
         net_bill_tv.setEnabled(false);
 
@@ -129,18 +146,15 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
         expected_bill_tv.setText(String.valueOf(expectedBill));
         expected_bill_tv.setEnabled(false);
 
+        // initialise the hash map storing the sub bills
         subbills = new HashMap<String, Double>();
 
-        // initialise the sub bill map
+        // initialise the sub bill map with initial values (0.0)
         for (Member m : involved_members)
             subbills.put(m.getUsername(), 0.0);
 
-
+        // show members
         showMembers();
-
-
-
-
 
     }
 
@@ -281,9 +295,22 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
     public void onBillConfirmedButtonClick(String bill_name, HS_Bill_Confirmation_Dialog f) {
         //TODO server connection
         f.dismiss();
-        new CustomMessageBox.MessageBoxBuilder(this, "Your bill has been created. All target members will be notified soon." +
-                "\nWe will let you know if any update on the bill is available.")
-                .setTitle("Bill " + bill_name + " confirmed").build();
+        Request creating_request = new Request(Request.TYPE.POST);
+        creating_request.addParam(Request_Params.PARAM_TYPE, Request_Params.HS_CREATE_BILL)
+                .addParam(Request_Params.PARAM_USR, username)
+                .addParam(Request_Params.HS_CREATE_BILL_NAME, billName)
+                .addParam(Request_Params.HS_CREATE_BILL_DUE_DATE, StringUtils.getStringDate(dueDate, "dd/MM/yyyy", "yyyy-MM-dd"))
+                .addParam(Request_Params.HS_CREATE_BILL_AMOUNT, String.valueOf(expectedBill))
+                .addParam(Request_Params.HS_CREATE_BILL_MESSAGE, message);
+
+        // add sub bill values to the request
+        for (Member m : involved_members) {
+            creating_request.addParam(Request_Params.HS_CREATE_BILL_MEMBERS, m.getHouseshare_id()); // add member id to the param array
+            creating_request.addParam(m.getHouseshare_id(), String.valueOf(subbills.get(m.getUsername()))); // add a param for each sub bill
+        }
+
+       new BillCreation_Worker(this, true).execute(new RequestQueue().addRequest(creating_request).toList());
+
     }
 
     @Override
@@ -298,5 +325,51 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
     @Override
     public Map<String, Double> getSubBills() {
         return subbills;
+    }
+
+    class BillCreation_Worker extends ConcurrentConnection {
+
+
+        public BillCreation_Worker(Activity a) {
+            super(a);
+        }
+
+        public BillCreation_Worker(Activity a, boolean showDialog) {
+            super(a, showDialog);
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(List<Response> responses) {
+            super.onPostExecute(responses);
+            assert responses.size() == 1;
+            if (responses.get(0).getToken(Responses_Format.RESPONSE_EXPIRED).equals("true")) {
+                /* Display message box and auto logout user */
+                final Connection temp_connect = new Connection(NewBillManual_SubBill.this);
+                // experimenting a new message box builder
+                CustomMessageBox.MessageBoxBuilder builder = new CustomMessageBox.MessageBoxBuilder(NewBillManual_SubBill.this, "Your session has been timed out, please login again");
+                builder.setTitle("Expired")
+                        .setActionOnClick(new CustomMessageBox.ToClick() {
+                            @Override
+                            public void DoOnClick() {
+                                temp_connect.autoLogout(username);
+                            }
+                        }).build();
+            }
+                else if (responses.get(0).getToken(Responses_Format.RESPONSE_STATUS).equals("true")){
+                    new CustomMessageBox.MessageBoxBuilder(NewBillManual_SubBill.this, "Your bill has been created. All target members will be notified soon." +
+                            "\nWe will let you know if any update on the bill is available.")
+                            .setTitle("Bill " + billName + " confirmed").build();
+                }
+            else {
+                new CustomMessageBox.MessageBoxBuilder(NewBillManual_SubBill.this, "Sorry, we could not process this bill at the moment. \nPlease try again later.")
+                        .setTitle("Error :(").build();
+            }
+            }
     }
 }

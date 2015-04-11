@@ -66,20 +66,33 @@ public static final String POUND_SIGN = "\u00A3";
     }
 
     /**
-     * get String date in dd-mm-yyyy format (also checks if the input string represent a valid date)
+     * get String date in desired format (also checks if the input string represent a valid date)
      * @param r the input string
      * @return the output
      */
-    public static String getStringDate(String r)
+    public static String getStringDate(String r, String currentFormat, String newFormat)
     {
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat format = new SimpleDateFormat(newFormat);
         try {
-            return format.format(new SimpleDateFormat("yyyy-MM-dd").parse(r)); // quite long winded
+            return format.format(new SimpleDateFormat(currentFormat).parse(r)); // quite long winded
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return null;
+        return "";
     }
+
+    /**
+     * round a double to the correct format (2 decimal digits)
+     * @param amount
+     * @return
+     */
+    public static double roundAmount(double amount) {
+        return Double.parseDouble(String.format("%.2f", amount));
+    }
+
+
+
+
 
     /**
      * check whether a string represents a date in format dd/mm/yyyy or not

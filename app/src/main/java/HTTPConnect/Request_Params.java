@@ -34,7 +34,10 @@ public class Request_Params {
     public static final String HS_CREATE_BILL_NAME = "BILL_NAME"; // name of the bill
     public static final String HS_CREATE_BILL_DUE_DATE = "DUE_DATE"; // due date
     public static final String HS_CREATE_BILL_AMOUNT = "AMOUNT"; // amount of the bill
-    public static final String HS_CREATE_BILL_USERS = "users"; // array storing involved users
+    public static final String HS_CREATE_BILL_MESSAGE = "MSG"; // message to members
+    public static final String HS_CREATE_BILL_MEMBERS = "members[]"; // array storing involved users
+
+
 
     public static final String VAL_REF_NOTI = "REF_NOTI";
 
