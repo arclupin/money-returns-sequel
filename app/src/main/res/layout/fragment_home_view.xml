@@ -93,8 +93,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/listBills"
             android:layout_gravity="center_horizontal|bottom"
-
-         />
+            />
 
         <TextView
             android:id="@+id/loading_text"

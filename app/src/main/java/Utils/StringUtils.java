@@ -146,4 +146,17 @@ public static final String POUND_SIGN = "\u00A3";
         return s.matches("^\\d+(\\.\\d{1,2})?");
     }
 
+    /**
+     * Get shortened string in form "abc..."
+     * @param string the input string
+     * @param limit the limit of the length
+     */
+    public static String getShortenedString(String string, int limit) {
+        if (string.length() <= limit + 3) // 3 dots consume space as well, so need taking into account
+            return string;
+        else {
+            return string.substring(0, limit) + "...";
+        }
+
+    }
 }

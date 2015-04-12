@@ -159,7 +159,8 @@
         <activity
             android:name=".HouseShare_Bill"
             android:label="@string/title_activity_house_share__bill"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:parentActivityName=".Houseshare_HomeView">
         </activity>
         <activity
             android:name=".LocationsLogin"

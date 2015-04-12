@@ -23,4 +23,10 @@
     <color name = "hs_bill_confirmation_titles">#737373</color>
     <color name = "hs_bill_confirmation_sub_titles">#323842</color>
     <color name = "hs_bill_confirmation_value">#323842</color>
+    <color name="text_color_light_green_bg">#fbfdfc</color>
+
+    <color name="dark_blue">#2980b9</color>
+    <color name="light_blue">#3498db</color>
+
+    <color name="light_background">#f5f5f5</color>
 </resources>

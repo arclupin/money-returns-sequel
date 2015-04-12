@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -87,7 +90,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
            view_type = getArguments().getString(IntentConstants.HOME_VIEW_TYPE);
 
         billList = new ArrayList<Bill>();
-        Log.d("onCreate home_view", hs_name + " - " + view_type + " - " + username);
+        Log.d("onCreate home_view_frag", hs_name + " - " + view_type + " - " + username);
 
     }
 
@@ -135,14 +138,6 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
             //TODO real bills come here
         /* Get the list view */
             billList_view = (ListView) l.findViewById(R.id.listBills);
-            billList_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent i = new Intent(getActivity(), HouseShare_Bill.class);
-                    startActivity(i);
-                }
-            });
-
         }
 
         // else if user has sent a request then show the sent-request prompt in the home view
@@ -221,7 +216,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         private static final int BILL_DATE_PAID_POS = 7;
         private static final int BILL_MESSAGE_POS = 8;
         private static final int BILL_ISACTIVE_POS = 9;
-
+        private static final int BILL_AM_I_CREATOR = 10;
 
 
 
@@ -456,7 +451,8 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
 
                     //initialise the bill being extracted from the response
                     billList.add(new Bill.BillBuilder(bill_arr.getInt(HomeViewWorker.BILL_ISACTIVE_POS) == 1,
-                            !StringUtils.isFieldEmpty(bill_arr.getString(HomeViewWorker.BILL_DATE_PAID_POS)))
+                            !StringUtils.isFieldEmpty(bill_arr.getString(HomeViewWorker.BILL_DATE_PAID_POS)),
+                            bill_arr.getBoolean(HomeViewWorker.BILL_AM_I_CREATOR))
                             .setAmount(bill_arr.getDouble(HomeViewWorker.BILL_AMOUNT_POS))
                             .setBillCreator(members.get(bill_arr.getString(HomeViewWorker.BILL_CREATOR_ID)))
                             .setBillID(bill_arr.getString(HomeViewWorker.BILL_ID_POS))
@@ -518,6 +514,10 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         return id;
     }
 
+
+    /**
+     * A custom adapter for backing the list of bills
+     */
     class BillAdapter extends ArrayAdapter<Bill> {
         private List<Bill> billList; // the backing list
 
@@ -525,21 +525,34 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
             super(context, resource, objects);
             billList = objects;
 
-//            // if no bill is specified, add one empty bill
-//            // this would help the list view display at least 1 view
-//            // which will be configured to be an row indicating no bills are available
-//            if (billList.size() == 0) {
-//
-//                billList.add(Bill.getEmptyInstance());
-//                Log.d("bill list is empty", billList.get(0).getBillID());
-//            }
+            /*  //TODO _FIXME This was the original implementation of the empty view. But I got some
+                //TODO _FIXME problem with positioning the layout. This approach seems safer than the
+                //TODO _FIXME current approach though.
+
+                // if no bill is specified, add one empty bill
+                // this would help the list view display at least 1 view
+                // which will be configured to be an row indicating no bills are available
+                if (billList.size() == 0) {
+
+                    billList.add(Bill.getEmptyInstance());
+                    Log.d("bill list is empty", billList.get(0).getBillID());
+                }
+            */
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             empty_view.setVisibility(View.GONE);
             LayoutInflater inflater = getActivity().getLayoutInflater();
-            View view = inflater.inflate(R.layout.bill_view_row, null);
+            View view = inflater.inflate(R.layout.bill_view_row, parent, false);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent billPageIntent = new Intent(getActivity(), HouseShare_Bill.class);
+                    billPageIntent.putParcelableArrayListExtra(IntentConstants.BILL_PARCEL, new ArrayList<Parcelable>(Collections.singletonList(billList.get(position)))) ;
+                    startActivity(billPageIntent);
+                }
+            });
                 TextView billName = (TextView) view.findViewById(R.id.bill_row_bill_name);
                 TextView billInfo = (TextView) view.findViewById(R.id.bill_row_bill_info);
                 // get the backing bill at this position
@@ -547,7 +560,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
                 billName.setText(bill.getBillName());
                 // set the bill info depending on the status of the bill
                 if (!bill.isActive()) {
-                    if (!bill.getBillCreator().getUsername().equals(username))
+                    if (!bill.amICreator())
                         billInfo.setText("Created by " + bill.getBillCreator().getUsername() + ". Status: Pending");
                     else
                         billInfo.setText("You created this bill. Status: Pending");

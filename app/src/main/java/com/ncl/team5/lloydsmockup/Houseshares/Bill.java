@@ -1,5 +1,8 @@
 package com.ncl.team5.lloydsmockup.Houseshares;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +17,7 @@ import Utils.StringUtils;
  *
  * Created by Thanh on 11-Apr-15.
  */
-public class Bill implements Comparable<Bill> {
+public class Bill implements Comparable<Bill>, Parcelable{
 
     private String billID;
     private String billName;
@@ -28,6 +31,7 @@ public class Bill implements Comparable<Bill> {
     private boolean isPaid; // order of bills needs to be taken into consideration
     private Date datePaid;
     private boolean isActive;
+    private boolean amICreator;
 
     private static final Bill BILL_EMPTY = new Bill();
 
@@ -43,8 +47,11 @@ public class Bill implements Comparable<Bill> {
      * @param isPaid boolean value indicating whether the bill has been paid
      * @param isActive boolean value indicating whether the bill has been activated
      * @param datePaid the date this bill was paid, or null is the bill has not been paid yet
+     * @param amICreator whether this user is the creator <u>important</u>
      */
-    private Bill(String billID, String name, Date dueDate, Date dateCreated, double amount, String message, Member creator, boolean isPaid, boolean isActive, Date datePaid) {
+    private Bill(String billID, String name, Date dueDate, Date dateCreated, double amount,
+                 String message, Member creator, boolean isPaid, boolean isActive, Date datePaid,
+                 boolean amICreator) {
         this.billID = billID;
         this.billName = name;
         this.dueDate = dueDate;
@@ -56,6 +63,7 @@ public class Bill implements Comparable<Bill> {
         this.isActive = isActive;
         this.datePaid = datePaid;
         this.subBills = new TreeMap<Member, SubBill>();
+        this.amICreator = amICreator;
     }
 
     /**
@@ -71,8 +79,11 @@ public class Bill implements Comparable<Bill> {
      * @param isActive boolean value indicating whether the bill has been activated
      * @param datePaid the date this bill was paid, or null is the bill has not been paid yet
      * @param subBills the sub bills of this bill
+     * @param amICreator whether this user is the creator <u>important</u>
      */
-    private Bill(String billID, String name, Date dueDate, Date dateCreated, double amount, String message, Member creator, boolean isPaid, boolean isActive, Date datePaid, Map<Member, SubBill> subBills) {
+    private Bill(String billID, String name, Date dueDate, Date dateCreated, double amount,
+                 String message, Member creator, boolean isPaid, boolean isActive, Date datePaid,
+                 Map<Member, SubBill> subBills, boolean amICreator) {
         this.billID = billID;
         this.billName = name;
         this.dueDate = dueDate;
@@ -84,6 +95,7 @@ public class Bill implements Comparable<Bill> {
         this.isActive = isActive;
         this.datePaid = datePaid;
         this.subBills = new TreeMap<Member, SubBill>(subBills);
+        this.amICreator = amICreator;
     }
 
     /**
@@ -137,6 +149,66 @@ public class Bill implements Comparable<Bill> {
         return isActive;
     }
 
+    public boolean amICreator() {
+        return amICreator;
+    }
+
+    /**
+     * Describe the kinds of special objects contained in this Parcelable's
+     * marshalled representation.
+     *
+     * @return a bitmask indicating the set of special object types marshalled
+     * by the Parcelable.
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Bill> CREATOR = new Creator<Bill>() {
+        @Override
+        public Bill createFromParcel(Parcel source) {
+            return new Bill(source.readString(),
+                    source.readString(),
+                    (Date) source.readSerializable(),
+                    (Date) source.readSerializable(),
+                    source.readDouble(),
+                    source.readString(),
+                    (Member) source.readParcelable(Member.class.getClassLoader())
+                    , source.readInt() == 1,
+                    source.readInt() == 1,
+                    (Date) source.readSerializable(),
+                    source.readInt() == 1);
+        }
+
+        @Override
+        public Bill[] newArray(int size) {
+            return new Bill[size];
+        }
+    };
+
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     *              May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+     */
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(billID);
+        dest.writeString(billName);
+        dest.writeSerializable(dueDate);
+        dest.writeSerializable(dateCreated);
+        dest.writeDouble(amount);
+        dest.writeString(message);
+        dest.writeParcelable(billCreator, 0);
+        dest.writeInt(isPaid ? 1 : 0);
+        dest.writeInt(isActive ? 1 :0);
+        dest.writeSerializable(datePaid);
+        dest.writeInt(amICreator ? 1 : 0);
+    }
+
     /**
      * Class BillBuilder for building a bill
      */
@@ -152,10 +224,12 @@ public class Bill implements Comparable<Bill> {
         private boolean isPaid = false; // order of bills needs to be taken into consideration
         private Date datePaid = null;
         private boolean isActive = false;
+        private boolean amICreator;
 
-        public BillBuilder(boolean isActive, boolean isBillPaid) {
+        public BillBuilder(boolean isActive, boolean isBillPaid, boolean amICreator) {
             this.isActive = isActive;
             this.isPaid = isBillPaid;
+            this.amICreator = amICreator;
         }
 
         public BillBuilder setBillName(String billName) {
@@ -213,6 +287,11 @@ public class Bill implements Comparable<Bill> {
             return this;
         }
 
+        public BillBuilder setAmICreator(boolean amICreator) {
+            this.amICreator = amICreator;
+            return this;
+        }
+
         private boolean isAllDataSet() {
             return  !StringUtils.isFieldEmpty(billID) &&
                     !StringUtils.isFieldEmpty(billName) &&
@@ -224,7 +303,8 @@ public class Bill implements Comparable<Bill> {
 
         public Bill build() {
             if (isAllDataSet())
-                return new Bill(billID, billName, dueDate, dateCreated, amount, message, billCreator,isPaid, isActive, datePaid, subBills);
+                return new Bill(billID, billName, dueDate, dateCreated, amount, message, billCreator,
+                        isPaid, isActive, datePaid, subBills, amICreator);
             throw (new IllegalStateException("Bill has illegal state"));
         }
     }
@@ -241,8 +321,11 @@ public class Bill implements Comparable<Bill> {
         for (Member m: subBills.keySet())
             b.append(m.getUsername()).append("*");
 
-        b.append(" - ").append(isActive ? "active" : "inactive").append(" - ").append(isPaid ? "paid on" : "not paid")
-                .append(" - ").append(datePaid);
+        b.append(" - ").append(isActive ? "active" : "inactive").append(" - ")
+                .append(isPaid ? "paid on" : "not paid")
+                .append(" - ").append(datePaid)
+                .append(" - ").append(amICreator ? "Creator" : "Not creator");
+
         return b.toString();
     }
 
@@ -274,11 +357,13 @@ public class Bill implements Comparable<Bill> {
                 return -1;
             else if (isActive && another.isActive) // if bills are both active
             {
-                int i  = dueDate.compareTo(another.dueDate) * -1; // bills due earlier > bills due later
+                int i  = dueDate.compareTo(another.dueDate) * -1;
+                // bills due earlier > bills due later
                 if (i != 0)
                     return i;
                 else {
-                    int m = dateCreated.compareTo(another.dateCreated); // bills that are created later > bills that are created earlier
+                    int m = dateCreated.compareTo(another.dateCreated);
+                    // bills that are created later > bills that are created earlier
                     if (m != 0)
                         return m;
                     else {
@@ -286,7 +371,8 @@ public class Bill implements Comparable<Bill> {
                         if (k != 0)
                             return k;
                         else
-                            return billID.compareTo(another.billID); // if all above comparisons yield equality, then compare the bill id
+                            return billID.compareTo(another.billID);
+                            // if all above comparisons yield equality, then compare the bill id
                     }
                 }
 

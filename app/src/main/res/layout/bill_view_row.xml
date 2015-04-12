@@ -5,7 +5,8 @@
     android:paddingBottom="15dp"
     android:id="@+id/bill_view_row_layout"
     android:clickable="true"
-    android:background="@drawable/button_light_color">
+    android:background="@drawable/button_light_color"
+    >
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,6 +17,7 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         style="@style/HS_bill_view_row"
+
         />
 
     <TextView

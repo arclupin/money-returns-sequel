@@ -1,86 +1,221 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.ncl.team5.lloydsmockup.Houseshare_HomeView"
-    android:id="@+id/hs_hv_layout">
+    android:id="@+id/bill_layout"
+    android:background="@color/light_background">
 
     <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bill_basic_info_container"
+        android:background="@color/dark_green"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bill_basic_info"
+            android:layout_marginTop="30dp"
+            android:padding="3dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:text="Electricity October"
+            style="@style/HS_bill_name" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bill_creation_details"
+            android:layout_below="@id/bill_basic_info"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:padding="3dp"
+            android:text="Created by Alice on 23/1/2015"
+            style="@style/HS_bill_additional_info"
+
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bill Name"
-            android:id="@+id/viewBillName"
-            android:textStyle="bold"
-            android:textSize="12pt"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp" />
+            android:id="@+id/bill_status"
+            android:layout_below="@id/bill_creation_details"
+            android:layout_marginLeft="5dp"
+            android:padding="3dp"
+            android:text="Due in 5 days"
+            style="@style/HS_bill_additional_info" />
 
-        <TextView
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Created on 01/01/2015 by Stella"
-            android:id="@+id/viewDateBill"
-            android:layout_below="@+id/viewBillName"
-            android:layout_centerHorizontal="true"
-            android:textStyle="italic" />
-
-        <view
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            class="View"
-            android:id="@+id/view"
-            android:background="#c0c0c0"
-            android:layout_marginTop="130dp" />
-
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/listView2"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="150dp"
-            android:layout_marginBottom="80dp" />
-
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="PAY BILL"
-            android:id="@+id/button3"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="20dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="20dp" />
-
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context="com.ncl.team5.lloydsmockup.NewBillAuto"
-            android:id="@+id/layout">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:id="@+id/bill_name"
-                android:background="@color/light_green">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentLeft="true"
-                    android:text="Bill name"
-                    android:padding="20dp"/>
-            </RelativeLayout>
-
-
-
-        </RelativeLayout>
+            android:id="@+id/high_priority_img"
+            android:src="@drawable/priority"
+            android:layout_toRightOf="@id/bill_status"
+            android:layout_toEndOf="@id/bill_status"
+            android:layout_alignBottom="@id/bill_status" />
 
     </RelativeLayout>
-</FrameLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bill_pay"
+        android:layout_below="@id/bill_basic_info_container"
+        android:layout_alignRight="@id/bill_basic_info_container"
+        android:layout_alignEnd="@id/bill_basic_info_container"
+        android:layout_marginTop="-50px"
+        android:layout_marginRight="50dp"
+        android:layout_marginEnd="50dp"
+
+        android:background="@drawable/circular_border"
+        android:src="@drawable/pay"
+        android:clickable="true"
+        android:contentDescription="Pay this bill" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bill_options"
+        android:layout_below="@+id/bill_pay"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bill_participants"
+            android:orientation="vertical"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:background="@drawable/button_transparent_color"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/members"
+                android:layout_gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Participants"
+                android:layout_gravity="center"
+                style="@style/HS_bill_option" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bill_announcement"
+            android:orientation="vertical"
+            android:layout_toRightOf="@id/bill_participants"
+            android:layout_toEndOf="@id/bill_participants"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:background="@drawable/button_transparent_color"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/announcement"
+                android:layout_gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Message"
+                android:layout_gravity="center"
+                style="@style/HS_bill_option" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bill_edit"
+            android:orientation="vertical"
+            android:layout_toRightOf="@id/bill_announcement"
+            android:layout_toEndOf="@+id/bill_announcement"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:background="@drawable/button_transparent_color"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/edit"
+                android:layout_gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit"
+                android:layout_gravity="center"
+                style="@style/HS_bill_option" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bill_delete"
+            android:orientation="vertical"
+            android:layout_toRightOf="@id/bill_edit"
+            android:layout_toEndOf="@id/bill_edit"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:background="@drawable/button_transparent_color"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bin"
+                android:layout_gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:layout_gravity="center"
+                style="@style/HS_bill_option" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:id="@+id/divider"
+        android:layout_below="@id/bill_options"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/darker_gray"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/bill_timeline_container"
+        android:layout_below="@id/divider">
+    <TextView
+        android:id="@+id/loading_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        style="@style/Bill_Confirmation_Sub_Title"
+        android:textStyle="bold"
+        android:text="Bill Timeline goes in here"
+        />
+    </RelativeLayout>
+
+</RelativeLayout>
+
+
+

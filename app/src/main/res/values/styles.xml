@@ -333,6 +333,35 @@
         <item name="android:ellipsize">marquee</item>
     </style>
 
+    <style name="HS_bill_name" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
+        <item name="android:textColor">@color/text_color_light_green_bg</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
+
+    <style name="HS_bill_additional_info" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
+        <item name="android:textColor">@color/text_color_light_green_bg</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
+    <style name="HS_bill_option" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
+        <item name="android:textColor">@color/hs_home_address_desc</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
 
 
 </resources>

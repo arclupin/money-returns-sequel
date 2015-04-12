@@ -67,6 +67,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
     }
 
     private RelativeLayout mLayoutContainer;
+
     private SwipeRefreshLayout mRefreshView;
 
     private static enum UI_WORK_TYPE {MAIN};

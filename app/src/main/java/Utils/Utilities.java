@@ -4,12 +4,16 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.EditText;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 /**
  * Created by Thanh on 01-Apr-15. <br/>
  * Class providing some utility methods regarding time and other stuff
  */
 public class Utilities {
 
+public static long DAY_TO_MILLI = 86400000;
 
 
     public static void delay(long milli) {
@@ -54,6 +58,18 @@ public class Utilities {
                     view.setTextColor(Color.parseColor("#323842")); // very dark grey
             }
         });
+    }
+
+    /**
+     * get the time remaining in days
+     *
+     * @param dueDate the due date
+     * @return the time diff in days
+     */
+    public static long getTimeLeftUntilDueDate(Date dueDate) {
+        Date now = new GregorianCalendar().getTime(); // get time now
+        long timeDiffInDays = (now.getTime() - dueDate.getTime()) / (DAY_TO_MILLI); // get time diff in hours
+        return timeDiffInDays;
     }
 
 
