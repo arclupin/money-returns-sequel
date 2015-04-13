@@ -69,8 +69,11 @@ public class FragmentOldAccount extends Fragment {
                 /* Makes sure its a string... it will always be a string but just to check */
                 if(item instanceof String)
                 {
+
                     /* Populates the list with the recent transactions from the selected account */
                     pay.getRecentTrans(s.getItemAtPosition(position).toString());
+
+                    recentAcc = pay.getRecentAccString();
 
                     /* set up a new adapter for the second spinner */
                     ArrayAdapter<String> a3 = new ArrayAdapter<String>(getActivity(), R.layout.spinner_text_colour, recentAcc);

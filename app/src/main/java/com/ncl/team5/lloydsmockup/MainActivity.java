@@ -117,7 +117,7 @@ public class MainActivity extends Activity {
         //need to change this to the actual login time response stuff
         if (date.equals("Not Available")) {
             //Get the current date and time for first logon (no notifications)
-            dateText.setText(username + " : Logged in on " + currentDate);
+            dateText.setText(username + " : Logged in on " + date);
         } else {
             dateText.setText(username + " : Last Login on " + date);
         }

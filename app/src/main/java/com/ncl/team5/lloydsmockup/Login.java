@@ -71,9 +71,6 @@ public class Login extends Activity {
             }
             super.onPostExecute(r);
             authenticate(status);
-
-
-
         }
     }
 
