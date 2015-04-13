@@ -5,8 +5,6 @@ package com.ncl.team5.lloydsmockup;
  * to add a new payee or to select an old one from their last 3 payees.
  */
 
-//TODO: need to edit and test getRecentTrans method, needs more database data
-
 /* Lots of imports */
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -194,7 +192,7 @@ public class Payments extends FragmentActivity {
         /* Tab is 0 when user presses button in Recent payee tab */
         if (tabNo == 0) {
             /* gets the values of all of the UI components */
-            toAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner2)).getSelectedItem().toString();
+            toAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner2)).getSelectedItem().toString().split(" ~ ")[0];
             int pos = ((Spinner) findViewById(R.id.Payment_Old_spinner2)).getSelectedItemPosition();
             sortCode = fromSC.get(pos);
             amount = ((TextView) findViewById(R.id.Payment_Old_TextField_Amount)).getText().toString();
@@ -407,6 +405,7 @@ public class Payments extends FragmentActivity {
     public void getRecentTrans(String accountNum) {
         /* Clear the list so it gets reset each time the activity is visited */
         recentAcc.clear();
+        toSC.clear();
 
         /* Start the connection */
         Connection hc = new Connection(this);
@@ -457,40 +456,50 @@ public class Payments extends FragmentActivity {
                     if (recentAcc.size() < 3) {
 
                         /* If size is zero then just add the object if the payer is the account */
-                        //TODO needs properly testing when database has been filled with more data
                         if (recentAcc.size() == 0) {
-
                             /* If payer is the current account then add */
                             if (insideObject.getString("Payer").equals(accountNum)) {
-                                recentAcc.add(insideObject.getString("Payee"));
+                                recentAcc.add(insideObject.getString("Payee") + " ~ " + date);
                                 toSC.add(insideObject.getString("PayeeSC"));
                             }
                         }
                         /* if the size > 0 but the account is already in the list, then dont add */
-                        //TODO, edit this method, think it needs some sort of loop outside of the if...
-                        else if (i < recentAcc.size() && !recentAcc.get(i).toString().equals(insideObject.getString("Payee"))) {
-                            if (insideObject.getString("Payer").equals(accountNum)) {
-                                recentAcc.add(insideObject.getString("Payee"));
-                                toSC.add(insideObject.getString("PayeeSC"));
+                        else {
+
+                            for(int j = 0; j < recentAcc.size(); j++)
+                            {
+                                if (!recentAcc.get(j).split(" ~ ")[0].equals(insideObject.getString("Payee")) && insideObject.getString("Payer").equals(accountNum)) {
+                                    recentAcc.add(j, insideObject.getString("Payee") + " ~ " + date);
+                                    toSC.add(j, insideObject.getString("PayeeSC"));
+                                    break;
+                                }
                             }
                         }
                     }
                     /* Size > 3 */
                     else {
                         /* Compare dates and then add them to recentAcc in date order */
-                        //TODO needs properly testing when more data added
-                        for (int j = 0; j < 3; j++) {
+                        for (int j = 0; j < recentAcc.size(); j++) {
 
-                            String tempDate = recentAcc.get(i).toString().split(" ~ ")[2].toString();
+                            String tempDate = recentAcc.get(j).toString().split(" ~ ")[1].toString();
                             Date temp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(tempDate);
 
-                            if (temp.compareTo(formatted) < 0) {
+                            //Log.d("DEBUG payments", "|" + recentAcc.get(j).split(" ~ ")[0] + "| : |" + accountNum + "|");
+
+                            if (!recentAcc.get(j).split(" ~ ")[0].equals(insideObject.getString("Payee")) && temp.compareTo(formatted) < 0) {
                                 if (insideObject.getString("Payer").equals(accountNum)) {
-                                    recentAcc.add(insideObject.getString("Payee"));
-                                    toSC.add(insideObject.getString("PayeeSC"));
+                                    recentAcc.add(j, insideObject.getString("Payee") + " ~ " + date);
+                                    toSC.add(j, insideObject.getString("PayeeSC"));
+                                    break;
                                 }
                             }
                         }
+
+                        if(recentAcc.size() > 3){
+                            recentAcc = recentAcc.subList(0, 3);
+                            toSC = toSC.subList(0, 3);
+                        }
+
                     }
                 }
             }

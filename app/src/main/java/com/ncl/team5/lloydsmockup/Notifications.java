@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,26 +32,31 @@ import HTTPConnect.Connection;
 
 public class Notifications extends Activity {
 
+    /* -- Variables -- */
     private String username;
-    private List<String> notif = new ArrayList<String>();
     private String logDate;
+    private String logoutTime;
+
+    private List<String> notif = new ArrayList<String>();
     private List<String> accountNums = new ArrayList<String>();
     private List<String> displayStrings = new ArrayList<String>();
     private List<Boolean> toNotify = new ArrayList<Boolean>();
-    private String logoutTime;
-    private final int NOTIFICATION_MAX = 10;
+
     private int recentCount = 0;
+    private final int NOTIFICATION_MAX = 10;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
 
+        /* Get username and last login from intent */
         Intent intent = getIntent();
         username = intent.getStringExtra(IntentConstants.USERNAME);
         logDate = intent.getStringExtra(IntentConstants.DATE);
 
-
+        /* Get the logout time */
         SharedPreferences settings = getSharedPreferences(username, 0);
         logoutTime = settings.getString("LOGOUT_TIME", "");
 
@@ -61,40 +65,42 @@ public class Notifications extends Activity {
             logoutTime = logDate;
         }
 
-        /* Show all transactions in the account */
-        if(logDate != null && logDate.equals("not available"))
-        {
-            //TODO populate the list without notifiactions I think
-        }
-
+        /* Gets the accounts and notifications */
         getAllAccounts();
         getNotif();
 
+        /* setd the values of the display list with notifications */
         for(int i = 0; i < notif.size(); i++)
         {
             displayStrings.add(notif.get(i).split("\t")[0] + " " + notif.get(i).split("\t")[1]);
         }
 
+        /* Gets the list view and creates a custom adapter for it */
         ListView lv = (ListView) findViewById(R.id.Notification_List_View);
         lv.setAdapter(new BaseAdapter() {
+            /* Gets size of list */
             @Override
             public int getCount() {
                 return displayStrings.size();
             }
 
+            /* gets the item in the list */
             @Override
             public Object getItem(int i) {
                 return displayStrings.get(i);
             }
 
+            /* gets the item id */
             @Override
             public long getItemId(int i) {
                 return i;
             }
 
+            /* gets the view */
             @Override
             public View getView(int i, View view, ViewGroup viewGroup) {
 
+                /* Create a new view */
                 if (view == null)
                 {
                     view = new TextView(Notifications.this);
@@ -102,6 +108,7 @@ public class Notifications extends Activity {
                     ((TextView)view).setTextColor(Color.WHITE);
                 }
 
+                /* Set red background to red if notification */
                 if(toNotify.get(i)) {
                     view.setBackgroundColor(Color.RED);
                     ((TextView) view).setText((String) getItem(i));
@@ -112,18 +119,18 @@ public class Notifications extends Activity {
                     ((TextView) view).setText((String) getItem(i));
                 }
 
+                /* some settings for list */
                 viewGroup.setVerticalScrollBarEnabled(true);
                 view.setClickable(true);
                 ((TextView) view).setHeight(150);
                 ((TextView) view).setTextSize(18);
 
-
-
-
+                /* Return the vew */
                 return view;
             }
         });
 
+        /* Set the app to in session so it doesnt continue to show notifications */
         SharedPreferences sp = getSharedPreferences("transinsession", 0);
         SharedPreferences.Editor edit = sp.edit();
         edit.putBoolean("IN_SESSION", true);
@@ -158,6 +165,7 @@ public class Notifications extends Activity {
     /* Get all of the account numbers for the account, so notifications can be taken for all of them */
     public void getAllAccounts()
     {
+
         Connection hc = new Connection(this);
 
         try {

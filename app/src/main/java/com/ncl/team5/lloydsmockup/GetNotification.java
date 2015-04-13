@@ -19,11 +19,26 @@ import HTTPConnect.Request_Params;
 
 public class GetNotification {
 
+    /* -- Variables -- */
     private Activity a;
+
     private String username;
-    private List<String> accountNums = new ArrayList<String>();
     private String date;
 
+    private List<String> accountNums = new ArrayList<String>();
+
+    /* ===================================
+     * getNotification method
+     *
+     * @params : Activity
+     *           String
+     *           String
+     *
+     * @return : boolean
+     *
+     * @use : Called from within the other
+     *        classes. calls get notif
+     * =================================== */
     public boolean getNotifications(Activity a, String username, String date)
     {
 
@@ -37,20 +52,22 @@ public class GetNotification {
     /* Get all of the account numbers for the account, so notifications can be taken for all of them */
     private void getAllAccounts()
     {
+        /* Open connection */
         Connection hc = new Connection(a);
 
         try {
+            /* Get the result */
             String result = hc.execute("TYPE","SAA", Request_Params.PARAM_USR, username ).get();
 
+            /* Create the JSON object */
             JSONObject jo = new JSONObject(result);
 
-
+            /* If expired just return */
             if(jo.getString("expired").equals("true"))
             {
-
                 return;
-
             }
+            /* Get all of the account numbers */
             else {
 
                 JSONArray jsonArray = jo.getJSONArray("accounts");
@@ -120,6 +137,7 @@ public class GetNotification {
                         Date logoutTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(logTime);
                         Date loginDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(this.date);
 
+                        /* If there are any notifications at all, return true */
                         if(timeFromResponse.compareTo(logoutTime) > 0 && timeFromResponse.compareTo(loginDate) < 0 && !transInSession)
                         {
                             return true;
@@ -148,7 +166,6 @@ public class GetNotification {
                 e.printStackTrace();
             }
         }
-
         return false;
     }
 }
