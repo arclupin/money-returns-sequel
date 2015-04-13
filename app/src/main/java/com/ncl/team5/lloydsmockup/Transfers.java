@@ -1,10 +1,13 @@
 package com.ncl.team5.lloydsmockup;
 
+/* Transfers class
+ * Allows a user to transfer money between their own accounts
+ * only allows a user on if they have more than one account */
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,32 +18,40 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import HTTPConnect.Connection;
 
 
 public class Transfers extends Activity {
 
+    /* -- Variables -- */
+    /* Strings */
     private String username;
-    private List<String> accountStrings = new ArrayList<String>();
-    private List<String> fromSC = new ArrayList<String>();
     private String date;
 
+    /* Collections */
+    private List<String> accountStrings = new ArrayList<String>();
+    private List<String> sortCodes = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //gets the username from the intent
+
+        /* gets the username from the intent */
         Intent i = getIntent();
         username = i.getStringExtra(IntentConstants.USERNAME);
         date = i.getStringExtra(IntentConstants.DATE);
 
+        /* Gets all of the account numbers for the user */
         getAccounts();
 
+        /* Setup the spinners to use the account number data */
         setContentView(R.layout.activity_transfers);
         Spinner s = (Spinner) findViewById(R.id.spinnerFrom);
         Spinner s2 = (Spinner) findViewById(R.id.spinnerTo);
@@ -53,8 +64,6 @@ public class Transfers extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-
         /* Show notification icon in menu bar */
         getMenuInflater().inflate(R.menu.main, menu);
 
@@ -100,21 +109,28 @@ public class Transfers extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    /* This is a bit of a hack so we end up writing less code. The transfers just
-     * Uses the payment interface to the server but is only allowed to make
-     * payments between the users own accounts. The sort code for the to account
-     * will need to be done as well, will probably need to be sent with the account info
-     */
+    /* ====================================================
+     * onClick for make transfers button
+     *
+     * @params : View
+     *
+     * @returns : void
+     *
+     * @use : Uses the payments stuff, but just allows
+     *        transfers between own accounts, as that
+     *        is all that can be selected in the spinners
+     * ==================================================== */
     public void btnMakeTrans(View view) {
-
+        /* gets all of the data from the spinners and the sort code lists */
         String fromAccount = ((Spinner)findViewById(R.id.spinnerFrom)).getSelectedItem().toString();
         String toAccount = ((Spinner)findViewById(R.id.spinnerTo)).getSelectedItem().toString();
         String amount = ((TextView)findViewById(R.id.amountText)).getText().toString();
         int pos = ((Spinner) findViewById(R.id.spinnerFrom)).getSelectedItemPosition();
-        String fromSort = fromSC.get(pos);
+        String fromSort = sortCodes.get(pos);
         pos = ((Spinner) findViewById(R.id.spinnerTo)).getSelectedItemPosition();
-        String sortCode = fromSC.get(pos);
+        String sortCode = sortCodes.get(pos);
 
+        /* Put in checks to make sure the account numbers and such are correct */
         if(fromAccount.equals(toAccount))
         {
             //error
@@ -129,18 +145,19 @@ public class Transfers extends Activity {
             return;
         }
 
-        //start up the connection
+        /* start up the connection */
         Connection connect = new Connection(this);
         String result;
 
         try
         {
-            //now works with the ui and passed that values of the text boxes
+            /* Get the result from the web server */
             result = connect.execute("TYPE", "PAY", IntentConstants.USERNAME, username, "PAYTO", toAccount, "PAYFROM", fromAccount, "AMOUNT", amount, "PAYFROM_SC", fromSort, "PAYTO_SC", sortCode).get();
 
-
+            /* Create a JSON object */
             JSONObject jo = new JSONObject(result);
 
+            /* Check expired */
             if(jo.getString("expired").equals("true"))
             {
 
@@ -158,20 +175,53 @@ public class Transfers extends Activity {
                 AlertDialog alert = errorBox.create();
                 alert.show();
             }
-            else if (jo.getString("status").equals("true"))
+            /* Transfer has been made */
+            else if (jo.getString("status").equals(StatusConstants.OK))
             {
-                //show transfer made screen
+                /* show transfer made screen */
                 new CustomMessageBox(this, "Your transaction has been made successfully");
+                ((TextView) findViewById(R.id.amountText)).setText("");
             }
             else
             {
-                //give more info on the error here, no money taken from account
+                /* give more info on the error here, no money taken from account */
+                if(jo.getString("status").equals(StatusConstants.UNKNOWN))
+                {
+                    /* Unknown error :( */
+                    new CustomMessageBox(this, "An unknown error occurred, the transaction was not completed ");
+                }
+                else if(jo.getString("status").equals(StatusConstants.INSUFFICIENT))
+                {
+                    /* insufficient funds in account */
+                    new CustomMessageBox(this, "There are not enough funds in your account for this transaction");
+                }
+
             }
 
         }
-        catch (Exception e)
+        /* Catch the exceptions */
+        catch (JSONException jse)
         {
-
+            /* Error in the JSON response */
+            //new CustomMessageBox(this, "There was an error in the server response");
+            jse.printStackTrace();
+        }
+        catch (InterruptedException interex)
+        {
+            /* Caused when the connection is interrupted */
+            new CustomMessageBox(this, "Connection has been interrupted");
+            interex.printStackTrace();
+        }
+        catch (ExecutionException ee)
+        {
+            /* No idea when this is caused but it throws it... */
+            new CustomMessageBox(this, "Execution Error");
+            ee.printStackTrace();
+        }
+        catch (Exception e) {
+            /* Failsafe if something goes utterly wrong */
+            new CustomMessageBox(this, "An unknown error occurred");
+            e.printStackTrace();
         }
     }
 
@@ -210,32 +260,45 @@ public class Transfers extends Activity {
     public void onBackPressed() {
         ((KillApp) this.getApplication()).setStatus(false);
         finish();
-
     }
 
-
+    /* ====================================================
+     * GetAccounts method
+     *
+     * @params : none
+     *
+     * @returns : void
+     *
+     * @use : Gets ll of the accounts for the current user
+     *        and stores them in accountStrings, as well
+     *        as the sort code for each account in sortCodes
+     * ==================================================== */
     public void getAccounts()
     {
+        /* Create new connection */
         Connection hc = new Connection(this);// trying to pass the activity to the coonection (not sure if this is legal though)
 
         try {
+            /* get the resut from the server */
             String result = hc.execute("TYPE","SAA",IntentConstants.USERNAME, username ).get();
 
-
+            /* create a JSON object from the result */
             JSONObject jo = new JSONObject(result);
 
+            /* Get the account number and sort code from the JSON array */
             JSONArray jsonArray = jo.getJSONArray("accounts");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject insideObject = jsonArray.getJSONObject(i);
                 accountStrings.add(insideObject.getString("account_number"));
-                fromSC.add(insideObject.getString("sort_code"));
+                sortCodes.add(insideObject.getString("sort_code"));
             }
 
-
+            /* need more than 1 account to make transfers */
             if(accountStrings.size() < 2)
             {
                 final Transfers t = this;
 
+                /* Kill activity (back to main menu) */
                 AlertDialog.Builder errorBox = new AlertDialog.Builder(this);
                 errorBox.setMessage("You must have more than one account to make transfers")
                         .setCancelable(false)
@@ -248,38 +311,53 @@ public class Transfers extends Activity {
                         });
                 AlertDialog alert = errorBox.create();
                 alert.show();
-
-
-
-
             }
-
-
         }
-        catch (Exception e)
+        /* Catch the exceptions */
+        catch (JSONException jse)
         {
+            /* Error in the JSON response */
+            //new CustomMessageBox(this, "There was an error in the server response");
+            jse.printStackTrace();
+        }
+        catch (InterruptedException interex)
+        {
+            /* Caused when the connection is interrupted */
+            new CustomMessageBox(this, "Connection has been interrupted");
+            interex.printStackTrace();
+        }
+        catch (ExecutionException ee)
+        {
+            /* No idea when this is caused but it throws it... */
+            new CustomMessageBox(this, "Execution Error");
+            ee.printStackTrace();
+        }
+        catch (Exception e) {
+            /* Failsafe if something goes utterly wrong */
+            new CustomMessageBox(this, "An unknown error occurred");
             e.printStackTrace();
         }
     }
 
-    private void autoLogout()
-    {
+    /* Called from inside the error box that appears on timeout */
+    private void autoLogout() {
+
+        /* Start a new connection */
         Connection hc = new Connection(this);
-        try
-        {
-            hc.execute("TYPE","LOGOUT", IntentConstants.USERNAME, username);
+        try {
+            /* try to execute a logout on the server */
+            hc.execute("TYPE", "LOGOUT", IntentConstants.USERNAME, username);
         }
-        catch(Exception e)
-        {
+        catch (Exception e) {
+            /* Doesnt really need a detailed error as user is logged out anyway, just print stack trace */
             e.printStackTrace();
         }
 
-
+        /* Has to kill the app whether it has managed to send a logout or not */
         ((KillApp) this.getApplication()).setStatus(false);
         finish();
-        Intent intent = new Intent(getApplicationContext(), Login.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        //login again
+        Intent intent1 = new Intent(getApplicationContext(), Login.class);
+        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent1);
     }
 }

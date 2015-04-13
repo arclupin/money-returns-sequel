@@ -264,7 +264,7 @@ public class Payments extends FragmentActivity {
                         }).build();
             }
             /* Payment was successful, show message box */
-            else if (jo.getString("status").equals("true")) {
+            else if (jo.getString("status").equals(StatusConstants.OK)) {
                 /* Clear all text boxes */
                 ((TextView) findViewById(R.id.Payment_New_Payto_SC_TextField)).setText("");
                 ((TextView) findViewById(R.id.Payment_New_Payto_Acc_TextField)).setText("");
@@ -279,13 +279,13 @@ public class Payments extends FragmentActivity {
             {
                 /* give more info on the error here, no money taken from account */
                 /* Use the cause results to display certain error messages */
-                if(jo.getString("cause").equals("insufficient"))
+                if(jo.getString("cause").equals(StatusConstants.INSUFFICIENT))
                 {
                     /* insufficient funds in account */
                     new CustomMessageBox(this, "There are not enough funds in your account for this transaction");
                 }
 
-                else
+                else if(jo.getString("cause").equals(StatusConstants.UNKNOWN))
                 {
                     /* Unknown error :( */
                     new CustomMessageBox(this, "An unknown error occurred, the transaction was not completed ");
