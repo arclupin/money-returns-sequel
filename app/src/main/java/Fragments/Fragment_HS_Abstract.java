@@ -3,15 +3,15 @@ package Fragments;
 import android.support.v4.app.Fragment;
 
 /**
- * Abstract base class for the home view and notification fragments
+ * Abstract base class for house share fragments that has updating content from the server as part
+ * of their jobs (Ex: Home page, Notifications etc.)
  *
  * Created by Thanh on 03-Apr-15.
  */
 public abstract class Fragment_HS_Abstract extends Fragment {
 
     /**
-     * By default the fragments in pager are not updated when switched to.
-     * So use this method to achieve this
+     * update method
      */
     public abstract void update();
 }
