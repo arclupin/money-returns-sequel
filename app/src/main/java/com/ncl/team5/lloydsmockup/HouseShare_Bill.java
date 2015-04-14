@@ -15,15 +15,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ncl.team5.lloydsmockup.Houseshares.Bill;
+import com.ncl.team5.lloydsmockup.Houseshares.Member;
 import com.ncl.team5.lloydsmockup.Houseshares.SubBill;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import Fragments.Fragment_HS_Home;
 import Fragments.HS_Bill_Message_Dialog;
+import Fragments.HS_Bill_Participants_Dialog;
 import HTTPConnect.ConcurrentConnection;
 import HTTPConnect.Request;
 import HTTPConnect.RequestQueue;
@@ -55,6 +58,7 @@ public class HouseShare_Bill extends Activity {
     private RelativeLayout basicInfoContainer;
     private LinearLayout message_View;
     private LinearLayout primaryAction_View;
+    private LinearLayout particiants_View;
 
 
     // the name to be dislayed (not necessarily be the full name
@@ -135,7 +139,7 @@ public class HouseShare_Bill extends Activity {
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setDisplayUseLogoEnabled(true);
             actionBar.setLogo(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-
+            actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.dark_green)));
         }
 
         i = getIntent();
@@ -155,7 +159,22 @@ public class HouseShare_Bill extends Activity {
         primaryAction_View = (LinearLayout) findViewById(R.id.bill_pay_or_confirm);
             ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text))
                     .setText(bill.amICreator() ? "Activate" : "Confirm");
-
+        particiants_View = (LinearLayout) findViewById(R.id.bill_participants);
+        particiants_View.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<String> participants = new ArrayList<String>();
+                boolean[] states = new boolean[bill.getSubBills().size()];
+                int i = 0;
+                for (Member s : bill.getSubBills().keySet()) {
+                    participants.add(s.getUsername());
+                    states[i++] = bill.getSubBills().get(s).isActive();
+                }
+                HS_Bill_Participants_Dialog dialog = HS_Bill_Participants_Dialog.initialise
+                        (participants.toArray(new String[participants.size()]), states);
+                dialog.show(getFragmentManager(), "participants_dialog");
+            }
+        });
 
 
         message_View = (LinearLayout) findViewById(R.id.bill_announcement);
@@ -188,12 +207,11 @@ public class HouseShare_Bill extends Activity {
 
         if (bill.isActive()) {
             basicInfoContainer.setBackgroundColor(getResources().getColor(R.color.dark_green));
-            actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.dark_green)));
+
         }
         else {
             unactivatedText_TextView.setVisibility(View.VISIBLE);
-            basicInfoContainer.setBackgroundColor(getResources().getColor(R.color.gray_background));
-            actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.gray_background)));
+
 
         }
 

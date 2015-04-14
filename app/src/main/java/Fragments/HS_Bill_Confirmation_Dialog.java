@@ -69,7 +69,6 @@ public class HS_Bill_Confirmation_Dialog extends DialogFragment{
     @Override
     public Dialog onCreateDialog(Bundle saveState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
         LayoutInflater inflater = getActivity().getLayoutInflater();
         RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_list_bill_confirmation, null);
         TableLayout l = (TableLayout) v.findViewById(R.id.bill_confirmation_shares_table);

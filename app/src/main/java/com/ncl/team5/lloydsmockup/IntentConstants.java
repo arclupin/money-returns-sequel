@@ -38,4 +38,8 @@ public class IntentConstants {
 
     public static final String AUTHOR_NAME = "AUTHOR";
 
+    public static final String PARTICIPANTS = "PARTICIPANTS";
+
+    public static final String PARTICIPANT_STATUS = "PARTICIPANT_STT";
+
 }
