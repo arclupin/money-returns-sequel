@@ -3,6 +3,7 @@
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/border_dialog"
+    android:paddingBottom="10dp"
     >
 <TextView
     android:layout_width="match_parent"
@@ -47,20 +48,14 @@
     <TextView
         android:id="@+id/dialog_cancel"
         android:text="Cancel"
-
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="15dp"
         android:layout_below="@+id/content"
         android:layout_toLeftOf="@+id/dialog_okay"
         android:layout_toStartOf="@+id/dialog_okay"
-
         style="@style/Dialog_Text_Content"
         android:background="@drawable/button_light_color"
         android:textSize="13sp"
         android:clickable="true"/>
-
-
-
-
 </RelativeLayout>

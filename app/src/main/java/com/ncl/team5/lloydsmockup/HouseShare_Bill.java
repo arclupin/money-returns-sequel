@@ -25,8 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Fragments.Fragment_HS_Home;
+import Fragments.HS_Bill_Delete_Dialog;
 import Fragments.HS_Bill_Message_Dialog;
 import Fragments.HS_Bill_Participants_Dialog;
+import Fragments.HS_Bill_Primary_Action_Dialog;
 import HTTPConnect.ConcurrentConnection;
 import HTTPConnect.Request;
 import HTTPConnect.RequestQueue;
@@ -37,7 +39,8 @@ import Utils.StringUtils;
 import Utils.Utilities;
 
 
-public class HouseShare_Bill extends Activity {
+public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.BillDeleteDialogListener,
+HS_Bill_Primary_Action_Dialog.BillPrimaryActionDialogListener{
 
     private static final int SUBBILL_HSID_POS = 0;
     private static final int SUBBILL_BILL_ID_POS = 1;
@@ -58,7 +61,8 @@ public class HouseShare_Bill extends Activity {
     private RelativeLayout basicInfoContainer;
     private LinearLayout message_View;
     private LinearLayout primaryAction_View;
-    private LinearLayout particiants_View;
+    private LinearLayout participants_View;
+    private LinearLayout deleteBill_View;
 
 
     // the name to be dislayed (not necessarily be the full name
@@ -71,6 +75,29 @@ public class HouseShare_Bill extends Activity {
     private String username;
     private String hs_name;
     private String hsid;
+
+    /**
+     * User confirms that he wants to delete this bill
+     * Only creators have this permission
+     *
+     * @param f      the dialog itself (for dismission)
+     * @param billID the id of the bill
+     */
+    @Override
+    public void onButtonClickDeleteBill(HS_Bill_Delete_Dialog f, String billID) {
+        //TODO server connection stuff
+    }
+
+    /**
+     * User confirms this bill or activate this bill (in case of bill owners)
+     *
+     * @param f    the dialog itself (for dismissing the bill)
+     * @param bill the bill to be confirmed
+     */
+    @Override
+    public void onButtonClickConfirmBill(HS_Bill_Primary_Action_Dialog f, Bill bill) {
+        //TODO
+    }
 
     public static enum MODE {BILL_FETCH_MAIN, BILL_CONFIRM, BILL_EDIT, BILL_DELETE};
     public Request subBillsFetchingRequest;
@@ -159,8 +186,15 @@ public class HouseShare_Bill extends Activity {
         primaryAction_View = (LinearLayout) findViewById(R.id.bill_pay_or_confirm);
             ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text))
                     .setText(bill.amICreator() ? "Activate" : "Confirm");
-        particiants_View = (LinearLayout) findViewById(R.id.bill_participants);
-        particiants_View.setOnClickListener(new View.OnClickListener() {
+        primaryAction_View.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HS_Bill_Primary_Action_Dialog dialog = HS_Bill_Primary_Action_Dialog.initialise(bill);
+                dialog.show(getFragmentManager(), "BillCOnfirm_Frag");
+            }
+        });
+        participants_View = (LinearLayout) findViewById(R.id.bill_participants);
+        participants_View.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 List<String> participants = new ArrayList<String>();
@@ -176,7 +210,6 @@ public class HouseShare_Bill extends Activity {
             }
         });
 
-
         message_View = (LinearLayout) findViewById(R.id.bill_announcement);
         message_View.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,6 +219,21 @@ public class HouseShare_Bill extends Activity {
                                 (bill.amICreator() ? "You" : bill.getBillCreator().getUsername());
                 dialog.setCancelable(false);
                 dialog.show(getFragmentManager(), "message_dialog_frag");
+            }
+        });
+
+        deleteBill_View = (LinearLayout) findViewById(R.id.bill_delete);
+        deleteBill_View.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (bill.amICreator()) {
+                    HS_Bill_Delete_Dialog dialog = HS_Bill_Delete_Dialog.initialise(bill.getBillID());
+                    dialog.show(getFragmentManager(), "BillDel_Frag");
+                }
+                else new CustomMessageBox.MessageBoxBuilder(HouseShare_Bill.this,
+                        "You need to be this bill's creator in order to delete it.")
+                        .setTitle("Cannot delete bill").build();
+
             }
         });
 
