@@ -5,7 +5,6 @@ package com.ncl.team5.lloydsmockup;
  * transactions that have occured on this account. 
  *
  * Created by Ben Lambert
- * Last edit: 8/4/15 by Ben Lambert
  */
 
 import android.app.Activity;
@@ -78,6 +77,8 @@ public class Statement extends Activity {
         SharedPreferences settings = getSharedPreferences(username, 0);
         transIds = settings.getStringSet("TRANS_ID_" + accountNum, new HashSet<String>());
 
+        SharedPreferences accountNames = getSharedPreferences(username, 0);
+        String name = accountNames.getString(accountNum, accountNum);
 
         /* Sets the account name from the result text */
         TextView accountName = (TextView) findViewById(R.id.txtChange);
@@ -90,7 +91,7 @@ public class Statement extends Activity {
         }
 
         /* Sets the text */
-        accountName.setText(username + ":" + balance);
+        accountName.setText(name + ":" + balance);
 
         /* gets the transactions list */
         transactions =(ListView)findViewById(R.id.listView);

@@ -41,6 +41,7 @@ public class Accounts extends Activity {
 
     /* Used for the list view */
     private ArrayList<String> accountStrings;
+    private List<String> displayStrings = new ArrayList<String>();
     private String username;
     private String date;
 
@@ -61,9 +62,20 @@ public class Accounts extends Activity {
 
         accountStrings = new ArrayList<String>();
         getAccounts();
+
+
+        /* Get any user defined names for the accounts */
+        SharedPreferences accountNames = getSharedPreferences(username, 0);
+        for(int j = 0; j < accountStrings.size(); j++)
+        {
+            String name = accountNames.getString(accountStrings.get(j).split(" : ")[0], accountStrings.get(j).split(" : ")[0]);
+
+            displayStrings.add(name + " : " + accountStrings.get(j).split(" : ")[1]);
+        }
+
         // Create The Adapter with passing ArrayList as 3rd parameter
         ArrayAdapter<String> arrayAdapter =
-                new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, accountStrings);
+                new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, displayStrings);
         // Set The Adapter
         accountsList.setAdapter(arrayAdapter);
 
@@ -133,7 +145,7 @@ public class Accounts extends Activity {
                 JSONArray jsonArray = jo.getJSONArray("accounts");
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject insideObject = jsonArray.getJSONObject(i);
-                    accountStrings.add(insideObject.getString("account_number") + " : £" + insideObject.getString("avail_balance") + "  >");
+                    accountStrings.add(insideObject.getString("account_number") + " : £" + insideObject.getString("avail_balance"));
                 }
             }
 

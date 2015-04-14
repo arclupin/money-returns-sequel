@@ -2,24 +2,48 @@ package com.ncl.team5.lloydsmockup;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import HTTPConnect.Connection;
 
 
 public class ChangeAccountName extends Activity {
+
+    private List<String> accountNumbers = new ArrayList<String>();
+    private String username;
+    private String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_account_name);
+
+        Intent intent = getIntent();
+        username = intent.getStringExtra(IntentConstants.USERNAME);
+        date = intent.getStringExtra(IntentConstants.DATE);
+
+        getAccounts();
+
         Spinner s = (Spinner)findViewById(R.id.spinnerChangeName);
-        ArrayAdapter<CharSequence> a = ArrayAdapter.createFromResource(this, R.array.accountslist, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, accountNumbers);
         a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         s.setAdapter(a);
     }
@@ -27,8 +51,24 @@ public class ChangeAccountName extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        /* Show notification icon in menu bar */
         getMenuInflater().inflate(R.menu.main, menu);
+
+        MenuItem item = menu.getItem(1);
+        GetNotification notif = new GetNotification();
+
+
+        if(notif.getNotifications(this, username, date))
+        {
+            Log.d("Notif Change", "IN HERE");
+            item.setIcon(R.drawable.ic_action_notify);
+        }
+        else
+        {
+            Log.d("Notif Change", "IN There");
+            item.setIcon(R.drawable.globe);
+        }
+
         return true;
     }
 
@@ -57,9 +97,106 @@ public class ChangeAccountName extends Activity {
 
     }
 
+    public void btnResetName(View view)
+    {
+        String accountNum = ((Spinner) findViewById(R.id.spinnerChangeName)).getSelectedItem().toString();
+
+        SharedPreferences sp = getApplicationContext().getSharedPreferences(username, 0);
+        SharedPreferences.Editor edit = sp.edit();
+        edit.putString(accountNum, accountNum);
+        edit.commit();
+
+        Toast.makeText(getBaseContext(), "Name Reset",
+                Toast.LENGTH_SHORT).show();
+
+        this.finish();
+        ((KillApp) this.getApplication()).setStatus(false);
+    }
+
+    private void getAccounts()
+    {
+         /* clears account strings each time so the same accounts are not added every time */
+        accountNumbers.clear();
+
+        /* Start a new connection */
+        Connection hc = new Connection(this);
+
+        try {
+            /* Command to get the accounts, returns JSON string */
+            String result = hc.execute("TYPE", "SAA", IntentConstants.USERNAME, username).get();
+
+            /* Convert string to JSON object, can throw JSON Exception */
+            JSONObject jo = new JSONObject(result);
+
+            if(jo.getString("expired").equals("true"))
+            {
+              /* Display message box and auto logout user */
+                final Connection temp_connect = new Connection(this);
+                // experimenting a new message box builder
+                CustomMessageBox.MessageBoxBuilder builder = new CustomMessageBox.MessageBoxBuilder(this, "Your session has been timed out, please login again");
+                builder.setTitle("Expired")
+                        .setActionOnClick(new CustomMessageBox.ToClick() {
+                            @Override
+                            public void DoOnClick() {
+                                temp_connect.autoLogout(username);
+                            }
+                        }).build();
+            }
+            else {
+            /* JSONArray needed as accounts are returned as an array */
+                JSONArray jsonArray = jo.getJSONArray("accounts");
+
+            /* Loop through the array */
+                for (int i = 0; i < jsonArray.length(); i++) {
+                /* Creates an object for each element in array, then strips the needed values from it */
+                    JSONObject insideObject = jsonArray.getJSONObject(i);
+
+                    accountNumbers.add(insideObject.getString("account_number"));
+
+                }
+            }
+        }
+        /* Catch any errors */
+        catch (JSONException jse)
+        {
+            /* Exception for when the JSON cannot be parsed correctly */
+            new CustomMessageBox(this, "There was an error in the server response");
+            jse.printStackTrace();
+        }
+        catch (InterruptedException interex)
+        {
+            /* Caused when the connection is interrupted */
+            new CustomMessageBox(this, "Connection has been interrupted");
+            interex.printStackTrace();
+        }
+        catch (ExecutionException ee)
+        {
+            /* No idea when this is caused but it throws it... */
+            new CustomMessageBox(this, "Execution Error");
+            ee.printStackTrace();
+        }
+        catch (Exception e) {
+            /* Failsafe if something goes utterly wrong */
+            new CustomMessageBox(this, "An unknown error occurred");
+            e.printStackTrace();
+        }
+    }
+
     public void btnMakeChange(View view) {
+        String accountNum = ((Spinner) findViewById(R.id.spinnerChangeName)).getSelectedItem().toString();
+        String name = ((TextView) findViewById(R.id.editText4)).getText().toString();
+
+
+        SharedPreferences sp = getApplicationContext().getSharedPreferences(username, 0);
+        SharedPreferences.Editor edit = sp.edit();
+        edit.putString(accountNum, name);
+        edit.commit();
+
         Toast.makeText(getBaseContext(), "Name Changed",
                 Toast.LENGTH_SHORT).show();
+
+        this.finish();
+        ((KillApp) this.getApplication()).setStatus(false);
     }
 
     /* This is how the application knows if it has been stopped by an intent or by an

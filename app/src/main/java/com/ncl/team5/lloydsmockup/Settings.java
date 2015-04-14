@@ -50,28 +50,31 @@ public class Settings extends Activity {
                                     long id) {
                 if (position==0) {
                     Intent intent = new Intent(Settings.this, Prefer.class);
-                    String message = optionsList.get(position);
-                    intent.putExtra("com.example.ListViewTest.MESSAGE", message);
+                    intent.putExtra(IntentConstants.USERNAME, username);
+                    intent.putExtra(IntentConstants.DATE, date);
                     startActivity(intent);
                     ((KillApp) Settings.this.getApplication()).setStatus(false);
-                }else if (position==1) {
+                }
+                else if (position==1) {
                     Intent intent = new Intent(Settings.this, ChangeAccountName.class);
-                    String message = optionsList.get(position);
-                    intent.putExtra("com.example.ListViewTest.MESSAGE", message);
+                    intent.putExtra(IntentConstants.USERNAME, username);
+                    intent.putExtra(IntentConstants.DATE, date);
                     startActivity(intent);
                     ((KillApp) Settings.this.getApplication()).setStatus(false);
-                }else if(position==2){
+                }
+                else if(position==2){
                     Intent intent = new Intent(Settings.this,ChangePassword.class);
-                    String message = optionsList.get(position);
-                    intent.putExtra("com.example.ListViewTest.MESSAGE", message);
+                    intent.putExtra(IntentConstants.USERNAME, username);
+                    intent.putExtra(IntentConstants.DATE, date);
                     startActivity(intent);
                     ((KillApp) Settings.this.getApplication()).setStatus(false);
-                }else if(position==3){
-                        Intent intent = new Intent(Settings.this, LegalMaps.class);
-                        String message = optionsList.get(position);
-                        intent.putExtra("com.example.ListViewTest.MESSAGE", message);
-                        startActivity(intent);
-                        ((KillApp) Settings.this.getApplication()).setStatus(false);
+                }
+                else if(position==3){
+                    Intent intent = new Intent(Settings.this, LegalMaps.class);
+                    intent.putExtra(IntentConstants.USERNAME, username);
+                    intent.putExtra(IntentConstants.DATE, date);
+                    startActivity(intent);
+                    ((KillApp) Settings.this.getApplication()).setStatus(false);
                 }
             }
         });

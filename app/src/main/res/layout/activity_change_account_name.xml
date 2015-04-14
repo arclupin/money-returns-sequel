@@ -75,4 +75,22 @@
         style="@style/button_style"
         android:textStyle="bold" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RESET"
+        android:id="@+id/buttonResetName"
+        android:layout_centerVertical="true"
+        android:paddingLeft="80dp"
+        android:layout_marginTop="30dp"
+        android:paddingRight="80dp"
+        android:onClick="btnResetName"
+        android:layout_below="@+id/buttonChangeName"
+        android:layout_alignRight="@+id/editText4"
+        android:layout_alignEnd="@+id/buttonChangeName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        style="@style/button_style"
+        android:textStyle="bold" />
+
 </RelativeLayout>
