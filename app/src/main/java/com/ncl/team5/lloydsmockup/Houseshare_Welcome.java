@@ -36,7 +36,8 @@ public class Houseshare_Welcome extends FragmentActivity {
     HS_Welcome_FragmentPagerAdapter pager_adapter;
     List<Integer> swipe_indicators = new ArrayList<Integer>();
     int currentItem = 0;
-    private String username;
+    private static String username;
+    private static String hsid;
 
     // STATIC var keeps track of the registration status
     // this prevents the app from sending the registration request again after already making a registration.
@@ -139,7 +140,7 @@ public class Houseshare_Welcome extends FragmentActivity {
             ((KillApp) this.getApplication()).setStatus(false);
         }
         else if (registered){
-            Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, "", username, Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE);
+            Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, "", username, hsid, Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE);
         }
     else register();
     }
@@ -174,7 +175,8 @@ public class Houseshare_Welcome extends FragmentActivity {
                     alert.show();
                 }
                 else if (jo.getString("status").equals("true")) {
-                    Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, "", username, Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE);
+                    hsid = jo.getString(Responses_Format.RESPONSE_HOUSESHARE_ID);
+                    Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, "", username, hsid, Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE);
                 }
                 else {
                     new CustomMessageBox(this, "We are sorry. We could not perform your registration at the moment. Try again later.");

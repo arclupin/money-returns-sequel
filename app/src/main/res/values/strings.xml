@@ -10,7 +10,8 @@
     <string name="title_activity_accounts">Accounts</string>
     <string name="title_activity_analysis">Analysis</string>
     <string name="title_activity_achievements">House Sharing</string>
-    /*Don't change the names of offers and achievements*/                            <string name="title_activity_offers">Branches</string>
+    /*Don't change the names of offers and achievements*/
+    <string name="title_activity_offers">Branches</string>
     <string name="title_activity_products">Products</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_notifications">Notifications</string>
@@ -96,5 +97,6 @@
     <string name="expected_bill">Expected total</string>
     <string name="title_activity_new_bill_manual__sub_bill">Bill break-down</string>
 
+    <string name="bill_not_activated_text">This bill is not activated. Please wait for others\' confirmation</string>
 
 </resources>

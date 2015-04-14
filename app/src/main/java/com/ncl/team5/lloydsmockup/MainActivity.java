@@ -34,6 +34,7 @@ import Utils.Houseshares;
 public class MainActivity extends Activity {
 
     private static String username;
+    private static String houseshare_id;
 
     // use static for date would help us not have to pass the date around as the value of the date wont be lost on activity change.
     private static String date;
@@ -420,7 +421,8 @@ public class MainActivity extends Activity {
 
             else {
                 final String hs_name = (jo.has(Responses_Format.RESPONSE_HS_CONTENT) ? jo.getString(Responses_Format.RESPONSE_HS_CONTENT) : "");
-                Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, hs_name, username, jo.getString("status"));
+                houseshare_id = (jo.getString(Responses_Format.RESPONSE_HOUSESHARE_ID));
+                Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, hs_name, username, houseshare_id, jo.getString("status"));
             }
         }
 

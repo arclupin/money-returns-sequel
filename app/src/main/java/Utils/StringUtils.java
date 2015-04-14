@@ -52,14 +52,16 @@ public static final String POUND_SIGN = "\u00A3";
      */
     public static Date getDateFromServerDateResponse(String response) {
         Date date = null;
+        String raw = response.trim();
+        if (raw.equalsIgnoreCase("null"))
+            return null;
         try {
-            date =  new SimpleDateFormat("yyyy-MM-dd").parse(response);
+            date =  new SimpleDateFormat("yyyy-MM-dd").parse(raw);
         }
         catch (ParseException e)
         {
             Log.e("date parsing error", e.getMessage(), e);
         }
-
         return date;
     }
 

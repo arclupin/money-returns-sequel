@@ -39,6 +39,8 @@ public class Request_Params {
 
 
     public static final String REQUEST_HS_GET_MY_BILLS = "HS_GET_MY_BILLS";
+    public static final String REQUEST_HS_GET_SUB_BILLS = "HS_GET_SUB_BILLS";
+    public static final String REQUEST_HS_BILL_ID = "HS_BILL_ID";
 
 
     public static final String VAL_REF_NOTI = "REF_NOTI";

@@ -60,6 +60,7 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
     private String message;
     private static String username;
     private static String housename;
+    private static String hsid;
     private Set<Member> involved_members = new TreeSet<Member>();
     private Intent i;
 
@@ -84,6 +85,7 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
         if (i != null) {
             username = i.getStringExtra(IntentConstants.USERNAME);
             housename = i.getStringExtra(IntentConstants.HOUSE_NAME);
+            hsid = i.getStringExtra(IntentConstants.HOUSESHARE_ID);
             billName = i.getStringExtra(IntentConstants.BILL_NAME);
 
             dueDate = i.getStringExtra(IntentConstants.BILL_DUE_DATE);

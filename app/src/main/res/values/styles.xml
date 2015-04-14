@@ -362,6 +362,23 @@
         <item name="android:maxLines">1</item>
     </style>
 
+    <style name="Dialog_Bill_Message" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
+        <item name="android:textColor">@color/hs_dialog_text_content</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
+    <style name="Dialog_Bill_Message_Author" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Widget.TextView
+        </item>
+        <item name="android:textColor">@color/hs_dialog_text_content</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
 
 
 </resources>

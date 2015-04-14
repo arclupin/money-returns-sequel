@@ -63,6 +63,7 @@ public class NewBillManual extends Activity {
     private Map<String, Member> members = new TreeMap<String, Member>();
     private static String username;
     private static String housename;
+    private static String hsid;
     private RelativeLayout loading;
 
     private boolean isDueDateSupplied = false;
@@ -86,6 +87,8 @@ public class NewBillManual extends Activity {
             username = i.getStringExtra(IntentConstants.USERNAME);
         if (i.getStringExtra(IntentConstants.HOUSE_NAME) != null)
             housename = i.getStringExtra(IntentConstants.HOUSE_NAME);
+        if (i.getStringExtra(IntentConstants.HOUSESHARE_ID) != null)
+            hsid = i.getStringExtra(IntentConstants.HOUSESHARE_ID);
 
         layout = (RelativeLayout) findViewById(R.id.layout);
         members_table_view = (TableLayout) layout.findViewById(R.id.table_users);
@@ -249,6 +252,7 @@ public class NewBillManual extends Activity {
             Intent i = new Intent(this, NewBillManual_SubBill.class);
             i.putExtra(IntentConstants.USERNAME, username);
             i.putExtra(IntentConstants.HOUSE_NAME, housename);
+            i.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
             i.putExtra(IntentConstants.BILL_NAME, billName);
             i.putExtra(IntentConstants.BILL_DUE_DATE, dueDate);
             i.putExtra(IntentConstants.BILL_AMOUNT, totalAmount);

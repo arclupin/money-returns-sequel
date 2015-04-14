@@ -31,6 +31,7 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
 
     private String house_name;
     private String username;
+    private String hsid;
     private static String view_type; // joined house or sent request?
 
     private Intent i;
@@ -53,11 +54,11 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
                 username = savedInstanceState.getString(IntentConstants.USERNAME);
                 house_name = savedInstanceState.getString(IntentConstants.HOUSE_NAME);
                 view_type = savedInstanceState.getString(IntentConstants.HOME_VIEW_TYPE);
+                hsid = savedInstanceState.getString(IntentConstants.HOUSESHARE_ID);
             }
 
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
             setContentView(R.layout.activity_houseshare__home_view);
-
                 actionBar = getActionBar();
                 Log.d("action Bar", actionBar.toString());
                 actionBar.setDisplayShowHomeEnabled(false);
@@ -73,13 +74,14 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
                     house_name = i.getStringExtra(IntentConstants.HOUSE_NAME);
                 if (i != null && i.getStringExtra(IntentConstants.HOME_VIEW_TYPE) != null)
                     view_type = i.getStringExtra(IntentConstants.HOME_VIEW_TYPE);
+                hsid = i.getStringExtra(IntentConstants.HOUSESHARE_ID);
             }
 
         Log.d("In state home view", username + " - " + house_name + " - " + view_type);
 
 
             fragmentManager = getSupportFragmentManager();
-            mAdapter = new HS_Home_FragPagerAdapter(fragmentManager, username, house_name, view_type);
+            mAdapter = new HS_Home_FragPagerAdapter(fragmentManager, username, hsid, house_name, view_type);
             pager = (ViewPager) findViewById(R.id.home_view_pager);
             pager.setAdapter(mAdapter);
             pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -282,7 +284,7 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
     /**
      * User clicks on 1 option to click a new bill
      *
-     * @param f
+     * @param f the fragment itself
      * @param bill_type the type of the dialog
      */
     @Override
@@ -292,6 +294,7 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
         Intent i = new Intent(this, bill_type == HS_New_Bill_Dialog.BILL_TYPE.AUTO ? NewBillAuto.class : NewBillManual.class);
         i.putExtra(IntentConstants.USERNAME, username);
         i.putExtra(IntentConstants.HOUSE_NAME, house_name);
+        i.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
         startActivity(i);
 
     }

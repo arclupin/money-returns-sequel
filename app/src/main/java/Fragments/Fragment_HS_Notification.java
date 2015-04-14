@@ -259,7 +259,8 @@ public interface OnNotificationInteraction {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        username = getArguments().getString(IntentConstants.USERNAME);
+        username = getArguments().getString(IntentConstants.USERNAME) != null ?
+                getArguments().getString(IntentConstants.USERNAME) : username;
         hs_name = getArguments().getString(IntentConstants.HOUSE_NAME);
 
 //        Log.d("on create noti", username);

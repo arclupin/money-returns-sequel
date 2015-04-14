@@ -34,4 +34,8 @@ public class IntentConstants {
 
     public static final String BILL_PARCEL = "BILL_PARCEL";
 
+    public static final String HOUSESHARE_ID = "HSID";
+
+    public static final String AUTHOR_NAME = "AUTHOR";
+
 }

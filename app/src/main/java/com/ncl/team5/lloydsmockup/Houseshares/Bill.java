@@ -314,9 +314,11 @@ public class Bill implements Comparable<Bill>, Parcelable{
     public String toString() {
 
         StringBuilder b = new StringBuilder();
-        b.append(billID).append(" - ").append(billName).append(" - ").append(amount)
-                .append(" - ").append("Created by ").append(billCreator.getUsername())
-                .append(" on ").append(dateCreated).append(" - ").append("Users: ");
+        b.append(billID).append(" - ").append(billName).append(" - ").append(amount).append(" - ")
+                .append("Created by ").append(billCreator.getUsername())
+                .append(" on ").append(dateCreated).append(" - ")
+                .append("Due ").append(dueDate.toString()).append(" - ")
+                .append("Users: ");
 
         for (Member m: subBills.keySet())
             b.append(m.getUsername()).append("*");

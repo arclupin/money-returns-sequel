@@ -58,6 +58,7 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
     private String username;
     private String chose_hs_name;
     private String pending_new_hs_name;
+    private String hsid;
 
 
     private static enum search_mode {SEARCH, CONFLICT_OK}
@@ -93,6 +94,7 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
 
         username = intent.getExtras().getString(IntentConstants.USERNAME);
         chose_hs_name = intent.getStringExtra(IntentConstants.HOUSE_NAME);
+        hsid = intent.getStringExtra(IntentConstants.HOUSESHARE_ID);
 
         Log.d("hs_name_chosen", "/" + chose_hs_name);
 
@@ -197,9 +199,9 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
     @Override
     public void onBackPressed() {
         if (StringUtils.isFieldEmpty(chose_hs_name)) {
-            Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, chose_hs_name, username, Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE);
+            Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, chose_hs_name, username, hsid, Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE);
         } else
-            Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, chose_hs_name, username, Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ);
+            Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, chose_hs_name, username, hsid, Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ);
 
     }
 
@@ -432,7 +434,7 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
     @Override
     public void onButtonClick(HS_Join_Confirm_Dialog f, String username, String hs_name) {
         f.dismiss();
-        Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, hs_name, username, Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ);
+        Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, hs_name, username, hsid, Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ);
     }
 // ***************************************END JOIN REQUEST DIALOG***********************************************
 

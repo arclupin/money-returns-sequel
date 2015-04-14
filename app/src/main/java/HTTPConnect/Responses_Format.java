@@ -22,5 +22,7 @@ public class Responses_Format {
     public static final String RESPONSE_FAILED_NAME_NOT_UNQ = "x_unq";
     public static final String RESPONSE_FAILED_UNKNOWN = "x_x";
 
+    public static final String RESPONSE_HOUSESHARE_ID = "hsid";
+
 
 }

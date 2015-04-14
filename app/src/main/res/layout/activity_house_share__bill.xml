@@ -18,18 +18,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/bill_basic_info"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="15dp"
             android:padding="3dp"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
             android:text="Electricity October"
+            style="@style/HS_bill_name" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bill_amount"
+            android:layout_below="@+id/bill_basic_info"
+            android:padding="3dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:text="£150.0"
             style="@style/HS_bill_name" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/bill_creation_details"
-            android:layout_below="@id/bill_basic_info"
+            android:layout_below="@id/bill_amount"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
             android:padding="3dp"
@@ -55,31 +65,18 @@
             android:src="@drawable/priority"
             android:layout_toRightOf="@id/bill_status"
             android:layout_toEndOf="@id/bill_status"
-            android:layout_alignBottom="@id/bill_status" />
+            android:layout_alignBottom="@id/bill_status"
+            />
 
     </RelativeLayout>
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/bill_pay"
-        android:layout_below="@id/bill_basic_info_container"
-        android:layout_alignRight="@id/bill_basic_info_container"
-        android:layout_alignEnd="@id/bill_basic_info_container"
-        android:layout_marginTop="-50px"
-        android:layout_marginRight="50dp"
-        android:layout_marginEnd="50dp"
 
-        android:background="@drawable/circular_border"
-        android:src="@drawable/pay"
-        android:clickable="true"
-        android:contentDescription="Pay this bill" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/bill_options"
-        android:layout_below="@+id/bill_pay"
+        android:layout_below="@+id/bill_basic_info_container"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:gravity="center"
@@ -90,10 +87,38 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/bill_pay_or_confirm"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:background="@drawable/button_transparent_color"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/unlock_bill"
+                android:layout_gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/bill_pay_or_confirm_text"
+                android:text="Confirm"
+                android:layout_gravity="center"
+
+                style="@style/HS_bill_option" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/bill_participants"
             android:orientation="vertical"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
+            android:layout_toRightOf="@id/bill_pay_or_confirm"
+            android:layout_toEndOf="@id/bill_pay_or_confirm"
             android:background="@drawable/button_transparent_color"
             android:clickable="true">
 
@@ -137,39 +162,15 @@
                 style="@style/HS_bill_option" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/bill_edit"
-            android:orientation="vertical"
-            android:layout_toRightOf="@id/bill_announcement"
-            android:layout_toEndOf="@+id/bill_announcement"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:background="@drawable/button_transparent_color"
-            android:clickable="true">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/edit"
-                android:layout_gravity="center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Edit"
-                android:layout_gravity="center"
-                style="@style/HS_bill_option" />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/bill_delete"
             android:orientation="vertical"
-            android:layout_toRightOf="@id/bill_edit"
-            android:layout_toEndOf="@id/bill_edit"
+            android:layout_toRightOf="@id/bill_announcement"
+            android:layout_toEndOf="@id/bill_announcement"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:background="@drawable/button_transparent_color"
@@ -199,19 +200,34 @@
         android:layout_marginTop="10dp"
         android:background="@android:color/darker_gray"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/unactivated_text"
+        android:layout_below="@id/divider"
+        android:padding="2dp"
+        android:gravity="center"
+        android:background="@android:color/holo_red_light"
+        android:text="This bill is not activated yet"
+        android:textColor="@android:color/white"
+        android:visibility="invisible"
+        />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/bill_timeline_container"
         android:layout_below="@id/divider">
     <TextView
-        android:id="@+id/loading_text"
+        android:id="@+id/time_line_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:gravity="center"
+        android:padding="10dp"
         style="@style/Bill_Confirmation_Sub_Title"
         android:textStyle="bold"
-        android:text="Bill Timeline goes in here"
+
         />
     </RelativeLayout>
 

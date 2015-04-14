@@ -1,11 +1,16 @@
 package Utils;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.EditText;
 
+import com.ncl.team5.lloydsmockup.CustomMessageBox;
+
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import HTTPConnect.Connection;
 
 /**
  * Created by Thanh on 01-Apr-15. <br/>
@@ -66,10 +71,30 @@ public static long DAY_TO_MILLI = 86400000;
      * @param dueDate the due date
      * @return the time diff in days
      */
-    public static long getTimeLeftUntilDueDate(Date dueDate) {
+    public static long getDaysLeftUntilDueDate(Date dueDate) {
         Date now = new GregorianCalendar().getTime(); // get time now
-        long timeDiffInDays = (now.getTime() - dueDate.getTime()) / (DAY_TO_MILLI); // get time diff in hours
+        long timeDiffInDays = (dueDate.getTime() - now.getTime()) / (DAY_TO_MILLI); // get time diff in hours
         return timeDiffInDays;
+    }
+
+    /**
+     * Display a dialog telling the user that his session has been expired
+     * @param a the activity from which this dialog is called
+     * @param username the username
+     */
+    public static void showAutoLogoutDialog(Activity a, final String username) {
+        final Connection temp_connect = new Connection(a);
+        // experimenting a new message box builder
+        CustomMessageBox.MessageBoxBuilder builder =
+                new CustomMessageBox.MessageBoxBuilder(a,
+                        "Your session has been timed out, please login again");
+        builder.setTitle("Expired")
+                .setActionOnClick(new CustomMessageBox.ToClick() {
+                    @Override
+                    public void DoOnClick() {
+                        temp_connect.autoLogout(username);
+                    }
+                }).build();
     }
 
 

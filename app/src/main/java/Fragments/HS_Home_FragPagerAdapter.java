@@ -16,6 +16,7 @@ public class HS_Home_FragPagerAdapter extends FragmentStatePagerAdapter {
 
     private String username;
     private String hs_name;
+    private String hsid;
     private String view_type; // should be enum
 
     public static final int FRAGS = 2;
@@ -30,12 +31,12 @@ public class HS_Home_FragPagerAdapter extends FragmentStatePagerAdapter {
         super(fm);
     }
 
-    public HS_Home_FragPagerAdapter(FragmentManager fm, String username, String hs_name, String view_type) {
+    public HS_Home_FragPagerAdapter(FragmentManager fm, String username, String hsid, String hs_name, String view_type) {
         super(fm);
         this.username = username;
+        this.hsid = hsid;
         this.hs_name = hs_name;
         this.view_type = view_type;
-        Log.d("view_type",  "here: " + view_type);
     }
 
     /**
@@ -47,7 +48,7 @@ public class HS_Home_FragPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0: {
-                return Fragment_HS_Home.newInstance(username, hs_name, view_type);
+                return Fragment_HS_Home.newInstance(username, hsid, hs_name, view_type);
             }
             case 1: {
                 return Fragment_HS_Notification.newInstance(username, hs_name);

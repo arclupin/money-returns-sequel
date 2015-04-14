@@ -21,7 +21,9 @@ public class SubBill {
         this.amount = amount;
         this.isActive = isActive;
         this.isPaid = isPaid;
-        if (!(isPaid ^ datePaid != null))
+
+        //if this bill is paid then datePaid must be supplied and vice versa
+        if (isPaid ^ (datePaid != null))
             throw new IllegalArgumentException("date paid must be supplied if the sub bill has been paid");
     }
 
@@ -31,5 +33,53 @@ public class SubBill {
         b.append(hs_id).append(" - ").append(bill_ID).append(" - ").append(isActive ? "active" : "inactive")
                 .append(" - ").append(isPaid ? "paid on" : "not paid").append(" - ").append(datePaid);
         return b.toString();
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public boolean isPaid() {
+        return isPaid;
+    }
+
+    public void setIsPaid(boolean isPaid) {
+        this.isPaid = isPaid;
+    }
+
+    public String getBill_ID() {
+        return bill_ID;
+    }
+
+    public void setBill_ID(String bill_ID) {
+        this.bill_ID = bill_ID;
+    }
+
+    public String getHs_id() {
+        return hs_id;
+    }
+
+    public void setHs_id(String hs_id) {
+        this.hs_id = hs_id;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public String getDatePaid() {
+        return datePaid;
+    }
+
+    public void setDatePaid(String datePaid) {
+        this.datePaid = datePaid;
     }
 }

@@ -46,6 +46,7 @@ import HTTPConnect.Request_Params;
 import HTTPConnect.Response;
 import HTTPConnect.Responses_Format;
 import Utils.StringUtils;
+import Utils.Utilities;
 
 /**
  * Fragment for displaying the home view in the home view activity <br/>
@@ -56,6 +57,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
 
     private static String username;
     private static String hs_name;
+    private static String hsid;
     // the view type of the home view (Each type of view applies each type of users whose states
     //are different
     private static String view_type;
@@ -63,7 +65,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
 
     private String response_content;
     //backing map that stores the details of members of the group the user is in.
-    private Map<String, Member> members = new TreeMap<String, Member>();
+    public static Map<String, Member> members = new TreeMap<String, Member>();
     // backing list of bills of the group
     private static List<Bill> billList;
 
@@ -111,6 +113,8 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
             hs_name = getArguments().getString(IntentConstants.HOUSE_NAME);
         if (getArguments().getString(IntentConstants.HOME_VIEW_TYPE) != null)
            view_type = getArguments().getString(IntentConstants.HOME_VIEW_TYPE);
+        if (getArguments().getString(IntentConstants.HOUSESHARE_ID) != null)
+           hsid = getArguments().getString(IntentConstants.HOUSESHARE_ID);
 
         //initialise the backing bill list
         billList = new ArrayList<Bill>();
@@ -129,11 +133,12 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
      * @param view_type the type of the home view depending on the type of user
      * @return a new instance of this fragment
      */
-    public static Fragment_HS_Home newInstance(String username, String house_name, String view_type) {
+    public static Fragment_HS_Home newInstance(String username, String hsid, String house_name, String view_type) {
         Fragment_HS_Home fragment = new Fragment_HS_Home();
         Bundle args = new Bundle();
         //set necessary arguments
         args.putString(IntentConstants.USERNAME, username);
+        args.putString(IntentConstants.HOUSESHARE_ID, hsid);
         args.putString(IntentConstants.HOUSE_NAME, house_name);
         args.putString(IntentConstants.HOME_VIEW_TYPE, view_type);
         fragment.setArguments(args);
@@ -306,18 +311,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
             if (jo.getString("expired").equals("true")) {
 
                 /* Display message box and auto logout user */
-                final Connection temp_connect = new Connection(getActivity());
-                // experimenting a new message box builder
-                CustomMessageBox.MessageBoxBuilder builder =
-                        new CustomMessageBox.MessageBoxBuilder(getActivity(),
-                                "Your session has been timed out, please login again");
-                builder.setTitle("Expired")
-                        .setActionOnClick(new CustomMessageBox.ToClick() {
-                            @Override
-                            public void DoOnClick() {
-                                temp_connect.autoLogout(username);
-                            }
-                        }).build();
+                Utilities.showAutoLogoutDialog(getActivity(), username);
             } else {
 //               TextView tv = (TextView) findViewById(R.id.hs_hv_response);
                 content = jo.getString(Responses_Format.RESPONSE_HS_CONTENT); //TODO
@@ -639,6 +633,9 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
                 public void onClick(View v) {
                     Intent billPageIntent = new Intent(getActivity(), HouseShare_Bill.class);
                     billPageIntent.putParcelableArrayListExtra(IntentConstants.BILL_PARCEL, new ArrayList<Parcelable>(Collections.singletonList(billList.get(position)))) ;
+                    billPageIntent.putExtra(IntentConstants.USERNAME, username);
+                    billPageIntent.putExtra(IntentConstants.HOUSE_NAME, hs_name);
+                    billPageIntent.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
                     startActivity(billPageIntent);
                 }
             });
