@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialog_bill_type_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border_dialog"
+
+    android:paddingBottom="15dp">
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/Dialog_Text_Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp"
+        android:textSize="20sp"
+        android:text="Participants"/>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title"
+                android:id="@+id/participants_scrollview"
+                android:paddingTop="10dp"
+                >
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bill_participants">
+                </TableLayout>
+            </ScrollView>
+    <TextView
+        android:id="@+id/dialog_okay"
+        android:text="Close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_below="@id/participants_scrollview"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:padding="15dp"
+
+        style="@style/Dialog_Text_Content"
+        android:textSize="14sp"
+        android:background="@drawable/button_light_color"
+        android:clickable="true"
+        />
+
+</RelativeLayout>

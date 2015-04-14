@@ -24,6 +24,8 @@ public class IntentConstants {
 
     public static final String MEMBERS = "MEMBERS";
 
+    public static final String BILL_ID = "BILL_ID";
+
     public static final String BILL_NAME = "BILL_NAME";
 
     public static final String BILL_AMOUNT = "BILL_AMOUNT";
@@ -38,4 +40,9 @@ public class IntentConstants {
 
     public static final String AUTHOR_NAME = "AUTHOR";
 
+    public static final String PARTICIPANTS = "PARTICIPANTS";
+
+    public static final String PARTICIPANT_STATUS = "PARTICIPANT_STT";
+
+    public static final String BILL = "BILL";
 }
