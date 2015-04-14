@@ -96,7 +96,11 @@ HS_Bill_Primary_Action_Dialog.BillPrimaryActionDialogListener{
      */
     @Override
     public void onButtonClickConfirmBill(HS_Bill_Primary_Action_Dialog f, Bill bill) {
-        //TODO
+        Request r = new Request(Request.TYPE.POST);
+        r.addParam(Request_Params.PARAM_TYPE, Request_Params.REQUEST_HS_CONFIRM_SUB_BILL)
+                .addParam(Request_Params.REQUEST_HS_BILL_ID, bill.getBillID());
+
+//        new Bill_Worker()
     }
 
     public static enum MODE {BILL_FETCH_MAIN, BILL_CONFIRM, BILL_EDIT, BILL_DELETE};
@@ -112,8 +116,6 @@ HS_Bill_Primary_Action_Dialog.BillPrimaryActionDialogListener{
             super(a);
             this.mode = mode;
         }
-
-
 
         /**
          * Constructor #2. <br/>
