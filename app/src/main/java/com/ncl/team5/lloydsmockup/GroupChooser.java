@@ -291,6 +291,10 @@ public class GroupChooser extends Activity {
     @Override
     protected void onResume() {
         getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
+
+         /* Change color of button */
+        findViewById(R.id.groupButton).setBackground(new ColorDrawable(MainActivity.getColour(this)));
+
         if(((KillApp) this.getApplication()).getStatus())
         {
             //only finish is needed for all other apps apart from the main screen

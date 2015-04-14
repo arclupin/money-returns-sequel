@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TabHost;
@@ -541,6 +542,10 @@ public class Payments extends FragmentActivity {
     @Override
     public void onResume() {
         getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
+
+        /* Change color of button */
+        findViewById(R.id.button1).setBackground(new ColorDrawable(MainActivity.getColour(this)));
+
         if (((KillApp) this.getApplication()).getStatus()) {
             /* Kills the app if kill app is true */
             finish();

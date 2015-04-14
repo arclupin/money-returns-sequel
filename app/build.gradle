@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.ncl.team5.lloydsmockup"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 20
         versionCode 1
         versionName "1.0"
