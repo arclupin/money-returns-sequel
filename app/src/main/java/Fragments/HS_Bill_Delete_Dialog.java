@@ -23,7 +23,6 @@ import com.ncl.team5.lloydsmockup.R;
  */
 public class HS_Bill_Delete_Dialog extends DialogFragment{
 
-<<<<<<< HEAD
     public interface BillDeleteDialogListener {
 
         /**
@@ -36,7 +35,7 @@ public class HS_Bill_Delete_Dialog extends DialogFragment{
     }
 
     private BillDeleteDialogListener mBillDeleteDialogListener;
-=======
+
     public interface CancelConfirmedDialogListener {
 
         /**
@@ -49,42 +48,27 @@ public class HS_Bill_Delete_Dialog extends DialogFragment{
     }
 
     private CancelConfirmedDialogListener mCancelConfirmedDialogListener;
->>>>>>> 8fd0a3671b3741c315ec32af4dab0c697336be3b
+
 
     // assign the event listener to the host activity
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-<<<<<<< HEAD
+
             mBillDeleteDialogListener = (BillDeleteDialogListener) activity;
         }
         catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement BillDeleteDialogListener");
-=======
-            mCancelConfirmedDialogListener = (CancelConfirmedDialogListener) activity;
-        }
-        catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement CancelConfirmedDialogListener");
->>>>>>> 8fd0a3671b3741c315ec32af4dab0c697336be3b
         }
     }
 
 
-<<<<<<< HEAD
     public static HS_Bill_Delete_Dialog initialise(String billID) {
         HS_Bill_Delete_Dialog o = new HS_Bill_Delete_Dialog();
         Bundle b = new Bundle();
         b.putString(IntentConstants.BILL_ID, billID);
-=======
-    public static HS_Bill_Delete_Dialog initialise(String house_name, String username) {
-        HS_Bill_Delete_Dialog o = new HS_Bill_Delete_Dialog();
-        Bundle b = new Bundle();
-        b.putString(IntentConstants.USERNAME, username );
-        b.putString(IntentConstants.HOUSE_NAME, house_name);
->>>>>>> 8fd0a3671b3741c315ec32af4dab0c697336be3b
         o.setArguments(b);
         return o;
     }
@@ -93,7 +77,6 @@ public class HS_Bill_Delete_Dialog extends DialogFragment{
     public Dialog onCreateDialog(Bundle saveState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-<<<<<<< HEAD
         LayoutInflater inflater = getActivity().getLayoutInflater();
         RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_normal_fragment, null);
         ((TextView) v.findViewById(R.id.title)).setText("Confirmation");
@@ -109,7 +92,8 @@ public class HS_Bill_Delete_Dialog extends DialogFragment{
             public void onClick(View v) {
                 mBillDeleteDialogListener.onButtonClickDeleteBill
                         (HS_Bill_Delete_Dialog.this, getArguments().getString(IntentConstants.BILL_ID));
-=======
+            }});
+
 //        builder.setTitle("Request to " + getArguments().getString(IntentConstants.HOUSE_NAME)+ " cancelled")
 //                .setMessage("Your request has been cancelled. \nGood bye!")
 //                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
@@ -117,20 +101,7 @@ public class HS_Bill_Delete_Dialog extends DialogFragment{
 //                    public void onClick(DialogInterface dialog, int which) {
 //                        mCancelConfirmedDialogListener.onButtonClickCancel(HS_Cancel_Confirm_Dialog.this, getArguments().getString(IntentConstants.USERNAME), getArguments().getString(IntentConstants.HOUSE_NAME));
 //                    }
-//                });
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_normal_fragment, null);
-        ((TextView) v.findViewById(R.id.title)).setText("Confirmation");
-        ((TextView) v.findViewById(R.id.content)).setText("Your request has been cancelled. \nGood bye!");
-        v.findViewById(R.id.dialog_cancel).setVisibility(View.INVISIBLE);
-        ((TextView) v.findViewById(R.id.dialog_okay)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    mCancelConfirmedDialogListener.onButtonClickCancel(HS_Bill_Delete_Dialog.this, getArguments().getString(IntentConstants.USERNAME), getArguments().getString(IntentConstants.HOUSE_NAME));
-
->>>>>>> 8fd0a3671b3741c315ec32af4dab0c697336be3b
-            }
-        });
+//
 
         builder.setView(v);
         return builder.create();
