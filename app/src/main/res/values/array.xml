@@ -1,18 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="listArray">
-        <item>Default Size</item>
-        <item>Size 14</item>
-        <item>Size 16</item>
-        <item>Size 18</item>
-    </string-array>
-    <string-array name="listValues">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
     <string-array name="colourListArray">
         <item>Default Colours</item>
         <item>Blue</item>
@@ -26,16 +13,4 @@
         <item>3</item>
     </string-array>
 
-    <string-array name="timeListArray">
-        <item>Default Time</item>
-        <item>10 Minutes</item>
-        <item>15 Minutes</item>
-        <item>30 Minutes</item>
-    </string-array>
-    <string-array name="timeListValues">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
 </resources>

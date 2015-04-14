@@ -9,6 +9,7 @@ package com.ncl.team5.lloydsmockup;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -539,7 +540,7 @@ public class Payments extends FragmentActivity {
      * @see bottom of class for more explination */
     @Override
     public void onResume() {
-
+        getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
         if (((KillApp) this.getApplication()).getStatus()) {
             /* Kills the app if kill app is true */
             finish();

@@ -30,7 +30,6 @@ public class FragmentOldAccount extends Fragment {
     /* Run when the fragment is created */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle saveInstance) {
-        // TODO with saveInstance? Perhaps save some input on losing focus
 
         /* Create the view */
         View view = inflater.inflate(R.layout.fragment_old_account, parent, false);

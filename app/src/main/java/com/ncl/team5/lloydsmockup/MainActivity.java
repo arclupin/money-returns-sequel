@@ -3,10 +3,14 @@ package com.ncl.team5.lloydsmockup;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -311,6 +315,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
 
+        getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
+
         Log.d("On main resume", "Intent:" );
         if (getIntent().getBooleanExtra(RESUME_FROM_INSIDE, false)) {
             super.onResume();
@@ -456,6 +462,39 @@ public class MainActivity extends Activity {
             new CustomMessageBox(MainActivity.this, "An unknown error occurred");
             e.printStackTrace();
         }
+    }
+
+
+    /* This is the method that gets the color from the shared preferences
+     * @params : context
+     * @returns : int */
+    public static int getColour(Context c)
+    {
+        SharedPreferences s = PreferenceManager.getDefaultSharedPreferences(c);
+
+        String s2 = s.getString("colourList", PreferenceConstants.COLOUR_DEFAULT);
+
+
+        if(s2.equals("error") || s2.equals(PreferenceConstants.COLOUR_DEFAULT))
+        {
+            return Color.WHITE;
+        }
+        else if(s2.equals(PreferenceConstants.COLOUR_BLUE))
+        {
+            return Color.parseColor("#3498db");
+        }
+        else if(s2.equals(PreferenceConstants.COLOUR_YELLOW))
+        {
+            return Color.parseColor("#F9FF59");
+        }
+        else if(s2.equals(PreferenceConstants.COLOUR_RED))
+        {
+            return Color.parseColor("#FF4242");
+        }
+
+
+        return R.color.white;
+
     }
 
 

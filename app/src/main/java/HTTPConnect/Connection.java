@@ -255,9 +255,6 @@ public class Connection extends AsyncTask <String, Void, String>  {
         context.setAttribute(ClientContext.COOKIE_STORE,cookies);
         HttpPost httppost = new HttpPost(URL);
         try {
-
-            Log.d("test", "test");
-
             /* Creates name value pair to be sent via post to the server */
 //            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 //            nameValuePairs.add(new BasicNameValuePair("username", username));

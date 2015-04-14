@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
+import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -323,6 +324,7 @@ public class Locations extends Activity implements LocationListener  {
          * the login class. It also clears the activity stack so the back button cannot be used to go back */
         @Override
         protected void onResume() {
+            getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
             if (((KillApp) this.getApplication()).getStatus()) {
                 //only finish is needed for all other apps apart from the main screen
                 //as the login screen only needs to be called once, and by calling finish

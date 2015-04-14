@@ -14,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -417,6 +418,7 @@ public class Statement extends Activity {
      * @see bottom of class for more details */
     @Override
     protected void onResume() {
+        getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
 
         /* Redraw the list (for colour changes) */
         transactions.invalidateViews();

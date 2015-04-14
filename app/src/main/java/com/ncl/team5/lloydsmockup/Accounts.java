@@ -13,6 +13,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -207,6 +208,9 @@ public class Accounts extends Activity {
      * the login class. It also clears the activity stack so the back button cannot be used to go back */
     @Override
     protected void onResume() {
+
+        getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
+
         if(((KillApp) this.getApplication()).getStatus())
         {
             //only finish is needed for all other apps apart from the main screen
@@ -264,6 +268,8 @@ public class Accounts extends Activity {
 
     public void onPause()
     {
+
+
          /* Set the logout time so it can easily get it later */
         SharedPreferences sp = getSharedPreferences(username, 0);
         SharedPreferences.Editor edit = sp.edit();

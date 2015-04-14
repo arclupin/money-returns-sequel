@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -397,6 +398,7 @@ public class Notifications extends Activity {
      * the login class. It also clears the activity stack so the back button cannot be used to go back */
     @Override
     protected void onResume() {
+        getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
         if(((KillApp) this.getApplication()).getStatus())
         {
             //only finish is needed for all other apps apart from the main screen

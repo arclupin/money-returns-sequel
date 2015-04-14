@@ -7,6 +7,7 @@ package com.ncl.team5.lloydsmockup;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -289,6 +290,7 @@ public class GroupChooser extends Activity {
      * @see below for more info */
     @Override
     protected void onResume() {
+        getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
         if(((KillApp) this.getApplication()).getStatus())
         {
             //only finish is needed for all other apps apart from the main screen
