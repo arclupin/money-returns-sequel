@@ -19,7 +19,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import HTTPConnect.Connection;
 
 
 public class Settings extends Activity {
@@ -27,6 +36,7 @@ public class Settings extends Activity {
     private ArrayList<String> optionsList;
     private String username;
     private String date;
+    private List<String> accountStrings = new ArrayList<String>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +55,7 @@ public class Settings extends Activity {
         ArrayAdapter<String> arrayAdapterO =
                 new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, optionsList);
         optionList.setAdapter(arrayAdapterO);
+
 
         /* add on on click listener for the list */
         optionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -74,7 +85,25 @@ public class Settings extends Activity {
                     startActivity(intent);
                     ((KillApp) Settings.this.getApplication()).setStatus(false);
                 }
-                else if(position==3){
+                else if(position == 3)
+                {
+                    getAccounts();
+
+                    for(int i = 0; i < accountStrings.size(); i++)
+                    {
+                        SharedPreferences sp = getApplicationContext().getSharedPreferences(username, 0);
+                        SharedPreferences.Editor edit = sp.edit();
+                        edit.putStringSet("ANALYSIS_GROUPS_" + accountStrings.get(i), new HashSet<String>());
+                        edit.putStringSet("TRANS_ID_" + accountStrings.get(i), new HashSet<String>());
+                        edit.commit();
+                    }
+
+
+                    new CustomMessageBox(Settings.this, "Removed all groups");
+
+
+                }
+                else if(position==4){
                     Intent intent = new Intent(Settings.this, LegalMaps.class);
                     intent.putExtra(IntentConstants.USERNAME, username);
                     intent.putExtra(IntentConstants.DATE, date);
@@ -91,8 +120,79 @@ public class Settings extends Activity {
        optionsList.add("Preferences");
        optionsList.add("Change Account Name");
        optionsList.add("Change Password");
+       optionsList.add("Reset All Analysis Groups");
        optionsList.add("Legal Notices");
    }
+
+    /* populates accountStrings with the users accounts and then displays them in the spinner */
+    public void getAccounts() {
+
+        /* clears account strings each time so the same accounts are not added every time */
+        accountStrings.clear();
+
+        /* Start a new connection */
+        Connection hc = new Connection(this);
+
+        try {
+            /* Command to get the accounts, returns JSON string */
+            String result = hc.execute("TYPE", "SAA", IntentConstants.USERNAME, username).get();
+
+            /* Convert string to JSON object, can throw JSON Exception */
+            JSONObject jo = new JSONObject(result);
+
+            if(jo.getString("expired").equals("true"))
+            {
+              /* Display message box and auto logout user */
+                final Connection temp_connect = new Connection(this);
+                // experimenting a new message box builder
+                CustomMessageBox.MessageBoxBuilder builder = new CustomMessageBox.MessageBoxBuilder(this, "Your session has been timed out, please login again");
+                builder.setTitle("Expired")
+                        .setActionOnClick(new CustomMessageBox.ToClick() {
+                            @Override
+                            public void DoOnClick() {
+                                temp_connect.autoLogout(username);
+                            }
+                        }).build();
+            }
+            else {
+            /* JSONArray needed as accounts are returned as an array */
+                JSONArray jsonArray = jo.getJSONArray("accounts");
+
+            /* Loop through the array */
+                for (int i = 0; i < jsonArray.length(); i++) {
+                /* Creates an object for each element in array, then strips the needed values from it */
+                    JSONObject insideObject = jsonArray.getJSONObject(i);
+
+                    accountStrings.add(insideObject.getString("account_number"));
+
+                }
+            }
+        }
+        /* Catch any errors */
+        catch (JSONException jse)
+        {
+            /* Exception for when the JSON cannot be parsed correctly */
+            new CustomMessageBox(this, "There was an error in the server response");
+            jse.printStackTrace();
+        }
+        catch (InterruptedException interex)
+        {
+            /* Caused when the connection is interrupted */
+            new CustomMessageBox(this, "Connection has been interrupted");
+            interex.printStackTrace();
+        }
+        catch (ExecutionException ee)
+        {
+            /* No idea when this is caused but it throws it... */
+            new CustomMessageBox(this, "Execution Error");
+            ee.printStackTrace();
+        }
+        catch (Exception e) {
+            /* Failsafe if something goes utterly wrong */
+            new CustomMessageBox(this, "An unknown error occurred");
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

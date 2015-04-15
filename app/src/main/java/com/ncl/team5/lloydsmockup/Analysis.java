@@ -145,7 +145,7 @@ public class Analysis extends Activity {
             errorMessage.setText("There is no data available for this account, please go to your statement to add a transaction to a group");
 
             /* if there are no groups, show error, else show pie chart */
-            if (groupSets.size() == 0) {
+            if (groupSets.size() == 0 || selectedAccount == null) {
                 mainLayout.setVisibility(View.INVISIBLE);
                 errorMessage.setVisibility(View.VISIBLE);
                 return;
