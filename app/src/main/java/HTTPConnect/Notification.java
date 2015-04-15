@@ -2,6 +2,10 @@ package HTTPConnect;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -117,38 +121,67 @@ public class Notification {
     public View makeNotiRow(Activity a) {
         LayoutInflater inflater = (LayoutInflater) a.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = null;
-
+        String content = "";
+        String p1 = additional_params.get(PARAM_POS);
+        String p2 = additional_params.get(PARAM2_POS);
         //TODO if type is normal noti (noti without button should set it clickable)
         switch (type) {
             case JOIN_ADM: {
                 v = inflater.inflate(R.layout.hs_noti_join_req_adm_view, null);
-                TextView tv = (TextView) v.findViewById(R.id.noti_join_req_admin_name);
-                //TODO use spanner to ensure the correct display in narrow screen phones
-                tv.setText(additional_params.get(PARAM_POS) + " ");
+
+                content = p1 + " would like to join your house.";
+                // spans for style the noti (make the names bold)
+                SpannableString spannableString = new SpannableString(content);
+                spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0,
+                        p1.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE );
+                ((TextView) v.findViewById(R.id.noti_join_req_admin_name)).setText(spannableString);
+
+                ((TextView) v.findViewById(R.id.noti_join_req_admin_name)).setMaxLines(3);
                 break;
             }
             case NEW_BILL: {
                 v = inflater.inflate(R.layout.hs_noti_new_bill, null);
-                //TODO use spannableString to ensure the correct display in narrow screen phones
-                ((TextView) v.findViewById(R.id.noti_bill_creator)).setText(additional_params.get(PARAM_POS) + " ");
-                ((TextView) v.findViewById(R.id.noti_bill_name)).setText(" " + additional_params.get(PARAM2_POS));
+                content = p1 + " has created a new bill " + p2 + ".";
+
+                //style the spannable string
+                SpannableString spannableString = new SpannableString(content);
+                spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, p1.length(),
+                        Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                spannableString.setSpan(new StyleSpan(Typeface.BOLD), p1.length() + 24,
+                        content.length() - 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                ((TextView) v.findViewById(R.id.noti_bill_content)).setText(spannableString);
+                ((TextView) v.findViewById(R.id.noti_bill_content)).setMaxLines(3);
                 break;
             }
 
             case BILL_ACTIVATED: {
                 v = inflater.inflate(R.layout.hs_noti_general, null);
-                //TODO use spannableString to ensure the correct display in narrow screen phones
-                ((TextView) v.findViewById(R.id.noti_user)).setText(additional_params.get(PARAM_POS));
-                ((TextView) v.findViewById(R.id.noti_action)).setText(" has been activated");
+                content = "Bill " + p1 + " has been activated.";
+
+                //style the spannable string
+                SpannableString spannableString = new SpannableString(content);
+                spannableString.setSpan(new StyleSpan(Typeface.BOLD), 5, p1.length() + 5,
+                        Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                ((TextView) v.findViewById(R.id.noti_content)).setText(spannableString);
+                ((TextView) v.findViewById(R.id.noti_content)).setMaxLines(3);
                 break;
             }
 
             case BILL_PAYMENT_RECEIVE: {
                 v = inflater.inflate(R.layout.hs_noti_general, null);
-                //TODO use spannableString to ensure the correct display in narrow screen phones
-                ((TextView) v.findViewById(R.id.noti_user)).setText(additional_params.get(PARAM_POS) + " ");
-                ((TextView) v.findViewById(R.id.noti_action)).setText("paid " +
-                        additional_params.get(PARAM2_POS));
+
+                content = p1 + " has submitted his payment to " + p2 + ".";
+
+                //style the spannable string
+                SpannableString spannableString = new SpannableString(content);
+                spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, p1.length(),
+                        Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                spannableString.setSpan(new StyleSpan(Typeface.BOLD), p1.length() + 29,
+                        content.length() - 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                ((TextView) v.findViewById(R.id.noti_content)).setText(spannableString);
                 break;
             }
 

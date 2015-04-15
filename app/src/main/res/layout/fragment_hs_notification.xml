@@ -21,6 +21,7 @@
                 android:layout_height="match_parent"
                 android:stretchColumns="*"
                 tools:context="Fragments.Fragment_HS_Home"
+                android:shrinkColumns="*"
 
                 />
         </ScrollView>
