@@ -143,7 +143,6 @@ public class CustomMessageBox {
 
         dialog_queue.add(alert); // add this dialog to the tail of the queue
         alert.show();
-
     }
 
 
