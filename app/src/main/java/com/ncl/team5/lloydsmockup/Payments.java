@@ -543,6 +543,16 @@ public class Payments extends FragmentActivity {
     public void onResume() {
         getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
 
+         /* Change color of button */
+        if(MainActivity.getColour(this) == Color.WHITE)
+        {
+            (findViewById(R.id.button1)).setBackground(new ColorDrawable(MainActivity.getColor()));
+        }
+        else
+        {
+            findViewById(R.id.button1).setBackground(new ColorDrawable(MainActivity.getColour(this)));
+        }
+
         /* Change color of button */
         findViewById(R.id.button1).setBackground(new ColorDrawable(MainActivity.getColour(this)));
 

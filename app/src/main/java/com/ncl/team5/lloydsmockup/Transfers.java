@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -239,6 +240,16 @@ public class Transfers extends Activity {
     @Override
     protected void onResume() {
         getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
+
+         /* Change color of button */
+        if(MainActivity.getColour(this) == Color.WHITE)
+        {
+            (findViewById(R.id.button1)).setBackground(new ColorDrawable(MainActivity.getColor()));
+        }
+        else
+        {
+            findViewById(R.id.button1).setBackground(new ColorDrawable(MainActivity.getColour(this)));
+        }
 
          /* Change color of button */
         findViewById(R.id.button1).setBackground(new ColorDrawable(MainActivity.getColour(this)));

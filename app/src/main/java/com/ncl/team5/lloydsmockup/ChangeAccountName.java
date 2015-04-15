@@ -3,6 +3,7 @@ package com.ncl.team5.lloydsmockup;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,7 @@ import HTTPConnect.Connection;
 
 public class ChangeAccountName extends Activity {
 
+    /* -- Variables -- */
     private List<String> accountNumbers = new ArrayList<String>();
     private String username;
     private String date;
@@ -36,12 +38,15 @@ public class ChangeAccountName extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_account_name);
 
+        /* get intenet */
         Intent intent = getIntent();
         username = intent.getStringExtra(IntentConstants.USERNAME);
         date = intent.getStringExtra(IntentConstants.DATE);
 
+        /* get all accounts */
         getAccounts();
 
+        /* Populate spinner */
         Spinner s = (Spinner)findViewById(R.id.spinnerChangeName);
         ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, accountNumbers);
         a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -99,16 +104,20 @@ public class ChangeAccountName extends Activity {
 
     public void btnResetName(View view)
     {
+        /* get account number */
         String accountNum = ((Spinner) findViewById(R.id.spinnerChangeName)).getSelectedItem().toString();
 
+        /* store the name in a shared preference */
         SharedPreferences sp = getApplicationContext().getSharedPreferences(username, 0);
         SharedPreferences.Editor edit = sp.edit();
         edit.putString(accountNum, accountNum);
         edit.commit();
 
+        /* show a toast */
         Toast.makeText(getBaseContext(), "Name Reset",
                 Toast.LENGTH_SHORT).show();
 
+        /* go back to last screen */
         this.finish();
         ((KillApp) this.getApplication()).setStatus(false);
     }
@@ -213,6 +222,19 @@ public class ChangeAccountName extends Activity {
     protected void onResume() {
 
         getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
+
+         /* Change color of button */
+        if(MainActivity.getColour(this) == Color.WHITE)
+        {
+            (findViewById(R.id.buttonChangeName)).setBackground(new ColorDrawable(MainActivity.getColor()));
+            (findViewById(R.id.buttonResetName)).setBackground(new ColorDrawable(MainActivity.getColor()));
+        }
+        else
+        {
+            findViewById(R.id.buttonChangeName).setBackground(new ColorDrawable(MainActivity.getColour(this)));
+            (findViewById(R.id.buttonResetName)).setBackground(new ColorDrawable(MainActivity.getColour(this)));
+        }
+
 
         if(((KillApp) this.getApplication()).getStatus())
         {

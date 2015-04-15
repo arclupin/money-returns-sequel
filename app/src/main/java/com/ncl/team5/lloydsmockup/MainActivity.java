@@ -497,6 +497,11 @@ public class MainActivity extends Activity {
 
     }
 
+    public static int getColor()
+    {
+        return Color.parseColor("#105842");
+    }
+
 
 //    /**
 //     * called for the welcome page to be activated.
