@@ -38,7 +38,6 @@
         android:paddingRight="30dp"
         android:paddingEnd="30dp"
         android:gravity="center_vertical"
-        android:maxLines="1"
         style="@style/Bill_Confirmation_Value"
         />
 

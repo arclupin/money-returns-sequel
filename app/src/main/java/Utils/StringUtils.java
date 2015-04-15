@@ -117,6 +117,18 @@ public static final String POUND_SIGN = "\u00A3";
         return null;
     }
 
+
+    /**
+     * return a string represenation of the format specified from the date input
+     * @param date the date input
+     * @param format the format
+     * @return the string result
+     */
+    public static String getStringFromDate(Date date, String format) {
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        return formatter.format(date);
+    }
+
     /**
      * round a double to the correct format (2 decimal digits)
      * @param amount the double input

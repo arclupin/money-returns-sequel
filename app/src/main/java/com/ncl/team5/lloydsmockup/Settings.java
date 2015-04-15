@@ -21,6 +21,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import HTTPConnect.ConcurrentConnection;
+import HTTPConnect.HTTPHandler;
+import HTTPConnect.Request;
+import HTTPConnect.RequestQueue;
+
 
 public class Settings extends Activity {
 
@@ -180,5 +185,23 @@ public class Settings extends Activity {
         ((KillApp) this.getApplication()).setStatus(false);
         finish();
 
+    }
+
+    public void geoff(View v) {
+        Request r1 = new Request(Request.TYPE.POST);
+        r1.addParam("key", "value");
+        //... more param
+
+
+        // more requests
+        Request r2 = new Request(Request.TYPE.POST);
+        r2.addParam("key", "value");
+        // ... more param
+
+        // send ur requests to server using this model
+        // responses will be display in the log console in format
+        // response #n where n is the order of the corresponding request
+        new ConcurrentConnection(this, true).setMsg("Loading Geoff").
+                execute(new RequestQueue().addRequests(r1, r2).toList());
     }
 }

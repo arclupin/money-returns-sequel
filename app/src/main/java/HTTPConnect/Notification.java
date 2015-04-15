@@ -27,6 +27,9 @@ public class Notification {
     public static final int JOIN_ADM = 0x00001; // new join request
     public static final int NEW_BILL = 0x00010; // new bill
     public static final int BILL_ACTIVATED = 0x00011; // bill activated
+    public static final int BILL_PAYMENT_RECEIVE = 0x00020;
+    public static final int BILL_PAYMENT_CONFIRMED = 0x00021;
+    public static final int BILL_PAYMENT_REJECTED = 0x00022;
 
     public static final int HSID_POS = 0;
     public static final int PARAM_POS = 1;
@@ -135,10 +138,22 @@ public class Notification {
             case BILL_ACTIVATED: {
                 v = inflater.inflate(R.layout.hs_noti_general, null);
                 //TODO use spannableString to ensure the correct display in narrow screen phones
-                ((TextView) v.findViewById(R.id.noti_user)).setText(additional_params.get(PARAM_POS) + " ");
-                ((TextView) v.findViewById(R.id.noti_action)).setText("has been activated");
+                ((TextView) v.findViewById(R.id.noti_user)).setText(additional_params.get(PARAM_POS));
+                ((TextView) v.findViewById(R.id.noti_action)).setText(" has been activated");
                 break;
             }
+
+            case BILL_PAYMENT_RECEIVE: {
+                v = inflater.inflate(R.layout.hs_noti_general, null);
+                //TODO use spannableString to ensure the correct display in narrow screen phones
+                ((TextView) v.findViewById(R.id.noti_user)).setText(additional_params.get(PARAM_POS) + " ");
+                ((TextView) v.findViewById(R.id.noti_action)).setText("paid " +
+                        additional_params.get(PARAM2_POS));
+                break;
+            }
+
+
+
         }
 
         if (read) {

@@ -44,7 +44,7 @@ import Utils.StringUtils;
 import Utils.Utilities;
 
 
-public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.BillDeleteDialogListener,
+public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_Dialog.BillDeleteDialogListener,
         HS_Bill_Primary_Action_Dialog.BillPrimaryActionDialogListener {
 
     //order of data in response
@@ -74,7 +74,6 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
     private static final int EVENT_BILL_ID_POS = 2;
     private static final int EVENT_DATE_POS = 4;
     private static final int EVENT_SRC_POS = 3;
-
 
 
     private ActionBar actionBar;
@@ -127,23 +126,16 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
     public void onButtonClickConfirmBill(HS_Bill_Primary_Action_Dialog f, Bill bill) {
         f.dismiss();
         Request r = new Request(Request.TYPE.POST);
-        if (!bill.amICreator()) {
             r.addParam(Request_Params.PARAM_TYPE, Request_Params.REQUEST_HS_CONFIRM_SUB_BILL)
                     .addParam(Request_Params.REQUEST_HS_BILL_ID, bill.getBillID())
                     .addParam(Request_Params.PARAM_USR, username);
             new Bill_Worker(this, true, MODE.BILL_CONFIRM)
                     .setMsg("Confirming your bill").execute(new RequestQueue().addRequest(r).toList());
-        } else {
-            r.addParam(Request_Params.PARAM_TYPE, Request_Params.REQUEST_HS_ACTIVATE_BILL)
-                    .addParam(Request_Params.REQUEST_HS_BILL_ID, bill.getBillID())
-                    .addParam(Request_Params.PARAM_USR, username);
-            new Bill_Worker(this, true, MODE.BILL_CONFIRM)
-                    .setMsg("Activating your bill").execute(new RequestQueue().addRequest(r).toList());
         }
-    }
 
-    public static enum MODE {BILL_FETCH_MAIN, BILL_CONFIRM, BILL_EDIT, BILL_DELETE, BILL_FETCH_EVENTS
-    , BILL_REFRESH}
+    public static enum MODE {
+        BILL_FETCH_MAIN, BILL_CONFIRM, BILL_EDIT, BILL_DELETE, BILL_FETCH_EVENTS, BILL_REFRESH
+    }
 
     private Request subBillsFetchingRequest;
     private Request eventsFetchingRequest;
@@ -182,11 +174,12 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
         protected void onPostExecute(List<Response> responses) {
             super.onPostExecute(responses);
             switch (mode) {
-                case BILL_FETCH_MAIN: case BILL_REFRESH: {
+                case BILL_FETCH_MAIN:
+                case BILL_REFRESH: {
                     Response r = responses.get(2);
                     // check for expiration of the latest response
                     if (r.getToken(Responses_Format.RESPONSE_EXPIRED).equals("true")) {
-                        Utilities.showAutoLogoutDialog(HouseShare_Bill.this, username);
+                        Utilities.showAutoLogoutDialog(HouseShare_Bill_Member.this, username);
                     } else {
                         //update the backing bill with fetched sub bills
                         filterBill(responses.get(0).getToken(Responses_Format.RESPONSE_HS_CONTENT));
@@ -203,27 +196,20 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
                 case BILL_CONFIRM: {
                     Response response = responses.get(0);
                     if (response.getToken(Responses_Format.RESPONSE_EXPIRED).equals("true")) {
-                        Utilities.showAutoLogoutDialog(HouseShare_Bill.this, username);
+                        Utilities.showAutoLogoutDialog(HouseShare_Bill_Member.this, username);
                     } else {
                         if (response.getToken(Responses_Format.RESPONSE_STATUS).equals("true")) {
                             new CustomMessageBox.MessageBoxBuilder
-                                    (HouseShare_Bill.this, (!bill.amICreator()) ?
+                                    (HouseShare_Bill_Member.this,
                                             "You have confirmed your share.\nPlease wait until " +
-                                                    "other members have confirmed theirs."
-                                            : "You have activated this bill." +
-                                            "\nAll users show now be able to pay this bill")
+                                                    "other members have confirmed theirs.")
                                     .setTitle("Share confirmed").build();
                             // reset the backing data
-                            if (!bill.amICreator()) {
                                 getMySubBill().setIsConfirmed(true);
-
-                            } else {
-                                bill.setIsActive(true);
-                            }
                             requestLayout();
                         } else
                             new CustomMessageBox.MessageBoxBuilder
-                                    (HouseShare_Bill.this, "Sorry. We could not process the " +
+                                    (HouseShare_Bill_Member.this, "Sorry. We could not process the " +
                                             "confirmation at the moment.\nPlease try again later.")
                                     .setTitle("Failed").build();
                         break;
@@ -238,7 +224,7 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_house_share__bill);
+        setContentView(R.layout.activity_house_share_bill_member);
 
         actionBar = getActionBar();
         if (actionBar != null) {
@@ -269,7 +255,7 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
         billRefresh_SwipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Bill_Worker(HouseShare_Bill.this, MODE.BILL_REFRESH)
+                new Bill_Worker(HouseShare_Bill_Member.this, MODE.BILL_REFRESH)
                         .execute(new RequestQueue().addRequests(getBillFetchingRequest(), getSubBillFetchingRequest(),
                                 getEventsFetchingRequest()).toList());
             }
@@ -278,38 +264,29 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
 
         primaryAction_View = (LinearLayout) findViewById(R.id.bill_pay_or_confirm);
         ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text))
-                .setText(bill.amICreator() ? "Activate" : "Confirm");
+                .setText("Confirm");
         primaryAction_View.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!bill.isActive()) {
-                    if (!bill.amICreator()) {
                         if (getMySubBill().isConfirmed()) {
-                            new CustomMessageBox.MessageBoxBuilder(HouseShare_Bill.this,
+                            new CustomMessageBox.MessageBoxBuilder(HouseShare_Bill_Member.this,
                                     "You have already confirmed this bill.\nPlease " +
-                                    "wait while the other members have confirmed their shares.")
+                                            "wait while the other members have confirmed their shares.")
                                     .build();
                         } else {
                             HS_Bill_Primary_Action_Dialog dialog =
                                     HS_Bill_Primary_Action_Dialog.initialise(bill);
                             dialog.show(getFragmentManager(), "BillConfirm_Frag");
                         }
-                    } else {
-                        if (bill.canBillBeActivated()) {
-
-                            HS_Bill_Primary_Action_Dialog dialog =
-                                    HS_Bill_Primary_Action_Dialog.initialise(bill);
-                            dialog.show(getFragmentManager(), "BillActivation_Frag");
-                        } else {
-                            new CustomMessageBox.MessageBoxBuilder(HouseShare_Bill.this,
-                                    "Sorry, you cannot activate this bill at the moment.\nPlease " +
-                                            "wait while the other members have confirmed their shares.")
-                                    .build();
-                        }
-                    }
                 } else {
-                    Toast.makeText(HouseShare_Bill.this, "Bill active, to display the tick",
-                            Toast.LENGTH_SHORT).show();
+                   Intent i = new Intent(HouseShare_Bill_Member.this, Houseshare_Payments.class);
+                    i.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
+                    i.putExtra(IntentConstants.BILL_ID, bill.getBillID());
+                    i.putExtra(IntentConstants.BILL_AMOUNT,
+                            HouseShare_Bill_Member.this.getMySubBill().getAmount());
+                    i.putExtra(IntentConstants.USERNAME, username);
+                    startActivity(i);
                     //TODO blur the view of primary action
                 }
             }
@@ -338,8 +315,7 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
             @Override
             public void onClick(View v) {
                 HS_Bill_Message_Dialog dialog =
-                        HS_Bill_Message_Dialog.initialise
-                                (bill.amICreator() ? "You" : bill.getBillCreator().getUsername());
+                        HS_Bill_Message_Dialog.initialise(bill.getBillCreator().getUsername());
                 dialog.setCancelable(false);
                 dialog.show(getFragmentManager(), "message_dialog_frag");
             }
@@ -349,10 +325,7 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
         deleteBill_View.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (bill.amICreator()) {
-                    HS_Bill_Delete_Dialog dialog = HS_Bill_Delete_Dialog.initialise(bill.getBillID());
-                    dialog.show(getFragmentManager(), "BillDel_Frag");
-                } else new CustomMessageBox.MessageBoxBuilder(HouseShare_Bill.this,
+                new CustomMessageBox.MessageBoxBuilder(HouseShare_Bill_Member.this,
                         "You need to be this bill's creator in order to delete it.")
                         .setTitle("Cannot delete bill").build();
 
@@ -363,8 +336,7 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
         billName_TextView.setText(bill.getBillName());
         billAmount_TextView.setText(StringUtils.POUND_SIGN + bill.getAmount());
         billCreationDetails_TextView.setText("Created by " +
-                (bill.amICreator() ? "you" :
-                        StringUtils.getShortenedString(bill.getBillCreator().getUsername(), 15)
+                (StringUtils.getShortenedString(bill.getBillCreator().getUsername(), 15)
                                 + " on " + StringUtils.getGeneralDateString(bill.getDateCreated())));
         if (!bill.isPaid()) {
             billStatus_TextView.setText("This bill is due in " +
@@ -383,7 +355,6 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
 
 
     }
-
 
 
     @Override
@@ -405,7 +376,6 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
     }
 
 
-
     private Request getEventsFetchingRequest() {
         if (eventsFetchingRequest != null)
             return eventsFetchingRequest;
@@ -419,6 +389,7 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
 
     /**
      * fetch the info of a bill (not include the sub bill and events)
+     *
      * @return the request
      */
     private Request getBillFetchingRequest() {
@@ -450,6 +421,7 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
 
     /**
      * update the events in the bill object
+     *
      * @param r the response from the server
      */
     private void filterEvents(String r) {
@@ -478,7 +450,7 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
 
     private void updateEventsTimeline() {
         eventsTable.removeAllViews();
-        for (int i = 0; i < bill.getEvents().size(); i++){
+        for (int i = 0; i < bill.getEvents().size(); i++) {
             eventsTable.addView(bill.getEvents().get(i).craftView(getLayoutInflater()));
         }
     }
@@ -515,28 +487,28 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
 
     /**
      * Update the bill object
+     *
      * @param r the response from the server regarding the bill
      */
     private void filterBill(String r) {
         try {
-                //["hs_100003_b1","hs_100003","Stella house","wg","2015-04-11","154","1995-01-23","",null,"0"]
-                JSONArray bill_arr = new JSONArray(r);
+            //["hs_100003_b1","hs_100003","Stella house","wg","2015-04-11","154","1995-01-23","",null,"0"]
+            JSONArray bill_arr = new JSONArray(r);
 
-                //initialise the bill being extracted from the response
-               bill = new Bill.BillBuilder(bill_arr.getInt(BILL_ISACTIVE_POS) == 1,
-                        !StringUtils.isFieldEmpty(bill_arr.getString(BILL_DATE_PAID_POS)),
-                        bill_arr.getBoolean(BILL_AM_I_CREATOR))
-                        .setAmount(bill_arr.getDouble(BILL_AMOUNT_POS))
-                        .setBillCreator(Fragment_HS_Home.members.get(bill_arr.getString(BILL_CREATOR_ID)))
-                        .setBillID(bill_arr.getString(BILL_ID_POS))
-                        .setBillName(bill_arr.getString(BILL_NAME_POS))
-                        .setDateCreated(StringUtils.getDateFromServerDateResponse(
-                                bill_arr.getString(BILL_DATE_CREATED_POS)))
-                        .setDueDate(StringUtils.getDateFromServerDateResponse
-                                (bill_arr.getString(BILL_DUE_DATE_POS)))
-                        .setMessage(bill_arr.getString(BILL_MESSAGE_POS)).build();
-            }
-        catch (JSONException e) {
+            //initialise the bill being extracted from the response
+            bill = new Bill.BillBuilder(bill_arr.getInt(BILL_ISACTIVE_POS) == 1,
+                    !StringUtils.isFieldEmpty(bill_arr.getString(BILL_DATE_PAID_POS)),
+                    bill_arr.getBoolean(BILL_AM_I_CREATOR))
+                    .setAmount(bill_arr.getDouble(BILL_AMOUNT_POS))
+                    .setBillCreator(Fragment_HS_Home.members.get(bill_arr.getString(BILL_CREATOR_ID)))
+                    .setBillID(bill_arr.getString(BILL_ID_POS))
+                    .setBillName(bill_arr.getString(BILL_NAME_POS))
+                    .setDateCreated(StringUtils.getDateFromServerDateResponse(
+                            bill_arr.getString(BILL_DATE_CREATED_POS)))
+                    .setDueDate(StringUtils.getDateFromServerDateResponse
+                            (bill_arr.getString(BILL_DUE_DATE_POS)))
+                    .setMessage(bill_arr.getString(BILL_MESSAGE_POS)).build();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -558,12 +530,12 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
      * Do the layout UI stuff
      */
     private void requestLayout() {
-        Log.d("Bil Active?" , String.valueOf(bill.isActive()));
+        Log.d("Bil Active?", String.valueOf(bill.isActive()));
         if (bill.isActive()) {
             ((ImageView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_icon)).setImageResource(
                     R.drawable.pay);
-            ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text)).setText(
-                    "Pay");
+            ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text))
+                    .setText("Submit");
             unactivatedText_TextView.setVisibility(View.INVISIBLE);
             timelineHolder_TextView.setVisibility(View.INVISIBLE);
         } else {
@@ -571,39 +543,17 @@ public class HouseShare_Bill extends Activity implements HS_Bill_Delete_Dialog.B
             unactivatedText_TextView.setVisibility(View.VISIBLE);
 
             // if this user is just a member (nor creator)
-            if (!bill.amICreator()) {
-                unactivatedText_TextView.setText("This bill is not activated");
-                unactivatedText_TextView.setBackgroundColor
-                        (getResources().getColor(android.R.color.holo_red_light));
+            unactivatedText_TextView.setText("This bill is not activated");
+            unactivatedText_TextView.setBackgroundColor
+                    (getResources().getColor(android.R.color.holo_red_light));
 
-                // if he has confirmed his share
-                if (getMySubBill().isConfirmed()) {
-                    timelineHolder_TextView.setText("You have confirmed your share. " +
-                            "Please wait until other members have confirms theirs");
-                } else {
-                    timelineHolder_TextView.setText("Please see your share in Participants " +
-                            "and confirm your share.");
-                }
-            }
-
-            //else if this user is the creator and the bill can be activated
-            else {
-                if (bill.canBillBeActivated()) {
-                    unactivatedText_TextView.setText("This bill can be activated now");
-                    unactivatedText_TextView.
-                            setBackgroundColor(getResources().getColor(R.color.dark_green));
-                    timelineHolder_TextView.
-                            setText("You can confirm this bill by clicking the Activate button.");
-                }
-
-                // else if the bill cannot be activated
-                else {
-                    unactivatedText_TextView.setText("This bill is not activated");
-                    unactivatedText_TextView.setBackgroundColor
-                            (getResources().getColor(android.R.color.holo_red_light));
-                    timelineHolder_TextView.setText("Please wait until others have confirmed " +
-                            "their shares. Then you can activate this bill.");
-                }
+            // if he has confirmed his share
+            if (getMySubBill().isConfirmed()) {
+                timelineHolder_TextView.setText("You have confirmed your share. " +
+                        "Please wait until other members have confirms theirs");
+            } else {
+                timelineHolder_TextView.setText("Please see your share in Participants " +
+                        "and confirm your share.");
             }
         }
     }

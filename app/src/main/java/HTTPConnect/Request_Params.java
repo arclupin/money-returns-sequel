@@ -39,11 +39,17 @@ public class Request_Params {
 
     public static final String REQUEST_HS_GET_A_BILL = "HS_GET_A_BILL";
     public static final String REQUEST_HS_GET_MY_BILLS = "HS_GET_MY_BILLS";
-    public static final String REQUEST_HS_GET_SUB_BILLS = "HS_GET_SUB_BILLS";
+    public static final String REQUEST_HS_GET_SUB_BILLS = "HS_GET_SBS";
     public static final String REQUEST_HS_BILL_ID = "HS_BILL_ID";
 
     public static final String REQUEST_HS_CONFIRM_SUB_BILL = "HS_CONFIRM_MY_SUB_BILL";
     public static final String REQUEST_HS_ACTIVATE_BILL = "HS_ACTIVATE_BILL";
+
+    public static final String REQUEST_HS_CONFIRM_PAYMENT = "HS_PAY";
+    public static final String REQUEST_HS_DATE_PAID = "DATE_PAYED";
+    public static final String REQUEST_HS_AMOUNT = "AMOUNT";
+    public static final String REQUEST_HS_PAY_METHOD = "PAY_METHOD";
+    public static final String REQUEST_HS_PAY_MSG = "PAY_MSG";
 
     public static final String REQUEST_HS_BILL_FETCH_EVENTS = "HS_BILL_FETCH_EVENTS";
 

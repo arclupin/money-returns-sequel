@@ -15,17 +15,22 @@ public class SubBill {
     private String bill_ID;
     private boolean isActive;
     private boolean isConfirmed;
-    public SubBill(String hs_id, String bill_ID, double amount, boolean isActive, boolean isPaid, boolean isConfirmed, Date datePaid) {
+    private Payment payment;
+
+    public SubBill(String hs_id, String bill_ID, double amount, boolean isActive, boolean isPaid,
+                   boolean isConfirmed, Date datePaid, Payment payment) {
         this.hs_id = hs_id;
         this.bill_ID = bill_ID;
         this.amount = amount;
         this.isActive = isActive;
         this.isConfirmed = isConfirmed;
         this.isPaid = isPaid;
+        this.payment = payment;
 
         //if this bill is paid then datePaid must be supplied and vice versa
         if (isPaid ^ (datePaid != null))
             throw new IllegalArgumentException("date paid must be supplied if the sub bill has been paid");
+
     }
 
     @Override
@@ -93,5 +98,9 @@ public class SubBill {
 
     public void setIsConfirmed(boolean isConfirmed) {
         this.isConfirmed = isConfirmed;
+    }
+
+    public Payment getPayment() {
+        return payment;
     }
 }

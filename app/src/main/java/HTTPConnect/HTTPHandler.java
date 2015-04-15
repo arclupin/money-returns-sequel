@@ -37,7 +37,7 @@ public class HTTPHandler {
 
         mContext = a;
         context = new BasicHttpContext();
-        client  = new DefaultHttpClient();
+        client  = new MyHttpClient(a);
         cookies = new BasicCookieStore();
 
         Log.d("mContext", mContext.toString());

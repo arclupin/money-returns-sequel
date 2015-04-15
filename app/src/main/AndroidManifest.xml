@@ -129,24 +129,23 @@
         <activity
             android:name=".GroupChooser"
             android:label="@string/title_activity_group_chooser"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".RegisterHouse"
             android:label="House Sharing"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Houseshare_Create_House"
             android:label="@string/title_activity_houseshare__create__house"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
             android:name=".Fragment_Houseshare_Inputs"
             android:label="@string/title_activity_fragment__houseshare__inputs"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Houseshare_HomeView"
@@ -157,10 +156,16 @@
             android:uiOptions="splitActionBarWhenNarrow" >
         </activity>
         <activity
-            android:name=".HouseShare_Bill"
+            android:name=".HouseShare_Bill_Member"
             android:label="@string/title_activity_house_share__bill"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".Houseshare_HomeView">
+            android:parentActivityName=".Houseshare_HomeView"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".HouseShare_Bill_Owner"
+            android:label="@string/title_activity_house_share__bill"
+            android:parentActivityName=".Houseshare_HomeView"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".LocationsLogin"
@@ -171,7 +176,7 @@
             android:label="@string/title_activity_new_bill_auto"
             android:parentActivityName=".Houseshare_HomeView"
             android:screenOrientation="portrait"
-            android:uiOptions="splitActionBarWhenNarrow">
+            android:uiOptions="splitActionBarWhenNarrow" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ncl.team5.lloydsmockup.Houseshare_HomeView" />
@@ -181,8 +186,7 @@
             android:label="@string/title_activity_new_bill_manual"
             android:parentActivityName=".Houseshare_HomeView"
             android:screenOrientation="portrait"
-            android:uiOptions="splitActionBarWhenNarrow"
-            >
+            android:uiOptions="splitActionBarWhenNarrow" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ncl.team5.lloydsmockup.Houseshare_HomeView" />
@@ -192,10 +196,14 @@
             android:label="@string/title_activity_new_bill_manual__sub_bill"
             android:parentActivityName=".NewBillManual"
             android:screenOrientation="portrait"
-            android:uiOptions="splitActionBarWhenNarrow">
+            android:uiOptions="splitActionBarWhenNarrow" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ncl.team5.lloydsmockup.NewBillManual" />
+        </activity>
+        <activity
+            android:name=".Houseshare_Payments"
+            android:label="@string/title_activity_houseshare__payments" >
         </activity>
     </application>
 

@@ -9,17 +9,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ncl.team5.lloydsmockup.CustomMessageBox;
-import com.ncl.team5.lloydsmockup.HouseShare_Bill;
+import com.ncl.team5.lloydsmockup.HouseShare_Bill_Member;
+import com.ncl.team5.lloydsmockup.HouseShare_Bill_Owner;
 import com.ncl.team5.lloydsmockup.Houseshares.Bill;
 import com.ncl.team5.lloydsmockup.Houseshares.Member;
 import com.ncl.team5.lloydsmockup.IntentConstants;
@@ -30,13 +29,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import HTTPConnect.ConcurrentConnection;
 import HTTPConnect.Connection;
@@ -105,6 +101,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loaded = false;
 
         //get arguments from the intent
         if (getArguments().getString(IntentConstants.USERNAME) != null)
@@ -268,6 +265,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         protected void onPreExecute() {
             super.onPreExecute();
             //show loading indicators
+            Log.d("Loaded", String.valueOf(loaded));
            if (!loaded) {
                loadingIcon.setVisibility(View.VISIBLE);
                loading_list_text.setVisibility(View.VISIBLE);
@@ -522,18 +520,18 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
                     JSONArray bill_arr = arr_out.getJSONArray(i);
 
                     //initialise the bill being extracted from the response
-                    billList.add(new Bill.BillBuilder(bill_arr.getInt(HouseShare_Bill.BILL_ISACTIVE_POS) == 1,
-                            !StringUtils.isFieldEmpty(bill_arr.getString(HouseShare_Bill.BILL_DATE_PAID_POS)),
-                            bill_arr.getBoolean(HouseShare_Bill.BILL_AM_I_CREATOR))
-                            .setAmount(bill_arr.getDouble(HouseShare_Bill.BILL_AMOUNT_POS))
-                            .setBillCreator(members.get(bill_arr.getString(HouseShare_Bill.BILL_CREATOR_ID)))
-                            .setBillID(bill_arr.getString(HouseShare_Bill.BILL_ID_POS))
-                            .setBillName(bill_arr.getString(HouseShare_Bill.BILL_NAME_POS))
+                    billList.add(new Bill.BillBuilder(bill_arr.getInt(HouseShare_Bill_Member.BILL_ISACTIVE_POS) == 1,
+                            !StringUtils.isFieldEmpty(bill_arr.getString(HouseShare_Bill_Member.BILL_DATE_PAID_POS)),
+                            bill_arr.getBoolean(HouseShare_Bill_Member.BILL_AM_I_CREATOR))
+                            .setAmount(bill_arr.getDouble(HouseShare_Bill_Member.BILL_AMOUNT_POS))
+                            .setBillCreator(members.get(bill_arr.getString(HouseShare_Bill_Member.BILL_CREATOR_ID)))
+                            .setBillID(bill_arr.getString(HouseShare_Bill_Member.BILL_ID_POS))
+                            .setBillName(bill_arr.getString(HouseShare_Bill_Member.BILL_NAME_POS))
                             .setDateCreated(StringUtils.getDateFromServerDateResponse(
-                                            bill_arr.getString(HouseShare_Bill.BILL_DATE_CREATED_POS)))
+                                            bill_arr.getString(HouseShare_Bill_Member.BILL_DATE_CREATED_POS)))
                             .setDueDate(StringUtils.getDateFromServerDateResponse
-                                            (bill_arr.getString(HouseShare_Bill.BILL_DUE_DATE_POS)))
-                            .setMessage(bill_arr.getString(HouseShare_Bill.BILL_MESSAGE_POS)).build());
+                                            (bill_arr.getString(HouseShare_Bill_Member.BILL_DUE_DATE_POS)))
+                            .setMessage(bill_arr.getString(HouseShare_Bill_Member.BILL_MESSAGE_POS)).build());
 
                     Log.d("Bill after extraction" + i, billList.get(i).toString() );
                 }
@@ -638,8 +636,11 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent billPageIntent = new Intent(getActivity(), HouseShare_Bill.class);
-                    billPageIntent.putParcelableArrayListExtra(IntentConstants.BILL_PARCEL, new ArrayList<Parcelable>(Collections.singletonList(billList.get(position)))) ;
+                    Intent billPageIntent = new Intent(getActivity(),
+                            (billList.get(position).amICreator() ? HouseShare_Bill_Owner.class :
+                                    HouseShare_Bill_Member.class));
+                    billPageIntent.putParcelableArrayListExtra(IntentConstants.BILL_PARCEL,
+                            new ArrayList<Parcelable>(Collections.singletonList(billList.get(position)))) ;
                     billPageIntent.putExtra(IntentConstants.USERNAME, username);
                     billPageIntent.putExtra(IntentConstants.HOUSE_NAME, hs_name);
                     billPageIntent.putExtra(IntentConstants.HOUSESHARE_ID, hsid);

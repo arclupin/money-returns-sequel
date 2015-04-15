@@ -580,8 +580,6 @@ public interface OnNotificationInteraction {
 
             // initialise the row
             View v = data.get(i).makeNotiRow(getActivity());
-            Log.d("rows", v.toString());
-
             // data on row
             final TextView a = (TextView) v.findViewById(R.id.noti_join_req_admin_name);
             final String noti_id = data.get(i).getId();
