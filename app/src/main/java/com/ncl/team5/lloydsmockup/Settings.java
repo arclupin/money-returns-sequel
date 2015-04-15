@@ -33,10 +33,12 @@ public class Settings extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        /* Get intents */
         Intent i = getIntent();
         username = i.getStringExtra(IntentConstants.USERNAME);
         date = i.getStringExtra(IntentConstants.DATE);
 
+        /* populate the list view */
         ListView optionList=(ListView)findViewById(R.id.listOptions);
         optionsList=  new ArrayList<String>();
         getOptions();
@@ -44,10 +46,13 @@ public class Settings extends Activity {
                 new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, optionsList);
         optionList.setAdapter(arrayAdapterO);
 
+        /* add on on click listener for the list */
         optionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
-                                    long id) {
+
+                                   long id) {
+                /* laucnh intents based on the position */
                 if (position==0) {
                     Intent intent = new Intent(Settings.this, Prefer.class);
                     intent.putExtra(IntentConstants.USERNAME, username);
@@ -78,23 +83,16 @@ public class Settings extends Activity {
                 }
             }
         });
-
-        getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
-
     }
 
 
-
-       void getOptions(){
-           optionsList.add("Preferences");
-           optionsList.add("Change Account Name");
-           optionsList.add("Change Password");
-           optionsList.add("Legal Notices");
-       }
-
-
-
-
+   /* gets the options for the preferences */
+   void getOptions(){
+       optionsList.add("Preferences");
+       optionsList.add("Change Account Name");
+       optionsList.add("Change Password");
+       optionsList.add("Legal Notices");
+   }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -204,6 +204,8 @@ public class MainActivity extends Activity {
     }
 
 
+    /* All of the button click methods... each is passed the username and the date */
+
     public void btnClickPayments(View view) {
         Intent i = new Intent(this, Payments.class);
         i.putExtra(IntentConstants.USERNAME, username);
@@ -501,29 +503,6 @@ public class MainActivity extends Activity {
     {
         return Color.parseColor("#105842");
     }
-
-
-//    /**
-//     * called for the welcome page to be activated.
-//     * @param c activity class to be started
-//     * @param house_name the name of the house (optional)
-//     */
-//    private void hs_intents(Class c, String house_name) {
-//        Intent i = new Intent(this, c);
-//        i.putExtra(IntentConstants.USERNAME, username);
-//        i.putExtra("HOUSE_NAME", house_name);
-//        startActivity(i);
-//    }
-//
-//    // at this stage the home view will be called
-//    private void hs_intents_home_view(Class c, String type, String house_name) {
-//        Intent i = new Intent(this, c);
-//        i.putExtra(IntentConstants.USERNAME, username);
-//        i.putExtra("TYPE", type);
-//        i.putExtra("HOUSE_NAME", house_name);
-//        startActivity(i);
-//    }
-
 }
 
 
