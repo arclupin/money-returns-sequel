@@ -2,34 +2,59 @@ package com.ncl.team5.lloydsmockup;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
 
 import HTTPConnect.Connection;
+import HTTPConnect.Request_Params;
 
 
 public class ChangePassword extends Activity {
 
     private String username;
+    private String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
+
+        /* get the intent */
+        Intent intent = getIntent();
+        username = intent.getStringExtra(IntentConstants.USERNAME);
+        date = intent.getStringExtra(IntentConstants.DATE);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        /* Show notification icon in menu bar */
         getMenuInflater().inflate(R.menu.main, menu);
+
+        MenuItem item = menu.getItem(1);
+        GetNotification notif = new GetNotification();
+
+
+        if(notif.getNotifications(this, username, date)) {
+            Log.d("Notif Change", "IN HERE");
+            item.setIcon(R.drawable.ic_action_notify);
+        }
+        else
+        {
+            Log.d("Notif Change", "IN There");
+            item.setIcon(R.drawable.globe);
+        }
+
         return true;
     }
 
@@ -58,11 +83,12 @@ public class ChangePassword extends Activity {
     }
 
     public void btnChangePassword(View view) {
-
+        /* gets all the text boxes */
         String oldPass = ((TextView)findViewById(R.id.previousPass)).getText().toString();
         String newPass = ((TextView)findViewById(R.id.editTextNew)).getText().toString();
         String newPass2 = ((TextView)findViewById(R.id.editTextAgain)).getText().toString();
 
+        /* check the passwords are the same and that they only contain letters and numbers */
         if(!newPass.equals(newPass2))
         {
             new CustomMessageBox(this, "Passwords do not match");
@@ -74,11 +100,12 @@ public class ChangePassword extends Activity {
             return;
         }
 
+        /* new connection */
         Connection c = new Connection(this);
 
         try
         {
-            String result = c.execute("TYPE", "CPASS", "PASSWORD", oldPass, "PASSWORD_NEW", newPass, IntentConstants.USERNAME, username).get();
+            String result = c.execute("TYPE", "CPASS", Request_Params.PARAM_USR, username, "PASSWORD", oldPass, "PASSWORD_NEW", newPass).get();
 
             JSONObject jo = new JSONObject(result);
 
@@ -99,13 +126,16 @@ public class ChangePassword extends Activity {
             }
             /* Payment was successful, show message box */
             else if (jo.getString("status").equals(StatusConstants.OK)) {
+                final Connection temp_connect = new Connection(this);
 
-
-                Toast.makeText(getBaseContext(), "Password Changed",
-                        Toast.LENGTH_SHORT).show();
-
-                ((KillApp) this.getApplication()).setStatus(false);
-                finish();
+                CustomMessageBox.MessageBoxBuilder builder = new CustomMessageBox.MessageBoxBuilder(this, "You must login again for changes to take affect");
+                builder.setTitle("Password Change")
+                        .setActionOnClick(new CustomMessageBox.ToClick() {
+                            @Override
+                            public void DoOnClick() {
+                                temp_connect.autoLogout(username);
+                            }
+                        }).build();
             }
             else
             {
@@ -132,6 +162,18 @@ public class ChangePassword extends Activity {
     @Override
     protected void onResume() {
         getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
+
+         /* Change color of button */
+        if(MainActivity.getColour(this) == Color.WHITE)
+        {
+            (findViewById(R.id.buttonSavePass)).setBackground(new ColorDrawable(MainActivity.getColor()));
+        }
+        else
+        {
+            findViewById(R.id.buttonSavePass).setBackground(new ColorDrawable(MainActivity.getColour(this)));
+        }
+
+
         if(((KillApp) this.getApplication()).getStatus())
         {
             //only finish is needed for all other apps apart from the main screen

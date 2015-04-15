@@ -124,7 +124,7 @@ public class Login extends Activity {
 
     }
 
-    /* Guessing this moves the adverts on the front screen, with a small delay
+    /* this moves the adverts on the front screen, with a small delay
      */
     private void runSlider() {
         slider.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_right));

@@ -7,6 +7,7 @@ package com.ncl.team5.lloydsmockup;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -293,7 +294,14 @@ public class GroupChooser extends Activity {
         getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
 
          /* Change color of button */
-        findViewById(R.id.groupButton).setBackground(new ColorDrawable(MainActivity.getColour(this)));
+        if(MainActivity.getColour(this) == Color.WHITE)
+        {
+            (findViewById(R.id.groupButton)).setBackground(new ColorDrawable(MainActivity.getColor()));
+        }
+        else
+        {
+            findViewById(R.id.groupButton).setBackground(new ColorDrawable(MainActivity.getColour(this)));
+        }
 
         if(((KillApp) this.getApplication()).getStatus())
         {

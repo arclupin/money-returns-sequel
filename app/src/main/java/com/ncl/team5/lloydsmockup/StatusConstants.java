@@ -10,4 +10,6 @@ public class StatusConstants {
     public static final String INSUFFICIENT = "insufficient";
 
     public static final String OK = "true";
+
+    public static final String ACCOUNT_INFO = "invalid account details";
 }

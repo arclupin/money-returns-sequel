@@ -284,6 +284,11 @@ public class Payments extends FragmentActivity {
                     /* insufficient funds in account */
                     new CustomMessageBox(this, "There are not enough funds in your account for this transaction");
                 }
+                else if (jo.getString("cause").equals(StatusConstants.ACCOUNT_INFO))
+                {
+                    /* incorrect account info */
+                    new CustomMessageBox(this, "Incorrect account information");
+                }
 
                 else if(jo.getString("cause").equals(StatusConstants.UNKNOWN))
                 {
@@ -543,8 +548,16 @@ public class Payments extends FragmentActivity {
     public void onResume() {
         getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
 
-        /* Change color of button */
-        findViewById(R.id.button1).setBackground(new ColorDrawable(MainActivity.getColour(this)));
+         /* Change color of button */
+        if(MainActivity.getColour(this) == Color.WHITE)
+        {
+            (findViewById(R.id.button1)).setBackground(new ColorDrawable(MainActivity.getColor()));
+        }
+        else
+        {
+            findViewById(R.id.button1).setBackground(new ColorDrawable(MainActivity.getColour(this)));
+        }
+
 
         if (((KillApp) this.getApplication()).getStatus()) {
             /* Kills the app if kill app is true */

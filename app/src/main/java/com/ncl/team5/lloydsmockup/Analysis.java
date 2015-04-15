@@ -42,6 +42,7 @@ import HTTPConnect.Connection;
 
 public class Analysis extends Activity {
 
+    /* -- Variales -- */
     private String username;
     private String date;
     private Set<String> groupSets;
@@ -53,23 +54,28 @@ public class Analysis extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analysis);
 
+        /* Get the intent */
         Intent intent = getIntent();
         username = intent.getStringExtra(IntentConstants.USERNAME);
         date = intent.getStringExtra(IntentConstants.DATE);
 
-        Log.d("USERNAME",username);
+        Log.d("USERNAME","|" + username + "|");
 
+        /* populte the sets */
         getAccounts();
+        getPrefs();
 
+        /* Set values for the spinner */
         final Spinner accounts = (Spinner) findViewById(R.id.analysis_spinner);
         ArrayAdapter<String> a = new ArrayAdapter<String>(this, R.layout.spinner_text_colour, accountStrings);
         a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         accounts.setAdapter(a);
 
-
+        /* Onclick listener for spinner */
         accounts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                /* Draws new pie chart */
                 selectedAccount = accounts.getItemAtPosition(position).toString();
                 getPrefs();
                 drawChart();
@@ -81,6 +87,7 @@ public class Analysis extends Activity {
             }
         });
 
+        /* set selected account to the first account number */
         if(selectedAccount == null)
         {
             if(accountStrings.size() != 0)
@@ -95,36 +102,33 @@ public class Analysis extends Activity {
 
         }
 
+        /* For debugging to see which set is used */
         if(groupSets == null)
         {
             Log.d("Returend Set", "NULL POINTER");
-            return;
-        }
 
-        if(groupSets.size() == 0)
+        }
+        else if(groupSets.size() == 0)
         {
             Log.d("Returend Set", "EMPTY SET");
-            return;
-            //new CustomMessageBox(this, "Need to add a group");
-//            ((KillApp) this.getApplication()).setStatus(false);
-//            finish();
+        }
+        else
+        {
+            Log.d("Returend Set", "NOT NULL OR EMPTY");
         }
 
-
-
-        Log.d("Returend Set", "NOT NULL OR EMPTY");
-        //Just creates a layout so that the chart can be displayed on it.
-        //Uses the analysis activity xml file to display the graph on
-
+        /* Draw the pie chart */
         drawChart();
     }
 
+    /* gets the set of account numbers */
     public void getPrefs()
     {
         SharedPreferences settings = getSharedPreferences(username, 0);
         groupSets = settings.getStringSet("ANALYSIS_GROUPS_" + selectedAccount, new HashSet<String>());
     }
 
+    /* Draws pie chart */
     public void drawChart()
     {
         try {
@@ -133,13 +137,15 @@ public class Analysis extends Activity {
             //an array of doubles that is used to populate the pie chart
             //sectors.
 
+            /* reset the view */
             mainLayout.removeAllViews();
 
+            /* Error message */
             TextView errorMessage = (TextView) findViewById(R.id.Analysis_Error_Box);
             errorMessage.setText("There is no data available for this account, please go to your statement to add a transaction to a group");
 
-
-            if (groupSets.size() == 0) {
+            /* if there are no groups, show error, else show pie chart */
+            if (groupSets.size() == 0 || selectedAccount == null) {
                 mainLayout.setVisibility(View.INVISIBLE);
                 errorMessage.setVisibility(View.VISIBLE);
                 return;
@@ -211,6 +217,7 @@ public class Analysis extends Activity {
         }
     }
 
+    /* Resets the groups */
     public void btnClickReset(View view)
     {
         SharedPreferences sp = getApplicationContext().getSharedPreferences(username, 0);
@@ -221,6 +228,7 @@ public class Analysis extends Activity {
 
         new CustomMessageBox(this, "Removed all groups");
 
+        /* redraw the chart (Show error message) */
         getPrefs();
         drawChart();
     }
@@ -362,6 +370,16 @@ public class Analysis extends Activity {
     protected void onResume() {
 
         getActionBar().setBackgroundDrawable(new ColorDrawable(MainActivity.getColour(this)));
+
+         /* Change color of button */
+        if(MainActivity.getColour(this) == Color.WHITE)
+        {
+            (findViewById(R.id.Reset_Button_Analysis)).setBackground(new ColorDrawable(MainActivity.getColor()));
+        }
+        else
+        {
+            findViewById(R.id.Reset_Button_Analysis).setBackground(new ColorDrawable(MainActivity.getColour(this)));
+        }
 
         if(((KillApp) this.getApplication()).getStatus())
         {
