@@ -14,12 +14,13 @@ public class SubBill {
     private String hs_id;
     private String bill_ID;
     private boolean isActive;
-
-    public SubBill(String hs_id, String bill_ID, double amount, boolean isActive, boolean isPaid, Date datePaid) {
+    private boolean isConfirmed;
+    public SubBill(String hs_id, String bill_ID, double amount, boolean isActive, boolean isPaid, boolean isConfirmed, Date datePaid) {
         this.hs_id = hs_id;
         this.bill_ID = bill_ID;
         this.amount = amount;
         this.isActive = isActive;
+        this.isConfirmed = isConfirmed;
         this.isPaid = isPaid;
 
         //if this bill is paid then datePaid must be supplied and vice versa
@@ -30,8 +31,11 @@ public class SubBill {
     @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
-        b.append(hs_id).append(" - ").append(bill_ID).append(" - ").append(isActive ? "active" : "inactive")
-                .append(" - ").append(isPaid ? "paid on" : "not paid").append(" - ").append(datePaid);
+        b.append(hs_id).append(" - ").append(bill_ID).append(" - ")
+                .append(isActive ? "active" : "inactive")
+                .append(" - ").append(isConfirmed ? "confirmed" : "not confirmed")
+                .append(" - ").append(isPaid ? "paid on" : "not paid")
+                .append(" - ").append(datePaid);
         return b.toString();
     }
 
@@ -81,5 +85,13 @@ public class SubBill {
 
     public void setDatePaid(String datePaid) {
         this.datePaid = datePaid;
+    }
+
+    public boolean isConfirmed() {
+        return isConfirmed;
+    }
+
+    public void setIsConfirmed(boolean isConfirmed) {
+        this.isConfirmed = isConfirmed;
     }
 }

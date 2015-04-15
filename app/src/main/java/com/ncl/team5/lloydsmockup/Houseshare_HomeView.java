@@ -62,6 +62,7 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
                 actionBar = getActionBar();
                 Log.d("action Bar", actionBar.toString());
                 actionBar.setDisplayShowHomeEnabled(false);
+                actionBar.setDisplayHomeAsUpEnabled(false);
                 actionBar.setDisplayShowTitleEnabled(false);
                 actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
                 actionBar.setSplitBackgroundDrawable(new ColorDrawable((getResources().getColor(R.color.dark_green))));

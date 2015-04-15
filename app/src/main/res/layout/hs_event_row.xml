@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:id="@+id/hs_noti_row_container"
+    android:background="@color/light_background"
+    android:clickable="true"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+
+   >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/noti_new_bill_container"
+   >
+    <TextView
+        android:paddingTop="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/event_main_text"
+        android:text="Alice has activated the bill"
+        style="@style/HS_Noti_Sub_Text_Name" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/event_date"
+        android:layout_below="@id/event_main_text"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
+        android:text="23/4/2015"
+        style="@style/HS_homeview_description" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:id="@+id/divider"
+        android:layout_below="@id/event_date"
+        android:layout_marginTop="5dp"
+        android:background="@android:color/darker_gray"
+        ></View>
+</RelativeLayout>
+
+</TableRow>

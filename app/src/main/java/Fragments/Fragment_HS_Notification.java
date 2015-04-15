@@ -293,7 +293,8 @@ public interface OnNotificationInteraction {
 
         //set up the refresh view
         mRefreshView = (SwipeRefreshLayout) mLayoutContainer.findViewById(R.id.refresh_view_noti);
-       mRefreshView.setColorSchemeColors(getResources().getColor(R.color.light_green), getResources().getColor(android.R.color.holo_red_light));
+       mRefreshView.setColorSchemeColors(getResources().getColor(R.color.light_green),
+               getResources().getColor(android.R.color.holo_red_light));
 
 
         mTable = (TableLayout) mLayoutContainer.findViewById(R.id.hs_notification_table);

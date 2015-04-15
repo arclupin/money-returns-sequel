@@ -29,7 +29,8 @@ public static final String POUND_SIGN = "\u00A3";
 
 
     /**
-     * get a Date object from a string or throw {@link ParseException} if the string can't be parsed to a date
+     * get a Date object from a string or throw {@link ParseException} if the string can't be parsed
+     * to a date
      * @param response the input string
      * @return the output Date object
      */
@@ -46,7 +47,8 @@ public static final String POUND_SIGN = "\u00A3";
    }
 
     /**
-     * get a Date object from a string (<u>Date</u> only) or throw {@link ParseException} if the string can't be parsed to a date
+     * get a Date object from a string (<u>Date</u> only) or throw {@link ParseException} if the
+     * string can't be parsed to a date
      * @param response the input string
      * @return the output Date object
      */
@@ -98,6 +100,23 @@ public static final String POUND_SIGN = "\u00A3";
         return dateString.toString();
     }
 
+
+    /**
+     * get a date from a string
+     * @param format the format of the date string
+     * @param date the date string
+     * @return the date parsed from the string
+     */
+    public static Date getDateFromString(String format, String date) {
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        try {
+            return formatter.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * round a double to the correct format (2 decimal digits)
      * @param amount the double input
@@ -123,6 +142,17 @@ public static final String POUND_SIGN = "\u00A3";
         } catch (ParseException e) {
            return false;
         }
+    }
+
+
+
+    /**
+     * check whether this date has already passed
+     * @param d the input string
+     * @return the result
+     */
+    public static boolean hasDatePassed(Date d) {
+        return new GregorianCalendar().getTime().compareTo(d) > 0;
     }
 
     /**

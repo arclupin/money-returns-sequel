@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.ncl.team5.lloydsmockup.Houseshare_HomeView"
     android:id="@+id/bill_layout"
     android:background="@color/light_background">
@@ -98,6 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/unlock_bill"
+                android:id="@+id/bill_pay_or_confirm_icon"
                 android:layout_gravity="center" />
 
             <TextView
@@ -213,11 +213,16 @@
         android:visibility="invisible"
         />
 
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/bill_update_swipe_view"
+        android:layout_below="@id/divider">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/bill_timeline_container"
-        android:layout_below="@id/divider">
+        >
     <TextView
         android:id="@+id/time_line_holder"
         android:layout_width="wrap_content"
@@ -229,7 +234,15 @@
         android:textStyle="bold"
 
         />
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:stretchColumns="*"
+            android:id="@+id/table_events">
+
+        </TableLayout>
     </RelativeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>
 

@@ -3,6 +3,8 @@ package com.ncl.team5.lloydsmockup.Houseshares;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +34,8 @@ public class Bill implements Comparable<Bill>, Parcelable{
     private Date datePaid;
     private boolean isActive;
     private boolean amICreator;
+
+    private List<Event> events;
 
     private static final Bill BILL_EMPTY = new Bill();
 
@@ -64,6 +68,7 @@ public class Bill implements Comparable<Bill>, Parcelable{
         this.datePaid = datePaid;
         this.subBills = new TreeMap<Member, SubBill>();
         this.amICreator = amICreator;
+        this.events = new ArrayList<Event>();
     }
 
     /**
@@ -96,6 +101,7 @@ public class Bill implements Comparable<Bill>, Parcelable{
         this.datePaid = datePaid;
         this.subBills = new TreeMap<Member, SubBill>(subBills);
         this.amICreator = amICreator;
+        this.events = new ArrayList<Event>();
     }
 
     /**
@@ -153,6 +159,58 @@ public class Bill implements Comparable<Bill>, Parcelable{
         return amICreator;
     }
 
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setBillID(String billID) {
+        this.billID = billID;
+    }
+
+    public void setBillName(String billName) {
+        this.billName = billName;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public void setBillCreator(Member billCreator) {
+        this.billCreator = billCreator;
+    }
+
+    public void setSubBills(TreeMap<Member, SubBill> subBills) {
+        this.subBills = subBills;
+    }
+
+    public void setIsPaid(boolean isPaid) {
+        this.isPaid = isPaid;
+    }
+
+    public void setDatePaid(Date datePaid) {
+        this.datePaid = datePaid;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public void setAmICreator(boolean amICreator) {
+        this.amICreator = amICreator;
+    }
+
     /**
      * Describe the kinds of special objects contained in this Parcelable's
      * marshalled representation.
@@ -207,7 +265,9 @@ public class Bill implements Comparable<Bill>, Parcelable{
         dest.writeInt(isActive ? 1 :0);
         dest.writeSerializable(datePaid);
         dest.writeInt(amICreator ? 1 : 0);
+
     }
+
 
     /**
      * Class BillBuilder for building a bill
@@ -225,6 +285,7 @@ public class Bill implements Comparable<Bill>, Parcelable{
         private Date datePaid = null;
         private boolean isActive = false;
         private boolean amICreator;
+        private List<Event> events = new ArrayList<Event>();
 
         public BillBuilder(boolean isActive, boolean isBillPaid, boolean amICreator) {
             this.isActive = isActive;
@@ -290,6 +351,10 @@ public class Bill implements Comparable<Bill>, Parcelable{
         public BillBuilder setAmICreator(boolean amICreator) {
             this.amICreator = amICreator;
             return this;
+        }
+
+        public void setEvents(List<Event> events) {
+            this.events = events;
         }
 
         private boolean isAllDataSet() {
@@ -410,5 +475,13 @@ public class Bill implements Comparable<Bill>, Parcelable{
      */
     public boolean isBillEmptyConstant(Bill bill) {
             return bill == BILL_EMPTY;
+    }
+
+    public boolean canBillBeActivated() {
+        for (SubBill s : subBills.values()){
+            if (!s.isConfirmed())
+                return false;
+        }
+        return true;
     }
 }

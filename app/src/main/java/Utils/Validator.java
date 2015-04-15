@@ -7,5 +7,5 @@ package Utils;
  */
 public interface Validator {
 
-    public boolean isDataValid(String s);
+     boolean isDataValid(String s);
 }

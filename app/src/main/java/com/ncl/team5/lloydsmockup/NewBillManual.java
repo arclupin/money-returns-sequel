@@ -129,7 +129,8 @@ public class NewBillManual extends Activity {
         Utilities.registerValidator(dueDate_view, new Validator() {
             @Override
             public boolean isDataValid(String s) {
-                return StringUtils.isStringADate(s);
+                return StringUtils.isStringADate(s) &&
+                        !StringUtils.hasDatePassed(StringUtils.getDateFromString("dd/MM/yyyy", s));
             }
         });
         dueDate_view.addTextChangedListener(new TextWatcher() {
