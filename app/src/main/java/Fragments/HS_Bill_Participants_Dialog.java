@@ -28,10 +28,11 @@ import Utils.StringUtils;
 public class HS_Bill_Participants_Dialog extends DialogFragment{
 
     // static factory
-    public static HS_Bill_Participants_Dialog initialise(String[] participants, boolean[] states) {
+    public static HS_Bill_Participants_Dialog initialise(String[] participants, double[] shares, boolean[] states) {
         HS_Bill_Participants_Dialog o = new HS_Bill_Participants_Dialog();
         Bundle b = new Bundle();
         b.putStringArray(IntentConstants.PARTICIPANTS, participants);
+        b.putDoubleArray(IntentConstants.PARTICIPANT_SHARES, shares);
         b.putBooleanArray(IntentConstants.PARTICIPANT_STATUS, states);
         o.setArguments(b);
         return o;
@@ -44,6 +45,7 @@ public class HS_Bill_Participants_Dialog extends DialogFragment{
         RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_list_bill_participants, null);
         TableLayout l = (TableLayout) v.findViewById(R.id.bill_participants);
         String[] participants = getArguments().getStringArray(IntentConstants.PARTICIPANTS);
+        double[] shares = getArguments().getDoubleArray(IntentConstants.PARTICIPANT_SHARES);
         boolean[] states = getArguments().getBooleanArray(IntentConstants.PARTICIPANT_STATUS);
         for (int i = 0; i < participants.length; i++) {
 
@@ -53,11 +55,13 @@ public class HS_Bill_Participants_Dialog extends DialogFragment{
             View participant_view = inflater.inflate(R.layout.hs_participant_row, null);
             //set the data for this sub bill (name + charge)
             ((TextView) participant_view.findViewById(R.id.participant_name)).setText(participant);
+            ((TextView) participant_view.findViewById(R.id.share)).
+                    setText(StringUtils.POUND_SIGN + shares[i]);
             TextView status_view =  (TextView) participant_view.findViewById(R.id.participant_status);
 
-               status_view.setText(status ? "Confirmed" : "Not confirmed");
+               status_view.setText(status ? "C" : "N");
                 status_view.setTextColor(status ? getResources().getColor(R.color.dark_green) :
-                        getResources().getColor(android.R.color.holo_red_dark));
+                        getResources().getColor(android.R.color.holo_red_light));
 
 
                // add the sub bill view to the table

@@ -32,11 +32,11 @@ import Utils.Utilities;
 public class Houseshare_Payments extends Activity implements DatePickerFragment.DatePickerListener,
         HS_Payment_Method_Dialog.PaymentMethodDialogListener{
 
-    public static final int BANK_TRANSFER = 0;
-    public static final int CASH = 1;
-    public static final int OTHER_METHODS = 2;
+    public static final int BANK_TRANSFER = 1;
+    public static final int CASH = 2;
+    public static final int OTHER_METHODS = 3;
 
-    public static final String[] method_name = {"Bank transfer", "Cash", "Other method"};
+    public static final String[] method_name = {"Not Specified", "Bank transfer", "Cash", "Other method"};
 
     private double amount;
     private String message;
@@ -51,7 +51,7 @@ public class Houseshare_Payments extends Activity implements DatePickerFragment.
     private RelativeLayout datePicker_Layout;
     private EditText message_Layout;
     private TextView confirm_Button;
-
+    private TextView message_title;
     private Request paymentConfirmingRequest;
 
 
@@ -76,7 +76,6 @@ public class Houseshare_Payments extends Activity implements DatePickerFragment.
         });
 
         datePicker_Layout = (RelativeLayout) findViewById(R.id.payment_date);
-        ((TextView) findViewById(R.id.payment_date_value)).setText(StringUtils.getGeneralDateString(new GregorianCalendar().getTime()));
         datePicker_Layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,6 +112,7 @@ public class Houseshare_Payments extends Activity implements DatePickerFragment.
                             .setTitle("Warning").build();
             }
         });
+
 
 
     }
@@ -186,7 +186,14 @@ public class Houseshare_Payments extends Activity implements DatePickerFragment.
                 if (r.getToken(Responses_Format.RESPONSE_STATUS).equals("true"))
                     new CustomMessageBox.MessageBoxBuilder
                             (Houseshare_Payments.this,"You have submitted you payment. " +
-                                    "Your bill creator will be notified soon.")
+                                    "Your bill creator will be notified soon.").setActionOnClick(
+                            new CustomMessageBox.ToClick() {
+                                @Override
+                                public void DoOnClick() {
+                                    finish();
+                                }
+                            }
+                    )
                             .build();
                 else
                     new CustomMessageBox.MessageBoxBuilder

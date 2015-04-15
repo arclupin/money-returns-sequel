@@ -290,16 +290,17 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
             @Override
             public void onClick(View v) {
                 List<String> participants = new ArrayList<String>();
+                double[] shares = new double[bill.getSubBills().size()];
                 boolean[] states = new boolean[bill.getSubBills().size()];
                 int i = 0;
-                for (Member s : bill.getSubBills().keySet()) {
-                    participants.add(s.getUsername());
-                    states[i++] = bill.getSubBills().get(s).isConfirmed();
-                    Log.d("state of " + s.getUsername(),
-                            String.valueOf(bill.getSubBills().get(s).isConfirmed()));
+                for (String s : bill.getSubBills().keySet()) {
+                    participants.add(Fragment_HS_Home.members.get(s).getUsername());
+                    shares[i] = bill.getSubBills().get(s).getAmount();
+                    states[i] = bill.getSubBills().get(s).isConfirmed();
+                    ++i;
                 }
                 HS_Bill_Participants_Dialog dialog = HS_Bill_Participants_Dialog.initialise
-                        (participants.toArray(new String[participants.size()]), states);
+                        (participants.toArray(new String[participants.size()]), shares, states);
                 dialog.show(getFragmentManager(), "participants_dialog");
             }
         });
@@ -465,10 +466,9 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
                         !subbill_response.getString(SUBBILL_DATE_PAID_POS).equals("null"),
                         subbill_response.getInt(SUBBILL_IS_CONFIRMED) == 1,
                         StringUtils.getDateFromServerDateResponse(
-                                subbill_response.getString(SUBBILL_DATE_PAID_POS)));
+                                subbill_response.getString(SUBBILL_DATE_PAID_POS)), null);
                 Log.d("Extracted Sub Bill", subBill.toString());
-                bill.getSubBills().put(Fragment_HS_Home.members.get
-                        (subbill_response.getString(SUBBILL_HSID_POS)), subBill);
+                bill.getSubBills().put(subbill_response.getString(SUBBILL_HSID_POS), subBill);
             }
 
 

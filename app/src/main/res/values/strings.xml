@@ -101,7 +101,7 @@
 
     <!-- This is the password needed for the keystore @see MyHttpClient.java -->
     <string name="store_pass">password</string>
-    <string name="title_activity_houseshare__payments">Houseshare_Payments</string>
+    <string name="title_activity_houseshare__payments">Submitting your payment</string>
     <string name="hint_message">Please leave a message for the bill owner.
         \nYou should include all necessary information needed to identify your payment other than
         the payment method.

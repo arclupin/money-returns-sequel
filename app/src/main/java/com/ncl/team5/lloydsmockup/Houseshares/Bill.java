@@ -28,7 +28,7 @@ public class Bill implements Comparable<Bill>, Parcelable{
     private Date dateCreated;
     private double amount;
     private Member billCreator;
-    private TreeMap<Member, SubBill> subBills;
+    private TreeMap<String, SubBill> subBills;
     //TODO Timeline
     private boolean isPaid; // order of bills needs to be taken into consideration
     private Date datePaid;
@@ -66,7 +66,7 @@ public class Bill implements Comparable<Bill>, Parcelable{
         this.isPaid = isPaid;
         this.isActive = isActive;
         this.datePaid = datePaid;
-        this.subBills = new TreeMap<Member, SubBill>();
+        this.subBills = new TreeMap<String, SubBill>();
         this.amICreator = amICreator;
         this.events = new ArrayList<Event>();
     }
@@ -88,7 +88,7 @@ public class Bill implements Comparable<Bill>, Parcelable{
      */
     private Bill(String billID, String name, Date dueDate, Date dateCreated, double amount,
                  String message, Member creator, boolean isPaid, boolean isActive, Date datePaid,
-                 Map<Member, SubBill> subBills, boolean amICreator) {
+                 Map<String, SubBill> subBills, boolean amICreator) {
         this.billID = billID;
         this.billName = name;
         this.dueDate = dueDate;
@@ -99,7 +99,7 @@ public class Bill implements Comparable<Bill>, Parcelable{
         this.isPaid = isPaid;
         this.isActive = isActive;
         this.datePaid = datePaid;
-        this.subBills = new TreeMap<Member, SubBill>(subBills);
+        this.subBills = new TreeMap<String, SubBill>(subBills);
         this.amICreator = amICreator;
         this.events = new ArrayList<Event>();
     }
@@ -139,7 +139,7 @@ public class Bill implements Comparable<Bill>, Parcelable{
         return billCreator;
     }
 
-    public TreeMap<Member, SubBill> getSubBills() {
+    public TreeMap<String, SubBill> getSubBills() {
         return subBills;
     }
 
@@ -191,7 +191,7 @@ public class Bill implements Comparable<Bill>, Parcelable{
         this.billCreator = billCreator;
     }
 
-    public void setSubBills(TreeMap<Member, SubBill> subBills) {
+    public void setSubBills(TreeMap<String, SubBill> subBills) {
         this.subBills = subBills;
     }
 
@@ -280,7 +280,7 @@ public class Bill implements Comparable<Bill>, Parcelable{
         private Date dateCreated = null;
         private double amount = 0.0;
         private Member billCreator = null;
-        private TreeMap<Member, SubBill> subBills = new TreeMap<Member, SubBill>();
+        private TreeMap<String, SubBill> subBills = new TreeMap<String, SubBill>();
         private boolean isPaid = false; // order of bills needs to be taken into consideration
         private Date datePaid = null;
         private boolean isActive = false;
@@ -323,7 +323,7 @@ public class Bill implements Comparable<Bill>, Parcelable{
             return this;
         }
 
-        public BillBuilder setSubBills(TreeMap<Member, SubBill> subBills) {
+        public BillBuilder setSubBills(TreeMap<String, SubBill> subBills) {
             this.subBills = subBills;
             return this;
         }
@@ -385,8 +385,8 @@ public class Bill implements Comparable<Bill>, Parcelable{
                 .append("Due ").append(dueDate.toString()).append(" - ")
                 .append("Users: ");
 
-        for (Member m: subBills.keySet())
-            b.append(m.getUsername()).append("*");
+        for (String m : subBills.keySet())
+            b.append(m).append("*");
 
         b.append(" - ").append(isActive ? "active" : "inactive").append(" - ")
                 .append(isPaid ? "paid on" : "not paid")

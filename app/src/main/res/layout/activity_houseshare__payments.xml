@@ -33,7 +33,7 @@
             style="@style/HS_homeview_description"
             android:textSize="15sp"
             android:textStyle="normal"
-            android:text="Cash"/>
+            android:text="Supply your payment method"/>
 
 
     </RelativeLayout>
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/payment_amount_value"
             android:layout_below="@id/payment_amount_text"
-            android:text="£7.74"
+            android:text="£7.74 (fixed)"
             style="@style/HS_homeview_description"
             android:textSize="15sp"
             android:textStyle="normal"/>
@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/payment_date_value"
             android:layout_below="@id/payment_date_text"
-            android:text="23/10/2015"
+            android:text="Supply the payment date"
             style="@style/HS_homeview_description"
             android:textSize="15sp"
             android:textStyle="normal"/>

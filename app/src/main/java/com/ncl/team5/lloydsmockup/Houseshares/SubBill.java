@@ -40,7 +40,8 @@ public class SubBill {
                 .append(isActive ? "active" : "inactive")
                 .append(" - ").append(isConfirmed ? "confirmed" : "not confirmed")
                 .append(" - ").append(isPaid ? "paid on" : "not paid")
-                .append(" - ").append(datePaid);
+                .append(" - ").append(datePaid)
+        .append(" - ").append(payment == null ? null : payment);
         return b.toString();
     }
 
@@ -102,5 +103,9 @@ public class SubBill {
 
     public Payment getPayment() {
         return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 }

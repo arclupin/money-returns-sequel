@@ -16,21 +16,54 @@
         android:paddingRight="15dp"
         android:paddingTop="15dp"
         android:textSize="20sp"
-        android:text="Participants"/>
+        android:paddingBottom="10dp"
+        android:text="Participants" />
 
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/title"
-                android:id="@+id/participants_scrollview"
-                android:paddingTop="10dp"
-                >
-                <TableLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/bill_participants">
-                </TableLayout>
-            </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/descriptions"
+        android:layout_below="@id/title"
+        >
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_confirmed"
+            android:text="C: Confirmed"
+            style="@style/Bill_Confirmation_Value"
+            android:textColor="@color/dark_green"
+            android:textSize="14sp"
+            android:layout_weight="1"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_not_confirmed"
+            android:text="N: Not confirmed"
+            style="@style/Bill_Confirmation_Value"
+            android:textColor="@android:color/holo_red_light"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/descriptions"
+        android:id="@+id/participants_scrollview"
+        android:paddingTop="10dp">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bill_participants"></TableLayout>
+    </ScrollView>
+
+
+
     <TextView
         android:id="@+id/dialog_okay"
         android:text="Close"
@@ -46,7 +79,6 @@
         style="@style/Dialog_Text_Content"
         android:textSize="14sp"
         android:background="@drawable/button_light_color"
-        android:clickable="true"
-        />
+        android:clickable="true" />
 
 </RelativeLayout>

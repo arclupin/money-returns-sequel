@@ -15,11 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ncl.team5.lloydsmockup.Houseshares.Bill;
 import com.ncl.team5.lloydsmockup.Houseshares.Event;
 import com.ncl.team5.lloydsmockup.Houseshares.Member;
+import com.ncl.team5.lloydsmockup.Houseshares.Payment;
 import com.ncl.team5.lloydsmockup.Houseshares.SubBill;
 
 import org.json.JSONArray;
@@ -74,6 +74,15 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
     private static final int EVENT_BILL_ID_POS = 2;
     private static final int EVENT_DATE_POS = 4;
     private static final int EVENT_SRC_POS = 3;
+
+    private static final int PAYMENT_HSID_POS = 0;
+    private static final int PAYMENT_BILL_ID_POS = 1;
+    private static final int PAYMENT_AMOUNT_POS = 2;
+    private static final int PAYMENT_DATE_SUBMITTED_POS = 3;
+    private static final int PAYMENT_DATE_PAID_POS = 4;
+    private static final int PAYMENT_STATUS_POS = 5;
+    private static final int PAYMENT_PAYMENT_METHOD_POS = 6;
+    private static final int PAYMENT_PAYMENT_MESSAGE_POS = 7;
 
 
     private ActionBar actionBar;
@@ -134,12 +143,14 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
         }
 
     public static enum MODE {
-        BILL_FETCH_MAIN, BILL_CONFIRM, BILL_EDIT, BILL_DELETE, BILL_FETCH_EVENTS, BILL_REFRESH
+        BILL_FETCH_MAIN, BILL_CONFIRM, BILL_EDIT, BILL_DELETE, BILL_FETCH_EVENTS, BILL_REFRESH,
+        BILL_FETCH_PAYMENTS
     }
 
     private Request subBillsFetchingRequest;
     private Request eventsFetchingRequest;
-    private Request billFetchingRequet;
+    private Request billFetchingRequest;
+    private Request paymentsFetchingRequest;
 
     /**
      * Gets data from the server and UI preparation
@@ -168,6 +179,9 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
             super.onPreExecute();
             if (mode == MODE.BILL_FETCH_MAIN || mode == MODE.BILL_REFRESH)
                 bill = null;
+            if (mode == MODE.BILL_REFRESH && !billRefresh_SwipeView.isRefreshing()) {
+                billRefresh_SwipeView.setRefreshing(true);
+            }
         }
 
         @Override
@@ -176,7 +190,7 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
             switch (mode) {
                 case BILL_FETCH_MAIN:
                 case BILL_REFRESH: {
-                    Response r = responses.get(2);
+                    Response r = responses.get(3);
                     // check for expiration of the latest response
                     if (r.getToken(Responses_Format.RESPONSE_EXPIRED).equals("true")) {
                         Utilities.showAutoLogoutDialog(HouseShare_Bill_Member.this, username);
@@ -184,7 +198,8 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
                         //update the backing bill with fetched sub bills
                         filterBill(responses.get(0).getToken(Responses_Format.RESPONSE_HS_CONTENT));
                         filterSubBills(responses.get(1).getToken(Responses_Format.RESPONSE_HS_CONTENT));
-                        filterEvents(responses.get(2).getToken(Responses_Format.RESPONSE_STATUS));
+                        filterPayments(responses.get(2).getToken(Responses_Format.RESPONSE_STATUS));
+                        filterEvents(responses.get(3).getToken(Responses_Format.RESPONSE_STATUS));
 
                         requestLayout();
                         if (mode == MODE.BILL_REFRESH || billRefresh_SwipeView.isRefreshing())
@@ -225,7 +240,6 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_house_share_bill_member);
-
         actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
@@ -255,9 +269,7 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
         billRefresh_SwipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Bill_Worker(HouseShare_Bill_Member.this, MODE.BILL_REFRESH)
-                        .execute(new RequestQueue().addRequests(getBillFetchingRequest(), getSubBillFetchingRequest(),
-                                getEventsFetchingRequest()).toList());
+                refresh();
             }
         });
 
@@ -280,32 +292,40 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
                             dialog.show(getFragmentManager(), "BillConfirm_Frag");
                         }
                 } else {
-                   Intent i = new Intent(HouseShare_Bill_Member.this, Houseshare_Payments.class);
-                    i.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
-                    i.putExtra(IntentConstants.BILL_ID, bill.getBillID());
-                    i.putExtra(IntentConstants.BILL_AMOUNT,
-                            HouseShare_Bill_Member.this.getMySubBill().getAmount());
-                    i.putExtra(IntentConstants.USERNAME, username);
-                    startActivity(i);
-                    //TODO blur the view of primary action
-                }
+                    Log.d("my sub bill", "/ " + getMySubBill().toString());
+                    if (getMySubBill().getPayment() == null) {
+                        Intent i = new Intent(HouseShare_Bill_Member.this, Houseshare_Payments.class);
+                        i.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
+                        i.putExtra(IntentConstants.BILL_ID, bill.getBillID());
+                        i.putExtra(IntentConstants.BILL_AMOUNT,
+                                HouseShare_Bill_Member.this.getMySubBill().getAmount());
+                        i.putExtra(IntentConstants.USERNAME, username);
+                        startActivity(i);
+                    }
+                    else {
+                        new CustomMessageBox.MessageBoxBuilder(HouseShare_Bill_Member.this,
+                                "You have already submitted your payment.")
+                                .setTitle("Payment already submitted").build();
+                    }
             }
-        });
+        }});
         participants_View = (LinearLayout) findViewById(R.id.bill_participants);
         participants_View.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 List<String> participants = new ArrayList<String>();
+                double[] shares = new double[bill.getSubBills().size()];
                 boolean[] states = new boolean[bill.getSubBills().size()];
+
                 int i = 0;
-                for (Member s : bill.getSubBills().keySet()) {
-                    participants.add(s.getUsername());
-                    states[i++] = bill.getSubBills().get(s).isConfirmed();
-                    Log.d("state of " + s.getUsername(),
-                            String.valueOf(bill.getSubBills().get(s).isConfirmed()));
+                for (String s : bill.getSubBills().keySet()) {
+                    participants.add(Fragment_HS_Home.members.get(s).getUsername());
+                    shares[i] = bill.getSubBills().get(s).getAmount();
+                    states[i] = bill.getSubBills().get(s).isConfirmed();
+                    ++i;
                 }
                 HS_Bill_Participants_Dialog dialog = HS_Bill_Participants_Dialog.initialise
-                        (participants.toArray(new String[participants.size()]), states);
+                        (participants.toArray(new String[participants.size()]), shares, states);
                 dialog.show(getFragmentManager(), "participants_dialog");
             }
         });
@@ -350,9 +370,10 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
         new Bill_Worker(this, true, MODE.BILL_FETCH_MAIN)
                 .setMsg("Loading your bill")
                 .execute(new RequestQueue().addRequests(
-                        getBillFetchingRequest(), getSubBillFetchingRequest(),
+                        getBillFetchingRequest(),
+                        getSubBillFetchingRequest(),
+                        getPaymentsFetchingRequest(),
                         getEventsFetchingRequest()).toList());
-
 
     }
 
@@ -363,6 +384,35 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
         getMenuInflater().inflate(R.menu.menu_house_share__bill, menu);
         return true;
     }
+
+    /**
+     * Called after {@link #onRestoreInstanceState}, {@link #onRestart}, or
+     * {@link #onPause}, for your activity to start interacting with the user.
+     * This is a good place to begin animations, open exclusive-access devices
+     * (such as the camera), etc.
+     * <p/>
+     * <p>Keep in mind that onResume is not the best indicator that your activity
+     * is visible to the user; a system window such as the keyguard may be in
+     * front.  Use {@link #onWindowFocusChanged} to know for certain that your
+     * activity is visible to the user (for example, to resume a game).
+     * <p/>
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @see #onRestoreInstanceState
+     * @see #onRestart
+     * @see #onPostResume
+     * @see #onPause
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("on resume", "abc");
+        refresh();
+    }
+
+
 
     private Request getSubBillFetchingRequest() {
         if (subBillsFetchingRequest != null)
@@ -393,14 +443,27 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
      * @return the request
      */
     private Request getBillFetchingRequest() {
-        if (billFetchingRequet != null)
-            return billFetchingRequet;
-        billFetchingRequet = new Request(Request.TYPE.POST)
+        if (billFetchingRequest != null)
+            return billFetchingRequest;
+        billFetchingRequest = new Request(Request.TYPE.POST)
                 .addParam(Request_Params.PARAM_TYPE, Request_Params.REQUEST_HS_GET_A_BILL)
                 .addParam(Request_Params.REQUEST_HS_BILL_ID, bill.getBillID())
                 .addParam(Request_Params.PARAM_USR, username);
-        Log.d("Bill fetching request: ", billFetchingRequet.toString());
-        return billFetchingRequet;
+        Log.d("Bill fetching request: ", billFetchingRequest.toString());
+        return billFetchingRequest;
+    }
+
+    private Request getPaymentsFetchingRequest() {
+        if (paymentsFetchingRequest != null) {
+            return paymentsFetchingRequest;
+        }
+        paymentsFetchingRequest = new Request(Request.TYPE.POST)
+                .addParam(Request_Params.PARAM_TYPE, Request_Params.REQUEST_HS_GET_PAYMENTS)
+                .addParam(Request_Params.REQUEST_HS_BILL_ID, bill.getBillID())
+                .addParam(Request_Params.PARAM_USR, username);
+        Log.d("payments request: ", paymentsFetchingRequest.toString());
+        return paymentsFetchingRequest;
+
     }
 
     @Override
@@ -473,10 +536,45 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
                         !subbill_response.getString(SUBBILL_DATE_PAID_POS).equals("null"),
                         subbill_response.getInt(SUBBILL_IS_CONFIRMED) == 1,
                         StringUtils.getDateFromServerDateResponse(
-                                subbill_response.getString(SUBBILL_DATE_PAID_POS)));
+                                subbill_response.getString(SUBBILL_DATE_PAID_POS)),
+                        null);
                 Log.d("Extracted Sub Bill", subBill.toString());
-                bill.getSubBills().put(Fragment_HS_Home.members.get
-                        (subbill_response.getString(SUBBILL_HSID_POS)), subBill);
+                bill.getSubBills().put(subbill_response.getString(SUBBILL_HSID_POS), subBill);
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *
+     * @param r
+     */
+    private void filterPayments(String r) {
+        try {
+            JSONArray payments_response = new JSONArray(r);
+            for (int i = 0; i < payments_response.length(); i++) {
+//                ["hs_100001","hs_100003_b1","7.14","2015-04-15 18:05:05","2015-04-14","S","16","abc"]
+
+                JSONArray payment_response = payments_response.getJSONArray(i);
+                String hsid = payment_response.getString(PAYMENT_HSID_POS);
+                Payment p =  new Payment(hsid,
+                        payment_response.getString(PAYMENT_BILL_ID_POS),
+                        payment_response.getDouble(PAYMENT_AMOUNT_POS),
+                        StringUtils.getDateTimeFromServerDateResponse(payment_response.getString(PAYMENT_DATE_SUBMITTED_POS)),
+                        StringUtils.getDateFromServerDateResponse(payment_response.getString(PAYMENT_DATE_PAID_POS)),
+                        payment_response.getString(PAYMENT_STATUS_POS).equals("C"),
+                        payment_response.getInt(PAYMENT_PAYMENT_METHOD_POS),
+                        payment_response.getString(PAYMENT_PAYMENT_MESSAGE_POS));
+
+
+                // set the payment for this sub bill
+                bill.getSubBills().get(hsid).setPayment(p);
+
+                Log.d("Payment", p.toString());
+
             }
 
 
@@ -526,6 +624,7 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
         return null;
     }
 
+
     /**
      * Do the layout UI stuff
      */
@@ -534,8 +633,17 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
         if (bill.isActive()) {
             ((ImageView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_icon)).setImageResource(
                     R.drawable.pay);
-            ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text))
-                    .setText("Submit");
+            if (getMySubBill().getPayment() != null && !getMySubBill().getPayment().isConfirmed())
+
+            {
+                ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text))
+                        .setText("Submitted");
+
+            }
+            else
+                ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text))
+                        .setText("Submit");
+
             unactivatedText_TextView.setVisibility(View.INVISIBLE);
             timelineHolder_TextView.setVisibility(View.INVISIBLE);
         } else {
@@ -560,9 +668,13 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
 
     /**
      * refresh the bill
+     * called when the activity is resumed tc.
      */
     private void refresh() {
-
+        new Bill_Worker(HouseShare_Bill_Member.this, MODE.BILL_REFRESH)
+                .execute(new RequestQueue().addRequests(getBillFetchingRequest(), getSubBillFetchingRequest(),
+                        getPaymentsFetchingRequest(),
+                        getEventsFetchingRequest()).toList());
     }
 }
 

@@ -44,6 +44,8 @@ public class IntentConstants {
 
     public static final String PARTICIPANT_STATUS = "PARTICIPANT_STT";
 
+    public static final String PARTICIPANT_SHARES = "SHARES";
+
     public static final String BILL = "BILL";
 
     public static final String DATE_PAYMENT = "DATE_PAYMENT";

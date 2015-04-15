@@ -42,6 +42,8 @@ public class Request_Params {
     public static final String REQUEST_HS_GET_SUB_BILLS = "HS_GET_SBS";
     public static final String REQUEST_HS_BILL_ID = "HS_BILL_ID";
 
+    public static final String REQUEST_HS_GET_PAYMENTS = "HS_GET_BPAYS";
+
     public static final String REQUEST_HS_CONFIRM_SUB_BILL = "HS_CONFIRM_MY_SUB_BILL";
     public static final String REQUEST_HS_ACTIVATE_BILL = "HS_ACTIVATE_BILL";
 
