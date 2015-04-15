@@ -187,12 +187,17 @@ public class Transfers extends Activity {
             else
             {
                 /* give more info on the error here, no money taken from account */
-                if(jo.getString("status").equals(StatusConstants.UNKNOWN))
+                if(jo.getString("cause").equals(StatusConstants.UNKNOWN))
                 {
                     /* Unknown error :( */
                     new CustomMessageBox(this, "An unknown error occurred, the transaction was not completed ");
                 }
-                else if(jo.getString("status").equals(StatusConstants.INSUFFICIENT))
+                else if (jo.getString("cause").equals(StatusConstants.ACCOUNT_INFO))
+                {
+                    /* incorrect account info */
+                    new CustomMessageBox(this, "Incorrect account information");
+                }
+                else if(jo.getString("cause").equals(StatusConstants.INSUFFICIENT))
                 {
                     /* insufficient funds in account */
                     new CustomMessageBox(this, "There are not enough funds in your account for this transaction");
@@ -251,8 +256,6 @@ public class Transfers extends Activity {
             findViewById(R.id.button1).setBackground(new ColorDrawable(MainActivity.getColour(this)));
         }
 
-         /* Change color of button */
-        findViewById(R.id.button1).setBackground(new ColorDrawable(MainActivity.getColour(this)));
         if(((KillApp) this.getApplication()).getStatus())
         {
             //only finish is needed for all other apps apart from the main screen
