@@ -61,7 +61,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
     // the view type of the home view (Each type of view applies each type of users whose states
     //are different
     private static String view_type;
-
+    private static boolean loaded = false;
 
     private String response_content;
     //backing map that stores the details of members of the group the user is in.
@@ -195,6 +195,18 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         return l;
     }
 
+    /**
+     * Called when the fragment is visible to the user and actively running.
+     * This is generally
+     * tied to {@link Activity#onResume() Activity.onResume} of the containing
+     * Activity's lifecycle.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        initialiseData();
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -250,25 +262,18 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
      */
     public class HomeViewWorker extends ConcurrentConnection {
 
-        //order of data in response
-        private static final int BILL_ID_POS = 0;
-        private static final int BILL_CREATOR_ID = 1; // houseshare id
-        private static final int BILL_GROUP_NAME_POS = 2;
-        private static final int BILL_NAME_POS = 3;
-        private static final int BILL_DATE_CREATED_POS = 4;
-        private static final int BILL_AMOUNT_POS = 5;
-        private static final int BILL_DUE_DATE_POS = 6;
-        private static final int BILL_DATE_PAID_POS = 7;
-        private static final int BILL_MESSAGE_POS = 8;
-        private static final int BILL_ISACTIVE_POS = 9;
-        private static final int BILL_AM_I_CREATOR = 10;
+
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             //show loading indicators
-            loadingIcon.setVisibility(View.VISIBLE);
-            loading_list_text.setVisibility(View.VISIBLE);
+           if (!loaded) {
+               loadingIcon.setVisibility(View.VISIBLE);
+               loading_list_text.setVisibility(View.VISIBLE);
+               loaded = true;
+           }
+
         }
 
         public HomeViewWorker(Activity a, boolean showDialog) {
@@ -282,7 +287,6 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
             loading_list_text.setVisibility(View.GONE);
             // do the processing in the home view
             response_content = processInfo(responses.get(0).getRaw_response());
-
             //TODO we might need a UI child thread worker for all these data
             // check for new notification and reflect it on the noti icon
             checkNewNotification(responses.get(1).getRaw_response());
@@ -335,6 +339,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
      */
     public void displayHomeViewContent() {
         try {
+
             JSONArray house_Array = new JSONObject(response_content).getJSONArray("basic_info");
             viewName.setText(house_Array.getString(0));
             viewAddressText.setText(StringUtils.implode(" ", house_Array.getString(1),
@@ -493,6 +498,8 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
      */
     public void extractBills(String r) {
         try {
+            // make sure old data is erased
+            billList = new ArrayList<Bill>();
             JSONObject jo = new JSONObject(r);
             /* Check if the user has timed out */
             if (jo.getString("expired").equals("true")) {
@@ -515,18 +522,18 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
                     JSONArray bill_arr = arr_out.getJSONArray(i);
 
                     //initialise the bill being extracted from the response
-                    billList.add(new Bill.BillBuilder(bill_arr.getInt(HomeViewWorker.BILL_ISACTIVE_POS) == 1,
-                            !StringUtils.isFieldEmpty(bill_arr.getString(HomeViewWorker.BILL_DATE_PAID_POS)),
-                            bill_arr.getBoolean(HomeViewWorker.BILL_AM_I_CREATOR))
-                            .setAmount(bill_arr.getDouble(HomeViewWorker.BILL_AMOUNT_POS))
-                            .setBillCreator(members.get(bill_arr.getString(HomeViewWorker.BILL_CREATOR_ID)))
-                            .setBillID(bill_arr.getString(HomeViewWorker.BILL_ID_POS))
-                            .setBillName(bill_arr.getString(HomeViewWorker.BILL_NAME_POS))
+                    billList.add(new Bill.BillBuilder(bill_arr.getInt(HouseShare_Bill.BILL_ISACTIVE_POS) == 1,
+                            !StringUtils.isFieldEmpty(bill_arr.getString(HouseShare_Bill.BILL_DATE_PAID_POS)),
+                            bill_arr.getBoolean(HouseShare_Bill.BILL_AM_I_CREATOR))
+                            .setAmount(bill_arr.getDouble(HouseShare_Bill.BILL_AMOUNT_POS))
+                            .setBillCreator(members.get(bill_arr.getString(HouseShare_Bill.BILL_CREATOR_ID)))
+                            .setBillID(bill_arr.getString(HouseShare_Bill.BILL_ID_POS))
+                            .setBillName(bill_arr.getString(HouseShare_Bill.BILL_NAME_POS))
                             .setDateCreated(StringUtils.getDateFromServerDateResponse(
-                                            bill_arr.getString(HomeViewWorker.BILL_DATE_CREATED_POS)))
+                                            bill_arr.getString(HouseShare_Bill.BILL_DATE_CREATED_POS)))
                             .setDueDate(StringUtils.getDateFromServerDateResponse
-                                            (bill_arr.getString(HomeViewWorker.BILL_DUE_DATE_POS)))
-                            .setMessage(bill_arr.getString(HomeViewWorker.BILL_MESSAGE_POS)).build());
+                                            (bill_arr.getString(HouseShare_Bill.BILL_DUE_DATE_POS)))
+                            .setMessage(bill_arr.getString(HouseShare_Bill.BILL_MESSAGE_POS)).build());
 
                     Log.d("Bill after extraction" + i, billList.get(i).toString() );
                 }

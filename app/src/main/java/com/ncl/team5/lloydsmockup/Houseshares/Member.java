@@ -134,7 +134,6 @@ public class Member implements Parcelable, Comparable<Member>{
 
     @Override
     public int compareTo(Member another) {
-        Log.d("compare To", StringUtils.getDateFromServerDateResponse(joined_since).toString() + StringUtils.getDateFromServerDateResponse(another.joined_since).toString() + " //");
         int chronological_order = StringUtils.getDateFromServerDateResponse(joined_since).compareTo(StringUtils.getDateFromServerDateResponse(another.joined_since));
         return chronological_order != 0 ? chronological_order : username.compareTo(another.username);
     }

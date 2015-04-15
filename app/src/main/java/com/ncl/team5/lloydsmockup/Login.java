@@ -205,7 +205,8 @@ public class Login extends Activity {
                         break;
                     }
                     case LOCKED: {
-                        new CustomMessageBox(this, "Too many login attempts, Please contact your bank to unlock your application", "Account locked");
+                        new CustomMessageBox(this, "Too many login attempts, " +
+                                "Please contact your bank to unlock your application", "Okay", "Account locked");
                         break;
                     }
 
