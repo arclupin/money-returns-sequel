@@ -24,6 +24,7 @@ public class Products extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products);
 
+        /* get intents */
         Intent intent = getIntent();
         username = intent.getStringExtra(IntentConstants.USERNAME);
         date = intent.getStringExtra(IntentConstants.DATE);
