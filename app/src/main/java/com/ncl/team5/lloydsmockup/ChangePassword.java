@@ -7,10 +7,17 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONObject;
+
+import HTTPConnect.Connection;
 
 
 public class ChangePassword extends Activity {
+
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +58,66 @@ public class ChangePassword extends Activity {
     }
 
     public void btnChangePassword(View view) {
-        Toast.makeText(getBaseContext(), "Password Changed",
-                Toast.LENGTH_SHORT).show();
+
+        String oldPass = ((TextView)findViewById(R.id.previousPass)).getText().toString();
+        String newPass = ((TextView)findViewById(R.id.editTextNew)).getText().toString();
+        String newPass2 = ((TextView)findViewById(R.id.editTextAgain)).getText().toString();
+
+        if(!newPass.equals(newPass2))
+        {
+            new CustomMessageBox(this, "Passwords do not match");
+            return;
+        }
+        else if (!newPass.matches("[a-zA-Z0-9]{4,20}"))
+        {
+            new CustomMessageBox(this, "Password but be between 4 and 20 characters and cannot contain special characters");
+            return;
+        }
+
+        Connection c = new Connection(this);
+
+        try
+        {
+            String result = c.execute("TYPE", "CPASS", "PASSWORD", oldPass, "PASSWORD_NEW", newPass, IntentConstants.USERNAME, username).get();
+
+            JSONObject jo = new JSONObject(result);
+
+             /* Check if the user has timed out */
+            if (jo.getString("expired").equals("true")) {
+
+               /* Display message box and auto logout user */
+                final Connection temp_connect = new Connection(this);
+                // experimenting a new message box builder
+                CustomMessageBox.MessageBoxBuilder builder = new CustomMessageBox.MessageBoxBuilder(this, "Your session has been timed out, please login again");
+                builder.setTitle("Expired")
+                        .setActionOnClick(new CustomMessageBox.ToClick() {
+                            @Override
+                            public void DoOnClick() {
+                                temp_connect.autoLogout(username);
+                            }
+                        }).build();
+            }
+            /* Payment was successful, show message box */
+            else if (jo.getString("status").equals(StatusConstants.OK)) {
+
+
+                Toast.makeText(getBaseContext(), "Password Changed",
+                        Toast.LENGTH_SHORT).show();
+
+                ((KillApp) this.getApplication()).setStatus(false);
+                finish();
+            }
+            else
+            {
+                new CustomMessageBox(this, "There has been an error, your password was not changed");
+            }
+
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+
     }
     /* This is how the application knows if it has been stopped by an intent or by an
      * external source (i.e. home button, phone call etc). Each time an intent is called, it

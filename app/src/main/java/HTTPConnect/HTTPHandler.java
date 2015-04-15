@@ -62,7 +62,7 @@ public class HTTPHandler {
     }
 
     private Response post(Request r) {
-        HttpPost httppost = new HttpPost(Connection.URL);
+        HttpPost httppost = new HttpPost(Connection.SERVER_URL);
         String result = null;
         try {
             httppost.setEntity(new UrlEncodedFormEntity(r.getParams()));

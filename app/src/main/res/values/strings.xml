@@ -99,4 +99,7 @@
 
     <string name="bill_not_activated_text">This bill is not activated. Please wait for others\' confirmation</string>
 
+    <!-- This is the password needed for the keystore @see MyHttpClient.java -->
+    <string name="store_pass">password</string>
+
 </resources>

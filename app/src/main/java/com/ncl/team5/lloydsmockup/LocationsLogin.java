@@ -177,7 +177,7 @@ public class LocationsLogin extends Activity implements LocationListener  {
             for (String placeSearchURL : placesURL) {
                 HttpClient placesClient = new DefaultHttpClient();
                 try {
-                    //HTTP Get receives the URL string
+                    //HTTP Get receives the SERVER_URL string
                     HttpGet placesGet = new HttpGet(placeSearchURL);
                     //execute GET with Client - return response
                     HttpResponse pResponse = placesClient.execute(placesGet);

@@ -7,6 +7,7 @@ import android.app.Activity;
  */
 
 import android.app.AlertDialog;
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,10 +18,17 @@ import com.ncl.team5.lloydsmockup.CustomMessageBox;
 import com.ncl.team5.lloydsmockup.KillApp;
 import com.ncl.team5.lloydsmockup.Login;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -43,6 +51,10 @@ import org.apache.http.protocol.HttpContext;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+
 import Utils.Utilities;
 
 
@@ -58,8 +70,8 @@ import Utils.Utilities;
 public class Connection extends AsyncTask <String, Void, String>  {
 
     /* String to store the web address as a constant */
-    public static final String URL = "http://homepages.cs.ncl.ac.uk/2014-15/csc2022_team5/PHP/main.php";
-    private HttpClient httpclient = new DefaultHttpClient();
+    public static final String SERVER_URL = "https://homepages.cs.ncl.ac.uk/2014-15/csc2022_team5/PHP/main.php";
+    private HttpClient httpclient;
     private CookieStore cookies;
     private HttpContext context = new BasicHttpContext();
     private Activity a;
@@ -78,6 +90,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
     public static long EXPECTED_DURATION_LONG_TASK = 1000; // 1 seconds is the appropriate choice for long task I guess.
     public Connection(Activity a) {
         this.a = a;
+        httpclient = new MyHttpClient(a.getApplicationContext());
     }
 
 
@@ -170,7 +183,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
      * input from the server, turns it into a JSON object, and then sees if it can log in */
 
      public String connect(List<NameValuePair> nameValuePairs) throws IOException {
-         httpclient = new DefaultHttpClient();
+         httpclient = new MyHttpClient(a.getApplicationContext());
          cookies = new BasicCookieStore();
 
          // initialise the cookieStorage (read cookies from file)
@@ -187,7 +200,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
          context = new BasicHttpContext();
          context.setAttribute(ClientContext.COOKIE_STORE,cookies);
-         HttpPost httppost = new HttpPost(URL);
+         HttpPost httppost = new HttpPost(SERVER_URL);
 
         try {
             /* Creates name value pair to be sent via post to the server */
@@ -249,11 +262,15 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
     public String loginConnect(List<NameValuePair> nameValuePairs) throws IOException {
         // Create a new HttpClient and Post Header
-        httpclient = new DefaultHttpClient();
+
         cookies = new BasicCookieStore();
         context = new BasicHttpContext();
         context.setAttribute(ClientContext.COOKIE_STORE,cookies);
-        HttpPost httppost = new HttpPost(URL);
+        httpclient = new MyHttpClient(a.getApplicationContext());
+        HttpPost httppost = new HttpPost(SERVER_URL);
+
+
+
         try {
             /* Creates name value pair to be sent via post to the server */
 //            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -390,4 +407,55 @@ public class Connection extends AsyncTask <String, Void, String>  {
         }
 
         return jo;
-    } }
+    }
+
+    public static HttpsURLConnection setUpHttpsConnection(String urlString)
+    {
+        try
+        {
+            // Load CAs from an InputStream
+            // (could be from a resource or ByteArrayInputStream or ...)
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+
+            // My CRT file that I put in the assets folder
+            // I got this file by following these steps:
+            // * Go to https://littlesvr.ca using Firefox
+            // * Click the padlock/More/Security/View Certificate/Details/Export
+            // * Saved the file as littlesvr.crt (type X.509 Certificate (PEM))
+            // The MainActivity.context is declared as:
+            // public static Context context;
+            // And initialized in MainActivity.onCreate() as:
+            // MainActivity.context = getApplicationContext();
+            InputStream caInput = new BufferedInputStream(new FileInputStream("ncl-cert.crt"));
+            Certificate ca = cf.generateCertificate(caInput);
+            System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
+
+            // Create a KeyStore containing our trusted CAs
+            String keyStoreType = KeyStore.getDefaultType();
+            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+            keyStore.load(null, null);
+            keyStore.setCertificateEntry("ca", ca);
+
+            // Create a TrustManager that trusts the CAs in our KeyStore
+            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+            tmf.init(keyStore);
+
+            // Create an SSLContext that uses our TrustManager
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null, tmf.getTrustManagers(), null);
+
+            // Tell the URLConnection to use a SocketFactory from our SSLContext
+             URL url = new URL(urlString);
+            HttpsURLConnection urlConnection = (HttpsURLConnection)url.openConnection();
+            urlConnection.setSSLSocketFactory(context.getSocketFactory());
+
+            return urlConnection;
+        }
+        catch (Exception ex)
+        {
+            Log.e("ERROR", "Failed to establish SSL connection to server: " + ex.toString());
+            return null;
+        }
+    }
+}
