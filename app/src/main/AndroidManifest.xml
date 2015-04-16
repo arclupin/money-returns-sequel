@@ -205,6 +205,10 @@
             android:name=".Houseshare_Payments"
             android:label="@string/title_activity_houseshare__payments" >
         </activity>
+        <activity
+            android:name=".HelpActivity"
+            android:label="@string/title_activity_help" >
+        </activity>
     </application>
 
 </manifest>

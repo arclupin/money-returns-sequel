@@ -13,7 +13,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 
-public class Products extends Activity {
+public class HelpActivity extends Activity {
     private WebView browser;
     private String username;
     private String date;
@@ -22,19 +22,20 @@ public class Products extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_products);
+        browser = new WebView(this);
+        setContentView(browser);
 
         /* get intents */
         Intent intent = getIntent();
         username = intent.getStringExtra(IntentConstants.USERNAME);
         date = intent.getStringExtra(IntentConstants.DATE);
 
- /*       browser=(WebView)findViewById(R.id.webkit);
+        browser.loadUrl("file:///android_asset/help.html");
         WebSettings webSettings = browser.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        browser.loadUrl("http://www.lloydsbank.com/current-accounts.asp");
+
         // Force links and redirects to open in the WebView instead of in a browser
-        browser.setWebViewClient(new WebViewClient());*/
+        browser.setWebViewClient(new WebViewClient());
     }
 
     @Override

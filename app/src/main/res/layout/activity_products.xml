@@ -113,7 +113,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="For more information, please vist out website."
+        android:text="For more information, please visit our website."
         android:id="@+id/textView16"
         android:textStyle="bold"
         android:layout_below="@+id/textView15"
