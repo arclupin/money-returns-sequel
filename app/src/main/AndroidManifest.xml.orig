@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <!--
          The following two permissions are not required to use
@@ -129,38 +128,91 @@
         </activity>
         <activity
             android:name=".GroupChooser"
-            android:label="@string/title_activity_group_chooser" >
+            android:label="@string/title_activity_group_chooser"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".RegisterHouse"
-            android:label="House Sharing" >
+            android:label="House Sharing"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Houseshare_Create_House"
             android:label="@string/title_activity_houseshare__create__house"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
             android:name=".Fragment_Houseshare_Inputs"
-            android:label="@string/title_activity_fragment__houseshare__inputs" >
-        </activity>
-        <activity android:uiOptions="splitActionBarWhenNarrow"
-            android:name=".Houseshare_HomeView"
-            android:label="@string/title_activity_houseshare__home_view"
-<<<<<<< HEAD
-            android:theme="@style/AppTheme2">
-=======
+            android:label="@string/title_activity_fragment__houseshare__inputs"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".HouseShare_Bill"
+            android:name=".Houseshare_HomeView"
+            android:label="@string/title_activity_houseshare__home_view"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme2"
+            android:uiOptions="splitActionBarWhenNarrow" >
+        </activity>
+        <activity
+            android:name=".HouseShare_Bill_Member"
             android:label="@string/title_activity_house_share__bill"
+            android:parentActivityName=".Houseshare_HomeView"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".HouseShare_Bill_Owner"
+            android:label="@string/title_activity_house_share__bill"
+            android:parentActivityName=".Houseshare_HomeView"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".LocationsLogin"
             android:label="@string/title_activity_locations_login" >
->>>>>>> origin/stella
+        </activity>
+        <activity
+            android:name=".NewBillAuto"
+            android:label="@string/title_activity_new_bill_auto"
+            android:parentActivityName=".Houseshare_HomeView"
+            android:screenOrientation="portrait"
+            android:uiOptions="splitActionBarWhenNarrow" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ncl.team5.lloydsmockup.Houseshare_HomeView" />
+        </activity>
+        <activity
+            android:name=".NewBillManual"
+            android:label="@string/title_activity_new_bill_manual"
+            android:parentActivityName=".Houseshare_HomeView"
+            android:screenOrientation="portrait"
+            android:uiOptions="splitActionBarWhenNarrow" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ncl.team5.lloydsmockup.Houseshare_HomeView" />
+        </activity>
+        <activity
+            android:name=".NewBillManual_SubBill"
+            android:label="@string/title_activity_new_bill_manual__sub_bill"
+            android:parentActivityName=".NewBillManual"
+            android:screenOrientation="portrait"
+            android:uiOptions="splitActionBarWhenNarrow" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ncl.team5.lloydsmockup.NewBillManual" />
+        </activity>
+        <activity
+            android:name=".Houseshare_Payments"
+            android:label="@string/title_activity_houseshare__payments" >
+        </activity>
+        <activity
+<<<<<<< HEAD
+            android:name=".Houseshare_Confirm_Payment"
+            android:label="@string/title_activity_houseshare__confirm__payment" >
+=======
+            android:name=".HelpActivity"
+            android:label="@string/title_activity_help" >
+>>>>>>> origin/master
         </activity>
     </application>
 

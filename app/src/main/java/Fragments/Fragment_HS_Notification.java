@@ -60,6 +60,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
     private OnNotificationInteraction mListener;
     private TableLayout mTable;
     private ProgressBar loading_icon;
+    private static Boolean loaded = true;
 
     public RelativeLayout getmLayoutContainer() {
         return mLayoutContainer;
@@ -181,7 +182,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
 
     public class Notification_Worker extends ConcurrentConnection {
         private NOTI_WORK mode;
-        static final String PARAM_USERNAME_IN_NOTI = "NOTI_USR";
+        public static final String PARAM_USERNAME_IN_NOTI = "NOTI_USR";
 
         // a map storing additional params needed storing.
         private Map<String, String> additional_params;
@@ -204,7 +205,14 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
         protected void onPreExecute() {
 
             if (mode == NOTI_WORK.FETCH) {
-                loading_icon.setVisibility(View.VISIBLE);
+                if (!loaded) {
+                    loading_icon.setVisibility(View.VISIBLE);
+                    // only show the loading icon for the first time in which no notifications are
+                    // occupying space yet.
+                    loaded = true;
+                }
+                else if (!loading_icon.isShown())
+                    mRefreshView.setRefreshing(true);
             }
             super.onPreExecute();
         }
@@ -242,7 +250,9 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
                 }
                 case NOTI_READ: {
                     // after marking the request as read, start the source
-                    Intent billPageIntent = new Intent(getActivity(), HouseShare_Bill_Member.class);
+                    Intent billPageIntent = new Intent(getActivity(),
+                            Boolean.valueOf(getParam(IntentConstants.IS_OWNER))
+                                    ? HouseShare_Bill_Owner.class : HouseShare_Bill_Member.class);
                     billPageIntent.putExtra(IntentConstants.USERNAME, username);
                     billPageIntent.putExtra(IntentConstants.HOUSE_NAME, hs_name);
                     billPageIntent.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
@@ -527,7 +537,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
      * @param isRead the noti has already been read?
      * @param src the target of the noti
      */
-    public void onNotificationsRead(String noti_id, String src, boolean isRead) {
+    public void onNotificationsRead(String noti_id, String src, boolean isRead, boolean isOwner) {
         // if the noti hasnt been read before, then notify the server to mark this noti as read
         // before redirecting to the target
         if (!isRead) {
@@ -539,13 +549,15 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
 
             new Notification_Worker(getActivity(), true, NOTI_WORK.NOTI_READ)
                     .addNewParam(IntentConstants.BILL_ID, src)
+                    .addNewParam(IntentConstants.IS_OWNER, String.valueOf(isOwner)) // god damn line took me 2 hrs
                     .setMsg("Please wait")
                     .execute(new RequestQueue().addRequest(getNotiReadMarkingRequest(noti_id)).toList());
         }
         // else if it's already read, redirect straight away to the target of the noti
         else {
             Log.d("Noti already read", noti_id);
-            Intent billPageIntent = new Intent(getActivity(), HouseShare_Bill_Member.class);
+            Intent billPageIntent = new Intent(getActivity(),
+                    isOwner ? HouseShare_Bill_Owner.class : HouseShare_Bill_Member.class);
             billPageIntent.putExtra(IntentConstants.USERNAME, username);
             billPageIntent.putExtra(IntentConstants.HOUSE_NAME, hs_name);
             billPageIntent.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
@@ -607,7 +619,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
 
         } catch (Exception e) {
             /* Failsafe if something goes utterly wrong */
-            new CustomMessageBox(getActivity(), "Something wrong happened. Try again later", "Error");
+            new CustomMessageBox(getActivity(), "Something wrong happened. Try again later", "Okay", "Error");
             e.printStackTrace();
         }
     }
@@ -642,12 +654,11 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
             View v = data.get(i).makeNotiRow(getActivity());
             final Notification n = data.get(i);
             // data on row
-            final TextView a = (TextView) v.findViewById(R.id.noti_join_req_admin_name);
             final String noti_id = data.get(i).getId();
             int notiType = data.get(i).getType();
             // set listeners for sub buttons in join request notis
+            Log.d("Type", String.valueOf(notiType));
             switch (notiType) {
-
                 case Notification.JOIN_ADM: {
                     //set up the welcome sub button
                     TextView welcome_button = (TextView) v.findViewById(R.id.ok);
@@ -657,9 +668,13 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
                         public void onClick(View v) {
                             new Notification_Worker(getActivity(),
                                     true, NOTI_WORK.APPROVE)
-                                    .setMsg("Loading").execute(new RequestQueue()
-                                    .addRequest(getMemberApprovingRequest(
-                                            n.getAdditional_params().get(Notification.PARAM_POS), noti_id)).toList());
+                                    .addNewParam(Notification_Worker.PARAM_USERNAME_IN_NOTI,
+                                            n.getAdditional_params().get(Notification.PARAM_POS) )
+                                    .setMsg("Loading")
+                                    .execute(new RequestQueue()
+                                            .addRequest(getMemberApprovingRequest(
+                                                    n.getAdditional_params().get(Notification.PARAM_POS), noti_id))
+                                            .toList());
                             TableRow t = (TableRow) v.getParent().getParent().getParent(); // looks quite odd
                             mTable.removeView(t);
                             Log.d("Approving request", getMemberApprovingRequest(n.getAdditional_params().get(Notification.PARAM_POS),
@@ -676,6 +691,8 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
                         public void onClick(View v) {
                             new Notification_Worker(getActivity(),
                                     true, NOTI_WORK.REFUSE)
+                                    .addNewParam(Notification_Worker.PARAM_USERNAME_IN_NOTI,
+                                            n.getAdditional_params().get(Notification.PARAM_POS) )
                                     .setMsg("Loading").execute(new RequestQueue()
                                     .addRequest(getMemberRefusingRequest
                                             (n.getAdditional_params().get(Notification.PARAM_POS),
@@ -696,7 +713,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
                     v.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            onNotificationsRead(n.getId(), n.getSource(), n.isRead());
+                            onNotificationsRead(n.getId(), n.getSource(), n.isRead(), false);
                         }
                     });
                     break;
@@ -704,20 +721,43 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
                 // this sort of noti is only for the bill creator, so redirect to the bill page for
                 // owners
                 case Notification.BILL_PAYMENT_RECEIVE:{
+                    Log.d("Type", "received");
                     v.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent billPageIntent = new Intent(getActivity(), HouseShare_Bill_Owner.class);
-                            billPageIntent.putExtra(IntentConstants.USERNAME, username);
-                            billPageIntent.putExtra(IntentConstants.HOUSE_NAME, hs_name);
-                            billPageIntent.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
-                            billPageIntent.putExtra(IntentConstants.BILL_ID, n.getSource());
-                            startActivity(billPageIntent);
+                            onNotificationsRead(n.getId(), n.getSource(), n.isRead(), true);
                         }
                     });
+                    break;
+                }
+
+                case Notification.BILL_PAYMENT_CONFIRMED: {
+                    Log.d("Type", "confirmed");
+
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onNotificationsRead(n.getId(), n.getSource(), n.isRead(), false);
+                        }
+                    });
+                    break;
+                }
+
+                case Notification.BILL_PAYMENT_REJECTED: {
+                    Log.d("Type", "rejected");
+
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onNotificationsRead(n.getId(), n.getSource(), n.isRead(), false);
+                        }
+                    });
+                    break;
                 }
             }
-            mTable.addView(v, i);
+            Log.d("data", String.valueOf(data.size()) + " i : " + i + " mTable" + mTable.getChildCount());
+            if (v != null)
+                mTable.addView(v, i);
 
 
         }

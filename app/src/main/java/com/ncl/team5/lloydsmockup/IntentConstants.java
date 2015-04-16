@@ -60,4 +60,6 @@ public class IntentConstants {
 
     public static final String PAYER_NAME = "PER_N";
 
+    public static final String IS_OWNER = "ISS";
+
 }

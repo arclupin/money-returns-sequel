@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import Fragments.Fragment_HS_Home;
 import Utils.StringUtils;
 
 /**
@@ -189,21 +190,50 @@ public class Notification {
             case BILL_PAYMENT_RECEIVE: {
                 v = (TableRow) inflater.inflate(R.layout.hs_noti_general, null);
 
-                content = p1 + " has submitted his payment to " + p2 + ".";
+                content = p1 + " has submitted a payment to " + p2 + ".";
 
                 //style the spannable string
                 SpannableString spannableString = new SpannableString(content);
                 spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, p1.length(),
                         Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                spannableString.setSpan(new StyleSpan(Typeface.BOLD), p1.length() + 29,
+                spannableString.setSpan(new StyleSpan(Typeface.BOLD), p1.length() + 28,
                         content.length() - 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
                 ((TextView) v.findViewById(R.id.noti_content)).setText(spannableString);
                 break;
             }
 
+            case BILL_PAYMENT_CONFIRMED: {
+                v = (TableRow) inflater.inflate(R.layout.hs_noti_general, null);
+                String targetUser = Fragment_HS_Home.members.get(p1).getUsername();
+
+                content = targetUser + " has paid his share for " + p2 + ".";
+
+                //style the spannable string
+                SpannableString spannableString = new SpannableString(content);
+                spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, targetUser.length(),
+                        Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                spannableString.setSpan(new StyleSpan(Typeface.BOLD), targetUser.length() + 23,
+                        content.length() - 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                ((TextView) v.findViewById(R.id.noti_content)).setText(spannableString);
+                break;
+            }
+
+            case BILL_PAYMENT_REJECTED: {
+                v = (TableRow) inflater.inflate(R.layout.hs_noti_general, null);
+
+                content = "Your latest payment to " + p1 + " has been rejected.";
+
+                //style the spannable string
+                SpannableString spannableString = new SpannableString(content);
+                spannableString.setSpan(new StyleSpan(Typeface.BOLD), 23, 23 + p1.length(),
+                        Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
 
+                ((TextView) v.findViewById(R.id.noti_content)).setText(spannableString);
+                break;
+            }
         }
 
         if (read) {

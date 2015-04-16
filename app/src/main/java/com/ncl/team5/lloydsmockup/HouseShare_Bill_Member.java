@@ -182,7 +182,6 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
         protected void onPreExecute() {
             super.onPreExecute();
             if (mode == MODE.BILL_FETCH_MAIN || mode == MODE.BILL_REFRESH)
-                bill = null;
             if (mode == MODE.BILL_REFRESH && !billRefresh_SwipeView.isRefreshing()) {
                 billRefresh_SwipeView.setRefreshing(true);
             }
@@ -232,12 +231,13 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
                                             "confirmation at the moment.\nPlease try again later.")
                                     .setTitle("Failed").build();
                         refresh();
+                        requestLayout();
                         break;
                     }
 
                 }
             }
-            requestLayout();
+
         }
     }
 
@@ -282,40 +282,7 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
 
 
         primaryAction_View = (LinearLayout) findViewById(R.id.bill_pay_or_confirm);
-        ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text))
-                .setText("Confirm");
-            primaryAction_View.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!bill.isActive()) {
-                        if (getMySubBill().isConfirmed()) {
-                            new CustomMessageBox.MessageBoxBuilder(HouseShare_Bill_Member.this,
-                                    "You have already confirmed this bill.\nPlease " +
-                                            "wait while the other members have confirmed their shares.")
-                                    .build();
-                        } else {
-                            HS_Bill_Primary_Action_Dialog dialog =
-                                    HS_Bill_Primary_Action_Dialog.initialise(bill);
-                            dialog.show(getFragmentManager(), "BillConfirm_Frag");
-                        }
-                } else {
-                    Log.d("my sub bill", "/ " + getMySubBill().toString());
-                    if (getMySubBill().getPayment() == null) {
-                        Intent i = new Intent(HouseShare_Bill_Member.this, Houseshare_Payments.class);
-                        i.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
-                        i.putExtra(IntentConstants.BILL_ID, bill.getBillID());
-                        i.putExtra(IntentConstants.BILL_AMOUNT,
-                                HouseShare_Bill_Member.this.getMySubBill().getAmount());
-                        i.putExtra(IntentConstants.USERNAME, username);
-                        startActivity(i);
-                    }
-                    else {
-                        new CustomMessageBox.MessageBoxBuilder(HouseShare_Bill_Member.this,
-                                "You have already submitted your payment.")
-                                .setTitle("Payment already submitted").build();
-                    }
-            }
-        }});
+
         participants_View = (LinearLayout) findViewById(R.id.bill_participants);
         participants_View.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -516,17 +483,18 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
 
             }
             //sort the event in reverse date order (newest date first)
-            Collections.sort(bill.getEvents());
-            updateEventsTimeline();
+            List<Event> eventList = new ArrayList<Event>(bill.getEvents());
+            Collections.sort(eventList);
+            updateEventsTimeline(eventList);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    private void updateEventsTimeline() {
+    private void updateEventsTimeline(List<Event> eventList) {
         eventsTable.removeAllViews();
-        for (int i = 0; i < bill.getEvents().size(); i++) {
-            eventsTable.addView(bill.getEvents().get(i).craftView(getLayoutInflater()));
+        for (int i = 0; i < eventList.size(); i++) {
+            eventsTable.addView(eventList.get(i).craftView(getLayoutInflater()));
         }
     }
 
@@ -643,6 +611,41 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
      */
     private void requestLayout() {
         //set up text views data
+        ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text))
+                .setText("Confirm");
+
+        primaryAction_View.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!bill.isActive()) {
+                    if (getMySubBill().isConfirmed()) {
+                        new CustomMessageBox.MessageBoxBuilder(HouseShare_Bill_Member.this,
+                                "You have already confirmed this bill.\nPlease " +
+                                        "wait while the other members have confirmed their shares.")
+                                .build();
+                    } else {
+                        HS_Bill_Primary_Action_Dialog dialog =
+                                HS_Bill_Primary_Action_Dialog.initialise(bill);
+                        dialog.show(getFragmentManager(), "BillConfirm_Frag");
+                    }
+                } else {
+                    Log.d("my sub bill", "/ " + getMySubBill().toString());
+                    if (getMySubBill().getPayment() == null) {
+                        Intent i = new Intent(HouseShare_Bill_Member.this, Houseshare_Payments.class);
+                        i.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
+                        i.putExtra(IntentConstants.BILL_ID, bill.getBillID());
+                        i.putExtra(IntentConstants.BILL_AMOUNT,
+                                HouseShare_Bill_Member.this.getMySubBill().getAmount());
+                        i.putExtra(IntentConstants.USERNAME, username);
+                        startActivity(i);
+                    }
+                    else {
+                        new CustomMessageBox.MessageBoxBuilder(HouseShare_Bill_Member.this,
+                                "You have already submitted your payment.")
+                                .setTitle("Payment already submitted").build();
+                    }
+                }
+            }});
         billName_TextView.setText(bill.getBillName());
         billAmount_TextView.setText(StringUtils.POUND_SIGN + bill.getAmount());
         billCreationDetails_TextView.setText("Created by " +
@@ -665,7 +668,6 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
             ((ImageView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_icon)).setImageResource(
                     R.drawable.pay);
             if (getMySubBill().getPayment() != null && !getMySubBill().getPayment().isConfirmed())
-
             {
                 ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text))
                         .setText("Submitted");

@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/confirmed_payments"
             android:layout_below="@id/title"
-            android:paddingLeft="20dp"
+
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:orientation="vertical"
@@ -39,6 +39,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/text_confirmed"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:text="APPROVED PAYMENTS"
                 style="@style/Bill_Confirmation_Value"
                 android:textColor="@color/dark_green"
@@ -60,24 +62,28 @@
             android:layout_height="wrap_content"
             android:id="@+id/unconfirmed_payments"
             android:layout_below="@id/confirmed_payments"
-            android:paddingLeft="20dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+ >
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/text_not_confirmed"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:text="APPROVAL REQUIRED PAYMENTS"
                 style="@style/Bill_Confirmation_Value"
                 android:textColor="@android:color/holo_red_light"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                />
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/unconfirmed_payments_table">
+                android:id="@+id/unconfirmed_payments_table"
+               >
 
             </TableLayout>
 

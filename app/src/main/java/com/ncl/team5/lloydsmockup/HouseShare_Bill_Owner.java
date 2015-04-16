@@ -185,8 +185,8 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (mode == MODE.BILL_FETCH_MAIN || mode == MODE.BILL_REFRESH)
-                bill = null;
+//            if (mode == MODE.BILL_FETCH_MAIN || mode == MODE.BILL_REFRESH)
+//                bill = null;
         }
 
         @Override
@@ -407,6 +407,33 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
     }
 
     /**
+     * Called after {@link #onRestoreInstanceState}, {@link #onRestart}, or
+     * {@link #onPause}, for your activity to start interacting with the user.
+     * This is a good place to begin animations, open exclusive-access devices
+     * (such as the camera), etc.
+     * <p/>
+     * <p>Keep in mind that onResume is not the best indicator that your activity
+     * is visible to the user; a system window such as the keyguard may be in
+     * front.  Use {@link #onWindowFocusChanged} to know for certain that your
+     * activity is visible to the user (for example, to resume a game).
+     * <p/>
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @see #onRestoreInstanceState
+     * @see #onRestart
+     * @see #onPostResume
+     * @see #onPause
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("Owner resumed", "abc");
+        refresh();
+    }
+
+    /**
      * fetch the info of a bill (not include the sub bill and events)
      * @return the request
      */
@@ -471,17 +498,18 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
 
             }
             //sort the event in reverse date order (newest date first)
-            Collections.sort(bill.getEvents());
-            updateEventsTimeline();
+            List<Event> eventList = new ArrayList<Event>(bill.getEvents());
+            Collections.sort(eventList);
+            updateEventsTimeline(eventList);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    private void updateEventsTimeline() {
+    private void updateEventsTimeline(List<Event> eventList) {
         eventsTable.removeAllViews();
-        for (int i = 0; i < bill.getEvents().size(); i++){
-            eventsTable.addView(bill.getEvents().get(i).craftView(getLayoutInflater()));
+        for (int i = 0; i < eventList.size(); i++){
+            eventsTable.addView(eventList.get(i).craftView(getLayoutInflater()));
         }
     }
 
@@ -595,6 +623,38 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
      */
     private void requestLayout() {
         //set up text views data
+        primaryAction_View.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!bill.isActive()) {
+                    if (bill.canBillBeActivated()) {
+
+                        HS_Bill_Primary_Action_Dialog dialog =
+                                HS_Bill_Primary_Action_Dialog.initialise(bill);
+                        dialog.show(getFragmentManager(), "BillActivation_Frag");
+                    } else {
+                        new CustomMessageBox.MessageBoxBuilder(HouseShare_Bill_Owner.this,
+                                "Sorry, you cannot activate this bill at the moment.\nPlease " +
+                                        "wait while the other members have confirmed their shares.")
+                                .build();
+                    }
+                } else {
+                    List<Payment> p  = new ArrayList<Payment>();
+                    List<String> u = new ArrayList<String>();
+                    for (String hsid : bill.getSubBills().keySet()){
+                        if (bill.getSubBills().get(hsid).getPayment() != null) {
+                            p.add(bill.getSubBills().get(hsid).getPayment());
+                            u.add(Fragment_HS_Home.members.get(hsid).getUsername());
+                        }
+                    }
+                    HS_Bill_Payments_Dialog f = HS_Bill_Payments_Dialog.initialise(
+                            p.toArray(new Payment[p.size()]), u.toArray(new String[u.size()]));
+                    f.show(getFragmentManager(), "Payments_Frag");
+                    //TODO blur the view of primary action
+                }
+            }
+        });
+
         billName_TextView.setText(bill.getBillName());
         billAmount_TextView.setText(StringUtils.POUND_SIGN + bill.getAmount());
         billCreationDetails_TextView.setText("Created by " +
@@ -642,7 +702,11 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
      * refresh the bill
      */
     private void refresh() {
-
+        new Bill_Worker(HouseShare_Bill_Owner.this, MODE.BILL_REFRESH)
+                .execute(new RequestQueue().addRequests(getBillFetchingRequest(),
+                        getSubBillFetchingRequest(),
+                        getPaymentsFetchingRequest(),
+                        getEventsFetchingRequest()).toList());
     }
 
 

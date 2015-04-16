@@ -161,8 +161,14 @@ public class Houseshare_Confirm_Payment extends Activity {
                     new CustomMessageBox.MessageBoxBuilder
                             (Houseshare_Confirm_Payment.this,
                                     "Sorry, we could not process your request at the moment. " +
-                                            "Please try again later.")
+                                            "Please try again later.").setActionOnClick(new CustomMessageBox.ToClick() {
+                        @Override
+                        public void DoOnClick() {
+                            finish();
+                        }
+                    })
                             .build();
+
             }
         }
     }

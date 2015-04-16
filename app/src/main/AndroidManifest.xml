@@ -208,7 +208,7 @@
       <activity 
             android:name=".Houseshare_Confirm_Payment"
             android:label="@string/title_activity_houseshare__confirm__payment" >
-	    </acitivity>
+	    </activity>
  <activity
 
             android:name=".HelpActivity"

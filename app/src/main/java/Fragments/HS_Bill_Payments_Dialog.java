@@ -72,7 +72,7 @@ public class HS_Bill_Payments_Dialog extends DialogFragment {
         for (int i = 0; i < payments.length; i++) {
             // craft a new row for the current sub bill
             final int k = i;
-            View payment_view = inflater.inflate(R.layout.hs_payment_row, null);
+            RelativeLayout payment_view = (RelativeLayout) inflater.inflate(R.layout.hs_payment_row, null);
             //set the data for this sub bill (name + charge)
             ((TextView) payment_view.findViewById(R.id.participant_name)).setText(users[i]);
             ((TextView) payment_view.findViewById(R.id.share)).

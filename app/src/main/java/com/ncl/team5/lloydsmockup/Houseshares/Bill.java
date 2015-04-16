@@ -35,7 +35,7 @@ public class Bill implements Comparable<Bill>, Parcelable{
     private boolean isActive;
     private boolean amICreator;
 
-    private List<Event> events;
+    private TreeSet<Event> events;
 
     private static final Bill BILL_EMPTY = new Bill();
 
@@ -68,7 +68,8 @@ public class Bill implements Comparable<Bill>, Parcelable{
         this.datePaid = datePaid;
         this.subBills = new TreeMap<String, SubBill>();
         this.amICreator = amICreator;
-        this.events = new ArrayList<Event>();
+        this.events = new TreeSet<Event>();
+
     }
 
     /**
@@ -101,7 +102,7 @@ public class Bill implements Comparable<Bill>, Parcelable{
         this.datePaid = datePaid;
         this.subBills = new TreeMap<String, SubBill>(subBills);
         this.amICreator = amICreator;
-        this.events = new ArrayList<Event>();
+        this.events = new TreeSet<Event>();
     }
 
     /**
@@ -159,7 +160,7 @@ public class Bill implements Comparable<Bill>, Parcelable{
         return amICreator;
     }
 
-    public List<Event> getEvents() {
+    public TreeSet<Event> getEvents() {
         return events;
     }
 
