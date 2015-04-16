@@ -106,6 +106,10 @@
         \nYou should include all necessary information needed to identify your payment other than
         the payment method.
    </string>
+
+    <string name="title_activity_houseshare__confirm__payment">Houseshare_Confirm_Payment</string>
+
     <string name="title_activity_help">HelpActivity</string>
     <string name="action_Help">Help</string>
+
 </resources>

@@ -126,17 +126,15 @@
             android:text="Message to the owner"
             style="@style/Bill_Confirmation_Value"
             android:textSize="14sp" />
-        <EditText
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="150dp"
             android:layout_marginTop="10dp"
             android:id="@+id/payment_message_value"
             android:layout_below="@+id/payment_message_text"
-            android:hint="@string/hint_message"
             style="@style/message_edit_text"
             android:background="@drawable/border_dialog"/>
-
         </RelativeLayout>
 
     <TextView

@@ -1,0 +1,183 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ncl.team5.lloydsmockup.Houseshare_Payments"
+    android:background="@color/light_background">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/confirm_payment_method"
+                android:padding="10dp"
+                android:background="@drawable/button_light_transparent">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/confirm_payment_method_text"
+                    android:text="Payment method"
+                    style="@style/Bill_Confirmation_Value"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/confirm_payment_method_value"
+                    android:layout_below="@id/confirm_payment_method_text"
+                    style="@style/HS_homeview_description"
+                    android:textSize="15sp"
+                    android:textStyle="normal"
+                    android:text="Supply your payment method" />
+
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:id="@+id/divider1"
+                android:layout_below="@+id/confirm_payment_method"
+                android:background="@android:color/darker_gray" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/confirm_payment_amount"
+                android:layout_below="@id/confirm_payment_method"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/confirm_payment_amount_text"
+                    android:text="Amount"
+                    style="@style/Bill_Confirmation_Value"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/confirm_payment_amount_value"
+                    android:layout_below="@id/confirm_payment_amount_text"
+                    android:text="£7.74 (fixed)"
+                    style="@style/HS_homeview_description"
+                    android:textSize="15sp"
+                    android:textStyle="normal" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:id="@+id/divider2"
+                android:layout_below="@+id/confirm_payment_amount"
+                android:background="@android:color/darker_gray" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/confirm_payment_date"
+                android:layout_below="@id/divider2"
+                android:padding="10dp"
+                android:clickable="false"
+                android:background="@drawable/button_light_transparent">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/confirm_payment_date_text"
+                    android:text="Date of payment"
+                    style="@style/Bill_Confirmation_Value"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/confirm_payment_date_value"
+                    android:layout_below="@id/confirm_payment_date_text"
+                    android:text="Supply the payment date"
+                    style="@style/HS_homeview_description"
+                    android:textSize="15sp"
+                    android:textStyle="normal" />
+
+            </RelativeLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:id="@+id/divider3"
+                android:layout_below="@+id/confirm_payment_date"
+                android:background="@android:color/darker_gray" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/confirm_payment_message"
+                android:layout_below="@id/divider3"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/confirm_payment_message_text"
+                    android:text="Message to you"
+                    style="@style/Bill_Confirmation_Value"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="150dp"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/confirm_payment_message_value"
+                    android:layout_below="@+id/confirm_payment_message_text"
+                    android:hint="@string/hint_message"
+                    style="@style/message_edit_text"
+                    android:background="@drawable/border_dialog" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/confirm_payment_message">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/payment_confirm"
+                    android:padding="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Confirm"
+                    android:clickable="true"
+                    style="@style/Bill_Confirmation_Value"
+                    android:textSize="16dp"
+                    android:background="@drawable/button_light_transparent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/payment_reject"
+                    android:padding="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Reject"
+                    android:clickable="true"
+                    style="@style/Bill_Confirmation_Value"
+                    android:textSize="16dp"
+                    android:background="@drawable/button_light_transparent" />
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

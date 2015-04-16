@@ -43,6 +43,7 @@ import java.util.concurrent.ExecutionException;
 import HTTPConnect.Connection;
 import HTTPConnect.Request_Params;
 import HTTPConnect.Responses_Format;
+import Utils.Houseshares;
 import Utils.StringUtils;
  //TODO : ADD REAL-TIME NAME UNIQUENESS CHECKER
 
@@ -52,6 +53,8 @@ public class Houseshare_Create_House extends Activity {
     private boolean isBottom = false;
     private android.app.ActionBar actionBar;
     private TextWatcher watcher;
+    private String housename;
+    private String hsid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,7 @@ public class Houseshare_Create_House extends Activity {
 
         Intent intent = getIntent();
         username = intent.getExtras().getString(IntentConstants.USERNAME);
+        hsid = intent.getStringExtra(IntentConstants.HOUSESHARE_ID);
 
         watcher = new TextWatcher() {
             @Override
@@ -198,7 +202,10 @@ public class Houseshare_Create_House extends Activity {
                     alert.show();
                 }
                 else if (jo.getString(Responses_Format.RESPONSE_STATUS).equals("true")) {
-                    Toast.makeText(this, "your house has been created. Processing home view", Toast.LENGTH_SHORT ).show();
+                   new CustomMessageBox.MessageBoxBuilder(this, "Your house has been created. Let's start sharing.")
+                           .setTitle("Confirmation").build();
+                    Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, l.get(0), username,
+                            hsid, Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE);
                     //TODO SET UP THE HOME VIEW FOR THE HOUSE (Should be done in background)
 
                 }

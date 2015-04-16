@@ -58,4 +58,6 @@ public class IntentConstants {
 
     public static final String PAYMENT_AMOUNT = "PAYMENT_AMOUNT";
 
+    public static final String PAYER_NAME = "PER_N";
+
 }
