@@ -199,15 +199,18 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
     @Override
     public void onBackPressed() {
         if (StringUtils.isFieldEmpty(chose_hs_name)) {
-            Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, chose_hs_name, username, hsid, Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE);
+            Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class,
+                    chose_hs_name, username, hsid, Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE);
         } else
-            Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class, chose_hs_name, username, hsid, Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ);
+            Houseshares.hs_intents_home_view(this, Houseshare_HomeView.class,
+                    chose_hs_name, username, hsid, Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ);
 
     }
 
     public void createHouse(View v) {
         Intent i = new Intent(this, Houseshare_Create_House.class);
         i.putExtra(IntentConstants.USERNAME, username);
+        i.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
         startActivity(i);
         ((KillApp) this.getApplication()).setStatus(false);
     }

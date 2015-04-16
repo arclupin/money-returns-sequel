@@ -1,9 +1,11 @@
 package Fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -25,9 +27,25 @@ import Utils.StringUtils;
  */
 public class HS_Bill_Payments_Dialog extends DialogFragment {
 
-    interface BillPaymentConfirmationListener {
-        void onUnconfirmedPaymentClicked(HS_Bill_Payments_Dialog f, Payment p,
-                                         String username, String houseshareID, String billID);
+    private BillPaymentConfirmationListener mListener;
+
+    /**
+     *
+     */
+    public interface BillPaymentConfirmationListener {
+        void onUnconfirmedPaymentClicked(HS_Bill_Payments_Dialog f, Payment p);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (BillPaymentConfirmationListener) activity;
+        }
+        catch (IllegalStateException e) {
+            throw new IllegalStateException(activity.toString() + " must implement the " +
+                    "BillPaymentConfirmationListner interface");
+        }
     }
 
     // static factory
@@ -48,12 +66,12 @@ public class HS_Bill_Payments_Dialog extends DialogFragment {
         TableLayout c = (TableLayout) v.findViewById(R.id.confirmed_payments_table);
         TableLayout u = (TableLayout) v.findViewById(R.id.unconfirmed_payments_table);
 
-        Payment[] payments = (Payment[]) getArguments().getParcelableArray(IntentConstants.PAYMENTS);
+        final Payment[] payments = (Payment[]) getArguments().getParcelableArray(IntentConstants.PAYMENTS);
         String[] users = getArguments().getStringArray(IntentConstants.PARTICIPANTS);
 
         for (int i = 0; i < payments.length; i++) {
             // craft a new row for the current sub bill
-
+            final int k = i;
             View payment_view = inflater.inflate(R.layout.hs_payment_row, null);
             //set the data for this sub bill (name + charge)
             ((TextView) payment_view.findViewById(R.id.participant_name)).setText(users[i]);
@@ -74,8 +92,8 @@ public class HS_Bill_Payments_Dialog extends DialogFragment {
                 payment_view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //TODO show the payment confirmation page
-                        Toast.makeText(getActivity(), "Show payment confirmation page", Toast.LENGTH_SHORT).show();
+
+                            mListener.onUnconfirmedPaymentClicked(HS_Bill_Payments_Dialog.this, payments[k]);
                     }
                 });
             }

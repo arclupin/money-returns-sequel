@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Menu;
@@ -45,9 +46,12 @@ import HTTPConnect.Responses_Format;
 import Utils.StringUtils;
 import Utils.Utilities;
 
-
+/**
+ * Activity for showing the bill page (owners only)
+ */
 public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Dialog.BillDeleteDialogListener,
-        HS_Bill_Primary_Action_Dialog.BillPrimaryActionDialogListener {
+        HS_Bill_Primary_Action_Dialog.BillPrimaryActionDialogListener,
+        HS_Bill_Payments_Dialog.BillPaymentConfirmationListener {
 
     //order of data in response
     public static final int BILL_ID_POS = 0;
@@ -117,7 +121,6 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
     private String hsid;
     private String billID;
 
-
     public static enum MODE {BILL_FETCH_MAIN, BILL_CONFIRM, BILL_EDIT, BILL_DELETE, BILL_FETCH_EVENTS
         , BILL_REFRESH}
 
@@ -125,6 +128,8 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
     private Request eventsFetchingRequest;
     private Request billFetchingRequet;
     private Request paymentsFetchingRequest;
+
+
     /**
      * User confirms that he wants to delete this bill
      * Only creators have this permission
@@ -153,7 +158,6 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
             new Bill_Worker(this, true, MODE.BILL_CONFIRM)
                     .setMsg("Activating your bill").execute(new RequestQueue().addRequest(r).toList());
     }
-
 
 
     /**
@@ -299,8 +303,6 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
                                     .build();
                         }
                 } else {
-                    Toast.makeText(HouseShare_Bill_Owner.this, "Bill active, to display the tick",
-                            Toast.LENGTH_SHORT).show();
                     List<Payment> p  = new ArrayList<Payment>();
                     List<String> u = new ArrayList<String>();
                     for (String hsid : bill.getSubBills().keySet()){
@@ -604,12 +606,14 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
             billStatus_TextView.setText("This bill has been paid on " +
                     StringUtils.getGeneralDateString(bill.getDatePaid()) + ".");
         }
+
         Log.d("Bil Active?" , String.valueOf(bill.isActive()));
+
         if (bill.isActive()) {
             ((ImageView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_icon)).setImageResource(
                     R.drawable.pay);
             ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text)).setText(
-                   "Payments");
+                    "Payments");
             unactivatedText_TextView.setVisibility(View.INVISIBLE);
             timelineHolder_TextView.setVisibility(View.INVISIBLE);
         } else {
@@ -638,6 +642,27 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
      * refresh the bill
      */
     private void refresh() {
+
+    }
+
+
+    /**
+     * User clicks on one of the unconfirmed payment in the dialog
+     * @param f the fragement itself
+     * @param p the payment object associated with this sub bill
+     */
+    @Override
+    public void onUnconfirmedPaymentClicked(HS_Bill_Payments_Dialog f, Payment p) {
+        f.dismiss();
+
+        Intent i = new Intent(this, Houseshare_Confirm_Payment.class);
+        i.putExtra(IntentConstants.USERNAME, username);
+        i.putParcelableArrayListExtra(IntentConstants.PAYMENTS,
+                new ArrayList<Parcelable>(Collections.singletonList(p)));
+        i.putExtra(IntentConstants.PAYER_NAME, Fragment_HS_Home.members.get(p.getHsid()).getUsername());
+
+        startActivity(i);
+
 
     }
 }

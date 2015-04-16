@@ -29,7 +29,8 @@ public class Houseshares {
      * @param type             the type of the home view (for the layout)
      * @param username         the username
      */
-    public static void hs_intents_home_view(Activity callingActivity, Class startingActivity, String house_name, String username, String hsid, String type) {
+    public static void hs_intents_home_view(Activity callingActivity, Class startingActivity,
+                                            String house_name, String username, String hsid, String type) {
         if (type.equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE) || type.equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE) || type.equals(Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ)) {
             Intent i = new Intent(callingActivity, startingActivity);
             i.putExtra(IntentConstants.USERNAME, username);
