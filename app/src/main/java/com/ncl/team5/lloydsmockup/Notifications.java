@@ -193,7 +193,6 @@ public class Notifications extends Activity {
                         });
                 AlertDialog alert = msg.create();
                 alert.show();
-
             }
             else {
 
@@ -260,9 +259,8 @@ public class Notifications extends Activity {
                     /* There are no transactions if the array length is zero */
                     if (jsonArray.length() == 0) {
                         /* there are no transactions, so no notifications */
-                        new CustomMessageBox(this, "There have been no transactions for your account");
-                        this.finish();
                         return;
+
                     }
 
                     /* add the last three payees to the spinner */
@@ -274,12 +272,24 @@ public class Notifications extends Activity {
                         /* Gets the date field and parse it into a date variable, can throw an exception but never should... */
                         String date = insideObject.getString("Time");
                         Date loginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(logDate);
-                        Date timeFromResponse = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
+                        Date transactionTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
                         Date logoutTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(this.logoutTime);
 
 
-                        if(timeFromResponse.compareTo(loginTime) > 0) {
-
+                        if(notif.size() == 0 && transactionTime.compareTo(loginTime) < 0 && transactionTime.compareTo(logoutTime) > 0 && !transInSession)
+                        {
+                            if (insideObject.getString("Payee").equals(accountNum)) {
+                                notif.add("Into Account:\t" + "£" + insideObject.getString("Amount") + " From " + insideObject.getString("Payer") + "\t" + insideObject.getString("Time"));
+                                recentCount++;
+                                toNotify.add(true);
+                            } else {
+                                notif.add("Out Account:\t" + "£" + insideObject.getString("Amount") + " To " + insideObject.getString("Payer") + "\t" + insideObject.getString("Time"));
+                                recentCount++;
+                                toNotify.add(true);
+                            }
+                        }
+                        else if (notif.size() == 0)
+                        {
                             if (insideObject.getString("Payee").equals(accountNum)) {
                                 notif.add("Into Account:\t" + "£" + insideObject.getString("Amount") + " From " + insideObject.getString("Payer") + "\t" + insideObject.getString("Time"));
                                 recentCount++;
@@ -290,40 +300,13 @@ public class Notifications extends Activity {
                                 toNotify.add(false);
                             }
                         }
-                        else if (notif.size() == 0 && timeFromResponse.compareTo(logoutTime) > 0 && timeFromResponse.compareTo(loginTime) < 0 && !transInSession)
-                        {
-                            if(insideObject.getString("Payee").equals(accountNum))
-                            {
-                                notif.add("Into Account:\t" + "£" + insideObject.getString("Amount") + " From " + insideObject.getString("Payer") + "\t" + insideObject.getString("Time"));
-                                toNotify.add(true);
-                            }
-                            else
-                            {
-                                notif.add("Out Account:\t" + "£" + insideObject.getString("Amount") + " To " + insideObject.getString("Payer") + "\t" + insideObject.getString("Time"));
-                                toNotify.add(true);
-                            }
-                        }
-                        else if(notif.size() == 0 && timeFromResponse.compareTo(logoutTime) < 0)
-                        {
-                            if(recentCount < NOTIFICATION_MAX) {
-
-                                if (insideObject.getString("Payee").equals(accountNum)) {
-                                    notif.add("Into Account:\t" + "£" + insideObject.getString("Amount") + " From " + insideObject.getString("Payer") + "\t" + insideObject.getString("Time"));
-                                    recentCount++;
-                                    toNotify.add(false);
-                                } else {
-                                    notif.add("Out Account:\t" + "£" + insideObject.getString("Amount") + " To " + insideObject.getString("Payer") + "\t" + insideObject.getString("Time"));
-                                    recentCount++;
-                                    toNotify.add(false);
-                                }
-                            }
-                        }
                         else
                         {
                             for(int c = 0; c < notif.size(); c++) {
+
                                 Date fromListTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(notif.get(c).split("\t")[2]);
 
-                                if (timeFromResponse.compareTo(logoutTime) > 0 && timeFromResponse.compareTo(fromListTime) > 0 && !transInSession) {
+                                if (transactionTime.compareTo(logoutTime) > 0 && transactionTime.compareTo(loginTime) < 0 && transactionTime.compareTo(fromListTime) > 0 && !transInSession) {
                                     if (insideObject.getString("Payee").equals(accountNum)) {
                                         notif.add(c, "Into Account:\t" + "£" + insideObject.getString("Amount") + " From " + insideObject.getString("Payer") + "\t" + insideObject.getString("Time"));
                                         toNotify.add(c, true);
@@ -334,7 +317,7 @@ public class Notifications extends Activity {
                                         toNotify.add(c, true);
                                         c = notif.size();
                                     }
-                                } else if (timeFromResponse.compareTo(fromListTime) > 0) {
+                                } else if (transactionTime.compareTo(fromListTime) > 0) {
                                     if (insideObject.getString("Payee").equals(accountNum)) {
                                         notif.add(c, "Into Account:\t" + "£" + insideObject.getString("Amount") + " From " + insideObject.getString("Payer") + "\t" + insideObject.getString("Time"));
                                         toNotify.add(c, false);

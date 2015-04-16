@@ -196,7 +196,7 @@ public class Payments extends FragmentActivity {
             /* gets the values of all of the UI components */
             toAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner2)).getSelectedItem().toString().split(" ~ ")[0];
             int pos = ((Spinner) findViewById(R.id.Payment_Old_spinner2)).getSelectedItemPosition();
-            sortCode = fromSC.get(pos);
+            sortCode = toSC.get(pos);
             amount = ((TextView) findViewById(R.id.Payment_Old_TextField_Amount)).getText().toString();
             fromAccountNum = ((Spinner) findViewById(R.id.Payment_Old_spinner1)).getSelectedItem().toString();
             pos = ((Spinner) findViewById(R.id.Payment_Old_spinner1)).getSelectedItemPosition();
