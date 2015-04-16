@@ -61,6 +61,7 @@ public class Request_Params {
     public static final String MARK_NOTI_AS_SEEN_NOT_READ = "NOTI_ASNR";
     public static final String MARK_NOTI_AS_SEEN_NOT_READ_PARAM = "notifications[]";
     public static final String MARK_NOTI_AS_READ= "NOTI_R";
+    public static final String NOTI_ID = "NOTI_ID";
 
     public static final String VAL_APPROVE_MEMBER = "HS_MEMBER_IN";
     public static final String VAL_APPROVE_MEMBER_PARAM = "HS_MEMBER_IN_NAME";

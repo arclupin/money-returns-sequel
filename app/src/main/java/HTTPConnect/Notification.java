@@ -2,7 +2,9 @@ package HTTPConnect;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Parcelable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
@@ -11,10 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.ncl.team5.lloydsmockup.HouseShare_Bill_Member;
+import com.ncl.team5.lloydsmockup.HouseShare_Bill_Owner;
+import com.ncl.team5.lloydsmockup.IntentConstants;
 import com.ncl.team5.lloydsmockup.R;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +46,7 @@ public class Notification {
     public static final int TIME_POS = 2;
     public static final int PARAM2_POS = 3;
 
+
     /**
      * 3 types of noti
      * 1. NEW: Completely new
@@ -50,8 +57,11 @@ public class Notification {
     public static final int SEEN_NOT_READ = 2;
     public static final int NEW = 0;
 
-
+    private int type;
+    private List<String> additional_params;
+    private String source;
     private boolean read;
+    private String id;
 
     public String getId() {
         return id;
@@ -60,8 +70,6 @@ public class Notification {
     public void setId(String id) {
         this.id = id;
     }
-
-    private String id;
 
     public int getType() {
         return type;
@@ -83,19 +91,26 @@ public class Notification {
         return additional_params;
     }
 
-    private int type;
-    private List<String> additional_params;
+    public String getSource() {
+        return source;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
 
     public Notification() {
         type = JOIN_ADM;
         additional_params = new ArrayList<String>();
     }
 
-    public Notification(String id, int type, boolean read, List<String> arg_params) {
+    public Notification(String id, int type, boolean read, List<String> arg_params, String source) {
         this.id = id;
         this.type = type;
         this.read = read;
+        this.source = source;
         this.additional_params = arg_params;
+
 
     }
 
@@ -106,10 +121,11 @@ public class Notification {
         additional_params = new ArrayList<String>();
     }
 
-    public Notification(int type, boolean read, String id) {
+    public Notification(int type, boolean read, String id, String source) {
         this.id = id;
         this.type = type;
         this.read = read;
+        this.source = source;
         additional_params = new ArrayList<String>();
     }
 
@@ -200,6 +216,16 @@ public class Notification {
         return StringUtils.getDateTimeFromServerDateResponse(additional_params.get(TIME_POS));
     }
 
+    @Override
+    public String toString() {
+        return "Notification{" +
+                "read=" + read +
+                ", id='" + id + '\'' +
+                ", type=" + type +
+                ", additional_params=" + additional_params +
+                ", source='" + source + '\'' +
+                '}';
+    }
 }
 
 

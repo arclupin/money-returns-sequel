@@ -51,7 +51,7 @@ public class HS_Home_FragPagerAdapter extends FragmentStatePagerAdapter {
                 return Fragment_HS_Home.newInstance(username, hsid, hs_name, view_type);
             }
             case 1: {
-                return Fragment_HS_Notification.newInstance(username, hs_name);
+                return Fragment_HS_Notification.newInstance(username, hs_name, hsid);
             }
             default: {
                 return null;

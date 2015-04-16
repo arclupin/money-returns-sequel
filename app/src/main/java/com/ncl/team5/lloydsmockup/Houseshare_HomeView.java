@@ -196,7 +196,6 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
            case R.id.action_refresh: {
                Fragment_HS_Notification f = (Fragment_HS_Notification) fragmentManager.getFragments().get(1);
                if (f.isVisible())
-
                {
                    f.getmRefreshView().setRefreshing(true);
                    f.refresh();

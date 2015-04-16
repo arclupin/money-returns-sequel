@@ -2,6 +2,7 @@ package Fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,6 +17,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.ncl.team5.lloydsmockup.CustomMessageBox;
+import com.ncl.team5.lloydsmockup.HouseShare_Bill_Member;
 import com.ncl.team5.lloydsmockup.IntentConstants;
 import com.ncl.team5.lloydsmockup.R;
 
@@ -30,15 +32,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import HTTPConnect.ConcurrentConnection;
 import HTTPConnect.Connection;
 import HTTPConnect.Notification;
+import HTTPConnect.Request;
+import HTTPConnect.RequestQueue;
 import HTTPConnect.Request_Params;
+import HTTPConnect.Response;
 import HTTPConnect.Responses_Format;
 
 /**
  * Fragment for displaying the home view in the home view activity <br/>
  * (another fragment that would be invoked in this activity is the notification fragment
- *
  */
 public class Fragment_HS_Notification extends Fragment_HS_Abstract {
     // TODO: Rename parameter arguments, choose names that match
@@ -49,6 +54,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
 
     private static String username;
     private static String hs_name;
+    private static String hsid;
     private static List<Notification> data;
     private OnNotificationInteraction mListener;
     private TableLayout mTable;
@@ -70,18 +76,26 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
 
     private SwipeRefreshLayout mRefreshView;
 
-    private static enum UI_WORK_TYPE {MAIN};
+    private static enum UI_WORK_TYPE {MAIN}
+
+    ;
+
+    private Request notisFetchingRequest;
+    private Request memberApprovingRequest;
+    private Request memberRefusingRequest;
+    private Request notiReadMarkingRequest;
 
 
     public TableLayout getmTable() {
         return mTable;
     }
 
-    public static Fragment_HS_Notification newInstance(String username, String hs_name) {
+    public static Fragment_HS_Notification newInstance(String username, String hs_name, String hsid) {
         Fragment_HS_Notification f = new Fragment_HS_Notification();
         Bundle b = new Bundle();
         b.putString(IntentConstants.USERNAME, username);
         b.putString(IntentConstants.HOUSE_NAME, hs_name);
+        b.putString(IntentConstants.HOUSESHARE_ID, hsid);
         f.setArguments(b);
         return f;
     }
@@ -140,9 +154,8 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
      */
     @Override
     public void update() {
-            new NotificationWorker(getActivity())
-                    .setMode(NOTI_WORK.FETCH)
-                    .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_FETCH_NOTI, Request_Params.PARAM_USR, username);
+        new Notification_Worker(getActivity(), true, NOTI_WORK.FETCH)
+                .execute(new RequestQueue().addRequest(getNotisFetchingRequest()).toList());
     }
 
     /**
@@ -150,9 +163,8 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
      * It will go fetch the data in short.
      */
     public void refresh() {
-         new NotificationWorker(getActivity())
-                .setMode(NOTI_WORK.FETCH_REFRESH).setTimeExpected(3000)
-                .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_FETCH_NOTI, Request_Params.PARAM_USR, username);
+        new Notification_Worker(getActivity(), true, NOTI_WORK.FETCH_REFRESH)
+                .execute(new RequestQueue().addRequest(getNotisFetchingRequest()).toList());
     }
 
     public static enum NOTI_WORK {
@@ -161,37 +173,26 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
         APPROVE,
         REFUSE,
         FETCH, // initial data fetch
-        FETCH_REFRESH // user swipe down to refresh
+        FETCH_REFRESH, // user swipe down to refresh
+        NOTI_READ
     }
 
 
-    public class NotificationWorker extends Connection {
+    public class Notification_Worker extends ConcurrentConnection {
         private NOTI_WORK mode;
         static final String PARAM_USERNAME_IN_NOTI = "NOTI_USR";
 
         // a map storing additional params needed storing.
         private Map<String, String> additional_params;
 
-        public NotificationWorker setMode(NOTI_WORK mode) {
+        public Notification_Worker setMode(NOTI_WORK mode) {
             this.mode = mode;
-
             return this;
         }
 
-        public NotificationWorker addNewParam(String key, String value) {
+        public Notification_Worker addNewParam(String key, String value) {
             additional_params.put(key, value);
             return this;
-        }
-
-        /**
-         * set the expected time for this task to finish
-         *
-         * @param howLong
-         * @return
-         */
-        @Override
-        public Connection setTimeExpected(long howLong) {
-            return super.setTimeExpected(howLong);
         }
 
         public String getParam(String key) {
@@ -199,12 +200,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
         }
 
         @Override
-        protected String doInBackground(String... params) {
-            return super.doInBackground(params);
-        }
-
-        @Override
-        protected void onPreExecute(){
+        protected void onPreExecute() {
 
             if (mode == NOTI_WORK.FETCH) {
                 loading_icon.setVisibility(View.VISIBLE);
@@ -212,19 +208,24 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
             super.onPreExecute();
         }
 
-        public NotificationWorker(Activity a) {
+        public Notification_Worker(Activity a) {
             super(a);
-            setMode(MODE.LONG_NO_DIALOG_TASK);
+        }
+
+        public Notification_Worker(Activity a, boolean dialog, NOTI_WORK mode) {
+            super(a);
+            this.mode = mode;
             additional_params = new HashMap<String, String>();
         }
 
         @Override
-        protected void onPostExecute(String r) {
-            super.onPostExecute(r);
+        protected void onPostExecute(List<Response> responses) {
+            super.onPostExecute(responses);
 
             switch (mode) {
-                case FETCH: case FETCH_REFRESH: {
-                    fetchNotifications(r);
+                case FETCH:
+                case FETCH_REFRESH: {
+                    fetchNotifications(responses.get(0).getRaw_response());
                     loading_icon.setVisibility(View.GONE);
                     makeUI();
                     if (mRefreshView.isRefreshing())
@@ -233,13 +234,21 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
 
                 }
 
-                case REFUSE: case APPROVE: {
-                    onSubButtonClicked(additional_params.get(PARAM_USERNAME_IN_NOTI), r, mode);
+                case REFUSE:
+                case APPROVE: {
+                    onSubButtonClicked(additional_params.get(PARAM_USERNAME_IN_NOTI), responses.get(0).getRaw_response(), mode);
                     break;
                 }
+                case NOTI_READ: {
+                    // after marking the request as read, start the source
+                    Intent billPageIntent = new Intent(getActivity(), HouseShare_Bill_Member.class);
+                    billPageIntent.putExtra(IntentConstants.USERNAME, username);
+                    billPageIntent.putExtra(IntentConstants.HOUSE_NAME, hs_name);
+                    billPageIntent.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
+                    billPageIntent.putExtra(IntentConstants.BILL_ID, getParam(IntentConstants.BILL_ID));
+                    startActivity(billPageIntent);
+                }
             }
-
-
 
 
         }
@@ -252,9 +261,12 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
         // Required empty public constructor
     }
 
-public interface OnNotificationInteraction {
-    public void onNewNotiReceived();
-}
+    /**
+     * interface for intereacting with the host activity
+     */
+    public interface OnNotificationInteraction {
+        void onNewNotiReceived();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -262,6 +274,7 @@ public interface OnNotificationInteraction {
         username = getArguments().getString(IntentConstants.USERNAME) != null ?
                 getArguments().getString(IntentConstants.USERNAME) : username;
         hs_name = getArguments().getString(IntentConstants.HOUSE_NAME);
+        hsid = getArguments().getString(IntentConstants.HOUSESHARE_ID);
 
 //        Log.d("on create noti", username);
 //        try {
@@ -293,9 +306,8 @@ public interface OnNotificationInteraction {
 
         //set up the refresh view
         mRefreshView = (SwipeRefreshLayout) mLayoutContainer.findViewById(R.id.refresh_view_noti);
-       mRefreshView.setColorSchemeColors(getResources().getColor(R.color.light_green),
-               getResources().getColor(android.R.color.holo_red_light));
-
+        mRefreshView.setColorSchemeColors(getResources().getColor(R.color.light_green),
+                getResources().getColor(android.R.color.holo_red_light));
 
         mTable = (TableLayout) mLayoutContainer.findViewById(R.id.hs_notification_table);
         loading_icon = (ProgressBar) mLayoutContainer.findViewById(R.id.noti_loading_icon);
@@ -355,7 +367,6 @@ public interface OnNotificationInteraction {
         super.onDetach();
 //        mListener = null;
     }
-
 
 
     /**
@@ -423,7 +434,7 @@ public interface OnNotificationInteraction {
 
 
         try {
-                JSONObject jo = new JSONObject(r);
+            JSONObject jo = new JSONObject(r);
 
             /* Check if the user has timed out */
             if (jo.getString("expired").equals("true")) {
@@ -450,16 +461,18 @@ public interface OnNotificationInteraction {
 
 
                     String id = noti_arr_in.getString(0);
-                    boolean read = noti_arr_in.getString(noti_arr_in.length() - 2).equals("1");
+                    boolean read = noti_arr_in.getString(noti_arr_in.length() - 3).equals("1");
                     int type = noti_arr_in.getInt(1);
+                    String source = noti_arr_in.getString(noti_arr_in.length() - 1);
 
-                    Notification n = new Notification(type, read, id);
+                    Notification n = new Notification(type, read, id, source);
                     n.addParam(noti_arr_in.getString(Notification.HSID_POS + 2))
                             .addParam(noti_arr_in.getString(Notification.PARAM_POS + 2))
                             .addParam(noti_arr_in.getString(Notification.TIME_POS + 2))
                             .addParam(noti_arr_in.getString(Notification.PARAM2_POS + 3));
 
                     l.add(n);
+                    Log.d("Extracted noti " + i, n.toString());
                 }
             }
             /* There was an error indide the status return field, display appropriate error message */
@@ -485,6 +498,7 @@ public interface OnNotificationInteraction {
 
     /**
      * prepare the request to be sent to the server letting it know the notifications have been seen (might not yet read)
+     *
      * @param f the fragment itself
      * @return the request param - use String[] instead of {@link HTTPConnect.Request} to comply with the Connection
      */
@@ -505,13 +519,48 @@ public interface OnNotificationInteraction {
 
     }
 
+    /**
+     * The user has clicked on a notification
+     *
+     * @param noti_id the id of the noti read
+     * @param isRead the noti has already been read?
+     * @param src the target of the noti
+     */
+    public void onNotificationsRead(String noti_id, String src, boolean isRead) {
+        // if the noti hasnt been read before, then notify the server to mark this noti as read
+        // before redirecting to the target
+        if (!isRead) {
+            Request r = new Request(Request.TYPE.POST);
+            r.addParam(Request_Params.PARAM_TYPE, Request_Params.MARK_NOTI_AS_READ)
+                    .addParam(Request_Params.PARAM_USR, username)
+                    .addParam(Request_Params.NOTI_ID, noti_id);
+            Log.d("Request marked as read", r.toString());
+
+            new Notification_Worker(getActivity(), true, NOTI_WORK.NOTI_READ)
+                    .addNewParam(IntentConstants.BILL_ID, src)
+                    .setMsg("Please wait")
+                    .execute(new RequestQueue().addRequest(getNotiReadMarkingRequest(noti_id)).toList());
+        }
+        // else if it's already read, redirect straight away to the target of the noti
+        else {
+            Log.d("Noti already read", noti_id);
+            Intent billPageIntent = new Intent(getActivity(), HouseShare_Bill_Member.class);
+            billPageIntent.putExtra(IntentConstants.USERNAME, username);
+            billPageIntent.putExtra(IntentConstants.HOUSE_NAME, hs_name);
+            billPageIntent.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
+            billPageIntent.putExtra(IntentConstants.BILL_ID, src);
+            startActivity(billPageIntent);
+        }
+
+    }
 
 
     /**
      * method performed after the user has clicked on the sub button on one of the noti_join_req row,
      * that is, either the welcome or refuse button.
-     * @param p the name of the param (username who has sent the requets)
-     * @param r the response
+     *
+     * @param p    the name of the param (username who has sent the requets)
+     * @param r    the response
      * @param type the type of the request (Approve or cancel)
      */
     public void onSubButtonClicked(String p, String r, NOTI_WORK type) {
@@ -536,10 +585,8 @@ public interface OnNotificationInteraction {
                                 temp_connect.autoLogout(username);
                             }
                         }).build();
-            }
-
-            else if (jo.getString("status").equals("true")) {
-                new CustomMessageBox.MessageBoxBuilder(getActivity(),  "You have " + (type == NOTI_WORK.REFUSE ?  "refused" : "approved")
+            } else if (jo.getString("status").equals("true")) {
+                new CustomMessageBox.MessageBoxBuilder(getActivity(), "You have " + (type == NOTI_WORK.REFUSE ? "refused" : "approved")
                         + " the request of " + p.substring(0, p.length() - 1) + ".")
                         .setTitle("Confirmation").build();
             }
@@ -550,7 +597,8 @@ public interface OnNotificationInteraction {
                 new CustomMessageBox(getActivity(), "Sorry. We could not process your request at the moment \nIf you are experiencing this error constantly, please contact our team.");
                 /* give more info on the error here, no money taken from account */
                 /* Use the status results to display certain error messages */
-            } }
+            }
+        }
         /* Catch the exceptions */ catch (JSONException jse) {
             /* Error in the JSON response */
             new CustomMessageBox(getActivity(), "There was an error in the server connection");
@@ -563,16 +611,27 @@ public interface OnNotificationInteraction {
         }
     }
 
+    /**
+     * check if there is any new notification (requested by the notification fragment)
+     *
+     * @param f the noti fragment
+     */
     public void checkEmptyNotification(Fragment_HS_Notification f) {
+        Log.d("check empty noti", "abc");
         if (f.isVisible()) {
             if (mTable.getChildCount() == 0) {
                 LayoutInflater i = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                mTable.removeAllViews();
                 TableRow v = (TableRow) i.inflate(R.layout.hs_noti_empty, null);
+                v.setClickable(false);
                 mTable.addView(v);
             }
         }
     }
 
+    /**
+     * Prepare the UI for the notification fragment
+     */
     private void makeUI() {
         mTable.removeAllViews(); // remove all old views first
         for (int i = 0; i < data.size(); i++) {
@@ -580,56 +639,69 @@ public interface OnNotificationInteraction {
 
             // initialise the row
             View v = data.get(i).makeNotiRow(getActivity());
+            final Notification n = data.get(i);
             // data on row
             final TextView a = (TextView) v.findViewById(R.id.noti_join_req_admin_name);
             final String noti_id = data.get(i).getId();
-
+            int notiType = data.get(i).getType();
             // set listeners for sub buttons in join request notis
-            if (data.get(i).getType() == Notification.JOIN_ADM) {
-                //set up the welcome sub button
-                TextView welcome_button = (TextView) v.findViewById(R.id.ok);
-                welcome_button.setClickable(true);
-                welcome_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        new NotificationWorker(Fragment_HS_Notification.this.getActivity())
-                                .setMode(NOTI_WORK.APPROVE)
-                                .addNewParam(NotificationWorker.PARAM_USERNAME_IN_NOTI, a.getText().toString())
-                                .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_APPROVE_MEMBER,
-                                        Request_Params.PARAM_USR, username,
-                                        Request_Params.VAL_APPROVE_MEMBER_PARAM, a.getText().toString(),
-                                        "NOTI_ID", noti_id);
+            switch (notiType) {
 
-                        TableRow t = (TableRow) v.getParent().getParent().getParent(); // looks quite odd
-                        Log.d("row on click", t.toString());
-                        mTable.removeView(t);
+                case Notification.JOIN_ADM: {
+                    //set up the welcome sub button
+                    TextView welcome_button = (TextView) v.findViewById(R.id.ok);
+                    welcome_button.setClickable(true);
+                    welcome_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            new Notification_Worker(getActivity(),
+                                    true, NOTI_WORK.APPROVE)
+                                    .setMsg("Loading").execute(new RequestQueue()
+                                    .addRequest(getMemberApprovingRequest(
+                                            n.getAdditional_params().get(Notification.PARAM_POS), noti_id)).toList());
+                            TableRow t = (TableRow) v.getParent().getParent().getParent(); // looks quite odd
+                            mTable.removeView(t);
+                            Log.d("Approving request", getMemberApprovingRequest(n.getAdditional_params().get(Notification.PARAM_POS),
+                                    noti_id).toString());
 
-                    }
-                });
+                        }
+                    });
 
-                // set up the cancel sub button
-                TextView cancel_button = (TextView) v.findViewById(R.id.refuse);
-                cancel_button.setClickable(true);
-                cancel_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        new NotificationWorker(Fragment_HS_Notification.this.getActivity())
-                                .setMode(NOTI_WORK.REFUSE)
-                                .addNewParam(NotificationWorker.PARAM_USERNAME_IN_NOTI, a.getText().toString())
-                                .execute(Request_Params.PARAM_TYPE, Request_Params.VAL_REFUSE_MEMBER,
-                                        Request_Params.PARAM_USR, username,
-                                        Request_Params.VAL_REFUSE_MEMBER_PARAM, a.getText().toString(),
-                                        "NOTI_ID", noti_id);
+                    // set up the cancel sub button
+                    TextView cancel_button = (TextView) v.findViewById(R.id.refuse);
+                    cancel_button.setClickable(true);
+                    cancel_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            new Notification_Worker(getActivity(),
+                                    true, NOTI_WORK.REFUSE)
+                                    .setMsg("Loading").execute(new RequestQueue()
+                                    .addRequest(getMemberRefusingRequest
+                                            (n.getAdditional_params().get(Notification.PARAM_POS),
+                                                    noti_id)).toList());
+                            TableRow t = (TableRow) v.getParent().getParent().getParent();
+                            Log.d("Refusing request", getMemberRefusingRequest(n.getAdditional_params().get(Notification.PARAM_POS),
+                                    noti_id).toString());
+                            mTable.removeView(t);
 
-                        TableRow t = (TableRow) v.getParent().getParent().getParent();
-                        Log.d("row on click", t.toString());
-                        mTable.removeView(t);
-
-                    }
-                });
+                        }
+                    });
+                    break;
+                }
+                // redirect to the bill page in the following cases
+                case Notification.NEW_BILL: case Notification.BILL_PAYMENT_RECEIVE:
+                case Notification.BILL_ACTIVATED: {
+                    //set the src target of the notification
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onNotificationsRead(n.getId(), n.getSource(), n.isRead());
+                        }
+                    });
+                    break;
+                }
             }
             mTable.addView(v, i);
-
 
 
         }
@@ -637,7 +709,8 @@ public interface OnNotificationInteraction {
         // add a layout change listener to update the layout on events
         mTable.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 checkEmptyNotification(Fragment_HS_Notification.this);
             }
         });
@@ -647,8 +720,78 @@ public interface OnNotificationInteraction {
     }
 
 
-
+    /**
+     * get the noti fetching request, or initialise it first if possible
+     *
+     * @return the initialised request
+     */
+    private Request getNotisFetchingRequest() {
+        if (notisFetchingRequest != null)
+            return notisFetchingRequest;
+        else
+            notisFetchingRequest = new Request(Request.TYPE.POST)
+                    .addParam(Request_Params.PARAM_TYPE, Request_Params.VAL_FETCH_NOTI)
+                    .addParam(Request_Params.PARAM_USR, username);
+        return notisFetchingRequest;
     }
+
+
+    /**
+     * get the member approving request, or initialise it first if possible
+     *
+     * @param approvedMember the name of the member approved
+     * @param noti_id        the notification id
+     * @return the initialised request
+     */
+    private Request getMemberApprovingRequest(String approvedMember, String noti_id) {
+        if (memberApprovingRequest != null)
+            return memberApprovingRequest;
+        else
+            memberApprovingRequest = new Request(Request.TYPE.POST)
+                    .addParam(Request_Params.PARAM_TYPE, Request_Params.VAL_APPROVE_MEMBER)
+                    .addParam(Request_Params.PARAM_USR, username)
+                    .addParam(Request_Params.VAL_APPROVE_MEMBER_PARAM, approvedMember)
+                    .addParam(Request_Params.NOTI_ID, noti_id);
+        return memberApprovingRequest;
+    }
+
+
+    /**
+     * get the member refusing request, or initialise it first if possible
+     *
+     * @param approvedMember the name of the member approved
+     * @param noti_id        the notification id
+     * @return the initialised request
+     */
+    public Request getMemberRefusingRequest(String approvedMember, String noti_id) {
+        if (memberRefusingRequest != null)
+            return memberApprovingRequest;
+        else
+            memberRefusingRequest = new Request(Request.TYPE.POST)
+                    .addParam(Request_Params.PARAM_TYPE, Request_Params.VAL_REFUSE_MEMBER)
+                    .addParam(Request_Params.PARAM_USR, username)
+                    .addParam(Request_Params.VAL_REFUSE_MEMBER_PARAM, approvedMember)
+                    .addParam(Request_Params.NOTI_ID, noti_id);
+        return memberRefusingRequest;
+    }
+
+
+    /**
+     * get the notiReadMarkingRequest, or initialise it first if possible
+     *
+     * @return the initialised request
+     */
+    public Request getNotiReadMarkingRequest(String noti_id) {
+        if (notiReadMarkingRequest != null)
+            return notiReadMarkingRequest;
+        else
+            notiReadMarkingRequest = new Request(Request.TYPE.POST)
+                    .addParam(Request_Params.PARAM_TYPE, Request_Params.MARK_NOTI_AS_READ)
+                    .addParam(Request_Params.PARAM_USR, username)
+                    .addParam(Request_Params.NOTI_ID, noti_id);
+        return notiReadMarkingRequest;
+    }
+}
 
 
 

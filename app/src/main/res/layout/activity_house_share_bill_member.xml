@@ -21,8 +21,8 @@
             android:padding="3dp"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:text="Electricity October"
-            style="@style/HS_bill_name" />
+            style="@style/HS_bill_name"
+            android:text="Loading"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,8 +31,8 @@
             android:padding="3dp"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:text="£150.0"
-            style="@style/HS_bill_name" />
+            style="@style/HS_bill_name"
+            android:text=""/>
 
         <TextView
             android:layout_width="match_parent"
@@ -42,7 +42,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
             android:padding="3dp"
-            android:text="Created by Alice on 23/1/2015"
+            android:text=""
             style="@style/HS_bill_additional_info"
 
             />
@@ -54,7 +54,7 @@
             android:layout_below="@id/bill_creation_details"
             android:layout_marginLeft="5dp"
             android:padding="3dp"
-            android:text="Due in 5 days"
+            android:text=""
             style="@style/HS_bill_additional_info" />
 
         <ImageView
@@ -65,6 +65,7 @@
             android:layout_toRightOf="@id/bill_status"
             android:layout_toEndOf="@id/bill_status"
             android:layout_alignBottom="@id/bill_status"
+            android:visibility="invisible"
             />
 
     </RelativeLayout>

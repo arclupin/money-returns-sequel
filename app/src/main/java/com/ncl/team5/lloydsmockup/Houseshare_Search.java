@@ -335,6 +335,7 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
         LayoutInflater l = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         TableRow r = (TableRow) l.inflate(R.layout.hs_search_result_empty, null);
+        r.setClickable(false);
         LinearLayout ll = (LinearLayout) r.getChildAt(0);
         TextView tv = (TextView) ll.getChildAt(0);
 

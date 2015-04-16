@@ -264,6 +264,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            billList = new ArrayList<Bill>();
             //show loading indicators
             Log.d("Loaded", String.valueOf(loaded));
            if (!loaded) {
@@ -337,7 +338,6 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
      */
     public void displayHomeViewContent() {
         try {
-
             JSONArray house_Array = new JSONObject(response_content).getJSONArray("basic_info");
             viewName.setText(house_Array.getString(0));
             viewAddressText.setText(StringUtils.implode(" ", house_Array.getString(1),
@@ -429,22 +429,21 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
                 .addParam(Request_Params.PARAM_USR, username);
 
         // get members data
-        //TODO _FIXME Never send this request when the user has not joined any group
+        //TODO _FIXME Never send this request when the user has not joined any group [FIXED]
         Request fetch_members_request = new Request(Request.TYPE.POST);
         fetch_members_request.addParam(Request_Params.PARAM_TYPE, Request_Params.HS_ALL_MEMBERS)
                 .addParam(Request_Params.PARAM_USR, username);
 
         // get bills data
-        //TODO _FIXME Never send this request when the user has not joined any group
+        //TODO _FIXME Never send this request when the user has not joined any group [FIXED]
         Request fetch_bills_request = new Request(Request.TYPE.POST);
         fetch_bills_request.addParam(Request_Params.PARAM_TYPE, Request_Params.REQUEST_HS_GET_MY_BILLS)
                 .addParam(Request_Params.PARAM_USR, username);
-
-        // execute the task
-        new HomeViewWorker(getActivity(), false)
-                .execute(new RequestQueue().addRequests(home_feed_request, new_noti_check_request,
-                        fetch_members_request, fetch_bills_request).toList());
-
+        if (!StringUtils.isFieldEmpty(hs_name) && view_type.equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE)) {
+            new HomeViewWorker(getActivity(), false)
+                    .execute(new RequestQueue().addRequests(home_feed_request, new_noti_check_request,
+                            fetch_members_request, fetch_bills_request).toList());
+        }
     }
 
     /**
@@ -644,6 +643,8 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
                     billPageIntent.putExtra(IntentConstants.USERNAME, username);
                     billPageIntent.putExtra(IntentConstants.HOUSE_NAME, hs_name);
                     billPageIntent.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
+                    // just to make sure :)
+                    billPageIntent.putExtra(IntentConstants.BILL_ID, billList.get(position).getBillID());
                     startActivity(billPageIntent);
                 }
             });
