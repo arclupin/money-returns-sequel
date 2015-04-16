@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialog_bill_type_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border_dialog"
+    android:paddingBottom="15dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/Dialog_Text_Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="15dp"
+            android:textSize="20sp"
+            android:paddingBottom="10dp"
+            android:text="Payments" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/confirmed_payments"
+            android:layout_below="@id/title"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:orientation="vertical"
+            android:clickable="false">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_confirmed"
+                android:text="APPROVED PAYMENTS"
+                style="@style/Bill_Confirmation_Value"
+                android:textColor="@color/dark_green"
+                android:textSize="14sp"
+                android:layout_weight="0.8" />
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/confirmed_payments_table">
+
+
+            </TableLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/unconfirmed_payments"
+            android:layout_below="@id/confirmed_payments"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_not_confirmed"
+                android:text="APPROVAL REQUIRED PAYMENTS"
+                style="@style/Bill_Confirmation_Value"
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="14sp" />
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/unconfirmed_payments_table">
+
+            </TableLayout>
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/dialog_okay"
+            android:text="Close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_below="@id/unconfirmed_payments"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:padding="15dp"
+            style="@style/Dialog_Text_Content"
+            android:textSize="14sp"
+            android:background="@drawable/button_light_color"
+            android:clickable="true" />
+    </RelativeLayout>
+</ScrollView>

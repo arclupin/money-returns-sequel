@@ -52,4 +52,10 @@ public class IntentConstants {
 
     public static final String PAYMENT_MESSAGE = "PAYMENT_MSG";
 
+    public static final String PAYMENTS = "PAYMENTS";
+
+    public static final String PAYMENT_STATUS = "PAYMENT_STT";
+
+    public static final String PAYMENT_AMOUNT = "PAYMENT_AMOUNT";
+
 }

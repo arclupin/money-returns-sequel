@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.ncl.team5.lloydsmockup.Houseshares.Bill;
 import com.ncl.team5.lloydsmockup.Houseshares.Event;
 import com.ncl.team5.lloydsmockup.Houseshares.Member;
+import com.ncl.team5.lloydsmockup.Houseshares.Payment;
 import com.ncl.team5.lloydsmockup.Houseshares.SubBill;
 
 import org.json.JSONArray;
@@ -33,6 +34,7 @@ import Fragments.Fragment_HS_Home;
 import Fragments.HS_Bill_Delete_Dialog;
 import Fragments.HS_Bill_Message_Dialog;
 import Fragments.HS_Bill_Participants_Dialog;
+import Fragments.HS_Bill_Payments_Dialog;
 import Fragments.HS_Bill_Primary_Action_Dialog;
 import HTTPConnect.ConcurrentConnection;
 import HTTPConnect.Request;
@@ -75,6 +77,15 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
     private static final int EVENT_DATE_POS = 4;
     private static final int EVENT_SRC_POS = 3;
 
+    private static final int PAYMENT_HSID_POS = 0;
+    private static final int PAYMENT_BILL_ID_POS = 1;
+    private static final int PAYMENT_AMOUNT_POS = 2;
+    private static final int PAYMENT_DATE_SUBMITTED_POS = 3;
+    private static final int PAYMENT_DATE_PAID_POS = 4;
+    private static final int PAYMENT_STATUS_POS = 5;
+    private static final int PAYMENT_PAYMENT_METHOD_POS = 6;
+    private static final int PAYMENT_PAYMENT_MESSAGE_POS = 7;
+
 
 
     private ActionBar actionBar;
@@ -104,7 +115,16 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
     private String username;
     private String hs_name;
     private String hsid;
+    private String billID;
 
+
+    public static enum MODE {BILL_FETCH_MAIN, BILL_CONFIRM, BILL_EDIT, BILL_DELETE, BILL_FETCH_EVENTS
+        , BILL_REFRESH}
+
+    private Request subBillsFetchingRequest;
+    private Request eventsFetchingRequest;
+    private Request billFetchingRequet;
+    private Request paymentsFetchingRequest;
     /**
      * User confirms that he wants to delete this bill
      * Only creators have this permission
@@ -134,12 +154,7 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
                     .setMsg("Activating your bill").execute(new RequestQueue().addRequest(r).toList());
     }
 
-    public static enum MODE {BILL_FETCH_MAIN, BILL_CONFIRM, BILL_EDIT, BILL_DELETE, BILL_FETCH_EVENTS
-    , BILL_REFRESH}
 
-    private Request subBillsFetchingRequest;
-    private Request eventsFetchingRequest;
-    private Request billFetchingRequet;
 
     /**
      * Gets data from the server and UI preparation
@@ -175,7 +190,7 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
             super.onPostExecute(responses);
             switch (mode) {
                 case BILL_FETCH_MAIN: case BILL_REFRESH: {
-                    Response r = responses.get(2);
+                    Response r = responses.get(3);
                     // check for expiration of the latest response
                     if (r.getToken(Responses_Format.RESPONSE_EXPIRED).equals("true")) {
                         Utilities.showAutoLogoutDialog(HouseShare_Bill_Owner.this, username);
@@ -183,7 +198,8 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
                         //update the backing bill with fetched sub bills
                         filterBill(responses.get(0).getToken(Responses_Format.RESPONSE_HS_CONTENT));
                         filterSubBills(responses.get(1).getToken(Responses_Format.RESPONSE_HS_CONTENT));
-                        filterEvents(responses.get(2).getToken(Responses_Format.RESPONSE_STATUS));
+                        filterPayments(responses.get(2).getToken(Responses_Format.RESPONSE_STATUS));
+                        filterEvents(responses.get(3).getToken(Responses_Format.RESPONSE_STATUS));
 
                         requestLayout();
                         if (mode == MODE.BILL_REFRESH || billRefresh_SwipeView.isRefreshing())
@@ -203,13 +219,13 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
                                             "\nAll users show now be able to pay this bill"))
                                     .setTitle("Share confirmed").build();
                             // reset the backing data
-                                bill.setIsActive(true);
-                            requestLayout();
+                            refresh();
                         } else
                             new CustomMessageBox.MessageBoxBuilder
                                     (HouseShare_Bill_Owner.this, "Sorry. We could not process the " +
                                             "confirmation at the moment.\nPlease try again later.")
                                     .setTitle("Failed").build();
+                        refresh();
                         break;
                     }
 
@@ -233,10 +249,12 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
         }
 
         i = getIntent();
-        bill = (Bill) i.getParcelableArrayListExtra(IntentConstants.BILL_PARCEL).get(0);
+        if (i.getParcelableArrayListExtra(IntentConstants.BILL_PARCEL) != null)
+            bill = (Bill) i.getParcelableArrayListExtra(IntentConstants.BILL_PARCEL).get(0);
         username = i.getStringExtra(IntentConstants.USERNAME);
         hs_name = i.getStringExtra(IntentConstants.HOUSE_NAME);
         hsid = i.getStringExtra(IntentConstants.HOUSESHARE_ID);
+        billID = i.getStringExtra(IntentConstants.BILL_ID);
 
         // initilise view objects
         billName_TextView = (TextView) findViewById(R.id.bill_basic_info);
@@ -254,7 +272,9 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
             @Override
             public void onRefresh() {
                 new Bill_Worker(HouseShare_Bill_Owner.this, MODE.BILL_REFRESH)
-                        .execute(new RequestQueue().addRequests(getBillFetchingRequest(), getSubBillFetchingRequest(),
+                        .execute(new RequestQueue().addRequests(getBillFetchingRequest(),
+                                getSubBillFetchingRequest(),
+                                getPaymentsFetchingRequest(),
                                 getEventsFetchingRequest()).toList());
             }
         });
@@ -281,6 +301,17 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
                 } else {
                     Toast.makeText(HouseShare_Bill_Owner.this, "Bill active, to display the tick",
                             Toast.LENGTH_SHORT).show();
+                    List<Payment> p  = new ArrayList<Payment>();
+                    List<String> u = new ArrayList<String>();
+                    for (String hsid : bill.getSubBills().keySet()){
+                        if (bill.getSubBills().get(hsid).getPayment() != null) {
+                            p.add(bill.getSubBills().get(hsid).getPayment());
+                            u.add(Fragment_HS_Home.members.get(hsid).getUsername());
+                        }
+                    }
+                    HS_Bill_Payments_Dialog f = HS_Bill_Payments_Dialog.initialise(
+                            p.toArray(new Payment[p.size()]), u.toArray(new String[u.size()]));
+                    f.show(getFragmentManager(), "Payments_Frag");
                     //TODO blur the view of primary action
                 }
             }
@@ -321,29 +352,20 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
         deleteBill_View.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    HS_Bill_Delete_Dialog dialog = HS_Bill_Delete_Dialog.initialise(bill.getBillID());
-                    dialog.show(getFragmentManager(), "BillDel_Frag");
+                HS_Bill_Delete_Dialog dialog = HS_Bill_Delete_Dialog.initialise(bill.getBillID());
+                dialog.show(getFragmentManager(), "BillDel_Frag");
             }
         });
 
-        //set up text views data
-        billName_TextView.setText(bill.getBillName());
-        billAmount_TextView.setText(StringUtils.POUND_SIGN + bill.getAmount());
-        billCreationDetails_TextView.setText("Created by " +
-                ("You on " + StringUtils.getGeneralDateString(bill.getDateCreated())));
-        if (!bill.isPaid()) {
-            billStatus_TextView.setText("This bill is due in " +
-                    Utilities.getDaysLeftUntilDueDate(bill.getDueDate()) + " days.");
-        } else {
-            billStatus_TextView.setText("This bill has been paid on " +
-                    StringUtils.getGeneralDateString(bill.getDatePaid()) + ".");
-        }
+
 
 
         new Bill_Worker(this, true, MODE.BILL_FETCH_MAIN)
                 .setMsg("Loading your bill")
                 .execute(new RequestQueue().addRequests(
-                        getBillFetchingRequest(), getSubBillFetchingRequest(),
+                        getBillFetchingRequest(),
+                        getSubBillFetchingRequest(),
+                        getPaymentsFetchingRequest(),
                         getEventsFetchingRequest()).toList());
 
 
@@ -363,7 +385,7 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
             return subBillsFetchingRequest;
         subBillsFetchingRequest = new Request(Request.TYPE.POST)
                 .addParam(Request_Params.PARAM_TYPE, Request_Params.REQUEST_HS_GET_SUB_BILLS)
-                .addParam(Request_Params.REQUEST_HS_BILL_ID, bill.getBillID())
+                .addParam(Request_Params.REQUEST_HS_BILL_ID, billID)
                 .addParam(Request_Params.PARAM_USR, username);
         Log.d("subbills request: ", subBillsFetchingRequest.toString());
         return subBillsFetchingRequest;
@@ -376,7 +398,7 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
             return eventsFetchingRequest;
         eventsFetchingRequest = new Request(Request.TYPE.POST)
                 .addParam(Request_Params.PARAM_TYPE, Request_Params.REQUEST_HS_BILL_FETCH_EVENTS)
-                .addParam(Request_Params.REQUEST_HS_BILL_ID, bill.getBillID())
+                .addParam(Request_Params.REQUEST_HS_BILL_ID,billID)
                 .addParam(Request_Params.PARAM_USR, username);
         Log.d("eventFetching request: ", eventsFetchingRequest.toString());
         return eventsFetchingRequest;
@@ -391,10 +413,23 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
             return billFetchingRequet;
         billFetchingRequet = new Request(Request.TYPE.POST)
                 .addParam(Request_Params.PARAM_TYPE, Request_Params.REQUEST_HS_GET_A_BILL)
-                .addParam(Request_Params.REQUEST_HS_BILL_ID, bill.getBillID())
+                .addParam(Request_Params.REQUEST_HS_BILL_ID, billID)
                 .addParam(Request_Params.PARAM_USR, username);
         Log.d("Bill fetching request: ", billFetchingRequet.toString());
         return billFetchingRequet;
+    }
+
+    private Request getPaymentsFetchingRequest() {
+        if (paymentsFetchingRequest != null) {
+            return paymentsFetchingRequest;
+        }
+        paymentsFetchingRequest = new Request(Request.TYPE.POST)
+                .addParam(Request_Params.PARAM_TYPE, Request_Params.REQUEST_HS_GET_PAYMENTS)
+                .addParam(Request_Params.REQUEST_HS_BILL_ID, billID)
+                .addParam(Request_Params.PARAM_USR, username);
+        Log.d("payments request: ", paymentsFetchingRequest.toString());
+        return paymentsFetchingRequest;
+
     }
 
     @Override
@@ -506,6 +541,41 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
     }
 
     /**
+     *
+     * @param r
+     */
+    private void filterPayments(String r) {
+        try {
+            JSONArray payments_response = new JSONArray(r);
+            for (int i = 0; i < payments_response.length(); i++) {
+//                ["hs_100001","hs_100003_b1","7.14","2015-04-15 18:05:05","2015-04-14","S","16","abc"]
+
+                JSONArray payment_response = payments_response.getJSONArray(i);
+                String hsid = payment_response.getString(PAYMENT_HSID_POS);
+                Payment p =  new Payment(hsid,
+                        payment_response.getString(PAYMENT_BILL_ID_POS),
+                        payment_response.getDouble(PAYMENT_AMOUNT_POS),
+                        StringUtils.getDateTimeFromServerDateResponse(payment_response.getString(PAYMENT_DATE_SUBMITTED_POS)),
+                        StringUtils.getDateFromServerDateResponse(payment_response.getString(PAYMENT_DATE_PAID_POS)),
+                        payment_response.getString(PAYMENT_STATUS_POS).equals("C"),
+                        payment_response.getInt(PAYMENT_PAYMENT_METHOD_POS),
+                        payment_response.getString(PAYMENT_PAYMENT_MESSAGE_POS));
+
+
+                // set the payment for this sub bill
+                bill.getSubBills().get(hsid).setPayment(p);
+
+                Log.d("Payment", p.toString());
+
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * get the sub bill of the current user
      *
      * @return the sub bill object or null if not found
@@ -522,6 +592,18 @@ public class HouseShare_Bill_Owner extends Activity implements HS_Bill_Delete_Di
      * Do the layout UI stuff
      */
     private void requestLayout() {
+        //set up text views data
+        billName_TextView.setText(bill.getBillName());
+        billAmount_TextView.setText(StringUtils.POUND_SIGN + bill.getAmount());
+        billCreationDetails_TextView.setText("Created by " +
+                ("You on " + StringUtils.getGeneralDateString(bill.getDateCreated())));
+        if (!bill.isPaid()) {
+            billStatus_TextView.setText("This bill is due in " +
+                    Utilities.getDaysLeftUntilDueDate(bill.getDueDate()) + " days.");
+        } else {
+            billStatus_TextView.setText("This bill has been paid on " +
+                    StringUtils.getGeneralDateString(bill.getDatePaid()) + ".");
+        }
         Log.d("Bil Active?" , String.valueOf(bill.isActive()));
         if (bill.isActive()) {
             ((ImageView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_icon)).setImageResource(

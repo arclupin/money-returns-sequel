@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.ncl.team5.lloydsmockup.CustomMessageBox;
 import com.ncl.team5.lloydsmockup.HouseShare_Bill_Member;
+import com.ncl.team5.lloydsmockup.HouseShare_Bill_Owner;
 import com.ncl.team5.lloydsmockup.IntentConstants;
 import com.ncl.team5.lloydsmockup.R;
 
@@ -689,7 +690,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
                     break;
                 }
                 // redirect to the bill page in the following cases
-                case Notification.NEW_BILL: case Notification.BILL_PAYMENT_RECEIVE:
+                case Notification.NEW_BILL:
                 case Notification.BILL_ACTIVATED: {
                     //set the src target of the notification
                     v.setOnClickListener(new View.OnClickListener() {
@@ -699,6 +700,21 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
                         }
                     });
                     break;
+                }
+                // this sort of noti is only for the bill creator, so redirect to the bill page for
+                // owners
+                case Notification.BILL_PAYMENT_RECEIVE:{
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent billPageIntent = new Intent(getActivity(), HouseShare_Bill_Owner.class);
+                            billPageIntent.putExtra(IntentConstants.USERNAME, username);
+                            billPageIntent.putExtra(IntentConstants.HOUSE_NAME, hs_name);
+                            billPageIntent.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
+                            billPageIntent.putExtra(IntentConstants.BILL_ID, n.getSource());
+                            startActivity(billPageIntent);
+                        }
+                    });
                 }
             }
             mTable.addView(v, i);

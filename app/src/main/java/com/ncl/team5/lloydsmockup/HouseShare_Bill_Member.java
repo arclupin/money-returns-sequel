@@ -115,6 +115,16 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
     private String hs_name;
     private String hsid;
 
+    public static enum MODE {
+        BILL_FETCH_MAIN, BILL_CONFIRM, BILL_EDIT, BILL_DELETE, BILL_FETCH_EVENTS, BILL_REFRESH,
+        BILL_FETCH_PAYMENTS
+    }
+
+    private Request subBillsFetchingRequest;
+    private Request eventsFetchingRequest;
+    private Request billFetchingRequest;
+    private Request paymentsFetchingRequest;
+
     /**
      * User confirms that he wants to delete this bill
      * Only creators have this permission
@@ -144,15 +154,7 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
                     .setMsg("Confirming your bill").execute(new RequestQueue().addRequest(r).toList());
         }
 
-    public static enum MODE {
-        BILL_FETCH_MAIN, BILL_CONFIRM, BILL_EDIT, BILL_DELETE, BILL_FETCH_EVENTS, BILL_REFRESH,
-        BILL_FETCH_PAYMENTS
-    }
 
-    private Request subBillsFetchingRequest;
-    private Request eventsFetchingRequest;
-    private Request billFetchingRequest;
-    private Request paymentsFetchingRequest;
 
     /**
      * Gets data from the server and UI preparation
@@ -223,12 +225,13 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
                                     .setTitle("Share confirmed").build();
                             // reset the backing data
                                 getMySubBill().setIsConfirmed(true);
-                            requestLayout();
+                            refresh();
                         } else
                             new CustomMessageBox.MessageBoxBuilder
                                     (HouseShare_Bill_Member.this, "Sorry. We could not process the " +
                                             "confirmation at the moment.\nPlease try again later.")
                                     .setTitle("Failed").build();
+                        refresh();
                         break;
                     }
 
