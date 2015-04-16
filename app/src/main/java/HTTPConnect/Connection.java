@@ -1,4 +1,5 @@
 package HTTPConnect;
+
 import android.app.Activity;
 
 /* This is the main class that the login uses to get the data from
@@ -11,6 +12,7 @@ import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -24,11 +26,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.security.KeyStore;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -36,14 +33,12 @@ import java.util.concurrent.ExecutionException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
@@ -51,9 +46,6 @@ import org.apache.http.protocol.HttpContext;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
 
 import Utils.Utilities;
 
@@ -63,21 +55,28 @@ import Utils.Utilities;
  * ASyncTask uses to do its stuff. The String is the inputs, Void is progress
  * (if progress bar is needed) and Boolean is return type. However
  * They cannot be primitives so the wrappers are needed <br/>
- *
+ * <p/>
  * Consider using {@link HTTPConnect.ConcurrentConnection} (based on this class) instead for a neater and quicker solution
+ *
  * @see HTTPConnect.ConcurrentConnection
  */
-public class Connection extends AsyncTask <String, Void, String>  {
+public class Connection extends AsyncTask<String, Void, String> {
 
     /* String to store the web address as a constant */
-    public static final String SERVER_URL = "https://homepages.cs.ncl.ac.uk/2014-15/csc2022_team5/PHP/main.php";
+    public static String SERVER_URL = "https://homepages.cs.ncl.ac.uk/2014-15/csc2022_team5/PHP/main.php";
+
     private HttpClient httpclient;
     private CookieStore cookies;
     private HttpContext context = new BasicHttpContext();
     private Activity a;
 
     private MODE mode = MODE.SHORT_TASK;
-    public static enum MODE {SHORT_TASK, LONG_TASK, LONG_NO_DIALOG_TASK};
+
+    public static enum MODE {SHORT_TASK, LONG_TASK, LONG_NO_DIALOG_TASK}
+
+    ;
+
+    private List<NameValuePair> nameValuePairs;
 
     public ProgressDialog getD() {
         return d;
@@ -88,6 +87,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
     private long expected_end_time;
     public static long EXPECTED_DURATION_LONG_TASK = 1000; // 1 seconds is the appropriate choice for long task I guess.
+
     public Connection(Activity a) {
         this.a = a;
         httpclient = new MyHttpClient(a.getApplicationContext());
@@ -110,16 +110,16 @@ public class Connection extends AsyncTask <String, Void, String>  {
             expected_end_time = System.currentTimeMillis(); // unachievable :P
         if (mode == MODE.LONG_TASK) {
             d = new ProgressDialog(a);
-            d.setMessage( text_dialog != null ? text_dialog : "Loading");
+            d.setMessage(text_dialog != null ? text_dialog : "Loading");
             d.show();
         }
 
     }
 
     @Override
-    protected  void onPostExecute(String result) {
-       if (d != null && d.isShowing())
-        d.dismiss();
+    protected void onPostExecute(String result) {
+        if (d != null && d.isShowing())
+            d.dismiss();
 
     }
 
@@ -128,7 +128,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
         return this;
     }
 
-    public Connection setDialogMessage(String m)  {
+    public Connection setDialogMessage(String m) {
         if (this.mode == MODE.LONG_TASK)
             this.text_dialog = m;
         return this;
@@ -136,6 +136,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
     /**
      * set the expected time for this task to finish
+     *
      * @param howLong
      * @return
      */
@@ -144,22 +145,19 @@ public class Connection extends AsyncTask <String, Void, String>  {
         return this;
     }
 
-     protected String doInBackground(String...strings) {
+    protected String doInBackground(String... strings) {
         //Set up the name value pair stuff...
-        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+        nameValuePairs = new ArrayList<NameValuePair>(2);
 
-        for(int i = 0; i < strings.length; i= i+2)
-        {
+        for (int i = 0; i < strings.length; i = i + 2) {
 
             //use this when danh sorts acronyms
-            nameValuePairs.add(new BasicNameValuePair(strings[i], strings[i+1]));
+            nameValuePairs.add(new BasicNameValuePair(strings[i], strings[i + 1]));
         }
 
-        try
-        {
+        try {
 
-            if(strings[1].equals("LOGIN"))
-            {
+            if (strings[1].equals("LOGIN")) {
 
                 String r = this.loginConnect(nameValuePairs);
                 // this bit guarantees that the task will execute for at least 2 seconds (not too long, not too short)
@@ -171,9 +169,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
             Utilities.delayUntil(expected_end_time);
             return r;
 
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             return "error";
         }
     }
@@ -182,37 +178,34 @@ public class Connection extends AsyncTask <String, Void, String>  {
      * HTTP server, uses post to give it the username and password, gets the
      * input from the server, turns it into a JSON object, and then sees if it can log in */
 
-     public String connect(List<NameValuePair> nameValuePairs) throws IOException {
-         httpclient = new MyHttpClient(a.getApplicationContext());
-         cookies = new BasicCookieStore();
+    public String connect(List<NameValuePair> nameValuePairs) throws IOException {
+        httpclient = new MyHttpClient(a.getApplicationContext());
+        cookies = new BasicCookieStore();
 
-         // initialise the cookieStorage (read cookies from file)
-         CookieStorage cookieStorage = new CookieStorage(this.a.getSharedPreferences("cookies", Activity.MODE_PRIVATE));
-         BasicClientCookie stored_cookie = cookieStorage.pullFromFile("PHPSESSID");
+        // initialise the cookieStorage (read cookies from file)
+        CookieStorage cookieStorage = new CookieStorage(this.a.getSharedPreferences("cookies", Activity.MODE_PRIVATE));
+        BasicClientCookie stored_cookie = cookieStorage.pullFromFile("PHPSESSID");
 
-         // cookies to be sent to the server MUST have the domain and path, otherwise the server will just ignore it.
-         // the params could just be stored in the file as well, could be done later.
-         stored_cookie.setDomain("homepages.cs.ncl.ac.uk");
-         stored_cookie.setPath("/");
+        // cookies to be sent to the server MUST have the domain and path, otherwise the server will just ignore it.
+        // the params could just be stored in the file as well, could be done later.
+        stored_cookie.setDomain("homepages.cs.ncl.ac.uk");
+        stored_cookie.setPath("/");
 
-         cookies.addCookie(stored_cookie );// add this cookie (session id) to the post request
-         Log.d("before connect cookies",cookies.getCookies().get(0).toString());
+        cookies.addCookie(stored_cookie);// add this cookie (session id) to the post request
+        Log.d("before connect cookies", cookies.getCookies().get(0).toString());
 
-         context = new BasicHttpContext();
-         context.setAttribute(ClientContext.COOKIE_STORE,cookies);
-         HttpPost httppost = new HttpPost(SERVER_URL);
+        context = new BasicHttpContext();
+        context.setAttribute(ClientContext.COOKIE_STORE, cookies);
+        HttpPost httppost = new HttpPost(SERVER_URL);
 
         try {
             /* Creates name value pair to be sent via post to the server */
-//            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-//            nameValuePairs.add(new BasicNameValuePair("username", username));
-//            nameValuePairs.add(new BasicNameValuePair("password", password));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             /* Execute the post request and save the response */
             HttpResponse response = httpclient.execute(httppost, context);
 
-            Log.d("after connect cookies",cookies.toString());
+            Log.d("after connect cookies", cookies.toString());
 
             HttpEntity entity = response.getEntity();
 
@@ -224,8 +217,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
             /* Use a string builder to create a string of all the JSON stuff */
             String line = null;
-            while ((line = reader.readLine()) != null)
-            {
+            while ((line = reader.readLine()) != null) {
                 sb.append(line + "\n");
             }
 
@@ -234,30 +226,23 @@ public class Connection extends AsyncTask <String, Void, String>  {
             Log.d("server", result);
 
             /* check the value of status */
-            try {
-                JSONObject jObject = new JSONObject(result);
+
+            JSONObject jObject = new JSONObject(result);
 
 
-                return jObject.toString();
+            return jObject.toString();
 
 
-
-            }catch(Exception e)
-            {
-                throw new IOException("Error parsing JSON");
-            }
-
-        } catch (ClientProtocolException e) {
-            throw new IOException("Connection could not be established");
-
-        } catch (IOException e) {
-            throw new IOException("Connection could not be established");
 
         }
 
+        catch (Exception e) {
+            e.printStackTrace();
+
+            throw new IOException("Unknown error");
+        }
 
     }
-
 
 
     public String loginConnect(List<NameValuePair> nameValuePairs) throws IOException {
@@ -265,10 +250,9 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
         cookies = new BasicCookieStore();
         context = new BasicHttpContext();
-        context.setAttribute(ClientContext.COOKIE_STORE,cookies);
+        context.setAttribute(ClientContext.COOKIE_STORE, cookies);
         httpclient = new MyHttpClient(a.getApplicationContext());
         HttpPost httppost = new HttpPost(SERVER_URL);
-
 
 
         try {
@@ -280,13 +264,11 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
             /* Execute the post request and save the response */
             HttpResponse response = httpclient.execute(httppost, context);
-            if(cookies.getCookies().size() == 0)
-            {
+            if (cookies.getCookies().size() == 0) {
                 Log.d("cookies", "no cookies found");
                 //TODO DELETE THE OLD COOKIE
                 //return "false";
-            }
-            else {
+            } else {
 
                 Log.d("cookies", cookies.toString());
 
@@ -309,8 +291,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
 
             /* Use a string builder to create a string of all the JSON stuff */
             String line = null;
-            while ((line = reader.readLine()) != null)
-            {
+            while ((line = reader.readLine()) != null) {
                 sb.append(line + "\n");
             }
 
@@ -322,31 +303,26 @@ public class Connection extends AsyncTask <String, Void, String>  {
             try {
                 JSONObject jObject = new JSONObject(result);
                 return jObject.toString();
-            }catch(Exception e)
-            {
+            } catch (Exception e) {
                 Log.d("error", "JSON PARSE ERROR");
                 throw new IOException("Error parsing JSON");
             }
 
-        } catch (ClientProtocolException e) {
-            Log.d("error", "connection could not be established");
-            throw new IOException("Connection could not be established");
+        } catch (Exception e) {
 
-        } catch (IOException e) {
-            Log.d("error", "connection could not be established");
-            throw new IOException("Connection could not be established");
+            e.printStackTrace();
+            throw new IOException("Unknown error");
+
         }
-
-
     }
+
     public void autoLogout(String username) {
 
         /* Start a new connection */
         try {
             /* try to execute a logout on the server */
             this.execute("TYPE", "LOGOUT", Request_Params.PARAM_USR, username);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             /* Doesnt really need a detailed error as user is logged out anyway, just print stack trace */
             e.printStackTrace();
         }
@@ -387,8 +363,7 @@ public class Connection extends AsyncTask <String, Void, String>  {
                 return null;
             } else return jo;
         }
-        /* Catch the exceptions */
-        catch (JSONException jse) {
+        /* Catch the exceptions */ catch (JSONException jse) {
             /* Error in the JSON response */
             new CustomMessageBox(a, "There was an error in the server response");
             jse.printStackTrace();
@@ -407,55 +382,5 @@ public class Connection extends AsyncTask <String, Void, String>  {
         }
 
         return jo;
-    }
-
-    public static HttpsURLConnection setUpHttpsConnection(String urlString)
-    {
-        try
-        {
-            // Load CAs from an InputStream
-            // (could be from a resource or ByteArrayInputStream or ...)
-            CertificateFactory cf = CertificateFactory.getInstance("X.509");
-
-            // My CRT file that I put in the assets folder
-            // I got this file by following these steps:
-            // * Go to https://littlesvr.ca using Firefox
-            // * Click the padlock/More/Security/View Certificate/Details/Export
-            // * Saved the file as littlesvr.crt (type X.509 Certificate (PEM))
-            // The MainActivity.context is declared as:
-            // public static Context context;
-            // And initialized in MainActivity.onCreate() as:
-            // MainActivity.context = getApplicationContext();
-            InputStream caInput = new BufferedInputStream(new FileInputStream("ncl-cert.crt"));
-            Certificate ca = cf.generateCertificate(caInput);
-            System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
-
-            // Create a KeyStore containing our trusted CAs
-            String keyStoreType = KeyStore.getDefaultType();
-            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-            keyStore.load(null, null);
-            keyStore.setCertificateEntry("ca", ca);
-
-            // Create a TrustManager that trusts the CAs in our KeyStore
-            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
-            tmf.init(keyStore);
-
-            // Create an SSLContext that uses our TrustManager
-            SSLContext context = SSLContext.getInstance("TLS");
-            context.init(null, tmf.getTrustManagers(), null);
-
-            // Tell the URLConnection to use a SocketFactory from our SSLContext
-             URL url = new URL(urlString);
-            HttpsURLConnection urlConnection = (HttpsURLConnection)url.openConnection();
-            urlConnection.setSSLSocketFactory(context.getSocketFactory());
-
-            return urlConnection;
-        }
-        catch (Exception ex)
-        {
-            Log.e("ERROR", "Failed to establish SSL connection to server: " + ex.toString());
-            return null;
-        }
     }
 }

@@ -44,7 +44,7 @@ public class Notifications extends Activity {
     private List<Boolean> toNotify = new ArrayList<Boolean>();
 
     private int recentCount = 0;
-    private final int NOTIFICATION_MAX = 10;
+    private final int NOTIFICATION_MAX = 5;
 
 
     @Override
@@ -280,15 +280,13 @@ public class Notifications extends Activity {
                         {
                             if (insideObject.getString("Payee").equals(accountNum)) {
                                 notif.add("Into Account:\t" + "£" + insideObject.getString("Amount") + " From " + insideObject.getString("Payer") + "\t" + insideObject.getString("Time"));
-                                recentCount++;
                                 toNotify.add(true);
                             } else {
                                 notif.add("Out Account:\t" + "£" + insideObject.getString("Amount") + " To " + insideObject.getString("Payer") + "\t" + insideObject.getString("Time"));
-                                recentCount++;
                                 toNotify.add(true);
                             }
                         }
-                        else if (notif.size() == 0)
+                        else if (notif.size() == 0 && recentCount < NOTIFICATION_MAX)
                         {
                             if (insideObject.getString("Payee").equals(accountNum)) {
                                 notif.add("Into Account:\t" + "£" + insideObject.getString("Amount") + " From " + insideObject.getString("Payer") + "\t" + insideObject.getString("Time"));
@@ -317,7 +315,7 @@ public class Notifications extends Activity {
                                         toNotify.add(c, true);
                                         c = notif.size();
                                     }
-                                } else if (transactionTime.compareTo(fromListTime) > 0) {
+                                } else if (transactionTime.compareTo(fromListTime) > 0 && recentCount < NOTIFICATION_MAX) {
                                     if (insideObject.getString("Payee").equals(accountNum)) {
                                         notif.add(c, "Into Account:\t" + "£" + insideObject.getString("Amount") + " From " + insideObject.getString("Payer") + "\t" + insideObject.getString("Time"));
                                         toNotify.add(c, false);
@@ -329,7 +327,7 @@ public class Notifications extends Activity {
                                         c = notif.size();
                                         recentCount++;
                                     }
-                                } else if (c == notif.size() - 1) {
+                                } else if (c == notif.size() - 1 && recentCount < NOTIFICATION_MAX) {
                                     if (insideObject.getString("Payee").equals(accountNum)) {
                                         notif.add("Into Account:\t" + "£" + insideObject.getString("Amount") + " From " + insideObject.getString("Payer") + "\t" + insideObject.getString("Time"));
                                         toNotify.add(c, false);

@@ -10,6 +10,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
@@ -23,6 +24,10 @@ import android.widget.ViewFlipper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+
+import javax.net.ssl.SSLException;
 
 import HTTPConnect.Connection;
 import HTTPConnect.Request_Params;
@@ -45,6 +50,8 @@ public class Login extends Activity {
     private static final int NETPROBS = 4;
     private String date = "";
 
+    private boolean secureConn = true;
+
 
     /**
      * Class authenticator extending the Connection <br/>
@@ -57,12 +64,14 @@ public class Login extends Activity {
             super(a);
         }
 
+
         @Override
         public void onPostExecute(String r) {
+
             int status = 4;
             try {
                 Log.d("R goes here", r);
-               JSONObject j = new JSONObject(r);
+                JSONObject j = new JSONObject(r);
                 status = j.getInt("status");
                 if (status == OKAY)
                     date = j.getString("last_login");
@@ -71,8 +80,10 @@ public class Login extends Activity {
             }
             super.onPostExecute(r);
             authenticate(status);
+
         }
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,9 +167,11 @@ public class Login extends Activity {
             startActivity(i);
             return;
         } else {
+
             new Authenticator(this).setMode(Connection.MODE.LONG_TASK)
                     .setDialogMessage("Logging in")
                     .execute("TYPE", "LOGIN", Request_Params.PARAM_USR, username, "PWD", password);
+
         }
 
 
