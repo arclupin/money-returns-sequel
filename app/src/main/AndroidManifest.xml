@@ -205,9 +205,15 @@
             android:name=".Houseshare_Payments"
             android:label="@string/title_activity_houseshare__payments" >
         </activity>
-        <activity
+      <activity 
             android:name=".Houseshare_Confirm_Payment"
             android:label="@string/title_activity_houseshare__confirm__payment" >
+	    </acitivity>
+ <activity
+
+            android:name=".HelpActivity"
+            android:label="@string/title_activity_help" >
+
         </activity>
     </application>
 

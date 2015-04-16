@@ -166,7 +166,7 @@ public class MainActivity extends Activity {
         /* Show notification icon in menu bar */
         getMenuInflater().inflate(R.menu.menu_main, activityMenu);
 
-        MenuItem item = activityMenu.getItem(0);
+        MenuItem item = activityMenu.getItem(1);
         GetNotification notif = new GetNotification();
 
         if (notif.getNotifications(this, username, date)) {
@@ -188,11 +188,12 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_backHome) {
+        if (id == R.id.action_help) {
+            Intent intent = new Intent(this, HelpActivity.class);
+            intent.putExtra(IntentConstants.USERNAME, username);
+            intent.putExtra(IntentConstants.DATE, date);
+            startActivity(intent);
             ((KillApp) this.getApplication()).setStatus(false);
-            this.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
-            //Intent intent = new Intent(this, MainActivity.class);
-            //startActivity(intent);
         } else if (id == R.id.action_notifications) {
             Intent intent = new Intent(this, Notifications.class);
             intent.putExtra(IntentConstants.USERNAME, username);
