@@ -5,16 +5,18 @@
     android:id="@+id/hs_noti_row_container"
     android:background="@null"
     android:clickable="false"
-    android:paddingTop="20dp"
-    android:paddingBottom="20dp">
+    >
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/empty_noti_container"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:clickable="false"
         android:background="@drawable/button_light_color"
+
 
         >
 

@@ -5,12 +5,13 @@
     android:id="@+id/hs_noti_row_container"
     android:background="@drawable/button_light_color"
     android:clickable="true"
-    android:paddingTop="20dp"
-    android:paddingBottom="20dp">
+    >
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"

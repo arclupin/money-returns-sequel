@@ -11,6 +11,7 @@ import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.ncl.team5.lloydsmockup.HouseShare_Bill_Member;
@@ -136,14 +137,14 @@ public class Notification {
 
     public View makeNotiRow(Activity a) {
         LayoutInflater inflater = (LayoutInflater) a.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = null;
+        TableRow v = null;
         String content = "";
         String p1 = additional_params.get(PARAM_POS);
         String p2 = additional_params.get(PARAM2_POS);
         //TODO if type is normal noti (noti without button should set it clickable)
         switch (type) {
             case JOIN_ADM: {
-                v = inflater.inflate(R.layout.hs_noti_join_req_adm_view, null);
+                v = (TableRow)inflater.inflate(R.layout.hs_noti_join_req_adm_view, null);
 
                 content = p1 + " would like to join your house.";
                 // spans for style the noti (make the names bold)
@@ -156,7 +157,7 @@ public class Notification {
                 break;
             }
             case NEW_BILL: {
-                v = inflater.inflate(R.layout.hs_noti_new_bill, null);
+                v = (TableRow) inflater.inflate(R.layout.hs_noti_new_bill, null);
                 content = p1 + " has created a new bill " + p2 + ".";
 
                 //style the spannable string
@@ -172,7 +173,7 @@ public class Notification {
             }
 
             case BILL_ACTIVATED: {
-                v = inflater.inflate(R.layout.hs_noti_general, null);
+                v = (TableRow) inflater.inflate(R.layout.hs_noti_general, null);
                 content = "Bill " + p1 + " has been activated.";
 
                 //style the spannable string
@@ -186,7 +187,7 @@ public class Notification {
             }
 
             case BILL_PAYMENT_RECEIVE: {
-                v = inflater.inflate(R.layout.hs_noti_general, null);
+                v = (TableRow) inflater.inflate(R.layout.hs_noti_general, null);
 
                 content = p1 + " has submitted his payment to " + p2 + ".";
 
