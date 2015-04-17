@@ -23,6 +23,7 @@ public class Utilities {
 
 public static long DAY_TO_MILLI = 86400000;
 
+    //function which blocks until a set time has passed. Takes in a delay value and adds it to the current system time, blocking until the appropriate system time is reached.
     public static void delay(long milli) {
         long now = System.currentTimeMillis();
         long end = now + milli;
@@ -34,7 +35,7 @@ public static long DAY_TO_MILLI = 86400000;
     }
 
     /**
-     * DElay until the timeStamp
+     * Delay until the timeStamp
      * @param timeStamp some time in the future
      */
     public static void delayUntil(long timeStamp) {

@@ -13,7 +13,7 @@ import HTTPConnect.Responses_Format;
  */
 public class Houseshares {
 
-
+    //initialisation of the houseshare object.
     public static void hs_intents(Activity callingActivity, Class startingActivity, String username) {
         Intent i = new Intent(callingActivity, startingActivity);
         i.putExtra(IntentConstants.USERNAME, username);

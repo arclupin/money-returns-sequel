@@ -19,7 +19,7 @@ public class Animation {
     public static enum POST_EFFECT {PERMANENTLY, TEMPORARILY}
 
     ;
-
+    //Function that creates a fade out animation used for various notifications
     public static void fade_out(final View v, Context c, long duration, final POST_EFFECT e) {
         Log.d("Animation", Long.toString(duration));
         android.view.animation.Animation a = AnimationUtils.loadAnimation(c, R.anim.anim_fade_out);
@@ -44,7 +44,7 @@ public class Animation {
         });
         v.startAnimation(a);
     }
-
+    // Function that creates a fade in animation effect for various notifications
     public static void fade_in(final View v, Context c, long duration, final POST_EFFECT e) {
         android.view.animation.Animation a = AnimationUtils.loadAnimation(c, R.anim.anim_fade_in);
         a.setInterpolator(new AccelerateInterpolator());
