@@ -1,84 +1,145 @@
 <!-- This is the HTML page that will be shown on the help screen -->
 <html>
+
+    <Style>
+    h1{
+        color:#105842;
+      }
+    h2{
+        color:#105842;
+       }
+    hr{
+        border-color:#105842;
+      }
+    ul.menu
+        {
+        color:#105842;
+        }
+
+
+
+    </Style>
     <body>
-        <h1>Help</h1>
+    <!-- <div id="lloyds">
+    -<img src="lloyds.jpg" alt="Lloyds Banking Group">
+     </div> -->
+     <h1>Help</h1>
+         <p>Use the handy links below to quickly go to sections that you need help with:</p>
 
-        <ul>
-            <li><a href="#accounts">Accounts</a></li>
-            <li><a href="#payments">Payments</a></li>
-            <li><a href="#transfers">Transfers</a></li>
-            <li><a href="#analysis">Analysis</a></li>
-            <li><a href="#house_share">House Share</a></li>
-            <li><a href="#locations">Locations</a></li>
-            <li><a href="#products">Products</a></li>
-            <li><a href="#settings">Settings</a></li>
-            <li><a href="#notifications">Notifications</a></li>
-        </ul>
+         <ul class="menu">
+             <li class="list"><a STYLE="text-decoration:none" href="#accounts">Accounts</a></li>
+             <li class="list"><a STYLE="text-decoration:none"href="#payments">Payments</a></li>
+             <li class="list"><a STYLE="text-decoration:none"href="#transfers">Transfers</a></li>
+             <li class="list"><a STYLE="text-decoration:none"href="#analysis">Analysis</a></li>
+             <li class="list"><a STYLE="text-decoration:none"href="#house_share">House Share</a></li>
+             <li class="list"><a STYLE="text-decoration:none"href="#locations">Locations</a></li>
+             <li class="list"><a STYLE="text-decoration:none"href="#products">Products</a></li>
+             <li class="list"><a STYLE="text-decoration:none"href="#settings">Settings</a></li>
+             <li class="list"><a STYLE="text-decoration:none"href="#notifications">Notifications</a></li>
+         </ul>
 
-        <hr/>
+         <hr/>
 
-        <div id="accounts">
-            <h2>Accounts</h2>
-            <p>The accounts menu is where you can see all your accounts and the available balance for these accounts. By touching on an account, you can see all of the transactions that have occurred
-               on that account, along with the amount of the transaction. You can get more information about a transaction by pressing the transaction you would like more info on. This will
-               display the transactions ID, the account that was payed, the date and time of the transaction and the approximate location. Here you can also <a href="#analysis">add the transaction to a group</a>.
-            </p>
-        </div>
+         <div id="accounts">
+             <h2>Accounts</h2>
+             <p>The accounts menu is where you can see all your accounts and the available balance for these accounts. By touching on an account, you can see all of the transactions that have occurred
+                on that account, along with the amount of the transaction. You can get more information about a transaction by pressing the transaction you would like more info on. This will
+                display the transactions ID, the account that was payed, the date and time of the transaction and the approximate location. Here you can also <a href="#analysis">add the transaction to a group</a>.
+             </p>
+         </div>
 
-        <hr/>
+         <hr/>
 
-        <div id="payments">
-            <h2>Payments</h2>
-            <p>The payments screen is where you can pay another account. This can be someone else's or one of your own accounts. </p>
-        </div>
+         <div id="payments">
+             <h2>Payments</h2>
+             <ul>
+                 <li>The payments screen is where you can pay another account. This can be someone else's or one of your own accounts. </li>
+                 <li>You are able to send payments to a new recipient or there is the option to send payment to already existing recipients.</li>
 
-        <hr/>
+                     <li>In order to send payment to a new recipient you need two details of the account you want to send to: </li>
+                 <ul>
+                         <li> Account number (8 digit code)</li>
+                         <li> Sort code (6 digit code)</li>
+                 </ul>
+             </ul>
 
-        <div id="transfers">
-            <h2>Transfers</h2>
-            <p></p>
-        </div>
+         </div>
 
-        <hr/>
+         <hr/>
 
-        <div id="analysis">
-            <h2>Analysis</h2>
-            <p></p>
-        </div>
+         <div id="transfers">
+             <h2>Transfers</h2>
+             <ul>
+                 <li> Here is where you have the ability to transfer funds between your own accounts</li>
+                 <li> Step 1: Select from the drop down list called "PAY FROM" the account number that you want to transfer funds from.</li>
+                 <li> Step 2: Next choose from the down list named "PAY TO" the number of the account you want to transfer to. </li>
+                 <li> Step 3: Click on the "AMOUNT" bar where the numerical pad will pop up and you can select the amount you wish to transfer.</li>
+                 <li> Step 4: Finally click "MAKE TRANSFER" button once you are sure all the details are correct and your money will be transferred.</li>
+             </ul>
+         </div>
 
-        <hr/>
+         <hr/>
 
-        <div id="house_share">
-            <h2>House Share</h2>
-            <p></p>
-        </div>
+         <div id="analysis">
+             <h2>Analysis</h2>
+             <ul>
+                 <li>Analysis allows you to see what portion of your money you are spending where</li>
+                 <li>You will need to add some of your recent payments to "Groups" in order to split your payments into easy to read sections  </li>
+                 <ul>
+                     <li> Step 1: Go to your "Accounts" page</li>
+                     <li>Step 2: Go to one of your accounts by clicking on them</li>
+                     <li>Step 3: Now click on own of you outgoing payments from and select "Add to group"</li>
+                     <li>Step 4: Finally select the group that you desire it to be in by selecting from existing groups or by creating a new one</li>
+                 </ul>
+             </ul>
 
-        <hr/>
+         </div>
 
-        <div id="locations">
-            <h2>Locations</h2>
-            <p></p>
-        </div>
+         <hr/>
+         <div id="house_share">
+             <h2>House Share</h2>
+             <p>
+                 House Share allows you to create a virtual house where you can set up bills and notify housemates to these bills and request payment.
+             </p>
+         </div>
 
-        <hr/>
+         <hr/>
 
-        <div id="products">
-            <h2>Products</h2>
-            <p></p>
-        </div>
-        <hr/>
+         <div id="locations">
+             <h2>Locations</h2>
+             <p>
+             Make sure location services are enabled on your phone and you will be able to search for the nearest ATM machine to yourself.
 
-        <div id="settings">
-            <h2>Settings</h2>
-            <p></p>
-        </div>
+             </p>
+         </div>
 
-        <hr/>
+         <hr/>
 
-        <div id="notifications">
-            <h2>Notifications</h2>
-            <p></p>
-        </div>
+         <div id="products">
+             <h2>Products</h2>
+             <p>Here you will find a brief description of the products and plans we have on offer here at Lloyds. Be sure to check out more at our website.</p>
+         </div>
+         <hr/>
 
-    </body>
-</html>
+         <div id="settings">
+             <h2>Settings</h2>
+             <ul>
+                <li> Here you have the option to change: </li>
+                 <ul>
+                     <li>your password</li>
+                     <li>your account name</li>
+                     <li>the colour of the menu bar to allow easier reading</li>
+                 </ul>
+             </ul>
+
+         </div>
+
+         <hr/>
+
+         <div id="notifications">
+             <h2>Notifications</h2>
+             <p>The notifications button in the top right corner of the page allows you to quickly see recent changes in your account e.g. payments.</p>
+         </div>
+
+     </body>
+ </html>
