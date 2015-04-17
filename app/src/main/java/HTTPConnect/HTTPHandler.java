@@ -35,11 +35,13 @@ public class HTTPHandler {
 
     public HTTPHandler(Activity a) {
 
+        /* Variables */
         mContext = a;
         context = new BasicHttpContext();
         client  = new MyHttpClient(a);
         cookies = new BasicCookieStore();
 
+        /* creates cookie */
         Log.d("mContext", mContext.toString());
         CookieStorage cookieStorage = new CookieStorage(mContext.getSharedPreferences("cookies", Activity.MODE_PRIVATE));
         BasicClientCookie cookie_sessid = cookieStorage.pullFromFile("PHPSESSID"); // pull the cookie from the file
@@ -53,6 +55,7 @@ public class HTTPHandler {
         context.setAttribute(ClientContext.COOKIE_STORE, cookies);
     }
 
+    /* returns the response */
     public Response sendRequest(Request r) {
         Response rp = null;
         if (r.getType() == Request.TYPE.POST)
@@ -61,6 +64,7 @@ public class HTTPHandler {
         return rp;
     }
 
+    /* connects to the server and returns response */
     private Response post(Request r) {
         HttpPost httppost = new HttpPost(Connection.SERVER_URL);
         String result = null;

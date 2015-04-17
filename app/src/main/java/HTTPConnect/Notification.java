@@ -60,12 +60,14 @@ public class Notification {
     public static final int SEEN_NOT_READ = 2;
     public static final int NEW = 0;
 
+    /* Other variables */
     private int type;
     private List<String> additional_params;
     private String source;
     private boolean read;
     private String id;
 
+    /* Set and get methods */
     public String getId() {
         return id;
     }
@@ -102,21 +104,22 @@ public class Notification {
         return read;
     }
 
+    /* default constructor */
     public Notification() {
         type = JOIN_ADM;
         additional_params = new ArrayList<String>();
     }
 
+    /* constructor where it sets values */
     public Notification(String id, int type, boolean read, List<String> arg_params, String source) {
         this.id = id;
         this.type = type;
         this.read = read;
         this.source = source;
         this.additional_params = arg_params;
-
-
     }
 
+    /* Constructor to set some values */
     public Notification(int type, String id) {
         this.id = id;
         read = false;
@@ -124,6 +127,7 @@ public class Notification {
         additional_params = new ArrayList<String>();
     }
 
+    /* Constructor to set some values */
     public Notification(int type, boolean read, String id, String source) {
         this.id = id;
         this.type = type;
@@ -132,12 +136,15 @@ public class Notification {
         additional_params = new ArrayList<String>();
     }
 
+    /* Add parameter to notifications */
     public Notification addParam(String param_value) {
         additional_params.add(param_value);
         return this;
     }
 
+    /* Creates a row in the notifications */
     public View makeNotiRow(Activity a) {
+        /* inflates the layout */
         LayoutInflater inflater = (LayoutInflater) a.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         TableRow v = null;
         String content = "";
@@ -158,6 +165,7 @@ public class Notification {
                 ((TextView) v.findViewById(R.id.noti_join_req_admin_name)).setMaxLines(3);
                 break;
             }
+            /* new bill notification */
             case NEW_BILL: {
                 v = (TableRow) inflater.inflate(R.layout.hs_noti_new_bill, null);
                 content = p1 + " has created a new bill " + p2 + ".";
@@ -173,7 +181,7 @@ public class Notification {
                 ((TextView) v.findViewById(R.id.noti_bill_content)).setMaxLines(3);
                 break;
             }
-
+            /* bill activated notification */
             case BILL_ACTIVATED: {
                 v = (TableRow) inflater.inflate(R.layout.hs_noti_general, null);
                 content = "Bill " + p1 + " has been activated.";
@@ -187,7 +195,7 @@ public class Notification {
                 ((TextView) v.findViewById(R.id.noti_content)).setMaxLines(3);
                 break;
             }
-
+            /* Payment recieved notification */
             case BILL_PAYMENT_RECEIVE: {
                 v = (TableRow) inflater.inflate(R.layout.hs_noti_general, null);
 
@@ -203,7 +211,7 @@ public class Notification {
                 ((TextView) v.findViewById(R.id.noti_content)).setText(spannableString);
                 break;
             }
-
+            /* payment confirmed notification */
             case BILL_PAYMENT_CONFIRMED: {
                 v = (TableRow) inflater.inflate(R.layout.hs_noti_general, null);
                 String targetUser = Fragment_HS_Home.members.get(p1).getUsername();
@@ -220,7 +228,7 @@ public class Notification {
                 ((TextView) v.findViewById(R.id.noti_content)).setText(spannableString);
                 break;
             }
-
+            /* Bill rejected notification */
             case BILL_PAYMENT_REJECTED: {
                 v = (TableRow) inflater.inflate(R.layout.hs_noti_general, null);
 
@@ -235,7 +243,7 @@ public class Notification {
                 ((TextView) v.findViewById(R.id.noti_content)).setText(spannableString);
                 break;
             }
-
+            /* Bill payed notification */
             case BILL_PAYMENT_PAID: {
                 v = (TableRow) inflater.inflate(R.layout.hs_noti_general, null);
 
@@ -249,7 +257,7 @@ public class Notification {
                 break;
             }
         }
-
+        /* sets the notification background when read */
         if (read) {
             v.setBackgroundResource(R.drawable.noti_read_bg);
             Log.d("read at", this.toString());
@@ -257,10 +265,12 @@ public class Notification {
         return v;
     }
 
+    /* gets notification time */
     public Date getTimeOfNotification() throws ParseException{
         return StringUtils.getDateTimeFromServerDateResponse(additional_params.get(TIME_POS));
     }
 
+    /* to string */
     @Override
     public String toString() {
         return "Notification{" +

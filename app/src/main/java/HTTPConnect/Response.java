@@ -53,7 +53,7 @@ public class Response {
         return token;
     }
 
-
+    /* returns a JSON array of the response */
     public JSONArray getJSONArray(String name) {
         JSONArray j = null;
         try {

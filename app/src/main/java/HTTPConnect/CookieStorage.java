@@ -15,9 +15,10 @@ import java.util.Date;
  */
 public class CookieStorage {
 
-
+    /* The cookie */
     private SharedPreferences file;
 
+    /* Takes in a file */
     public CookieStorage(SharedPreferences file) {
         this.file = file;
     }
