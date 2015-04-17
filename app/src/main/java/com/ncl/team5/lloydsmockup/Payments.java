@@ -38,7 +38,7 @@ import HTTPConnect.Connection;
 
 
 /* Extends fragment activity so we can use fragment views for the tabs */
-public class Payments extends FragmentActivity {
+public class Payments extends FragmentActivity implements GetNotification.OnNotiFetchedListener {
 
     /* Private methods needed for rest of class */
     private String username;
@@ -50,6 +50,7 @@ public class Payments extends FragmentActivity {
     private List<String> fromSC = new ArrayList<String>();
     private List<String> toSC = new ArrayList<String>();
     private String date;
+    private Menu menu;
 
     /* Runs when the activity is started */
     @Override
@@ -156,17 +157,10 @@ public class Payments extends FragmentActivity {
         /* Get the correct item in the menu */
         MenuItem item = menu.getItem(1);
         GetNotification notif = new GetNotification();
-
+        this.menu = menu;
         /* See if there are notifications and display the correct image accordingly */
-        if(notif.getNotifications(this, username, date)) {
-            Log.d("Notif Change", "IN HERE");
-            item.setIcon(R.drawable.ic_action_notify);
-        }
-        else
-        {
-            Log.d("Notif Change", "IN There");
-            item.setIcon(R.drawable.globe);
-        }
+        notif.getNotifications(this, username, date);
+
 
         return true;
     }
@@ -602,6 +596,11 @@ public class Payments extends FragmentActivity {
         Intent intent1 = new Intent(getApplicationContext(), Login.class);
         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent1);
+    }
+
+    @Override
+    public void onAllTransactionDone(boolean result) {
+        menu.getItem(1).setIcon(result ? R.drawable.ic_action_notify : R.drawable.globe);
     }
 }
 

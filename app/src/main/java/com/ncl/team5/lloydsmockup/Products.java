@@ -13,10 +13,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 
-public class Products extends Activity {
+public class Products extends Activity implements GetNotification.OnNotiFetchedListener {
     private WebView browser;
     private String username;
     private String date;
+    private Menu menu;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -44,17 +45,10 @@ public class Products extends Activity {
 
         MenuItem item = menu.getItem(1);
         GetNotification notif = new GetNotification();
+        this.menu = menu;
 
+        notif.getNotifications(this, username, date);
 
-        if(notif.getNotifications(this, username, date)) {
-            Log.d("Notif Change", "IN HERE");
-            item.setIcon(R.drawable.ic_action_notify);
-        }
-        else
-        {
-            Log.d("Notif Change", "IN There");
-            item.setIcon(R.drawable.globe);
-        }
 
         return true;
     }
@@ -119,5 +113,10 @@ public class Products extends Activity {
         ((KillApp) this.getApplication()).setStatus(false);
         finish();
 
+    }
+
+    @Override
+    public void onAllTransactionDone(boolean result) {
+        menu.getItem(1).setIcon(result ? R.drawable.ic_action_notify : R.drawable.globe);
     }
 }

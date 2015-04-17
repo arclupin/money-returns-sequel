@@ -36,12 +36,13 @@ import HTTPConnect.Request;
 import HTTPConnect.RequestQueue;
 
 
-public class Settings extends Activity {
+public class Settings extends Activity implements GetNotification.OnNotiFetchedListener {
 
     private ArrayList<String> optionsList;
     private String username;
     private String date;
     private List<String> accountStrings = new ArrayList<String>();
+    private Menu menu;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -203,20 +204,13 @@ public class Settings extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         /* Show notification icon in menu bar */
         getMenuInflater().inflate(R.menu.main, menu);
-
+        this.menu = menu;
         MenuItem item = menu.getItem(1);
         GetNotification notif = new GetNotification();
 
 
-        if(notif.getNotifications(this, username, date)) {
-            Log.d("Notif Change", "IN HERE");
-            item.setIcon(R.drawable.ic_action_notify);
-        }
-        else
-        {
-            Log.d("Notif Change", "IN There");
-            item.setIcon(R.drawable.globe);
-        }
+        notif.getNotifications(this, username, date);
+
 
         return true;
     }
@@ -285,7 +279,12 @@ public class Settings extends Activity {
 
     }
 
-//    public void geoff(View v) {
+    @Override
+    public void onAllTransactionDone(boolean result) {
+        menu.getItem(1).setIcon(result ? R.drawable.ic_action_notify : R.drawable.globe);
+    }
+
+    //    public void geoff(View v) {
 //        Request r1 = new Request(Request.TYPE.POST);
 //        r1.addParam("key", "value");
 //        //... more param

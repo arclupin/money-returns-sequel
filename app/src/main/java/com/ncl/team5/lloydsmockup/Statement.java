@@ -38,13 +38,14 @@ import HTTPConnect.Connection;
 import HTTPConnect.Request_Params;
 
 
-public class Statement extends Activity {
+public class Statement extends Activity implements GetNotification.OnNotiFetchedListener {
 
     /* --- Variables --- */
     /* Strings */
     private String username;
     private String accountNum;
     private String dateLogout;
+    private Menu menu;
     
     /* statement object */
     private Statement statement = this;
@@ -219,22 +220,15 @@ public class Statement extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         /* Show notification icon in menu bar */
         getMenuInflater().inflate(R.menu.main, menu);
-
+        this.menu = menu;
         /* Gets the menu item */
         MenuItem item = menu.getItem(1);
         /* Creates a get notification object */
         GetNotification notif = new GetNotification();
 
         /* Checks if there are any notifications, if there are, show red icon */
-        if(notif.getNotifications(this, username, dateLogout)) {
-            Log.d("Notif Change", "IN HERE");
-            item.setIcon(R.drawable.ic_action_notify);
-        }
-        else
-        {
-            Log.d("Notif Change", "IN There");
-            item.setIcon(R.drawable.globe);
-        }
+        notif.getNotifications(this, username, dateLogout);
+
 
         return true;
     }
@@ -444,6 +438,11 @@ public class Statement extends Activity {
     public void onBackPressed() {
         ((KillApp) this.getApplication()).setStatus(false);
         finish();
+    }
+
+    @Override
+    public void onAllTransactionDone(boolean result) {
+        menu.getItem(1).setIcon(result ? R.drawable.ic_action_notify : R.drawable.globe);
     }
 }
 

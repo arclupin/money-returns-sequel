@@ -40,7 +40,7 @@ import HTTPConnect.Connection;
  * Its pretty easy to use if you ignore all the viewer stuff...
  */
 
-public class Analysis extends Activity {
+public class Analysis extends Activity implements GetNotification.OnNotiFetchedListener {
 
     /* -- Variales -- */
     private String username;
@@ -48,6 +48,7 @@ public class Analysis extends Activity {
     private Set<String> groupSets;
     private List<String> accountStrings = new ArrayList<String>();
     private String selectedAccount;
+    private Menu activityMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -315,16 +316,8 @@ public class Analysis extends Activity {
 
         MenuItem item = menu.getItem(1);
         GetNotification notif = new GetNotification();
-
-        if(notif.getNotifications(this, username, date)) {
-            Log.d("Notif Change", "IN HERE");
-            item.setIcon(R.drawable.ic_action_notify);
-        }
-        else
-        {
-            Log.d("Notif Change", "IN There");
-            item.setIcon(R.drawable.globe);
-        }
+        activityMenu = menu;
+        notif.getNotifications(this, username, date);
 
         return true;
     }
@@ -405,5 +398,10 @@ public class Analysis extends Activity {
         ((KillApp) this.getApplication()).setStatus(false);
         finish();
 
+    }
+
+    @Override
+    public void onAllTransactionDone(boolean result) {
+        activityMenu.getItem(1).setIcon(result ? R.drawable.ic_action_notify : R.drawable.globe);
     }
 }
