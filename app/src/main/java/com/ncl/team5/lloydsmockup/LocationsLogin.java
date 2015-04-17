@@ -46,7 +46,7 @@ import HTTPConnect.Connection;
 
 //References: http://code.tutsplus.com/tutorials/android-sdk-working-with-google-maps-displaying-places-of-interest--mobile-16145
 //https://developers.google.com/places/documentation/display_search
-public class LocationsLogin extends Activity implements LocationListener  {
+public class LocationsLogin extends Activity implements LocationListener, GetNotification.OnNotiFetchedListener  {
     private String username;
     GoogleMap gMap;
     private LocationManager lManager;
@@ -60,6 +60,7 @@ public class LocationsLogin extends Activity implements LocationListener  {
     private final int MAX = 20;
     private MarkerOptions[] places;
     private String date;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -276,17 +277,10 @@ public class LocationsLogin extends Activity implements LocationListener  {
 
         MenuItem item = menu.getItem(1);
         GetNotification notif = new GetNotification();
+        this.menu = menu;
 
+        notif.getNotifications(this, username, date);
 
-        if(notif.getNotifications(this, username, date)) {
-            Log.d("Notif Change", "IN HERE");
-            item.setIcon(R.drawable.ic_action_notify);
-        }
-        else
-        {
-            Log.d("Notif Change", "IN There");
-            item.setIcon(R.drawable.globe);
-        }
 
         return true;
     }
@@ -372,6 +366,8 @@ public class LocationsLogin extends Activity implements LocationListener  {
 
     }
 
-
-
+    @Override
+    public void onAllTransactionDone(boolean result) {
+        menu.getItem(1).setIcon(result ? R.drawable.ic_action_notify : R.drawable.globe);
+    }
 }

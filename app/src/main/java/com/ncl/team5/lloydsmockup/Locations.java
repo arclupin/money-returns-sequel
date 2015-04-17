@@ -46,7 +46,7 @@ import HTTPConnect.Connection;
 
 //References: http://code.tutsplus.com/tutorials/android-sdk-working-with-google-maps-displaying-places-of-interest--mobile-16145
 //https://developers.google.com/places/documentation/display_search
-public class Locations extends Activity implements LocationListener  {
+public class Locations extends Activity implements LocationListener, GetNotification.OnNotiFetchedListener  {
     private String username;
     GoogleMap gMap;
     private LocationManager lManager;
@@ -60,6 +60,7 @@ public class Locations extends Activity implements LocationListener  {
     private final int MAX = 20;
    private MarkerOptions[] places;
     private String date;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,9 +165,13 @@ public class Locations extends Activity implements LocationListener  {
         lManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,30000,250,this);
     }
 
+    @Override
+    public void onAllTransactionDone(boolean result) {
+        menu.getItem(1).setIcon(result ? R.drawable.ic_action_notify : R.drawable.globe);
+    }
 
 
-//Inner class to parse and execute the query. All the fun happens here(not really)
+    //Inner class to parse and execute the query. All the fun happens here(not really)
     private class GetPlaces extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... placesURL) {
@@ -276,17 +281,10 @@ public class Locations extends Activity implements LocationListener  {
 
         MenuItem item = menu.getItem(1);
         GetNotification notif = new GetNotification();
+        this.menu = menu;
 
+        notif.getNotifications(this, username, date);
 
-        if(notif.getNotifications(this, username, date)) {
-            Log.d("Notif Change", "IN HERE");
-            item.setIcon(R.drawable.ic_action_notify);
-        }
-        else
-        {
-            Log.d("Notif Change", "IN There");
-            item.setIcon(R.drawable.globe);
-        }
 
         return true;
     }
@@ -371,6 +369,8 @@ public class Locations extends Activity implements LocationListener  {
 
 
     }
+
+
 
 
 

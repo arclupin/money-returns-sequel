@@ -38,13 +38,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class Accounts extends Activity {
+public class Accounts extends Activity implements GetNotification.OnNotiFetchedListener {
 
     /* Used for the list view */
     private ArrayList<String> accountStrings;
     private List<String> displayStrings = new ArrayList<String>();
     private String username;
     private String date;
+    private Menu activityMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,17 +167,10 @@ public class Accounts extends Activity {
 
         MenuItem item = menu.getItem(1);
         GetNotification notif = new GetNotification();
+        activityMenu = menu;
 
+        notif.getNotifications(this, username, date);
 
-        if(notif.getNotifications(this, username, date)) {
-            Log.d("Notif Change", "IN HERE");
-            item.setIcon(R.drawable.ic_action_notify);
-        }
-        else
-        {
-            Log.d("Notif Change", "IN There");
-            item.setIcon(R.drawable.globe);
-        }
 
         return true;
     }
@@ -294,5 +288,10 @@ public class Accounts extends Activity {
         edit.commit();
 
         super.onPause();
+    }
+
+    @Override
+    public void onAllTransactionDone(boolean result) {
+        activityMenu.getItem(1).setIcon(result ? R.drawable.ic_action_notify : R.drawable.globe);
     }
 }

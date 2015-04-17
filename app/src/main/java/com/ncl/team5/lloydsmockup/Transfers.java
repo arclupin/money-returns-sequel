@@ -30,12 +30,13 @@ import java.util.concurrent.ExecutionException;
 import HTTPConnect.Connection;
 
 
-public class Transfers extends Activity {
+public class Transfers extends Activity implements GetNotification.OnNotiFetchedListener {
 
     /* -- Variables -- */
     /* Strings */
     private String username;
     private String date;
+    private Menu menu;
 
     /* Collections */
     private List<String> accountStrings = new ArrayList<String>();
@@ -68,21 +69,13 @@ public class Transfers extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         /* Show notification icon in menu bar */
         getMenuInflater().inflate(R.menu.main, menu);
-
+this.menu = menu;
         MenuItem item = menu.getItem(1);
         GetNotification notif = new GetNotification();
 
 
-        if(notif.getNotifications(this, username, date)) {
-            Log.d("Notif Change", "IN HERE");
-            item.setIcon(R.drawable.ic_action_notify);
-        }
-        else
-        {
-            Log.d("Notif Change", "IN There");
-            //item.setIcon(R.drawable.ic_action_email);
-            item.setIcon(R.drawable.globe);
-        }
+        notif.getNotifications(this, username, date);
+
 
         return true;
     }
@@ -378,5 +371,10 @@ public class Transfers extends Activity {
         Intent intent1 = new Intent(getApplicationContext(), Login.class);
         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent1);
+    }
+
+    @Override
+    public void onAllTransactionDone(boolean result) {
+        menu.getItem(1).setIcon(result ? R.drawable.ic_action_notify : R.drawable.globe);
     }
 }

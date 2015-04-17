@@ -35,7 +35,7 @@ import HTTPConnect.Responses_Format;
 import Utils.Houseshares;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements GetNotification.OnNotiFetchedListener {
 
     private static String username;
     private static String houseshare_id;
@@ -43,13 +43,21 @@ public class MainActivity extends Activity {
     // use static for date would help us not have to pass the date around as the value of the date wont be lost on activity change.
     private static String date;
 
+
+
     private List<String> accountNums = new ArrayList<String>();
     private String logoutTime;
     private Menu activityMenu;
     private String tempLogout;
     private MainConnectionWorker mWorker;
+    private Menu menu;
 
     public static final String RESUME_FROM_INSIDE = "0";
+
+    @Override
+    public void onAllTransactionDone(boolean result) {
+        activityMenu.getItem(1).setIcon(result ? R.drawable.ic_action_notify : R.drawable.globe);
+    }
 
     private enum BUTTON {PAYMENT, HOUSESHARE}
 
@@ -169,14 +177,7 @@ public class MainActivity extends Activity {
         MenuItem item = activityMenu.getItem(1);
         GetNotification notif = new GetNotification();
 
-        if (notif.getNotifications(this, username, date)) {
-            Log.d("Notif Change", "IN HERE");
-            item.setIcon(R.drawable.ic_action_notify);
-        } else {
-            Log.d("Notif Change", "IN There");
-            item.setIcon(R.drawable.globe);
-        }
-
+        notif.getNotifications(this, username, date);
         return true;
 
     }
