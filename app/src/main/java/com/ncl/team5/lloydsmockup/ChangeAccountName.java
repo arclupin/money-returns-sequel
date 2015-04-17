@@ -26,12 +26,13 @@ import java.util.concurrent.ExecutionException;
 import HTTPConnect.Connection;
 
 
-public class ChangeAccountName extends Activity {
+public class ChangeAccountName extends Activity implements GetNotification.OnNotiFetchedListener {
 
     /* -- Variables -- */
     private List<String> accountNumbers = new ArrayList<String>();
     private String username;
     private String date;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,18 +62,8 @@ public class ChangeAccountName extends Activity {
 
         MenuItem item = menu.getItem(1);
         GetNotification notif = new GetNotification();
-
-
-        if(notif.getNotifications(this, username, date))
-        {
-            Log.d("Notif Change", "IN HERE");
-            item.setIcon(R.drawable.ic_action_notify);
-        }
-        else
-        {
-            Log.d("Notif Change", "IN There");
-            item.setIcon(R.drawable.globe);
-        }
+        this.menu = menu;
+        notif.getNotifications(this, username, date);
 
         return true;
     }
@@ -260,5 +251,10 @@ public class ChangeAccountName extends Activity {
         ((KillApp) this.getApplication()).setStatus(false);
         finish();
 
+    }
+
+    @Override
+    public void onAllTransactionDone(boolean result) {
+        menu.getItem(1).setIcon(result ? R.drawable.ic_action_notify : R.drawable.globe);
     }
 }

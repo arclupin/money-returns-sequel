@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 
-public class GroupChooser extends Activity {
+public class GroupChooser extends Activity implements GetNotification.OnNotiFetchedListener {
 
     /* -- Variables -- */
     /* Strings */
@@ -33,6 +33,7 @@ public class GroupChooser extends Activity {
     private String date;
     private String accountNum;
     private String currentTransId;
+    private Menu menu;
 
     /* Collections */
     private Set<String> groupSets;
@@ -101,18 +102,9 @@ public class GroupChooser extends Activity {
 
         MenuItem item = menu.getItem(1);
         GetNotification notif = new GetNotification();
+        this.menu = menu;
+        notif.getNotifications(this, username, date);
 
-
-        if(notif.getNotifications(this, username, date))
-        {
-            Log.d("Notif Change", "IN HERE");
-            item.setIcon(R.drawable.ic_action_notify);
-        }
-        else
-        {
-            Log.d("Notif Change", "IN There");
-            item.setIcon(R.drawable.globe);
-        }
 
         return true;
     }
@@ -325,6 +317,11 @@ public class GroupChooser extends Activity {
     public void onBackPressed() {
         ((KillApp) this.getApplication()).setStatus(false);
         finish();
+    }
+
+    @Override
+    public void onAllTransactionDone(boolean result) {
+        menu.getItem(1).setIcon(result ? R.drawable.ic_action_notify : R.drawable.globe);
     }
 }
 
