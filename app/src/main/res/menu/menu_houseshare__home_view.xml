@@ -9,6 +9,12 @@
         android:icon="@drawable/group"
         ></item>
 
+    <item android:id="@+id/action_leave_house"
+        android:title="Leave this house"
+        android:showAsAction="always"
+        android:icon="@drawable/leave"
+        ></item>
+
     <item android:id="@+id/action_hs_new_bill"
         android:title="Add a new bill"
         android:showAsAction="always"
