@@ -346,7 +346,7 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
     }
 
 
-    public Request getLeavingRequest() {
+    private Request getLeavingRequest() {
         if (leavingRequest != null)
             return leavingRequest;
         leavingRequest = new Request(Request.TYPE.POST);
@@ -355,7 +355,7 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
         return leavingRequest;
     }
 
-    public Request getAdminChoosingRequest(String hsid) {
+    private Request getAdminChoosingRequest(String hsid) {
         if (adminChoosingRequest != null)
             return adminChoosingRequest;
         adminChoosingRequest = new Request(Request.TYPE.POST);

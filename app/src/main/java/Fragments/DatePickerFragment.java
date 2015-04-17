@@ -13,12 +13,17 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
+ * Class for showing a date picking dialog
+ *
  * Created by Thanh on 15-Apr-15.
  */
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
-private DatePickerListener mListener;
 
 
+   // listener instance
+    private DatePickerListener mListener;
+
+    // host activity interacting listener
     public interface DatePickerListener {
         void onDatePicked(Date date);
     }
@@ -37,6 +42,10 @@ private DatePickerListener mListener;
         }
 
 
+    /**
+     * cast the host activity to the listner
+     * @param activity the host activity
+     */
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

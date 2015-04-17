@@ -11,14 +11,16 @@ import android.widget.TextView;
 import com.ncl.team5.lloydsmockup.R;
 
 /**
+ * fragment for view pager showing the introductory page in houseshare service
+ *
  * Created by Thanh on 07-Mar-15.
  */
-//Old Account Fragment
+
 public class Fragment_HS_Welcome_3 extends Fragment {
     int height;
 
-    public static Fragment_HS_Welcome_1  getFragment_HS_Welcome_1(int height) {
-        Fragment_HS_Welcome_1 f = new Fragment_HS_Welcome_1();
+    public static Fragment_HS_Welcome_3  getFragment_HS_Welcome_13 (int height) {
+        Fragment_HS_Welcome_3 f = new Fragment_HS_Welcome_3();
         Bundle bundle = new Bundle();
         bundle.putInt("parent_height", height) ;
         f.setArguments(bundle);
@@ -41,13 +43,10 @@ public class Fragment_HS_Welcome_3 extends Fragment {
         View view = inflater.inflate(R.layout.fragment_hs_welcome_3, parent, false);
 
         TextView textView = (TextView) view.findViewById(R.id.Welcome_HS_3_TextView);
-//        Log.d("TextView", Integer.toString(this.getArguments().getInt("layout")));
-//        Toast.makeText(this.getActivity(), textView.getText(), Toast.LENGTH_SHORT).show();
         textView.setY(height * 3 / 10);
         textView.setLineSpacing(0, 1.1f);
 
-
-        return view; //
+        return view;
     }
 
     @Override

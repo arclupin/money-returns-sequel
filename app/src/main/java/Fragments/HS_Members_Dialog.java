@@ -24,7 +24,7 @@ import Utils.StringUtils;
  */
 public class HS_Members_Dialog extends DialogFragment{
 
-    // static factory
+    // static factory method
     public static HS_Members_Dialog initialise(String[] members, String[] dates) {
         HS_Members_Dialog o = new HS_Members_Dialog();
         Bundle b = new Bundle();

@@ -28,18 +28,16 @@ import Utils.StringUtils;
  */
 public class HS_Bill_Confirmation_Dialog extends DialogFragment{
 
+    private BillConfirmationDialogListener mBillConfirmationDialogListener;
+
+    // host activity interacting listener
     public interface BillConfirmationDialogListener {
 
         // methods needed to interact with the host activity
         void onBillConfirmedButtonClick(String bill_name, HS_Bill_Confirmation_Dialog f);
         void onBillCancelButtonClick(HS_Bill_Confirmation_Dialog f);
         Map<String, Double> getSubBills();
-
-
-
     }
-
-    private BillConfirmationDialogListener mBillConfirmationDialogListener;
 
     // assign the event listener to the host activity
     @Override
@@ -65,7 +63,6 @@ public class HS_Bill_Confirmation_Dialog extends DialogFragment{
         b.putString(IntentConstants.BILL_MESSAGE, message);
         // I avoid passing parcelables here for performance reason
         // (also the host activity already has a reference to involved users which is cheaper to get)
-
         o.setArguments(b);
         return o;
     }
@@ -76,7 +73,8 @@ public class HS_Bill_Confirmation_Dialog extends DialogFragment{
         LayoutInflater inflater = getActivity().getLayoutInflater();
         ScrollView v = (ScrollView) inflater.inflate(R.layout.dialog_list_bill_confirmation, null);
         TableLayout l = (TableLayout) v.findViewById(R.id.bill_confirmation_shares_table);
-        ((TextView) v.findViewById(R.id.title)).setText("Confirming " + getArguments().getString(IntentConstants.BILL_NAME));
+        ((TextView) v.findViewById(R.id.title)).setText("Confirming " + getArguments().
+                getString(IntentConstants.BILL_NAME));
 
         Map<String, Double> subbills = mBillConfirmationDialogListener.getSubBills();
 
@@ -87,7 +85,8 @@ public class HS_Bill_Confirmation_Dialog extends DialogFragment{
 
             //set the data for this sub bill (name + charge)
             ((TextView) sub_bill.findViewById(R.id.username_sub_title)).setText(entry.getKey());
-            ((TextView) sub_bill.findViewById(R.id.user_sub_bill_value)).setText(StringUtils.POUND_SIGN + String.format("%.2f", entry.getValue()));
+            ((TextView) sub_bill.findViewById(R.id.user_sub_bill_value)).
+                    setText(StringUtils.POUND_SIGN + String.format("%.2f", entry.getValue()));
 
             // add the sub bill view to the table
             l.addView(sub_bill);
@@ -96,9 +95,12 @@ public class HS_Bill_Confirmation_Dialog extends DialogFragment{
         }
 
         //set basic info of the bill
-        ((TextView) v.findViewById(R.id.bill_name_value)).setText(getArguments().getString(IntentConstants.BILL_NAME));
-        ((TextView) v.findViewById(R.id.due_date_value)).setText(getArguments().getString(IntentConstants.BILL_DUE_DATE));
-        ((TextView) v.findViewById(R.id.total_amount_value)).setText(StringUtils.POUND_SIGN + getArguments().getString(IntentConstants.BILL_AMOUNT));
+        ((TextView) v.findViewById(R.id.bill_name_value)).setText(getArguments().
+                getString(IntentConstants.BILL_NAME));
+        ((TextView) v.findViewById(R.id.due_date_value)).setText(getArguments().
+                getString(IntentConstants.BILL_DUE_DATE));
+        ((TextView) v.findViewById(R.id.total_amount_value)).
+                setText(StringUtils.POUND_SIGN + getArguments().getString(IntentConstants.BILL_AMOUNT));
         String msg = getArguments().getString(IntentConstants.BILL_MESSAGE);
         ((TextView) v.findViewById(R.id.message_value)).setText
                 (!StringUtils.isFieldEmpty(msg) ? msg : "No message");
@@ -106,13 +108,15 @@ public class HS_Bill_Confirmation_Dialog extends DialogFragment{
         v.findViewById(R.id.dialog_okay).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBillConfirmationDialogListener.onBillConfirmedButtonClick(getArguments().getString(IntentConstants.BILL_NAME), HS_Bill_Confirmation_Dialog.this);
+                mBillConfirmationDialogListener.onBillConfirmedButtonClick(getArguments().
+                        getString(IntentConstants.BILL_NAME), HS_Bill_Confirmation_Dialog.this);
             }
         });
         v.findViewById(R.id.dialog_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBillConfirmationDialogListener.onBillCancelButtonClick(HS_Bill_Confirmation_Dialog.this);
+                mBillConfirmationDialogListener.
+                        onBillCancelButtonClick(HS_Bill_Confirmation_Dialog.this);
 
             }
         });

@@ -17,7 +17,7 @@ import com.ncl.team5.lloydsmockup.R;
 /**
  *
  * Dialog for concluding a bill
- *
+ * This includes deactivating the bill, subbills,  marking the bill as read and adding an final event.
  *
  * Created by Thanh on 23-Mar-15.
  *
@@ -30,7 +30,7 @@ public class HS_Bill_Final_Confirm_Dialog extends DialogFragment{
          * The bill owner confirms that all of the shares have been paid and this bill should be concluded.
          * @param f the dialog itself (for dismissing the bill)
          */
-        public void onFinalConfirmClick(HS_Bill_Final_Confirm_Dialog f, Bill bill);
+        void onFinalConfirmClick(HS_Bill_Final_Confirm_Dialog f, Bill bill);
     }
 
     private FinalConfirmBillDialogListener mListener;
@@ -48,7 +48,7 @@ public class HS_Bill_Final_Confirm_Dialog extends DialogFragment{
         }
     }
 
-
+    //static factory method
     public static HS_Bill_Final_Confirm_Dialog initialise(Bill bill) {
         HS_Bill_Final_Confirm_Dialog o = new HS_Bill_Final_Confirm_Dialog();
         Bundle b = new Bundle();

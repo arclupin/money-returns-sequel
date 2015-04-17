@@ -61,6 +61,9 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
     private TableLayout mTable;
     private ProgressBar loading_icon;
     private static Boolean loaded = true;
+    private RelativeLayout mLayoutContainer;
+    private SwipeRefreshLayout mRefreshView;
+    private static enum UI_WORK_TYPE {MAIN}
 
     public RelativeLayout getmLayoutContainer() {
         return mLayoutContainer;
@@ -74,24 +77,17 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
         return mRefreshView;
     }
 
-    private RelativeLayout mLayoutContainer;
+    public TableLayout getmTable() {
+        return mTable;
+    }
 
-    private SwipeRefreshLayout mRefreshView;
-
-    private static enum UI_WORK_TYPE {MAIN}
-
-    ;
-
+    //component requests
     private Request notisFetchingRequest;
     private Request memberApprovingRequest;
     private Request memberRefusingRequest;
     private Request notiReadMarkingRequest;
 
-
-    public TableLayout getmTable() {
-        return mTable;
-    }
-
+    //static factory
     public static Fragment_HS_Notification newInstance(String username, String hs_name, String hsid) {
         Fragment_HS_Notification f = new Fragment_HS_Notification();
         Bundle b = new Bundle();
@@ -102,7 +98,8 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
         return f;
     }
 
-//    class UIWorker extends AsyncTask<UI_WORK_TYPE, Void, Boolean> {
+//    TODO investigate this classes' use
+// class UIWorker extends AsyncTask<UI_WORK_TYPE, Void, Boolean> {
 //
 //
 //        @Override
@@ -150,6 +147,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
 //        }
 //    }
 
+
     /**
      * By default the fragments in pager are not updated when switched to.
      * So use this method to achieve this
@@ -169,19 +167,26 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
                 .execute(new RequestQueue().addRequest(getNotisFetchingRequest()).toList());
     }
 
-    public static enum NOTI_WORK {
-        CHECK,
+    // modes of work for workers
+    public enum NOTI_WORK {
+        CHECK, // check new notifications
         SEEN, // user has seen the notifications
-        APPROVE,
-        REFUSE,
+        APPROVE, // user has approved a join request
+        REFUSE, // user has refused a join request
         FETCH, // initial data fetch
         FETCH_REFRESH, // user swipe down to refresh
-        NOTI_READ
+        NOTI_READ // mark noti as read
     }
 
-
+    /**
+     * Worker class for doing network job
+     */
     public class Notification_Worker extends ConcurrentConnection {
+
         private NOTI_WORK mode;
+
+        // an type of additional param that needs saving to be used later when the worker
+        // gets back from doing the background job
         public static final String PARAM_USERNAME_IN_NOTI = "NOTI_USR";
 
         // a map storing additional params needed storing.
@@ -217,10 +222,20 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
             super.onPreExecute();
         }
 
+        /**
+         * Constructor #1
+         * @param a the carrying activity
+         */
         public Notification_Worker(Activity a) {
             super(a);
         }
 
+        /**
+         * Constructor #2
+         * @param a the network executing activity
+         * @param dialog whether or not to show the dialog during the execution
+         * @param mode the mode of this worker
+         */
         public Notification_Worker(Activity a, boolean dialog, NOTI_WORK mode) {
             super(a);
             this.mode = mode;
@@ -230,7 +245,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
         @Override
         protected void onPostExecute(List<Response> responses) {
             super.onPostExecute(responses);
-
+            // set up what to do for each mode when getting back from the background job
             switch (mode) {
                 case FETCH:
                 case FETCH_REFRESH: {
@@ -245,7 +260,8 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
 
                 case REFUSE:
                 case APPROVE: {
-                    onSubButtonClicked(additional_params.get(PARAM_USERNAME_IN_NOTI), responses.get(0).getRaw_response(), mode);
+                    onSubButtonClicked(additional_params.get(PARAM_USERNAME_IN_NOTI),
+                            responses.get(0).getRaw_response(), mode);
                     break;
                 }
                 case NOTI_READ: {
@@ -265,15 +281,14 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
         }
     }
 
-    // TODO: For now it will just display the plain response from the server
-    // need updating later
-
+    /**
+     * Empty constructor
+     */
     public Fragment_HS_Notification() {
-        // Required empty public constructor
     }
 
     /**
-     * interface for intereacting with the host activity
+     * interface for interacting with the host activity
      */
     public interface OnNotificationInteraction {
         void onNewNotiReceived();
@@ -282,6 +297,8 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // get basic data of the user
         username = getArguments().getString(IntentConstants.USERNAME) != null ?
                 getArguments().getString(IntentConstants.USERNAME) : username;
         hs_name = getArguments().getString(IntentConstants.HOUSE_NAME);
@@ -341,6 +358,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //set up refreshing listner for the swipe view
         mRefreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -359,7 +377,6 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-//        mListener.onNotificationsSeen(this);
     }
 
     @Override
@@ -373,10 +390,14 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
         }
     }
 
+
+    /**
+     * Detach the listener on fragment detach
+     */
     @Override
     public void onDetach() {
         super.onDetach();
-//        mListener = null;
+        mListener = null;
     }
 
 
@@ -390,14 +411,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
      * ... To be added
      */
     public void checkNewNotification(String r) {
-        //TODO complete
-        //Just need to send a simple request asking for the arrival of any new noti, the server will take care of the display_search
-
         try {
-            /* Command required to make a payment, takes username, to account, from account, both sort codes and amount
-             * Returns: JSON String */
-//            result = connect.execute(Request_Params.PARAM_TYPE, Request_Params.VAL_REF_NOTI, Request_Params.PARAM_USR, this.username).get();
-//            /* Turns String into JSON object, can throw JSON Exception */
             JSONObject jo = new JSONObject(r);
 
             /* Check if the user has timed out */
@@ -433,16 +447,14 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
 
     /**
      * This method will be invoked when and only when the user clicks on the noti icon
+     * It would go fetch data from the server
+     * @param r the raw response from the server containing notification data
      *
-     * @return
      */
     public void fetchNotifications(String r) {
-        //TODO complete
 
         Log.d("fetch here", r);
-
         List<Notification> l = new ArrayList<Notification>();
-
 
         try {
             JSONObject jo = new JSONObject(r);
@@ -452,7 +464,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
 
                  /* Display message box and auto logout user */
                 final Connection temp_connect = new Connection(getActivity());
-                // experimenting a new message box builder
+                // experimenting the newly added message box builder
                 CustomMessageBox.MessageBoxBuilder builder = new CustomMessageBox.MessageBoxBuilder(getActivity(), "Your session has been timed out, please login again");
                 builder.setTitle("Expired")
                         .setActionOnClick(new CustomMessageBox.ToClick() {
@@ -465,17 +477,17 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
                 JSONArray Noti_js_arr = jo.getJSONArray(Responses_Format.RESPONSE_HS_CONTENT);
                 for (int i = 0; i < Noti_js_arr.length(); i++) {
 
-                    //typical response looks like this
-                    // TODO _IMPORTANT! [["65","16","hs_100000","wgriffin","2015-04-11 02:38:14","0","electricity oct"]
+                    // typical response looks like this
+                    // TODO [DON'T DELETE] [IMPORTANT!] [*FORMAT*] [["65","16","hs_100000","wgriffin","2015-04-11 02:38:14","0","electricity oct"]
 
                     JSONArray noti_arr_in = Noti_js_arr.getJSONArray(i);
-
 
                     String id = noti_arr_in.getString(0);
                     boolean read = noti_arr_in.getString(noti_arr_in.length() - 3).equals("1");
                     int type = noti_arr_in.getInt(1);
                     String source = noti_arr_in.getString(noti_arr_in.length() - 1);
 
+                    // craft the new notification extracted from the response
                     Notification n = new Notification(type, read, id, source);
                     n.addParam(noti_arr_in.getString(Notification.HSID_POS + 2))
                             .addParam(noti_arr_in.getString(Notification.PARAM_POS + 2))
@@ -486,10 +498,9 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
                     Log.d("Extracted noti " + i, n.toString());
                 }
             }
-            /* There was an error indide the status return field, display appropriate error message */
-            //TODO implement error messages
+            /* There was an error inside the status return field, display appropriate error message */
             else {
-                /* give more info on the error here, no money taken from account */
+                /* TODO give more info on the error here, no money taken from account */
                 /* Use the status results to display certain error messages */
             }
 
@@ -503,6 +514,8 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
             new CustomMessageBox(getActivity(), "An unknown error occurred");
             e.printStackTrace();
         }
+
+        // reset the backing notification list
         data = l;
     }
 
@@ -538,7 +551,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
      * @param src the target of the noti
      */
     public void onNotificationsRead(String noti_id, String src, boolean isRead, boolean isOwner) {
-        // if the noti hasnt been read before, then notify the server to mark this noti as read
+        // if the noti hasn't been read before, then notify the server to mark this noti as read
         // before redirecting to the target
         if (!isRead) {
             Request r = new Request(Request.TYPE.POST);
@@ -547,6 +560,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
                     .addParam(Request_Params.NOTI_ID, noti_id);
             Log.d("Request marked as read", r.toString());
 
+            // srart a new worker for letting the server know the notification has been read
             new Notification_Worker(getActivity(), true, NOTI_WORK.NOTI_READ)
                     .addNewParam(IntentConstants.BILL_ID, src)
                     .addNewParam(IntentConstants.IS_OWNER, String.valueOf(isOwner)) // god damn line took me 2 hrs
@@ -572,7 +586,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
      * method performed after the user has clicked on the sub button on one of the noti_join_req row,
      * that is, either the welcome or refuse button.
      *
-     * @param p    the name of the param (username who has sent the requets)
+     * @param p    the name of the param (username who has sent the requests)
      * @param r    the response
      * @param type the type of the request (Approve or cancel)
      */
@@ -768,6 +782,8 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
                 }
             }
             Log.d("data", String.valueOf(data.size()) + " i : " + i + " mTable" + mTable.getChildCount());
+
+            // add the table row to the table
             if (v != null)
                 mTable.addView(v, i);
 
@@ -859,7 +875,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
                     .addParam(Request_Params.NOTI_ID, noti_id);
         return notiReadMarkingRequest;
     }
-}
+} // END CLASS FRAGMENT_HS_NOTIFICATION
 
 
 

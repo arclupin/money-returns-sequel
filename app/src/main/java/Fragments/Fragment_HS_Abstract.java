@@ -12,6 +12,8 @@ public abstract class Fragment_HS_Abstract extends Fragment {
 
     /**
      * update method
+     * Every fragment that needs updating on some particular occasions (like onResume, onCreate)
+     * should subclass this abstract class
      */
     public abstract void update();
 }

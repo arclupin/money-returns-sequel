@@ -13,15 +13,16 @@ import com.ncl.team5.lloydsmockup.R;
 
 /**
  *
- * Dialog for confirming that the join request has been sent.
+ * Dialog for choosing what kind of bill (Auto or manual) to create
  *
+ * Note: the auto creating bill is still under investigation and yet to be deployed
  *
  * Created by Thanh on 23-Mar-15.
  *
  */
 public class HS_New_Bill_Dialog extends DialogFragment{
 
-    public static enum BILL_TYPE {AUTO, MANUAL};
+    public enum BILL_TYPE {AUTO, MANUAL};
     public interface NewBillDialogListener {
 
         /**

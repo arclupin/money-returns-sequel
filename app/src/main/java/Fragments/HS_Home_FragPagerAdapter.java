@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Main pager adapter for the houseshare homeview
+ *
  * Created by Thanh on 01-Apr-15.
  */
 public class HS_Home_FragPagerAdapter extends FragmentStatePagerAdapter {
@@ -17,7 +19,8 @@ public class HS_Home_FragPagerAdapter extends FragmentStatePagerAdapter {
     private String username;
     private String hs_name;
     private String hsid;
-    private String view_type; // should be enum
+    // should be enum
+    private String view_type;
 
     public static final int FRAGS = 2;
 
@@ -42,7 +45,7 @@ public class HS_Home_FragPagerAdapter extends FragmentStatePagerAdapter {
     /**
      * Return the Fragment associated with a specified position.
      *
-     * @param position
+     * @param position the currently visible fragment
      */
     @Override
     public Fragment getItem(int position) {

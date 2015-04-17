@@ -95,9 +95,6 @@ public class Houseshare_Create_House extends Activity {
 
         setTextWatchers();
 
-//        actionBar = getActionBar();
-//        Log.d("Action Bar: ", (String) actionBar.getTitle());
-
         }
 
 
@@ -108,6 +105,10 @@ public class Houseshare_Create_House extends Activity {
         return true;
     }
 
+    /**
+     * check if the information is sufficient for creating a house
+     * @return true if that's the case, false oftherwise
+     */
     public boolean isInformationSufficient() {
         LinearLayout container = (LinearLayout) findViewById(R.id.houseshare_create_input_container);
         for (int i = 0; i < container.getChildCount() - 2; i+=2 )
@@ -120,6 +121,9 @@ public class Houseshare_Create_House extends Activity {
         return true;
     }
 
+    /**
+     * set text watchers for childs
+     */
     public void setTextWatchers() {
         LinearLayout container = (LinearLayout) findViewById(R.id.houseshare_create_input_container);
         for (int i = 0; i < container.getChildCount() - 2; i+=2 )
@@ -128,7 +132,6 @@ public class Houseshare_Create_House extends Activity {
             child.addTextChangedListener(watcher);
         }
     }
-
 
 
     @Override
@@ -146,6 +149,10 @@ public class Houseshare_Create_House extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * prepare the request for house creating
+     * @return the list of string containing all params for the request
+     */
     private List<String> fetchDetailsForRequest() {
         List<String> details = new ArrayList<String>(FIELDS);
         LinearLayout container = (LinearLayout) findViewById(R.id.houseshare_create_input_container);
@@ -158,6 +165,10 @@ public class Houseshare_Create_House extends Activity {
         return details;
     }
 
+    /**
+     * On-click function for create button
+     * @param v the create button
+     */
     public void Houseshare_create_house(View v) {
         TextView a = (TextView)  findViewById(R.id.houseshare_create_button);
         if (!isInformationSufficient() && a.getCurrentTextColor() == Color.LTGRAY)
@@ -170,8 +181,6 @@ public class Houseshare_Create_House extends Activity {
             String result;
 
             try {
-            /* Command required to make a payment, takes username, to account, from account, both sort codes and amount
-             * Returns: JSON String */
                 result = c.execute(Request_Params.PARAM_TYPE, Request_Params.VAL_HS_CREATE_HOUSE,
                         Request_Params.PARAM_USR, username,
                         Request_Params.HS_CREATE_HOUSE_NAME, l.get(0),
@@ -237,7 +246,6 @@ public class Houseshare_Create_House extends Activity {
                 new CustomMessageBox(this, "An unknown error occurred");
                 e.printStackTrace();
             }
-
         }
     }
 }

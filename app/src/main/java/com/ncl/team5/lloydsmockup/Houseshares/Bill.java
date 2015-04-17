@@ -267,7 +267,6 @@ public class Bill implements Comparable<Bill>, Parcelable{
         dest.writeInt(isActive ? 1 :0);
         dest.writeSerializable(datePaid);
         dest.writeInt(amICreator ? 1 : 0);
-
     }
 
 
@@ -359,6 +358,10 @@ public class Bill implements Comparable<Bill>, Parcelable{
             this.events = events;
         }
 
+        /**
+         * check if all required data in the builder has been set so that a new bill can be created
+         * @return true if that's the case, false otherwise
+         */
         private boolean isAllDataSet() {
             Log.d("extracted bill", this.toString());
             return  !StringUtils.isFieldEmpty(billID) &&

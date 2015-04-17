@@ -27,7 +27,7 @@ import Utils.StringUtils;
  */
 public class HS_Bill_Participants_Dialog extends DialogFragment{
 
-    // static factory
+    // static factory method
     public static HS_Bill_Participants_Dialog initialise(String[] participants, double[] shares, boolean[] states) {
         HS_Bill_Participants_Dialog o = new HS_Bill_Participants_Dialog();
         Bundle b = new Bundle();
@@ -40,13 +40,17 @@ public class HS_Bill_Participants_Dialog extends DialogFragment{
 
     @Override
     public Dialog onCreateDialog(Bundle saveState) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_list_bill_participants, null);
         TableLayout l = (TableLayout) v.findViewById(R.id.bill_participants);
+
+        //extracting arguments added from the static factory
         String[] participants = getArguments().getStringArray(IntentConstants.PARTICIPANTS);
         double[] shares = getArguments().getDoubleArray(IntentConstants.PARTICIPANT_SHARES);
         boolean[] states = getArguments().getBooleanArray(IntentConstants.PARTICIPANT_STATUS);
+
         for (int i = 0; i < participants.length; i++) {
 
             String participant = participants[i];

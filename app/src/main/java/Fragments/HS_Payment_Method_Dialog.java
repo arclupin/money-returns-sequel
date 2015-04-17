@@ -23,7 +23,7 @@ import java.util.Map;
 import Utils.StringUtils;
 
 /**
- * Dialog for confirming the creation of a bill
+ * Dialog for chossing the payment method for the payment
  *
  * Created by Thanh on 10-April-15.
  */
@@ -50,7 +50,7 @@ public class HS_Payment_Method_Dialog extends DialogFragment{
         }
     }
 
-    // static factory
+    // static factory method
     public static HS_Payment_Method_Dialog initialise() {
         HS_Payment_Method_Dialog o = new HS_Payment_Method_Dialog();
         return o;
@@ -61,6 +61,8 @@ public class HS_Payment_Method_Dialog extends DialogFragment{
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View v = inflater.inflate(R.layout.dialog_payment_method, null);
+
+        //set up views
         TextView bank = (TextView) v.findViewById(R.id.bank_transfer);
         bank.setOnClickListener(new View.OnClickListener() {
             @Override

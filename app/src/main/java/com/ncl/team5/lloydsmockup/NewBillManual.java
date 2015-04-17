@@ -45,7 +45,9 @@ import Utils.StringUtils;
 import Utils.Utilities;
 import Utils.Validator;
 
-
+/**
+ * Activity for creating a manually typed bill
+ */
 public class NewBillManual extends Activity {
     private RelativeLayout layout;
     private EditText billName_view;
@@ -187,12 +189,10 @@ public class NewBillManual extends Activity {
         message_view.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
@@ -200,7 +200,6 @@ public class NewBillManual extends Activity {
                 message = s.toString();
             }
         });
-
 
         Request r = new Request(Request.TYPE.POST);
         r.addParam(Request_Params.PARAM_TYPE, Request_Params.HS_ALL_MEMBERS)
@@ -288,6 +287,10 @@ public class NewBillManual extends Activity {
 
     }
 
+    /**
+     * extract members from the server response
+     * @param r the relevant response
+     */
     private void filterMembers(String r) {
         try {
             JSONObject j = new JSONObject(r);
@@ -354,6 +357,9 @@ public class NewBillManual extends Activity {
         }
     }
 
+    /**
+     * Clear all views in the table member table view
+     */
     private void clearViews() {
         for (int i = 0; i < members_table_view.getChildCount() - 1; i++)
             members_table_view.removeViewAt(i);
@@ -414,6 +420,9 @@ public class NewBillManual extends Activity {
         this.involved_members = involved_members;
     }
 
+    /**
+     * Worker for doing the network job and UI preparation
+     */
     public class BillCreator_Worker extends ConcurrentConnection {
         @Override
         protected void onPreExecute() {
@@ -436,6 +445,9 @@ public class NewBillManual extends Activity {
         }
     }
 
+    /**
+     * quick method for setting all members checked
+     */
     private void setAllChecked() {
         for (int i = 1; i < members_table_view.getChildCount(); i++) {
 
@@ -446,6 +458,9 @@ public class NewBillManual extends Activity {
         Log.d("involved", Arrays.toString(involved_members.toArray(new Member[involved_members.size()])));
     }
 
+    /**
+     * quick method for unsetting all members checked
+     */
     private void setAllUnchecked() {
         for (int i = 1; i < members_table_view.getChildCount(); i++) {
             ((CheckBox) members_table_view.getChildAt(i).findViewById(R.id.checkBox)).setChecked(false);
@@ -455,6 +470,10 @@ public class NewBillManual extends Activity {
         Log.d("involved", Arrays.toString(involved_members.toArray(new Member[involved_members.size()])));
     }
 
+    /**
+     * check if the data supplied is sufficent to create a bill
+     * @return the integer status
+     */
     private int isDataSupplied() {
         Log.d("validate date", billName + " / amount supplied: " + isAmountSupplied + "/ due date supplied: " + isDueDateSupplied);
         if  (!(billName != null && isDueDateSupplied && isAmountSupplied && involved_members.size() > 0))
@@ -464,6 +483,11 @@ public class NewBillManual extends Activity {
         return VALID_DATA;
     }
 
+    /**
+     * get houseshareid of a user using his username
+     * @param username the username of the user
+     * @return the houseshare id of the user
+     */
     private String getHouseshareID(String username) {
 
         String id = null;

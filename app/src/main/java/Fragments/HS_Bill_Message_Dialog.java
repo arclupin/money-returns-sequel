@@ -20,12 +20,12 @@ import Utils.StringUtils;
  *
  * Dialog for displaying the message left by the bill creator
  *
- *
  * Created by Thanh on 23-Mar-15.
  *
  */
 public class HS_Bill_Message_Dialog extends DialogFragment{
 
+    //static factory method
     public static HS_Bill_Message_Dialog initialise(String authorName, String message) {
         HS_Bill_Message_Dialog o = new HS_Bill_Message_Dialog();
         Bundle b = new Bundle();

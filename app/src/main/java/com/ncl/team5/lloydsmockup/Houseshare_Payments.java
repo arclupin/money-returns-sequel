@@ -28,7 +28,10 @@ import HTTPConnect.Responses_Format;
 import Utils.StringUtils;
 import Utils.Utilities;
 
-
+/**
+ * Activity for submitting a payment to a bill
+ * The amount submitted MUST be the full share.
+ */
 public class Houseshare_Payments extends Activity implements DatePickerFragment.DatePickerListener,
         HS_Payment_Method_Dialog.PaymentMethodDialogListener{
 
@@ -113,8 +116,6 @@ public class Houseshare_Payments extends Activity implements DatePickerFragment.
                             .setTitle("Warning").build();
             }
         });
-
-
 
     }
 
@@ -206,6 +207,10 @@ public class Houseshare_Payments extends Activity implements DatePickerFragment.
         }
     }
 
+    /**
+     * get the paymentConfirming request, or initialise it if needed to
+     * @return the initialised request
+     */
     private Request getPaymentConfirmingRequest() {
         if (paymentConfirmingRequest != null)
             return paymentConfirmingRequest;

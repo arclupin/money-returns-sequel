@@ -30,12 +30,6 @@ public class Products extends Activity implements GetNotification.OnNotiFetchedL
         username = intent.getStringExtra(IntentConstants.USERNAME);
         date = intent.getStringExtra(IntentConstants.DATE);
 
- /*       browser=(WebView)findViewById(R.id.webkit);
-        WebSettings webSettings = browser.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        browser.loadUrl("http://www.lloydsbank.com/current-accounts.asp");
-        // Force links and redirects to open in the WebView instead of in a browser
-        browser.setWebViewClient(new WebViewClient());*/
     }
 
     @Override

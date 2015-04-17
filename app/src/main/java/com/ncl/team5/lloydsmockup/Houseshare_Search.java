@@ -47,11 +47,11 @@ import Utils.Houseshares;
 import Utils.StringUtils;
 
 /**
+ * Activity for showing the search page
+ *
  * For performace optimisation, the display_search wont be performed automatically as the text changes.
  * The display_search request will only be sent when the user press the display_search button
  */
-
-
 public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialog_Fragment.JoinDialogListener,
         HS_Cancel_Request_Dialog_Fragment.CancelRequestDialogListener, HS_Join_Confirm_Dialog.JoinConfirmedDialogListener
         , HS_Join_Conflict_Dialog.JoinConflictDialogListener, HS_Cancel_Confirm_Dialog.CancelConfirmedDialogListener {
@@ -61,7 +61,7 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
     private String hsid;
 
 
-    private static enum search_mode {SEARCH, CONFLICT_OK}
+    private enum search_mode {SEARCH, CONFLICT_OK}
 
     private ScrollView result_scroll_container;
     private TableLayout result_layout;
@@ -207,6 +207,10 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
 
     }
 
+    /**
+     * search button clicked
+     * @param v
+     */
     public void createHouse(View v) {
         Intent i = new Intent(this, Houseshare_Create_House.class);
         i.putExtra(IntentConstants.USERNAME, username);
@@ -316,7 +320,6 @@ public class Houseshare_Search extends FragmentActivity implements HS_Join_Dialo
     // clean the child view
     public void cleanSearchAtChild(int child) {
         if (result_layout.getChildCount() > 0 && result_layout.getChildCount() > child) {
-
             //some animation for better user experience hopefully
 //            Utils.Animation.fade_out(result_layout.getChildAt(child), this, Utils.Animation.SHORT, Utils.Animation.POST_EFFECT.PERMANENTLY);
             result_layout.removeViewAt(child);

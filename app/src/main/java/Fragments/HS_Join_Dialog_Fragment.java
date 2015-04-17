@@ -15,13 +15,15 @@ import com.ncl.team5.lloydsmockup.IntentConstants;
 import com.ncl.team5.lloydsmockup.R;
 
 /**
+ * Dialog for confirming before the request to a house is sent.
+ *
  * Created by Thanh on 23-Mar-15.
  */
 public class HS_Join_Dialog_Fragment extends DialogFragment{
 
     public interface JoinDialogListener {
-        public void onJoinButtonClick(String house_name, HS_Join_Dialog_Fragment f, int view_id);
-        public void onCancelButtonClick(HS_Join_Dialog_Fragment f);
+        void onJoinButtonClick(String house_name, HS_Join_Dialog_Fragment f, int view_id);
+        void onCancelButtonClick(HS_Join_Dialog_Fragment f);
     }
 
     private JoinDialogListener mJoinDialogListener;
@@ -55,6 +57,7 @@ public class HS_Join_Dialog_Fragment extends DialogFragment{
         final String house_name = getArguments().getString(IntentConstants.HOUSE_NAME);
         Log.d("house name from frag", "/" + house_name);
 
+        //set up views
         LayoutInflater inflater = getActivity().getLayoutInflater();
         RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_normal_fragment, null);
         ((TextView) v.findViewById(R.id.title)).setText("Confirmation");
