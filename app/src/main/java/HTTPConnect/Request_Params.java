@@ -118,4 +118,8 @@ public class Request_Params {
 
     public static final String PARAM_REMOVE_BILL = "HS_REMOVE_BILL";
 
+    public static final String PARAM_LEAVE_HOUSE = "HS_LEAVE";
+
+    public static final String PARAM_ASSIGN_ADMIN = "HS_ASSIGN_ADMIN";
+
 }

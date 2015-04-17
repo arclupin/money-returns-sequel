@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.ncl.team5.lloydsmockup.CustomMessageBox;
 import com.ncl.team5.lloydsmockup.HouseShare_Bill_Member;
 import com.ncl.team5.lloydsmockup.HouseShare_Bill_Owner;
+import com.ncl.team5.lloydsmockup.Houseshare_HomeView;
 import com.ncl.team5.lloydsmockup.Houseshares.Bill;
 import com.ncl.team5.lloydsmockup.Houseshares.Member;
 import com.ncl.team5.lloydsmockup.IntentConstants;
@@ -31,6 +32,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -58,6 +60,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
     //are different
     private static String view_type;
     private static boolean loaded = false;
+    private static boolean amIAdmin;
 
     private String response_content;
     //backing map that stores the details of members of the group the user is in.
@@ -288,6 +291,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
 
         @Override
         protected void onPostExecute(List<Response> responses) {
+            members = new TreeMap<String, Member>();
             super.onPostExecute(responses);
             loadingIcon.setVisibility(View.GONE);
             loading_list_text.setVisibility(View.GONE);
@@ -303,6 +307,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
                         equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE)) {
 
                     view_type = Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE;
+                    Houseshare_HomeView.view_type = view_type;
                     billList_view = (ListView) l.findViewById(R.id.listBills);
                     response_content = processInfo(responses.get(1).getRaw_response());
                     //TODO we might need a UI child thread worker for all these data
@@ -323,6 +328,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
                         equals(Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ)) {
 
                     view_type = Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ;
+                    Houseshare_HomeView.view_type = view_type;
                     hs_name = responses.get(0).getJsonObject().
                             has(Responses_Format.RESPONSE_HS_CONTENT) ?
                             responses.get(0).getToken(Responses_Format.RESPONSE_HS_CONTENT)
@@ -339,13 +345,13 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
                 else if (responses.get(0).getToken(Responses_Format.RESPONSE_STATUS).
                         equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE)) {
 
-                    view_type = Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE;
-
+                    view_type = Responses_Format.RESPONSE_HOUSESHARE_JOINED_SERVICE;
+                    Houseshare_HomeView.view_type = view_type;
                     displayPendingContent("You have not joined any house.\n" +
                                     "Use the search bar below to start looking for one!",
                             pending_mode.NOT_SENT);
                 }
-
+                getActivity().invalidateOptionsMenu();
             }
         }
     }
@@ -388,10 +394,18 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         try {
             Log.d("billList size", "/ " + billList.size());
             JSONArray house_Array = new JSONObject(response_content).getJSONArray("basic_info");
+            amIAdmin = house_Array.getBoolean(house_Array.length() - 1);
+            Houseshare_HomeView.amIAdmin = amIAdmin;
+            Log.d("Am I admin", "/" + amIAdmin);
+            viewName.setVisibility(View.VISIBLE);
+            viewAddressText.setVisibility(View.VISIBLE);
+            viewDescription.setVisibility(View.VISIBLE);
+            avatar.setVisibility(View.VISIBLE);
+
             viewName.setText(house_Array.getString(0));
             viewAddressText.setText(StringUtils.implode(" ", house_Array.getString(1),
                     house_Array.getString(2), house_Array.getString(3)));
-            viewDescription.setText(house_Array.getString(house_Array.length() - 1));
+            viewDescription.setText(house_Array.getString(house_Array.length() - 2));
             avatar.setImageDrawable(getResources().getDrawable(R.drawable.avatar));
             BillAdapter adapter = new BillAdapter(getActivity(), R.layout.bill_view_row, billList);
             billList_view.setAdapter(adapter);
@@ -410,6 +424,10 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
      */
     private void displayPendingContent(String prompt, pending_mode mode) {
 
+
+        viewAddressText.setVisibility(View.VISIBLE);
+        avatar.setVisibility(View.VISIBLE);
+
         // prepare the layout positions
         l.setBackgroundColor(getResources().getColor(R.color.hs_home_bg_light));
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
@@ -421,6 +439,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         main_view_container.requestLayout();
 
         if (mode == pending_mode.SENT) {
+            viewName.setVisibility(View.VISIBLE);
             viewName.setText(hs_name);
             viewAddressText.setPadding(20, 20, 20, 20);
         } else {
@@ -491,11 +510,10 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         fetch_bills_request.addParam(Request_Params.PARAM_TYPE, Request_Params.REQUEST_HS_GET_MY_BILLS)
                 .addParam(Request_Params.PARAM_USR, username);
 
-        if (!StringUtils.isFieldEmpty(hs_name) && view_type.equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE)) {
             new HomeViewWorker(getActivity(), false)
                     .execute(new RequestQueue().addRequests(init_request, home_feed_request, new_noti_check_request,
                             fetch_members_request, fetch_bills_request).toList());
-        }
+
     }
 
     /**
@@ -742,6 +760,15 @@ class BillAdapter extends ArrayAdapter<Bill> {
         return view;
     }
 }
+
+    private void cleanUpLayout() {
+        billList = new ArrayList<Bill>();
+        viewName.setVisibility(View.INVISIBLE);
+        viewAddressText.setVisibility(View.INVISIBLE);
+        viewDescription.setVisibility(View.INVISIBLE);
+        avatar.setVisibility(View.INVISIBLE);
+        empty_view.setVisibility(View.INVISIBLE);
+    }
 
 }
 //END CLASS FRAGMENT_HS_HOME
