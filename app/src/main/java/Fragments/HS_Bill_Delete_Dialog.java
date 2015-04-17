@@ -39,12 +39,11 @@ public class HS_Bill_Delete_Dialog extends DialogFragment{
     public interface CancelConfirmedDialogListener {
 
         /**
-         * User confirms that his join request has been cancelled -> redirect the home page
+         * User confirms that this bill will be removed
          * @param f the dialog itself (for dismission)
-         * @param username the username
-         * @param hs_name the house name that user has sent request to
+         * @param billID the bill id
          */
-        public void onButtonClickCancel(HS_Bill_Delete_Dialog f, String username, String hs_name);
+        public void onButtonClickCancel(HS_Bill_Delete_Dialog f, String billID);
     }
 
     private CancelConfirmedDialogListener mCancelConfirmedDialogListener;
@@ -93,15 +92,6 @@ public class HS_Bill_Delete_Dialog extends DialogFragment{
                 mBillDeleteDialogListener.onButtonClickDeleteBill
                         (HS_Bill_Delete_Dialog.this, getArguments().getString(IntentConstants.BILL_ID));
             }});
-
-//        builder.setTitle("Request to " + getArguments().getString(IntentConstants.HOUSE_NAME)+ " cancelled")
-//                .setMessage("Your request has been cancelled. \nGood bye!")
-//                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        mCancelConfirmedDialogListener.onButtonClickCancel(HS_Cancel_Confirm_Dialog.this, getArguments().getString(IntentConstants.USERNAME), getArguments().getString(IntentConstants.HOUSE_NAME));
-//                    }
-//
 
         builder.setView(v);
         return builder.create();

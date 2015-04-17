@@ -85,8 +85,8 @@
     <string name="dialog_new_bill_type_manual">Manual calculation</string>
     <string name="dialog_new_bill_type_auto_description">Let the app do the calculation for you</string>
     <string name="dialog_new_bill_type_manual_description">You got all calculations ready</string>
-    <string name="title_activity_new_bill_auto">NewBillAuto</string>
-    <string name="title_activity_new_bill_manual">NewBillManual</string>
+    <string name="title_activity_new_bill_auto">Automatic bill</string>
+    <string name="title_activity_new_bill_manual">Creating a bill</string>
 
     <string name="title_selecte_users">Select users</string>
     <string name="join_since">Joined since 01/01/1970</string>

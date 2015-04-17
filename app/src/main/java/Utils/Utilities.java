@@ -1,7 +1,10 @@
 package Utils;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.EditText;
 
@@ -19,7 +22,6 @@ import HTTPConnect.Connection;
 public class Utilities {
 
 public static long DAY_TO_MILLI = 86400000;
-
 
     public static void delay(long milli) {
         long now = System.currentTimeMillis();
@@ -95,6 +97,11 @@ public static long DAY_TO_MILLI = 86400000;
                         temp_connect.autoLogout(username);
                     }
                 }).build();
+    }
+
+    public static int getPXFromDP(int dp){
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        return  dp * 160 / metrics.densityDpi;
     }
 
 

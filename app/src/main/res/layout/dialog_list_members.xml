@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/dialog_bill_type_container"
+    android:id="@+id/dialog_members_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/border_dialog"
-
     android:paddingBottom="15dp">
 
     <TextView
@@ -17,41 +16,12 @@
         android:paddingTop="15dp"
         android:textSize="20sp"
         android:paddingBottom="10dp"
-        android:text="Participants" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/descriptions"
-        android:layout_below="@id/title">
-
-        <TextView
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:id="@+id/text_confirmed"
-            android:text="C: Confirmed"
-            style="@style/Bill_Confirmation_Value"
-            android:textColor="@color/dark_green"
-            android:textSize="14sp"
-            android:layout_weight="1"
-            android:gravity="center" />
-
-        <TextView
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:id="@+id/text_not_confirmed"
-            android:text="N: Not confirmed"
-            style="@style/Bill_Confirmation_Value"
-            android:textColor="@android:color/holo_red_light"
-            android:layout_weight="1"
-            android:textSize="14sp"
-            android:gravity="center" />
-    </LinearLayout>
+        android:text="Members" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/descriptions"
+        android:layout_below="@+id/title"
         android:id="@+id/participants_scrollview"
         android:paddingTop="10dp">
 
@@ -62,7 +32,7 @@
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/bill_participants"></TableLayout>
+                android:id="@+id/members_table"></TableLayout>
 
             <TextView
                 android:id="@+id/dialog_okay"
@@ -71,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:layout_marginEnd="10dp"
-                android:layout_below="@id/bill_participants"
+                android:layout_below="@id/members_table"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:padding="15dp"
@@ -80,6 +50,7 @@
                 android:textSize="14sp"
                 android:background="@drawable/button_light_color"
                 android:clickable="true" />
+
         </RelativeLayout>
     </ScrollView>
 

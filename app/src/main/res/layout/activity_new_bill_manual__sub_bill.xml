@@ -4,157 +4,157 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
     xmlns:android="http://schemas.android.com/apk/res/android" />
-<RelativeLayout
-    android:id="@+id/layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.ncl.team5.lloydsmockup.NewBillAuto">
-    <ScrollView
-        android:id="@+id/scrollViewSelectUsers"
+    <RelativeLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/title_bill_break_down"
-        android:background="@color/white">
-
-        <TableLayout
-            android:id="@+id/table_sub_bills"
+        android:layout_height="match_parent"
+        tools:context="com.ncl.team5.lloydsmockup.NewBillAuto">
+        <ScrollView
+            android:id="@+id/scrollViewSelectUsers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stretchColumns="*">
+            android:layout_below="@+id/title_bill_break_down"
+            android:background="@color/white">
 
-            <TableRow>
+            <TableLayout
+                android:id="@+id/table_sub_bills"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="*">
 
-                <RelativeLayout
-                    android:id="@+id/totals_container"
-                    android:layout_width="fill_parent"
-                    android:layout_height="match_parent">
+                <TableRow>
 
-                    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                        xmlns:tools="http://schemas.android.com/tools"
-                        android:id="@+id/option_share_equally_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginStart="15dp"
-                        android:background="@drawable/button_light_color"
-                        android:clickable="true"
-                        android:paddingBottom="10dp"
-                        android:paddingEnd="10dp"
-                        android:paddingLeft="10dp"
-                        android:paddingStart="10dp"
-                        android:paddingTop="10dp"
-                        tools:context="com.ncl.team5.lloydsmockup.NewBillAuto">
+                    <RelativeLayout
+                        android:id="@+id/totals_container"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent">
 
-                        <CheckBox
-                            android:id="@+id/checkBox_share_equally"
-                            android:layout_width="wrap_content"
+                        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            xmlns:tools="http://schemas.android.com/tools"
+                            android:id="@+id/option_share_equally_container"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true" />
-
-                        <TextView
-                            android:id="@+id/option_share_equally_text"
-                            style="@style/Dialog_Text_Content"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_toEndOf="@+id/checkBox_share_equally"
-                            android:layout_toRightOf="@+id/checkBox_share_equally"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginStart="15dp"
+                            android:background="@drawable/button_light_color"
+                            android:clickable="true"
+                            android:paddingBottom="10dp"
+                            android:paddingEnd="10dp"
                             android:paddingLeft="10dp"
-                            android:paddingRight="10dp"
                             android:paddingStart="10dp"
-                            android:text="@string/option_shared_equally" />
-                    </RelativeLayout>
+                            android:paddingTop="10dp"
+                            tools:context="com.ncl.team5.lloydsmockup.NewBillAuto">
 
-                    <RelativeLayout
-                        android:id="@+id/net_bill_amount"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginStart="15dp"
-                        android:background="@drawable/button_light_color"
-                        android:clickable="true"
-                        android:paddingBottom="5dp"
-                        android:paddingEnd="10dp"
-                        android:paddingLeft="10dp"
-                        android:layout_below="@+id/option_share_equally_container"
-                        android:paddingStart="10dp"
-                        android:paddingTop="10dp">
+                            <CheckBox
+                                android:id="@+id/checkBox_share_equally"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true" />
 
-                        <TextView
-                            android:id="@+id/net_bill_amount_text"
-                            style="@style/Dialog_Text_Content"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignBottom="@+id/net_bill_amount_tv"
-                            android:layout_alignTop="@+id/net_bill_amount_tv"
-                            android:layout_toLeftOf="@+id/net_bill_amount_tv"
-                            android:layout_toStartOf="@+id/net_bill_amount_tv"
-                            android:gravity="center_vertical"
-                            android:paddingRight="10dp"
-                            android:text="@string/net_bill"
+                            <TextView
+                                android:id="@+id/option_share_equally_text"
+                                style="@style/Dialog_Text_Content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_toEndOf="@+id/checkBox_share_equally"
+                                android:layout_toRightOf="@+id/checkBox_share_equally"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:paddingStart="10dp"
+                                android:text="@string/option_shared_equally" />
+                        </RelativeLayout>
 
-                            />
-
-                        <EditText
-                            android:id="@+id/net_bill_amount_tv"
-                            android:layout_width="100dp"
+                        <RelativeLayout
+                            android:id="@+id/net_bill_amount"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true"
-                            android:inputType="none"
-                            android:maxLines="1"
-                            android:text="0.0" />
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginStart="15dp"
+                            android:background="@drawable/button_light_color"
+                            android:clickable="true"
+                            android:paddingBottom="5dp"
+                            android:paddingEnd="10dp"
+                            android:paddingLeft="10dp"
+                            android:layout_below="@+id/option_share_equally_container"
+                            android:paddingStart="10dp"
+                            android:paddingTop="10dp">
 
-                    </RelativeLayout>
+                            <TextView
+                                android:id="@+id/net_bill_amount_text"
+                                style="@style/Dialog_Text_Content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignBottom="@+id/net_bill_amount_tv"
+                                android:layout_alignTop="@+id/net_bill_amount_tv"
+                                android:layout_toLeftOf="@+id/net_bill_amount_tv"
+                                android:layout_toStartOf="@+id/net_bill_amount_tv"
+                                android:gravity="center_vertical"
+                                android:paddingRight="10dp"
+                                android:text="@string/net_bill"
 
-                    <RelativeLayout
-                        android:id="@+id/expected_bill_amount"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/net_bill_amount"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginStart="15dp"
-                        android:paddingBottom="10dp"
-                        android:paddingEnd="10dp"
-                        android:paddingLeft="10dp"
-                        android:paddingStart="10dp"
-                        android:paddingTop="5dp"
+                                />
 
-                        android:background="@drawable/button_light_color"
-                        android:clickable="true">
+                            <EditText
+                                android:id="@+id/net_bill_amount_tv"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentRight="true"
+                                android:inputType="none"
+                                android:maxLines="1"
+                                android:text="0.0" />
 
-                        <TextView
-                            android:id="@+id/expected_bill_amount_text"
-                            style="@style/Dialog_Text_Content"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignBottom="@+id/expected_bill_amount_tv"
-                            android:layout_alignTop="@+id/expected_bill_amount_tv"
-                            android:layout_toLeftOf="@+id/expected_bill_amount_tv"
-                            android:layout_toStartOf="@+id/expected_bill_amount_tv"
-                            android:gravity="center_vertical"
-                            android:paddingRight="10dp"
-                            android:text="@string/expected_bill"
+                        </RelativeLayout>
 
-                            />
-
-                        <EditText
-                            android:id="@+id/expected_bill_amount_tv"
-                            android:layout_width="100dp"
+                        <RelativeLayout
+                            android:id="@+id/expected_bill_amount"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true"
-                            android:inputType="none"
-                            android:maxLines="1"
-                            android:text="0.0" />
+                            android:layout_below="@+id/net_bill_amount"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginStart="15dp"
+                            android:paddingBottom="10dp"
+                            android:paddingEnd="10dp"
+                            android:paddingLeft="10dp"
+                            android:paddingStart="10dp"
+                            android:paddingTop="5dp"
+
+                            android:background="@drawable/button_light_color"
+                            android:clickable="true">
+
+                            <TextView
+                                android:id="@+id/expected_bill_amount_text"
+                                style="@style/Dialog_Text_Content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignBottom="@+id/expected_bill_amount_tv"
+                                android:layout_alignTop="@+id/expected_bill_amount_tv"
+                                android:layout_toLeftOf="@+id/expected_bill_amount_tv"
+                                android:layout_toStartOf="@+id/expected_bill_amount_tv"
+                                android:gravity="center_vertical"
+                                android:paddingRight="10dp"
+                                android:text="@string/expected_bill"
+
+                                />
+
+                            <EditText
+                                android:id="@+id/expected_bill_amount_tv"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentRight="true"
+                                android:inputType="none"
+                                android:maxLines="1"
+                                android:text="0.0" />
+                        </RelativeLayout>
                     </RelativeLayout>
-                </RelativeLayout>
-            </TableRow>
-        </TableLayout>
-    </ScrollView>
-</RelativeLayout>
+                </TableRow>
+            </TableLayout>
+        </ScrollView>
+    </RelativeLayout>
 </ScrollView>
 

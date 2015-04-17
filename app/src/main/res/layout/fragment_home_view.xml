@@ -7,125 +7,137 @@
     android:id="@+id/hs_hv_layout"
     android:background="@android:color/background_light">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/home_view_main_container"
-        android:background="@color/hs_home_bg_light"
-        android:paddingTop="15dp"
-        android:paddingBottom="10dp"
-        >
-       <ImageView
-           android:layout_height="wrap_content"
-           android:layout_width="wrap_content"
-           android:id="@+id/group_avatar"
-           android:layout_centerHorizontal="true"
-           android:paddingBottom="15dp"
-           android:paddingTop="10dp"/>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:id="@+id/viewName"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/group_avatar"
-            style="@style/HS_homeview_name"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:gravity="center_horizontal"
-
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/viewAddressText"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/viewName"
-            style="@style/HS_homeview_address"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:gravity="center_horizontal"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/viewAddress"
-            android:layout_below="@id/viewAddressText"
-            android:layout_centerHorizontal="true"
-            style="@style/HS_homeview_description"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:gravity="center_horizontal"
-             />
-
-
-    </RelativeLayout>
-
-        <!--<ImageButton-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/imageButton"-->
-            <!--android:background="@android:color/transparent"-->
-            <!--android:layout_alignTop="@+id/viewName"-->
-            <!--android:layout_alignRight="@+id/button2"-->
-            <!--android:layout_alignEnd="@+id/button2"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:layout_marginTop="5dp"-->
-            <!--android:src="@drawable/ic_people"/>-->
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/bill_listview_container"
-        android:layout_below="@+id/home_view_main_container">
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/listBills"
-            android:layout_gravity="center_horizontal|bottom"
-            />
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/loading_text"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            style="@style/Bill_Confirmation_Sub_Title"
-            android:textStyle="bold"
-            android:visibility="invisible"
-            android:text="Loading"
-            />
+            android:id="@+id/home_view_main_container"
+            android:background="@color/hs_home_bg_light"
+            android:paddingTop="15dp"
+            android:paddingBottom="10dp">
 
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:id="@+id/bill_view_empty_row"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:layout_centerInParent="true"
-            android:clickable="false"
-            android:visibility="invisible">
             <ImageView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/sad"
+                android:layout_width="wrap_content"
+                android:id="@+id/group_avatar"
                 android:layout_centerHorizontal="true"
-                android:id="@+id/sad"/>
+                android:paddingBottom="15dp"
+                android:paddingTop="10dp" />
+
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/bill_row_bill_info"
-                android:layout_below="@id/sad"
-                android:layout_centerInParent="true"
-                style="@style/HS_homeview_address"
-                android:textSize="15sp"
-                android:text="Empty"
+                android:text=""
+                android:id="@+id/viewName"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/group_avatar"
+                style="@style/HS_homeview_name"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:gravity="center_horizontal"
+
                 />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/viewAddressText"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/viewName"
+                style="@style/HS_homeview_address"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/viewAddress"
+                android:layout_below="@id/viewAddressText"
+                android:layout_centerHorizontal="true"
+                style="@style/HS_homeview_description"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:gravity="center_horizontal" />
+
+
         </RelativeLayout>
 
+        <!--<ImageButton-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/imageButton"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--android:layout_alignTop="@+id/viewName"-->
+        <!--android:layout_alignRight="@+id/button2"-->
+        <!--android:layout_alignEnd="@+id/button2"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:layout_marginTop="5dp"-->
+        <!--android:src="@drawable/ic_people"/>-->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/bill_listview_container"
+            android:layout_below="@+id/home_view_main_container">
+
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/home_view_refresh">
+
+                <ListView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/listBills"
+                    android:layout_gravity="center_horizontal|bottom" />
+            </android.support.v4.widget.SwipeRefreshLayout>
+
+            <TextView
+                android:id="@+id/loading_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                style="@style/Bill_Confirmation_Sub_Title"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                android:text="Loading" />
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/bill_view_empty_row"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_centerInParent="true"
+                android:clickable="false"
+                android:visibility="invisible">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/sad"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/sad" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bill_row_bill_info"
+                    android:layout_below="@id/sad"
+                    android:layout_centerInParent="true"
+                    style="@style/HS_homeview_address"
+                    android:textSize="15sp"
+                    android:text="Empty" />
+            </RelativeLayout>
+        </RelativeLayout>
     </RelativeLayout>
+
     <ProgressBar
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
@@ -134,7 +146,6 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:padding="5dp"
-        android:visibility="invisible"
-        />
+        android:visibility="invisible" />
 
 </RelativeLayout>

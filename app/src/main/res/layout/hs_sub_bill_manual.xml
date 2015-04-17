@@ -22,7 +22,6 @@
         android:id="@+id/input">
         <TextView
             android:id="@+id/username_sub_bill"
-
             android:layout_width="wrap_content"
             android:width="100dp"
             android:layout_height="match_parent"
