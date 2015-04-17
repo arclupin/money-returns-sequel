@@ -2,6 +2,7 @@ package com.ncl.team5.lloydsmockup.Houseshares;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +16,7 @@ import java.util.TreeSet;
 import Utils.StringUtils;
 
 /**
- * Represent a bill with its data as well as view
+ * Represent a bill with its data as well as views
  *
  * Created by Thanh on 11-Apr-15.
  */
@@ -359,10 +360,11 @@ public class Bill implements Comparable<Bill>, Parcelable{
         }
 
         private boolean isAllDataSet() {
+            Log.d("extracted bill", this.toString());
             return  !StringUtils.isFieldEmpty(billID) &&
                     !StringUtils.isFieldEmpty(billName) &&
                     dueDate != null && dateCreated != null &&
-                    !(isPaid ^ datePaid != null ) &&
+                    !(isPaid ^ (datePaid != null) ) &&
                     amount != 0 &&
                     billCreator != null;
         }
@@ -373,12 +375,30 @@ public class Bill implements Comparable<Bill>, Parcelable{
                         isPaid, isActive, datePaid, subBills, amICreator);
             throw (new IllegalStateException("Bill has illegal state"));
         }
+
+        @Override
+        public String toString() {
+            return "BillBuilder{" +
+                    "billID='" + billID + '\'' +
+                    ", billName='" + billName + '\'' +
+                    ", message='" + message + '\'' +
+                    ", dueDate=" + dueDate +
+                    ", dateCreated=" + dateCreated +
+                    ", amount=" + amount +
+                    ", billCreator=" + billCreator +
+                    ", subBills=" + subBills +
+                    ", isPaid=" + isPaid +
+                    ", datePaid=" + datePaid +
+                    ", isActive=" + isActive +
+                    ", amICreator=" + amICreator +
+                    ", events=" + events +
+                    '}';
+        }
     }
 
 
     @Override
     public String toString() {
-
         StringBuilder b = new StringBuilder();
         b.append(billID).append(" - ").append(billName).append(" - ").append(amount).append(" - ")
                 .append("Created by ").append(billCreator.getUsername())
@@ -478,9 +498,35 @@ public class Bill implements Comparable<Bill>, Parcelable{
             return bill == BILL_EMPTY;
     }
 
+    /**
+     * Check if the bill can be activated
+     * @return boolean result
+     */
     public boolean canBillBeActivated() {
+        if (isActive())
+            return false;
+
         for (SubBill s : subBills.values()){
             if (!s.isConfirmed())
+                return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check if the bill has been paid by all members (excluding the bill creator)
+     * @return boolean result
+     */
+    public boolean canBillBePaid() {
+        if (!this.isActive())
+            return false;
+
+        for (SubBill s: subBills.values()) {
+            // don't count payment of the bill creator
+            if (s.getHs_id().equals(getBillCreator().getHouseshare_id()))
+                continue;
+            Payment p = s.getPayment();
+            if (p == null || !p.isConfirmed())
                 return false;
         }
         return true;

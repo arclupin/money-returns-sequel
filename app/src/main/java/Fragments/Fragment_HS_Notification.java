@@ -165,7 +165,7 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
      * It will go fetch the data in short.
      */
     public void refresh() {
-        new Notification_Worker(getActivity(), true, NOTI_WORK.FETCH_REFRESH)
+        new Notification_Worker(getActivity(), false, NOTI_WORK.FETCH_REFRESH)
                 .execute(new RequestQueue().addRequest(getNotisFetchingRequest()).toList());
     }
 
@@ -745,6 +745,18 @@ public class Fragment_HS_Notification extends Fragment_HS_Abstract {
 
                 case Notification.BILL_PAYMENT_REJECTED: {
                     Log.d("Type", "rejected");
+
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onNotificationsRead(n.getId(), n.getSource(), n.isRead(), false);
+                        }
+                    });
+                    break;
+                }
+
+                case Notification.BILL_PAYMENT_PAID: {
+                    Log.d("Type", "paid");
 
                     v.setOnClickListener(new View.OnClickListener() {
                         @Override

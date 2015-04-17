@@ -74,6 +74,10 @@ public class NewBillManual extends Activity {
     private Set<Member> involved_members = new TreeSet<Member>();
     private Intent i;
 
+    private static final int ERROR_DATA = 1;
+    private static final int ERROR_CREATOR_NOT_A_PARTICIPANT = 2;
+    private static final int VALID_DATA = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -249,28 +253,37 @@ public class NewBillManual extends Activity {
     }
 
     public void bttn_next_sub_bill() {
-        if (isDataSupplied()) {
-            Intent i = new Intent(this, NewBillManual_SubBill.class);
-            i.putExtra(IntentConstants.USERNAME, username);
-            i.putExtra(IntentConstants.HOUSE_NAME, housename);
-            i.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
-            i.putExtra(IntentConstants.BILL_NAME, billName);
-            i.putExtra(IntentConstants.BILL_DUE_DATE, dueDate);
-            i.putExtra(IntentConstants.BILL_AMOUNT, totalAmount);
-            i.putExtra(IntentConstants.BILL_MESSAGE, message);
-            Log.d("involved intent", ""+ involved_members.size());
-            i.putParcelableArrayListExtra(IntentConstants.MEMBERS, new ArrayList<Parcelable>(involved_members));
-            startActivity(i);
-        }
-
-        else {
-            // users have not chosen any user
-            if (involved_members.size() == 0)
-                 new CustomMessageBox.MessageBoxBuilder(this, "Please select at least one target member for this bill.")
+        if (involved_members.size() == 0)
+            new CustomMessageBox.MessageBoxBuilder(this, "Please select at least one target member for this bill.")
                     .setTitle("Warning").build();
-            else // something wrong with the data
-                new CustomMessageBox.MessageBoxBuilder(this, "Please review your data and supply correct information.")
-                        .setTitle("Warning").build();
+        else {
+            switch (isDataSupplied()) {
+                case VALID_DATA: {
+                    Intent i = new Intent(this, NewBillManual_SubBill.class);
+                    i.putExtra(IntentConstants.USERNAME, username);
+                    i.putExtra(IntentConstants.HOUSE_NAME, housename);
+                    i.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
+                    i.putExtra(IntentConstants.BILL_NAME, billName);
+                    i.putExtra(IntentConstants.BILL_DUE_DATE, dueDate);
+                    i.putExtra(IntentConstants.BILL_AMOUNT, totalAmount);
+                    i.putExtra(IntentConstants.BILL_MESSAGE, message);
+                    Log.d("involved intent", "" + involved_members.size());
+                    i.putParcelableArrayListExtra(IntentConstants.MEMBERS, new ArrayList<Parcelable>(involved_members));
+                    startActivity(i);
+                    break;
+                }
+
+                case ERROR_DATA: {
+                    new CustomMessageBox.MessageBoxBuilder(this, "Please review your data and supply correct information.")
+                            .setTitle("Warning").build();
+                    break;
+                }
+                case ERROR_CREATOR_NOT_A_PARTICIPANT: {
+                    new CustomMessageBox.MessageBoxBuilder(this, "You need to participate in this bill in order to create it.")
+                            .setTitle("Warning").build();
+                    break;
+                }
+            }
         }
 
     }
@@ -442,9 +455,13 @@ public class NewBillManual extends Activity {
         Log.d("involved", Arrays.toString(involved_members.toArray(new Member[involved_members.size()])));
     }
 
-    private boolean isDataSupplied() {
+    private int isDataSupplied() {
         Log.d("validate date", billName + " / amount supplied: " + isAmountSupplied + "/ due date supplied: " + isDueDateSupplied);
-        return billName != null && isDueDateSupplied && isAmountSupplied && involved_members.size() > 0;
+        if  (!(billName != null && isDueDateSupplied && isAmountSupplied && involved_members.size() > 0))
+            return ERROR_DATA;
+        else if (!(involved_members.contains(members.get(hsid))))
+            return ERROR_CREATOR_NOT_A_PARTICIPANT;
+        return VALID_DATA;
     }
 
     private String getHouseshareID(String username) {

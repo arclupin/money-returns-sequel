@@ -114,4 +114,8 @@ public class Request_Params {
 
     public static final String PARAM_REJECT_PAYMENT = "HS_REJ_PAY";
 
+    public static final String PARAM_CONCLUDE_BILL = "HS_CONC_BILL";
+
+    public static final String PARAM_REMOVE_BILL = "HS_REMOVE_BILL";
+
 }

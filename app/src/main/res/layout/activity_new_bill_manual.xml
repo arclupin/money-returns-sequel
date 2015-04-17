@@ -232,15 +232,15 @@
             android:layout_centerInParent="true"
             android:visibility="invisible"
             >
-        <TextView
-            android:id="@+id/loading_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Loading"
-            style="@style/Bill_Confirmation_Sub_Title"
-            android:textStyle="bold"
+            <TextView
+                android:id="@+id/loading_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Loading"
+                style="@style/Bill_Confirmation_Sub_Title"
+                android:textStyle="bold"
 
-            />
+                />
 
         </RelativeLayout>
 

@@ -132,6 +132,36 @@
                 style="@style/Bill_Confirmation_Value"
                 />
 
+            <TextView
+                android:id="@+id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/total_amount_value"
+                android:layout_alignLeft="@id/due_date"
+                android:layout_alignStart="@id/due_date"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:text="Message"
+                style="@style/Bill_Confirmation_Title"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/message_value"
+                android:layout_below="@id/message"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                style="@style/message_edit_text"
+                android:background="@drawable/border_dialog"
+                android:focusable="false"
+                />
+
+
         </RelativeLayout>
 
         <RelativeLayout

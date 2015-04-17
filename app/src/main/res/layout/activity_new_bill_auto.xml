@@ -5,99 +5,10 @@
     android:layout_height="match_parent"
     tools:context="com.ncl.team5.lloydsmockup.NewBillAuto">
 
-    <EditText
-        android:id="@+id/bill_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Bill Name"
-        android:padding="20dp" />
-
-    <EditText
-        android:id="@+id/due_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/bill_name"
-        android:hint="Due Date"
-        android:inputType="date"
-        android:padding="20dp" />
-
-    <EditText
-        android:id="@+id/amount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/due_date"
-        android:hint="Amount"
-        android:inputType="numberDecimal"
-        android:padding="20dp" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_below="@+id/amount">
-
-        <TextView
-            android:id="@+id/title"
-            style="@style/Dialog_Text_Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="15dp"
-            android:text="@string/title_selecte_users"
-            android:textColor="#808080"
-            android:textSize="20sp" />
-
-        <ScrollView
-            android:id="@+id/scrollViewSelectUsers"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/title"
-            >
-            <TableLayout
-                android:id="@+id/table_users"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TableRow android:id="@+id/option_share_equally">
-                    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                        xmlns:tools="http://schemas.android.com/tools"
-                        android:id="@+id/user1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/title"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginStart="15dp"
-                        android:background="@drawable/button_light_color"
-                        android:clickable="true"
-                        android:paddingBottom="10dp"
-                        android:paddingEnd="10dp"
-                        android:paddingLeft="10dp"
-                        android:paddingStart="10dp"
-                        android:paddingTop="10dp"
-                        tools:context="com.ncl.team5.lloydsmockup.NewBillAuto">
-
-                        <CheckBox
-                            android:id="@+id/checkBox_all"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@+id/bill_type_auto"
-                            android:layout_alignParentTop="true" />
-                        <TextView
-                            android:id="@+id/username_select_auto"
-                            style="@style/Dialog_Text_Content"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="10dp"
-                            android:paddingStart="10dp"
-                            android:layout_centerVertical="true"
-                            android:layout_toEndOf="@+id/checkBox"
-                            android:layout_toRightOf="@+id/checkBox"
-                            android:text="Add all members"/>
-                    </RelativeLayout>
-                </TableRow>
-            </TableLayout>
-        </ScrollView>
-    </RelativeLayout>
+        android:src="@drawable/coming_soon"
+        android:layout_centerInParent="true"/>
 
 </RelativeLayout>

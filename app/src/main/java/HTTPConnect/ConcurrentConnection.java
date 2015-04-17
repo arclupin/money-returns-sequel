@@ -108,7 +108,6 @@ public class ConcurrentConnection extends AsyncTask<List<Request>, Void, List<Re
 
         for(int i = 0; i < requests.size(); i++) {
             HTTPHandler handler = new HTTPHandler(mContext);
-
             responses.add(handler.sendRequest(requests.get(i)));
             Log.d("Response #" + i, responses.get(i).getRaw_response());
         }

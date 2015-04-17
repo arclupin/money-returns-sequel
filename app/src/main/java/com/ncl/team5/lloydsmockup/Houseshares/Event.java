@@ -27,6 +27,7 @@ public class Event implements Parcelable, Comparable<Event>{
     //Events type
     private static final int ACTIVATION_TYPE = 0x00001;
     private static final int SUBBILL_PAYMENT_TYPE = 0x00010;
+    private static final int BILL_PAID = 0x00011;
 
     private Map<Integer, String> texts;
 
@@ -176,7 +177,8 @@ public class Event implements Parcelable, Comparable<Event>{
             return texts;
         texts = new HashMap<Integer, String>();
         texts.put(ACTIVATION_TYPE, "has activated the bill.");
-        texts.put(SUBBILL_PAYMENT_TYPE, "has paid his share.");
+        texts.put(SUBBILL_PAYMENT_TYPE, "has paid their share.");
+        texts.put(BILL_PAID, " has paid this bill.");
         return texts;
 
     }

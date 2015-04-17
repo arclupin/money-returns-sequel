@@ -14,13 +14,17 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.LinearLayout;
 
+import com.ncl.team5.lloydsmockup.Houseshares.Member;
+
 import Fragments.Fragment_HS_Abstract;
 import Fragments.Fragment_HS_Home;
 import Fragments.Fragment_HS_Notification;
 import Fragments.HS_Home_FragPagerAdapter;
+import Fragments.HS_Members_Dialog;
 import Fragments.HS_New_Bill_Dialog;
 import HTTPConnect.Connection;
 import HTTPConnect.Responses_Format;
+import Utils.StringUtils;
 
 /**
  * Class providing the home view for the house share service
@@ -184,7 +188,7 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
     public boolean onPrepareOptionsMenu(Menu menu) {
 
         if (pager.getCurrentItem() == 1) {
-            menu.removeItem(R.id.action_add_user);
+            menu.removeItem(R.id.action_members);
             menu.removeItem(R.id.action_hs_new_bill);
             getMenuInflater().inflate(R.menu.menu_hs_noti, menu);
         }
@@ -220,6 +224,22 @@ public class Houseshare_HomeView extends FragmentActivity implements Fragment_HS
                    f.refresh();
                }
                break;
+           }
+
+           case  R.id.action_members: {
+               String[] members = new String[Fragment_HS_Home.members.size()];
+               String[] dates = new String[Fragment_HS_Home.members.size()];
+
+               int i = 0;
+               for (Member m : Fragment_HS_Home.members.values())
+               {
+                   members[i] = m.getUsername();
+                   dates[i] = StringUtils.getStringDate(m.getJoined_since(), "yyyy-MM-dd",
+                                    "dd/MM/yyyy");
+                   ++i;
+               }
+               HS_Members_Dialog f = HS_Members_Dialog.initialise(members, dates);
+               f.show(getFragmentManager(), "Members_Frag");
            }
         }
         return super.onOptionsItemSelected(item);

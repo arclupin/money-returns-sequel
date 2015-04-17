@@ -42,6 +42,7 @@ public class Notification {
     public static final int BILL_PAYMENT_RECEIVE = 0x00020;
     public static final int BILL_PAYMENT_CONFIRMED = 0x00021;
     public static final int BILL_PAYMENT_REJECTED = 0x00022;
+    public static final int BILL_PAYMENT_PAID = 0x00023;
 
     public static final int HSID_POS = 0;
     public static final int PARAM_POS = 1;
@@ -231,6 +232,19 @@ public class Notification {
                         Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
 
+                ((TextView) v.findViewById(R.id.noti_content)).setText(spannableString);
+                break;
+            }
+
+            case BILL_PAYMENT_PAID: {
+                v = (TableRow) inflater.inflate(R.layout.hs_noti_general, null);
+
+                content = "Bill " + p1 + " has been paid." ;
+
+                //style the spannable string
+                SpannableString spannableString = new SpannableString(content);
+                spannableString.setSpan(new StyleSpan(Typeface.BOLD), 5, 5 + p1.length(),
+                        Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 ((TextView) v.findViewById(R.id.noti_content)).setText(spannableString);
                 break;
             }

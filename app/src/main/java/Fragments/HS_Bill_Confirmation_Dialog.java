@@ -7,6 +7,7 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
@@ -54,12 +55,14 @@ public class HS_Bill_Confirmation_Dialog extends DialogFragment{
     }
 
     // static factory
-    public static HS_Bill_Confirmation_Dialog initialise(String bill_name, String due_date, String amount) {
+    public static HS_Bill_Confirmation_Dialog initialise(String bill_name, String due_date,
+                                                         String amount, String message) {
         HS_Bill_Confirmation_Dialog o = new HS_Bill_Confirmation_Dialog();
         Bundle b = new Bundle();
         b.putString(IntentConstants.BILL_NAME, bill_name);
         b.putString(IntentConstants.BILL_DUE_DATE, due_date);
         b.putString(IntentConstants.BILL_AMOUNT, amount);
+        b.putString(IntentConstants.BILL_MESSAGE, message);
         // I avoid passing parcelables here for performance reason
         // (also the host activity already has a reference to involved users which is cheaper to get)
 
@@ -96,8 +99,9 @@ public class HS_Bill_Confirmation_Dialog extends DialogFragment{
         ((TextView) v.findViewById(R.id.bill_name_value)).setText(getArguments().getString(IntentConstants.BILL_NAME));
         ((TextView) v.findViewById(R.id.due_date_value)).setText(getArguments().getString(IntentConstants.BILL_DUE_DATE));
         ((TextView) v.findViewById(R.id.total_amount_value)).setText(StringUtils.POUND_SIGN + getArguments().getString(IntentConstants.BILL_AMOUNT));
-
-
+        String msg = getArguments().getString(IntentConstants.BILL_MESSAGE);
+        ((TextView) v.findViewById(R.id.message_value)).setText
+                (!StringUtils.isFieldEmpty(msg) ? msg : "No message");
         //set listeners for buttons
         v.findViewById(R.id.dialog_okay).setOnClickListener(new View.OnClickListener() {
             @Override

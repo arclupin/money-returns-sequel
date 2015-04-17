@@ -66,6 +66,7 @@ public class Houseshare_Payments extends Activity implements DatePickerFragment.
         billID = i.getStringExtra(IntentConstants.BILL_ID);
         username = i.getStringExtra(IntentConstants.USERNAME);
 
+
         paymentMethod_Layout = (RelativeLayout) findViewById(R.id.payment_method);
         paymentMethod_Layout.setOnClickListener(new View.OnClickListener() {
             @Override

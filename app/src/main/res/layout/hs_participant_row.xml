@@ -45,7 +45,6 @@
             android:text="C"
             android:textSize="14sp"
             android:textColor="@color/dark_green" />
-
     </LinearLayout>
 
 </RelativeLayout>

@@ -16,7 +16,7 @@ import java.util.GregorianCalendar;
  */
 public class StringUtils {
 public static final String POUND_SIGN = "\u00A3";
-
+    public static final int daysLeftWarning = 10;
 
     /**
      * check whether a string is empty (without any visible characters) or not
@@ -24,7 +24,8 @@ public static final String POUND_SIGN = "\u00A3";
      * @return the result
      */
    public static boolean isFieldEmpty(String input) {
-        return (input == null) || input.trim().isEmpty();
+        return (input == null) || input.trim().isEmpty()
+                || (input.equals("null"));
     }
 
 
@@ -65,6 +66,7 @@ public static final String POUND_SIGN = "\u00A3";
             Log.e("date parsing error", e.getMessage(), e);
         }
         return date;
+
     }
 
     /**

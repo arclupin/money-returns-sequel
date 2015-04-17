@@ -183,18 +183,28 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
             case R.id.action_create_bill: {
                 if (isDataValid()) {
                     //show the confirmation dialog
-                    HS_Bill_Confirmation_Dialog confirmation_dialog = HS_Bill_Confirmation_Dialog.initialise(billName, dueDate,
-                            String.valueOf(expectedBill));
+                    HS_Bill_Confirmation_Dialog confirmation_dialog =
+                            HS_Bill_Confirmation_Dialog.initialise(billName, dueDate,
+                                    String.valueOf(expectedBill), message);
                     confirmation_dialog.show(getFragmentManager(), "bill_confirm_dialog");
+                    net_bill_tv.setText(String.valueOf(netBill));
+                    net_bill_tv.setTextColor(getResources().getColor(R.color.light_green));
+
+                } else {
+                    net_bill_tv.setText(String.valueOf(netBill));
+                    net_bill_tv.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                    new CustomMessageBox.MessageBoxBuilder(this,
+                            "Please review your data and supply correct information.")
+                            .setTitle("Warning").build();
+
                 }
-                else
-                    new CustomMessageBox.MessageBoxBuilder(this, "Please review your data and supply correct information.")
-                        .setTitle("Warning").build();
+                Log.d("NetBill", String.valueOf(netBill));
                 return true;
             }
+
+
+
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -214,37 +224,6 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
                 @Override
                 public boolean isDataValid(String s) {
                     return StringUtils.isStringValidAmount(s);
-                }
-            });
-            tv.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                }
-
-                @Override
-
-                public void afterTextChanged(Editable s) {
-                    // only activate the text listener if the add all check box is not checked
-                    if (!option_shared_equally.isChecked()) {
-                        String input = s.toString();
-                        if (StringUtils.isStringValidAmount(input)) {
-                            double i = Double.parseDouble(input);
-                            netBill -= subbills.get(m.getUsername()); // subtract the old value
-                            netBill += i; // add the new value
-                            subbills.put(m.getUsername(), i); // update the map
-                            Log.d("netBill after txtchng", String.valueOf(netBill));
-                            net_bill_tv.setText(String.valueOf(netBill)); // update the view
-                            checkBillsValidity(); // check is the total added bill has equated to the expected bill
-                        } else {
-                            netBill -= subbills.get(m.getUsername()); // subtract the old value
-                            net_bill_tv.setText(String.valueOf(netBill)); // update the view
-                            subbills.put(m.getUsername(), 0.0); // reset the sub bill for this user if the lastest value is invalid
-                        }
-                    }
                 }
             });
 
@@ -283,10 +262,22 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
      * Check the state of the sub bills to see if data is okay to proceed
      */
     private boolean isDataValid() {
-
-        if (Double.parseDouble(net_bill_tv.getText().toString()) == expectedBill)
-             return true;
-        return false;
+        double netTotal = 0;
+        for (int i = 0; i < subbill_table.getChildCount() - 1; i++) {
+            EditText t = (EditText) subbill_table.getChildAt(i).findViewById(R.id.sub_bill_amount);
+            if (!StringUtils.isStringValidAmount(t.getText().toString()))
+                return false;
+            double amt = Double.parseDouble(t.getText().toString());
+            Log.d("amount" + i, String.valueOf(amt));
+            netTotal += amt;
+            netBill = netTotal;
+            subbills.put(((TextView) ((View) t.getParent()).findViewById(R.id.username_sub_bill))
+                    .getText().toString(),amt);
+            Log.d("net total after" + i, String.valueOf(netTotal));
+        }
+        if (netBill != expectedBill)
+            return false;
+        return true;
     }
 
 
@@ -367,6 +358,7 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
                     new CustomMessageBox.MessageBoxBuilder(NewBillManual_SubBill.this, "Your bill has been created. All target members will be notified soon." +
                             "\nWe will let you know if any update on the bill is available.")
                             .setTitle("Bill " + billName + " confirmed").build();
+
                 }
             else {
                 new CustomMessageBox.MessageBoxBuilder(NewBillManual_SubBill.this, "Sorry, we could not process this bill at the moment. \nPlease try again later.")

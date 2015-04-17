@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -55,8 +56,8 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
     public static final int BILL_DATE_CREATED_POS = 4;
     public static final int BILL_AMOUNT_POS = 5;
     public static final int BILL_DUE_DATE_POS = 6;
-    public static final int BILL_DATE_PAID_POS = 7;
-    public static final int BILL_MESSAGE_POS = 8;
+    public static final int BILL_MESSAGE_POS = 7;
+    public static final int BILL_DATE_PAID_POS = 8;
     public static final int BILL_ISACTIVE_POS = 9;
     public static final int BILL_AM_I_CREATOR = 10;
 
@@ -85,7 +86,7 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
     private static final int PAYMENT_PAYMENT_MESSAGE_POS = 7;
 
 
-    private static final int daysLeftWarning = 10;
+
 
     private ActionBar actionBar;
     private TextView billName_TextView;
@@ -205,6 +206,7 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
                         filterEvents(responses.get(3).getToken(Responses_Format.RESPONSE_STATUS));
 
                         requestLayout();
+
                         if (mode == MODE.BILL_REFRESH || billRefresh_SwipeView.isRefreshing())
                             billRefresh_SwipeView.setRefreshing(false);
                     }
@@ -225,12 +227,13 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
                             // reset the backing data
                                 getMySubBill().setIsConfirmed(true);
                             refresh();
-                        } else
+                        } else {
                             new CustomMessageBox.MessageBoxBuilder
                                     (HouseShare_Bill_Member.this, "Sorry. We could not process the " +
                                             "confirmation at the moment.\nPlease try again later.")
                                     .setTitle("Failed").build();
-                        refresh();
+                            refresh();
+                        }
                         requestLayout();
                         break;
                     }
@@ -309,7 +312,8 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
             @Override
             public void onClick(View v) {
                 HS_Bill_Message_Dialog dialog =
-                        HS_Bill_Message_Dialog.initialise(bill.getBillCreator().getUsername());
+                        HS_Bill_Message_Dialog.initialise(bill.getBillCreator().getUsername(),
+                                bill.getMessage());
                 dialog.setCancelable(false);
                 dialog.show(getFragmentManager(), "message_dialog_frag");
             }
@@ -572,7 +576,7 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
         try {
             //["hs_100003_b1","hs_100003","Stella house","wg","2015-04-11","154","1995-01-23","",null,"0"]
             JSONArray bill_arr = new JSONArray(r);
-
+            Log.d("extracted date paid", bill_arr.getString(BILL_DATE_PAID_POS) + !StringUtils.isFieldEmpty(bill_arr.getString(BILL_DATE_PAID_POS)));
             //initialise the bill being extracted from the response
             bill = new Bill.BillBuilder(bill_arr.getInt(BILL_ISACTIVE_POS) == 1,
                     !StringUtils.isFieldEmpty(bill_arr.getString(BILL_DATE_PAID_POS)),
@@ -583,6 +587,8 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
                     .setBillName(bill_arr.getString(BILL_NAME_POS))
                     .setDateCreated(StringUtils.getDateFromServerDateResponse(
                             bill_arr.getString(BILL_DATE_CREATED_POS)))
+                    .setDatePaid(StringUtils.getDateFromServerDateResponse(
+                            bill_arr.getString(BILL_DATE_PAID_POS)))
                     .setDueDate(StringUtils.getDateFromServerDateResponse
                             (bill_arr.getString(BILL_DUE_DATE_POS)))
                     .setMessage(bill_arr.getString(BILL_MESSAGE_POS)).build();
@@ -610,10 +616,14 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
      * This will reset the whole activity and its layout according the the newly updated data
      */
     private void requestLayout() {
+
+        Log.d("On request layout", "can bill be paid:" + String.valueOf(bill.canBillBePaid()));
+        Log.d("On request layout", "bill is paid:" + String.valueOf(bill.isPaid()));
+        findViewById(R.id.bill_options).setVisibility(View.VISIBLE);
+
         //set up text views data
         ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text))
                 .setText("Confirm");
-
         primaryAction_View.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -646,6 +656,8 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
                     }
                 }
             }});
+
+        // configure the titles
         billName_TextView.setText(bill.getBillName());
         billAmount_TextView.setText(StringUtils.POUND_SIGN + bill.getAmount());
         billCreationDetails_TextView.setText("Created by " +
@@ -654,9 +666,8 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
         if (!bill.isPaid()) {
             long daysLeft = Utilities.getDaysLeftUntilDueDate(bill.getDueDate());
             billStatus_TextView.setText("This bill is due in " + daysLeft + " days.");
-
             // show a alert icon for bills ending soon
-            if (daysLeft <= daysLeftWarning)
+            if (daysLeft <= StringUtils.daysLeftWarning)
                 findViewById(R.id.high_priority_img).setVisibility(View.VISIBLE);
 
         } else {
@@ -664,37 +675,99 @@ public class HouseShare_Bill_Member extends Activity implements HS_Bill_Delete_D
                     StringUtils.getGeneralDateString(bill.getDatePaid()) + ".");
         }
         Log.d("Bil Active?", String.valueOf(bill.isActive()));
+
+
+        /**
+         * CONFIGURE THE BODY
+         */
         if (bill.isActive()) {
-            ((ImageView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_icon)).setImageResource(
-                    R.drawable.pay);
-            if (getMySubBill().getPayment() != null && !getMySubBill().getPayment().isConfirmed())
-            {
-                ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text))
-                        .setText("Submitted");
+           // if all members have paid their shares, then notify this
+            if (bill.canBillBePaid()) {
+                Log.d("Bill can be paid", " goes here");
+                unactivatedText_TextView.setVisibility(View.VISIBLE);
+                unactivatedText_TextView.setText("All members have paid their shares.");
+                unactivatedText_TextView.setBackgroundColor
+                        (getResources().getColor(R.color.light_cyan));
+
+
+                //reset the custom action bar
+                ((ImageView)primaryAction_View.findViewById(R.id.bill_pay_or_confirm_icon))
+                        .setImageResource(R.drawable.good);
+                primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text).setVisibility(View.GONE);
+                primaryAction_View.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new CustomMessageBox.MessageBoxBuilder(HouseShare_Bill_Member.this,
+                                "You all have paid your shares.\n" +
+                                        bill.getBillCreator().getUsername()
+                                        + " will confirm this bill soon. ")
+                                .setTitle("All shares paid").build();
+                    }
+                });
 
             }
-            else
-                ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text))
-                        .setText("Submit");
 
-            unactivatedText_TextView.setVisibility(View.INVISIBLE);
-            timelineHolder_TextView.setVisibility(View.INVISIBLE);
-        } else {
-            //show the activated text
-            unactivatedText_TextView.setVisibility(View.VISIBLE);
+            // else show timeline only (hide the strip)
+            else {
+                Log.d("Bill cant be paid", " does not go here");
+                ((ImageView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_icon)).setImageResource(
+                        R.drawable.pay);
+                if (getMySubBill().getPayment() != null && !getMySubBill().getPayment().isConfirmed()) {
+                    ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text))
+                            .setText("Submitted");
+                } else {
+                    ((TextView) primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text))
+                            .setText("Submit");
 
-            // if this user is just a member (nor creator)
-            unactivatedText_TextView.setText("This bill is not activated");
-            unactivatedText_TextView.setBackgroundColor
-                    (getResources().getColor(android.R.color.holo_red_light));
+                }
+                unactivatedText_TextView.setVisibility(View.INVISIBLE);
+                timelineHolder_TextView.setVisibility(View.INVISIBLE);
+            }
+        }
 
-            // if he has confirmed his share
-            if (getMySubBill().isConfirmed()) {
-                timelineHolder_TextView.setText("You have confirmed your share. " +
-                        "Please wait until other members have confirms theirs");
-            } else {
-                timelineHolder_TextView.setText("Please see your share in Participants " +
-                        "and confirm your share.");
+        // If the bill is inactive (aither paid or not activated)
+        else {
+            // if the bill has been marked paid
+            if (bill.isPaid()) {
+                Log.d("Bill has been paid", " (inactive) does go here");
+                unactivatedText_TextView.setVisibility(View.VISIBLE);
+                unactivatedText_TextView.setText("This bill has been paid.");
+                unactivatedText_TextView.setBackgroundColor
+                        (getResources().getColor(R.color.light_blue));
+
+                ((ImageView)primaryAction_View.findViewById(R.id.bill_pay_or_confirm_icon))
+                        .setImageResource(R.drawable.paid);
+                primaryAction_View.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new CustomMessageBox.MessageBoxBuilder(HouseShare_Bill_Member.this,
+                                "This bill has been paid").build();
+                    }
+                });
+                primaryAction_View.findViewById(R.id.bill_pay_or_confirm_text).setVisibility(View.GONE);
+                return;
+            }
+
+            //else if the bill is not even activated
+            else {
+
+                Log.d("Bill can be paid", " (inactive) does not go here");
+
+                //show the unactivated text
+                unactivatedText_TextView.setVisibility(View.VISIBLE);
+                // if this user is just a member (nor creator)
+                unactivatedText_TextView.setText("This bill is not activated");
+                unactivatedText_TextView.setBackgroundColor
+                        (getResources().getColor(android.R.color.holo_red_light));
+
+                // if he has confirmed his share
+                if (getMySubBill().isConfirmed()) {
+                    timelineHolder_TextView.setText("You have confirmed your share. " +
+                            "Please wait until other members have confirms theirs");
+                } else {
+                    timelineHolder_TextView.setText("Please see your share in Participants " +
+                            "and confirm your share.");
+                }
             }
         }
     }
