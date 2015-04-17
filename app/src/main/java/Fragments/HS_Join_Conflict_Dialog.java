@@ -23,9 +23,10 @@ import com.ncl.team5.lloydsmockup.R;
  */
 public class HS_Join_Conflict_Dialog extends DialogFragment{
 
+    // host activity interacting listener
     public interface JoinConflictDialogListener {
-        public void onPositiveButtonClick(HS_Join_Conflict_Dialog f, String username, String old_hs_name, String new_hs_name);
-        public void onNegativeButtonClick(HS_Join_Conflict_Dialog f, String username, String old_hs_name, String new_hs_name);
+        void onPositiveButtonClick(HS_Join_Conflict_Dialog f, String username, String old_hs_name, String new_hs_name);
+        void onNegativeButtonClick(HS_Join_Conflict_Dialog f, String username, String old_hs_name, String new_hs_name);
     }
 
     private JoinConflictDialogListener mJoinConflictDialogListener;
@@ -43,7 +44,7 @@ public class HS_Join_Conflict_Dialog extends DialogFragment{
         }
     }
 
-
+    // static factory method
     public static HS_Join_Conflict_Dialog initialise(String old_hs_name, String new_hs_name, String username) {
         HS_Join_Conflict_Dialog o = new HS_Join_Conflict_Dialog();
         Bundle b = new Bundle();
@@ -62,21 +63,7 @@ public class HS_Join_Conflict_Dialog extends DialogFragment{
         final String old_hsn =  getArguments().getString(IntentConstants.OLD_HOUSE_NAME);
         final String new_hsn = getArguments().getString(IntentConstants.NEW_HOUSE_NAME);
 
-//        builder.setTitle("Confirmation")
-//                .setMessage("Your old request to "+old_hsn+" will be cancelled. \nWould you like to join " + new_hsn + " anyway?")
-//                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        mJoinConflictDialogListener.onPositiveButtonClick(HS_Join_Conflict_Dialog.this, usr, old_hsn, new_hsn);
-//                    }
-//                })
-//        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                mJoinConflictDialogListener.onNegativeButtonClick(HS_Join_Conflict_Dialog.this, usr, old_hsn, new_hsn);
-//            }
-//        });
-
+        // set up views
         LayoutInflater inflater = getActivity().getLayoutInflater();
         RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_normal_fragment, null);
         ((TextView) v.findViewById(R.id.title)).setText("Confirmation");

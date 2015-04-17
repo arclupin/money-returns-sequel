@@ -5,12 +5,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 /**
+ * Adapter for pages to be displayed in the payments activity
+ *
  * Created by Thanh on 07-Mar-15.
  */
 
-/*
-Adapter for pages to be displayed in the payments activity
- */
 public class Payment_FragmentPagerAdapter extends FragmentPagerAdapter {
 
     final static int FRAGMENT_VIEWS = 2;

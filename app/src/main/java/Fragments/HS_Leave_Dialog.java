@@ -16,8 +16,7 @@ import com.ncl.team5.lloydsmockup.R;
 
 /**
  *
- * Dialog for concluding a bill
- *
+ * Dialog for leaving house
  *
  * Created by Thanh on 23-Mar-15.
  *
@@ -25,7 +24,6 @@ import com.ncl.team5.lloydsmockup.R;
 public class HS_Leave_Dialog extends DialogFragment{
 
     public interface HouseLeavingDialogListener {
-
         /**
          * The user wants to leave the house
          * @param f the dialog itself (for dismissing the bill)
@@ -48,7 +46,7 @@ public class HS_Leave_Dialog extends DialogFragment{
         }
     }
 
-
+    //static factory method
     public static HS_Leave_Dialog initialise(String housename) {
         HS_Leave_Dialog o = new HS_Leave_Dialog();
         Bundle b = new Bundle();
@@ -60,9 +58,10 @@ public class HS_Leave_Dialog extends DialogFragment{
     @Override
     public Dialog onCreateDialog(Bundle saveState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
         LayoutInflater inflater = getActivity().getLayoutInflater();
         RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_normal_fragment, null);
+
+        //set up views
         ((TextView) v.findViewById(R.id.title)).setText("Please confirm");
         ((TextView) v.findViewById(R.id.content)).setText("Would you like to leave " +
                 getArguments().getString(IntentConstants.HOUSE_NAME) +

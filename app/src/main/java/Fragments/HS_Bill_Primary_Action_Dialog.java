@@ -16,8 +16,7 @@ import com.ncl.team5.lloydsmockup.R;
 
 /**
  *
- * Dialog for confirming the bill
- *
+ * Dialog for confirming the bill by a member
  *
  * Created by Thanh on 23-Mar-15.
  *
@@ -50,6 +49,7 @@ public class HS_Bill_Primary_Action_Dialog extends DialogFragment {
     }
 
 
+    //static factory method
     public static HS_Bill_Primary_Action_Dialog initialise(Bill bill) {
         HS_Bill_Primary_Action_Dialog o = new HS_Bill_Primary_Action_Dialog();
         Bundle b = new Bundle();
@@ -64,6 +64,8 @@ public class HS_Bill_Primary_Action_Dialog extends DialogFragment {
         final Bill bill = (Bill) getArguments().getParcelable(IntentConstants.BILL);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.dialog_normal_fragment, null);
+
+        //set up views
         ((TextView) v.findViewById(R.id.title)).setText("Confirmation");
         ((TextView) v.findViewById(R.id.content)).setText(bill.amICreator() ? "Do you wish to activate this bill?"
                 : "Do you wish to confirm this bill?");

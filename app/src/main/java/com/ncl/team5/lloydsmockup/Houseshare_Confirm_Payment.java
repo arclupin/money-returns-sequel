@@ -59,7 +59,6 @@ public class Houseshare_Confirm_Payment extends Activity {
         if (getActionBar() != null)
             getActionBar().setTitle("Payment of " + payerName);
 
-
         paymentMethod_TextView = (TextView) findViewById(R.id.confirm_payment_method_value);
         date_TextView = (TextView) findViewById(R.id.confirm_payment_date_value);
         message_TextView = (TextView) findViewById(R.id.confirm_payment_message_value);
@@ -166,9 +165,7 @@ public class Houseshare_Confirm_Payment extends Activity {
                         public void DoOnClick() {
                             finish();
                         }
-                    })
-                            .build();
-
+                    }).build();
             }
         }
     }

@@ -46,8 +46,11 @@ import Utils.StringUtils;
 import Utils.Utilities;
 import Utils.Validator;
 
-
-public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmation_Dialog.BillConfirmationDialogListener{
+/**
+ * Activity allowing user to type in the shares for each participant.
+ */
+public class NewBillManual_SubBill extends Activity implements
+        HS_Bill_Confirmation_Dialog.BillConfirmationDialogListener{
 
     private TableLayout subbill_table;
     private CheckBox option_shared_equally;
@@ -69,7 +72,6 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
     private Map<String, Double> subbills;
     private double share;
     private boolean isSubBillsValid = false;
-
 
 
     @Override
@@ -202,9 +204,6 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
                 return true;
 
             }
-
-
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -228,8 +227,8 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
                 }
             });
 
+            //add the sub bill row the the table row
             subbill_table.addView(v, i);
-
         }
 
     }
@@ -283,7 +282,7 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
 
 
     /*
-     * Overriding bill confirmation dialog interating methods
+     * Overriding bill confirmation dialog interacting methods
      */
     @Override
     public void onBillConfirmedButtonClick(String bill_name, HS_Bill_Confirmation_Dialog f) {
@@ -321,6 +320,10 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
         return subbills;
     }
 
+
+    /**
+     * Worker for submitting a bill to the server
+     */
     class BillCreation_Worker extends ConcurrentConnection {
 
 
@@ -359,7 +362,6 @@ public class NewBillManual_SubBill extends Activity implements HS_Bill_Confirmat
                     new CustomMessageBox.MessageBoxBuilder(NewBillManual_SubBill.this, "Your bill has been created. All target members will be notified soon." +
                             "\nWe will let you know if any update on the bill is available.")
                             .setTitle("Bill " + billName + " confirmed").build();
-
                 }
             else {
                 new CustomMessageBox.MessageBoxBuilder(NewBillManual_SubBill.this, "Sorry, we could not process this bill at the moment. \nPlease try again later.")

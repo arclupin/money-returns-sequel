@@ -11,14 +11,16 @@ import android.widget.TextView;
 import com.ncl.team5.lloydsmockup.R;
 
 /**
+ * fragment for view pager showing the introductory page in houseshare service
+ *
  * Created by Thanh on 07-Mar-15.
  */
-//Old Account Fragment
+
 public class Fragment_HS_Welcome_2 extends Fragment {
     int height;
 
-    public static Fragment_HS_Welcome_1  getFragment_HS_Welcome_1(int height) {
-        Fragment_HS_Welcome_1 f = new Fragment_HS_Welcome_1();
+    public static Fragment_HS_Welcome_2  getFragment_HS_Welcome_2(int height) {
+        Fragment_HS_Welcome_2 f = new Fragment_HS_Welcome_2();
         Bundle bundle = new Bundle();
         bundle.putInt("parent_height", height) ;
         f.setArguments(bundle);
@@ -29,8 +31,8 @@ public class Fragment_HS_Welcome_2 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle saveInstance) {
 
-        // If we use parent.getHeight() directly, it would equate to 0 in case the activity is resumed after losing focus,
-        // so need to save the height first.
+        // If we use parent.getHeight() directly, it would equate to 0 in case the activity is
+        // resumed after losing focus, so need to save the height first.
         if (saveInstance != null)
             height = saveInstance.getInt("parent_height");
         else
@@ -41,13 +43,12 @@ public class Fragment_HS_Welcome_2 extends Fragment {
         View view = inflater.inflate(R.layout.fragment_hs_welcome_2, parent, false);
 
         TextView textView = (TextView) view.findViewById(R.id.Welcome_HS_2_TextView);
-//        Log.d("TextView", Integer.toString(this.getArguments().getInt("layout")));
-//        Toast.makeText(this.getActivity(), textView.getText(), Toast.LENGTH_SHORT).show();
+
+        // reposition the views
         textView.setY(height * 3 / 10);
         textView.setLineSpacing(0, 1.1f);
 
-
-        return view; //
+        return view;
     }
 
     @Override

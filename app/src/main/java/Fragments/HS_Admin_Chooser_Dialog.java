@@ -20,25 +20,25 @@ import java.util.ArrayList;
 import Utils.StringUtils;
 
 /**
- * Dialog showing the members of this house
+ * Dialog showing the members of this house and let the admin choose who to be the next admin
+ * (because the current admin is leaving)
  * <p/>
  * Created by Thanh on 10-April-15.
  */
 public class HS_Admin_Chooser_Dialog extends DialogFragment {
-private AdminChooserDialogListener mListener;
+    private AdminChooserDialogListener mListener;
 
-
+    //host activity interacting listner
     public interface AdminChooserDialogListener {
-        void onAdminChosen(HS_Admin_Chooser_Dialog f,  String hsid);
+        void onAdminChosen(HS_Admin_Chooser_Dialog f, String hsid);
     }
 
-    // static factory
+    // static factory method
     public static HS_Admin_Chooser_Dialog initialise(ArrayList<Member> members, String username) {
         HS_Admin_Chooser_Dialog o = new HS_Admin_Chooser_Dialog();
         Bundle b = new Bundle();
         b.putParcelableArrayList(IntentConstants.MEMBERS, members);
         b.putString(IntentConstants.USERNAME, username);
-
         o.setArguments(b);
         return o;
     }
@@ -48,10 +48,8 @@ private AdminChooserDialogListener mListener;
         super.onAttach(activity);
         try {
             mListener = (AdminChooserDialogListener) activity;
-        }
-        catch (IllegalStateException e)
-        {
-            throw  new IllegalStateException("Illegal cast");
+        } catch (IllegalStateException e) {
+            throw new IllegalStateException("Illegal cast");
         }
     }
 
@@ -63,6 +61,7 @@ private AdminChooserDialogListener mListener;
         TableLayout l = (TableLayout) v.findViewById(R.id.members_table);
         final ArrayList<Member> members = getArguments().getParcelableArrayList(IntentConstants.MEMBERS);
 
+        // make UI
         for (int i = 0; i < members.size(); i++) {
             if (members.get(i).getUsername().equals(getArguments().getString(IntentConstants.USERNAME)))
                 continue;

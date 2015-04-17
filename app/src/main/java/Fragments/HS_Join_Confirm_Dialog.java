@@ -17,7 +17,6 @@ import com.ncl.team5.lloydsmockup.R;
  *
  * Dialog for confirming that the join request has been sent.
  *
- *
  * Created by Thanh on 23-Mar-15.
  *
  */
@@ -49,7 +48,7 @@ public class HS_Join_Confirm_Dialog extends DialogFragment{
         }
     }
 
-
+    // static factory method
     public static HS_Join_Confirm_Dialog initialise(String house_name, String username) {
         HS_Join_Confirm_Dialog o = new HS_Join_Confirm_Dialog();
         Bundle b = new Bundle();

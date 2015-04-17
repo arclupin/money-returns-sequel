@@ -21,7 +21,7 @@ import com.ncl.team5.lloydsmockup.R;
 import Utils.StringUtils;
 
 /**
- * Dialog showing the confirmed and unconfirmed
+ * Dialog showing the confirmed and unconfirmed payments
  *
  * Created by Thanh on 10-April-15.
  */
@@ -29,9 +29,6 @@ public class HS_Bill_Payments_Dialog extends DialogFragment {
 
     private BillPaymentConfirmationListener mListener;
 
-    /**
-     *
-     */
     public interface BillPaymentConfirmationListener {
         void onUnconfirmedPaymentClicked(HS_Bill_Payments_Dialog f, Payment p);
     }
@@ -48,7 +45,7 @@ public class HS_Bill_Payments_Dialog extends DialogFragment {
         }
     }
 
-    // static factory
+    // static factory method
     public static HS_Bill_Payments_Dialog initialise(Payment[] payments, String[] users) {
         HS_Bill_Payments_Dialog o = new HS_Bill_Payments_Dialog();
         Bundle b = new Bundle();
@@ -88,11 +85,11 @@ public class HS_Bill_Payments_Dialog extends DialogFragment {
             } else {
                 u.addView(payment_view);
                 payment_view.setClickable(true);
-                payment_view.setBackground(getActivity().getResources().getDrawable(R.drawable.button_light_color));
+                payment_view.setBackground(getActivity().getResources().
+                        getDrawable(R.drawable.button_light_color));
                 payment_view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
                             mListener.onUnconfirmedPaymentClicked(HS_Bill_Payments_Dialog.this, payments[k]);
                     }
                 });

@@ -8,7 +8,11 @@ import android.view.MenuItem;
 import android.widget.CheckBox;
 import android.widget.TableLayout;
 
-
+/**
+ * Activity for creating a automatically calculated bill
+ *
+ * [TODO] [INVESTIGATING] [NOT DEPLOYED]
+ */
 public class NewBillAuto extends Activity {
 
 

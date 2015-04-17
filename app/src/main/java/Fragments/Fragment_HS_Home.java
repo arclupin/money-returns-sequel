@@ -210,9 +210,16 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
     @Override
     public void onResume() {
         super.onResume();
+
+        // reinitialise data on fragment resume
         initialiseData();
     }
 
+    /**
+     * cast the host activty to the listener
+     *
+     * @param activity the host activity
+     */
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -224,17 +231,24 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         }
     }
 
+    /**
+     * Detach the listner onDetach
+     */
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
+    /**
+     * method implemented from {@link Fragment_HS_Abstract}
+     * update this fragment
+     */
     @Override
     public void update() {
         // only update date when the user has joined a house
         // because the view of the other type (sent-request type) need not updating
-            initialiseData();
+        initialiseData();
     }
 
     /**
@@ -256,7 +270,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
          *
          * @param f the fragment
          */
-        public void onHomeViewCreated(Fragment_HS_Home f);
+        void onHomeViewCreated(Fragment_HS_Home f);
     }
 
     /**
@@ -267,49 +281,72 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
      */
     public class HomeViewWorker extends ConcurrentConnection {
 
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            //reset the backing list
             billList = new ArrayList<Bill>();
             //show loading indicators
             Log.d("Loaded", String.valueOf(loaded));
+
+            // the initial loaded icon should only be loaded once at the beginning
             if (!loaded) {
                 loading_list_text.setVisibility(View.VISIBLE);
                 loaded = true;
-            }
-            else {
+            } else {
+                // show the swipe refresh view
                 if (!loading_list_text.isShown())
-                     swipe_view.setRefreshing(true);
+                    swipe_view.setRefreshing(true);
             }
 
         }
 
+        /**
+         * Constructor #1
+         *
+         * @param a          the target activity
+         * @param showDialog whether or not to show the progress dialog during the execution
+         */
         public HomeViewWorker(Activity a, boolean showDialog) {
             super(a, showDialog);
         }
 
+        /**
+         * Process data and go back to the main UI thread
+         *
+         * @param responses responses received from the server
+         */
         @Override
         protected void onPostExecute(List<Response> responses) {
+            // reset the backing member map
             members = new TreeMap<String, Member>();
+
             super.onPostExecute(responses);
+
+            // hide or loading indicators
             loadingIcon.setVisibility(View.GONE);
             loading_list_text.setVisibility(View.GONE);
+
             if (swipe_view.isRefreshing())
-                 swipe_view.setRefreshing(false);
+                swipe_view.setRefreshing(false);
             // do the processing in the home view
 
 
+            //time-out check
             if (responses.get(0).getToken(Responses_Format.RESPONSE_EXPIRED).equals("true")) {
                 Utilities.showAutoLogoutDialog(getActivity(), username);
             } else {
+
+                // if the user has fully joined the house
                 if (responses.get(0).getToken(Responses_Format.RESPONSE_STATUS).
                         equals(Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE)) {
 
+                    //reset basic values
                     view_type = Responses_Format.RESPONSE_HOUSESHARE_JOINED_HOUSE;
                     Houseshare_HomeView.view_type = view_type;
                     billList_view = (ListView) l.findViewById(R.id.listBills);
                     response_content = processInfo(responses.get(1).getRaw_response());
+
                     //TODO we might need a UI child thread worker for all these data
                     // check for new notification and reflect it on the noti icon
                     checkNewNotification(responses.get(2).getRaw_response());
@@ -324,7 +361,9 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
 
                     // prepare the UI content
                     displayHomeViewContent();
-                } else if (responses.get(0).getToken(Responses_Format.RESPONSE_STATUS).
+                }
+                // else if user has sent a request but not yet to join
+                else if (responses.get(0).getToken(Responses_Format.RESPONSE_STATUS).
                         equals(Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ)) {
 
                     view_type = Responses_Format.RESPONSE_HOUSESHARE_SENT_REQ;
@@ -351,13 +390,19 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
                                     "Use the search bar below to start looking for one!",
                             pending_mode.NOT_SENT);
                 }
+                // reset the menu
                 getActivity().invalidateOptionsMenu();
             }
         }
     }
 
 
-    // method called when the fragment is called.
+    /**
+     * process the response containing user basic data (their type as indicated above)
+     *
+     * @param response the relevant response from the server
+     * @return the extracted data
+     */
     protected String processInfo(String response) {
         String content = "DEFAULT";
         try {
@@ -380,7 +425,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
             new CustomMessageBox(getActivity(), "There was an error in the server response");
             jse.printStackTrace();
         } catch (Exception e) {
-            /* Failsafe if something goes utterly wrong */
+            /* Fail safe if something goes utterly wrong */
             new CustomMessageBox(getActivity(), "An unknown error occurred");
             e.printStackTrace();
         }
@@ -393,15 +438,22 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
     public void displayHomeViewContent() {
         try {
             Log.d("billList size", "/ " + billList.size());
+
+            // get data needed for determining whether the user is the admin ID
+            // this is needed for house leaving options
             JSONArray house_Array = new JSONObject(response_content).getJSONArray("basic_info");
             amIAdmin = house_Array.getBoolean(house_Array.length() - 1);
             Houseshare_HomeView.amIAdmin = amIAdmin;
+
             Log.d("Am I admin", "/" + amIAdmin);
+
+            // reset views visibility
             viewName.setVisibility(View.VISIBLE);
             viewAddressText.setVisibility(View.VISIBLE);
             viewDescription.setVisibility(View.VISIBLE);
             avatar.setVisibility(View.VISIBLE);
 
+            // reset view texts
             viewName.setText(house_Array.getString(0));
             viewAddressText.setText(StringUtils.implode(" ", house_Array.getString(1),
                     house_Array.getString(2), house_Array.getString(3)));
@@ -410,6 +462,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
             BillAdapter adapter = new BillAdapter(getActivity(), R.layout.bill_view_row, billList);
             billList_view.setAdapter(adapter);
 
+            // set the empty view indicator if the backing bill list has no member
             if (billList.size() == 0) {
                 empty_view.setVisibility(View.VISIBLE);
             }
@@ -438,6 +491,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         main_view_container.setLayoutParams(params);
         main_view_container.requestLayout();
 
+        // some layout repositions
         if (mode == pending_mode.SENT) {
             viewName.setVisibility(View.VISIBLE);
             viewName.setText(hs_name);
@@ -456,13 +510,6 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         avatar.setImageDrawable(getResources().getDrawable(mode == pending_mode.SENT ?
                 R.drawable.lock : R.drawable.sad));
     }
-
-//    /**
-//     * called to set the pending page, provided that user has sent a request
-//     */
-//    public void displayPendingContent() {
-//        avatar.setImageDrawable(getResources().getDrawable(R.drawable.boy));
-//    }
 
     /**
      * Initialise data
@@ -510,9 +557,9 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
         fetch_bills_request.addParam(Request_Params.PARAM_TYPE, Request_Params.REQUEST_HS_GET_MY_BILLS)
                 .addParam(Request_Params.PARAM_USR, username);
 
-            new HomeViewWorker(getActivity(), false)
-                    .execute(new RequestQueue().addRequests(init_request, home_feed_request, new_noti_check_request,
-                            fetch_members_request, fetch_bills_request).toList());
+        new HomeViewWorker(getActivity(), false)
+                .execute(new RequestQueue().addRequests(init_request, home_feed_request, new_noti_check_request,
+                        fetch_members_request, fetch_bills_request).toList());
 
     }
 
@@ -523,10 +570,6 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
      */
     public void checkNewNotification(String r) {
         try {
-            /* Command required to make a payment, takes username, to account, from account, both sort codes and amount
-             * Returns: JSON String */
-//            result = connect.execute(Request_Params.PARAM_TYPE, Request_Params.VAL_REF_NOTI, Request_Params.PARAM_USR, this.username).get();
-//            /* Turns String into JSON object, can throw JSON Exception */
             JSONObject jo = new JSONObject(r);
 
             /* Check if the user has timed out */
@@ -560,7 +603,7 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
     }
 
     /**
-     * Update the backing listof bills
+     * Update the backing list of bills
      *
      * @param r the response from the server regarding the bill section
      */
@@ -677,16 +720,16 @@ public class Fragment_HS_Home extends Fragment_HS_Abstract {
     }
 
 
-/**
- * A custom adapter for backing the list of bills
- */
-class BillAdapter extends ArrayAdapter<Bill> {
-    // the backing list
-    private List<Bill> billList;
+    /**
+     * A custom adapter for backing the list of bills
+     */
+    class BillAdapter extends ArrayAdapter<Bill> {
+        // the backing list
+        private List<Bill> billList;
 
-    public BillAdapter(Context context, int resource, List<Bill> objects) {
-        super(context, resource, objects);
-        billList = objects;
+        public BillAdapter(Context context, int resource, List<Bill> objects) {
+            super(context, resource, objects);
+            billList = objects;
 
             /*  //TODO _FIXME This was the original implementation of the empty view. But I got some
                 //TODO _FIXME problems with positioning the layout. This approach seems safer than the
@@ -701,65 +744,65 @@ class BillAdapter extends ArrayAdapter<Bill> {
                     Log.d("bill list is empty", billList.get(0).getBillID());
                 }
             */
-    }
-
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        empty_view.setVisibility(View.GONE);
-
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.bill_view_row, parent, false);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent billPageIntent = new Intent(getActivity(),
-                        (billList.get(position).amICreator() ? HouseShare_Bill_Owner.class :
-                                HouseShare_Bill_Member.class));
-                billPageIntent.putParcelableArrayListExtra(IntentConstants.BILL_PARCEL,
-                        new ArrayList<Parcelable>(Collections.singletonList(billList.get(position))));
-                billPageIntent.putExtra(IntentConstants.USERNAME, username);
-                billPageIntent.putExtra(IntentConstants.HOUSE_NAME, hs_name);
-                billPageIntent.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
-                // just to make sure :)
-                billPageIntent.putExtra(IntentConstants.BILL_ID, billList.get(position).getBillID());
-                startActivity(billPageIntent);
-            }
-        });
-        TextView billName = (TextView) view.findViewById(R.id.bill_row_bill_name);
-        TextView billInfo = (TextView) view.findViewById(R.id.bill_row_bill_info);
-
-        // get the backing bill at this position
-        Bill bill = billList.get(position);
-
-        // set the name of the bill
-        billName.setText(bill.getBillName());
-
-        // set the bill info depending on the status of the bill
-        if (!bill.isActive()) {
-            // check whether the user is the creator of this bill and display accordingly
-            // because we wouldn't want the user, say, alice to see something like
-            // "Created by alice on ...".
-            // Something like "You created this bill ..." looks more natural in this case
-            if (!bill.amICreator())
-                billInfo.setText("Created by " +
-                        bill.getBillCreator().getUsername() + ". Status: Pending");
-            else
-                billInfo.setText("You created this bill. Status: Pending");
-        } else {
-            // if this bill is not fully paid, the the bill info section will show its due date
-            if (!bill.isPaid()) {
-                billInfo.setText("This bill is due " +
-                        StringUtils.getGeneralDateString(bill.getDueDate()) + ".");
-            }
-            // else if this bill has been paid completed and done, show its date of payment
-            else {
-                billInfo.setText("This bill has been paid on " +
-                        StringUtils.getGeneralDateString(bill.getDatePaid()) + ".");
-            }
         }
-        return view;
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            empty_view.setVisibility(View.GONE);
+
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View view = inflater.inflate(R.layout.bill_view_row, parent, false);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent billPageIntent = new Intent(getActivity(),
+                            (billList.get(position).amICreator() ? HouseShare_Bill_Owner.class :
+                                    HouseShare_Bill_Member.class));
+                    billPageIntent.putParcelableArrayListExtra(IntentConstants.BILL_PARCEL,
+                            new ArrayList<Parcelable>(Collections.singletonList(billList.get(position))));
+                    billPageIntent.putExtra(IntentConstants.USERNAME, username);
+                    billPageIntent.putExtra(IntentConstants.HOUSE_NAME, hs_name);
+                    billPageIntent.putExtra(IntentConstants.HOUSESHARE_ID, hsid);
+                    // just to make sure :)
+                    billPageIntent.putExtra(IntentConstants.BILL_ID, billList.get(position).getBillID());
+                    startActivity(billPageIntent);
+                }
+            });
+            TextView billName = (TextView) view.findViewById(R.id.bill_row_bill_name);
+            TextView billInfo = (TextView) view.findViewById(R.id.bill_row_bill_info);
+
+            // get the backing bill at this position
+            Bill bill = billList.get(position);
+
+            // set the name of the bill
+            billName.setText(bill.getBillName());
+
+            // set the bill info depending on the status of the bill
+            if (!bill.isActive()) {
+                // check whether the user is the creator of this bill and display accordingly
+                // because we wouldn't want the user, say, alice to see something like
+                // "Created by alice on ...".
+                // Something like "You created this bill ..." looks more natural in this case
+                if (!bill.amICreator())
+                    billInfo.setText("Created by " +
+                            bill.getBillCreator().getUsername() + ". Status: Pending");
+                else
+                    billInfo.setText("You created this bill. Status: Pending");
+            } else {
+                // if this bill is not fully paid, the the bill info section will show its due date
+                if (!bill.isPaid()) {
+                    billInfo.setText("This bill is due " +
+                            StringUtils.getGeneralDateString(bill.getDueDate()) + ".");
+                }
+                // else if this bill has been paid completed and done, show its date of payment
+                else {
+                    billInfo.setText("This bill has been paid on " +
+                            StringUtils.getGeneralDateString(bill.getDatePaid()) + ".");
+                }
+            }
+            return view;
+        }
     }
-}
 
     private void cleanUpLayout() {
         billList = new ArrayList<Bill>();

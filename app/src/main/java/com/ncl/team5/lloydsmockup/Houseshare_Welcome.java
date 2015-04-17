@@ -30,7 +30,10 @@ import HTTPConnect.Request_Params;
 import HTTPConnect.Responses_Format;
 import Utils.Houseshares;
 
-
+/**
+ * Activity showing the welcome page for the houseshare service
+ * Only those who have not registered for the houseshare service can be able to see this
+ */
 public class Houseshare_Welcome extends FragmentActivity {
     ViewPager pager;
     HS_Welcome_FragmentPagerAdapter pager_adapter;
@@ -145,6 +148,9 @@ public class Houseshare_Welcome extends FragmentActivity {
     else register();
     }
 
+    /**
+     * register the current user, not redirect to the houseshare home view if the user has already joined
+     */
     public void register() {
             Connection connect = new Connection(this);
             String result;
@@ -200,7 +206,6 @@ public class Houseshare_Welcome extends FragmentActivity {
                 new CustomMessageBox(this, "An unknown error occurred");
                 e.printStackTrace();
             }
-
 
         }
     }

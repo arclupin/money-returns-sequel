@@ -15,13 +15,13 @@ import com.ncl.team5.lloydsmockup.R;
 
 /**
  *
- * Dialog for confirming that the join request has been sent.
- *
+ * Dialog for confirming that the user (the billl creator) wants to delete a bill
  *
  * Created by Thanh on 23-Mar-15.
  *
  */
 public class HS_Bill_Delete_Dialog extends DialogFragment{
+    private BillDeleteDialogListener mBillDeleteDialogListener;
 
     public interface BillDeleteDialogListener {
 
@@ -31,22 +31,9 @@ public class HS_Bill_Delete_Dialog extends DialogFragment{
          * @param f the dialog itself (for dismission)
          *          @param billID the id of the bill
          */
-        public void onButtonClickDeleteBill(HS_Bill_Delete_Dialog f, String billID);
+        void onButtonClickDeleteBill(HS_Bill_Delete_Dialog f, String billID);
     }
 
-    private BillDeleteDialogListener mBillDeleteDialogListener;
-
-    public interface CancelConfirmedDialogListener {
-
-        /**
-         * User confirms that this bill will be removed
-         * @param f the dialog itself (for dismission)
-         * @param billID the bill id
-         */
-        public void onButtonClickCancel(HS_Bill_Delete_Dialog f, String billID);
-    }
-
-    private CancelConfirmedDialogListener mCancelConfirmedDialogListener;
 
 
     // assign the event listener to the host activity
@@ -64,6 +51,7 @@ public class HS_Bill_Delete_Dialog extends DialogFragment{
     }
 
 
+    //static factory method
     public static HS_Bill_Delete_Dialog initialise(String billID) {
         HS_Bill_Delete_Dialog o = new HS_Bill_Delete_Dialog();
         Bundle b = new Bundle();
@@ -86,7 +74,7 @@ public class HS_Bill_Delete_Dialog extends DialogFragment{
                 HS_Bill_Delete_Dialog.this.dismiss();
             }
         });
-        ((TextView) v.findViewById(R.id.dialog_okay)).setOnClickListener(new View.OnClickListener() {
+        v.findViewById(R.id.dialog_okay).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mBillDeleteDialogListener.onButtonClickDeleteBill
