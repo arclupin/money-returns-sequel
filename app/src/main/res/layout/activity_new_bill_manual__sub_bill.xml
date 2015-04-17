@@ -13,7 +13,6 @@
             android:id="@+id/scrollViewSelectUsers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/title_bill_break_down"
             android:background="@color/white">
 
             <TableLayout
